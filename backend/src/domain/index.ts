@@ -6,7 +6,13 @@ export * from './dtos/auth/register-user.dto';
 
 export * from './dtos/roles/role.dto';
 export * from './dtos/roles_users/role_user.dto';
+export * from './dtos/countries/country.dto';
+export * from './dtos/provinces/province.dto';
+export * from './dtos/cities/city.dto';
 
 export * from './entities/user.entity';
 export * from './entities/role.entity';
 export * from './entities/role_user.entity';
+export * from './entities/country.entity';
+export * from './entities/province.entity';
+export * from './entities/city.entity';
