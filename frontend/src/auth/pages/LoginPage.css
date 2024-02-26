@@ -1,0 +1,24 @@
+.div-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.div-100h {
+  height: 100vh;
+}
+
+.img-initial-height {
+  height: 200px;
+}
+
+.bg-melamina {
+  background-image: url(/backgrounds/AR_16.webp);
+  background-position: center;
+  background-repeat: repeat;
+}
+
+.bg-blur {
+  background-color: rgba(255, 255, 255, 0.2);
+}
