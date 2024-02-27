@@ -1,12 +1,24 @@
+import { Op } from "sequelize";
 import { Country, Province } from "../../database/mysql/models";
-import { CustomError, CountryDto, CountryEntity } from "../../domain";
+import { CustomError, CountryDto, CountryEntity, PaginationDto } from "../../domain";
 
+export interface CountryFilters {
+    name: string;
+}
 export class CountryService {
 
-    public async getCountries() {
-        const countries = await Country.findAll();
+    public async getCountries(paginationDto: PaginationDto, filters: CountryFilters) {
+        const { page, limit } = paginationDto;
+        let where = {};
+        // filter.name LIKE name
+        if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
+
+        const [countries, total] = await Promise.all([
+            Country.findAll({ where, offset: (page - 1) * limit, limit }),
+            Country.count({ where })
+        ]);
         const countriesEntities = countries.map(country => CountryEntity.fromObject(country));
-        return { countries: countriesEntities };
+        return { countries: countriesEntities, total };
     }
 
     public async getCountry(id: number) {

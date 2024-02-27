@@ -39,6 +39,12 @@ export class CityController {
     }
 
     create = async (req: Request, res: Response) => {
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase();
+            }
+        }
+
         const [error, createDto] = CityDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
@@ -54,6 +60,12 @@ export class CityController {
     update = async (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         if (!id) return res.status(400).json({ message: 'Missing id' });
+
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase();
+            }
+        }
         const [error, updateDto] = CityDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 

@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserInterface {
-    id_user: string | null;
-    name: string | null;
-    username: string | null;
+    id_user: string;
+    name: string;
+    username: string;
 }
 
-interface RolesInterface {
-    roles: string[];
-}
+// interface RolesInterface {
+//     roles: string[];
+// }
 
 interface AuthState {
     status: string;
-    user: UserInterface | null;
-    roles: RolesInterface | null;
+    user: UserInterface | {}
+    roles: string[];
     errorMessage?: string; // Hacer errorMessage opcional
 }
 
@@ -21,16 +21,16 @@ export const authSlice = createSlice({
     name: "auth",
     initialState: {
         status: "checking",
-        user: { id_user: null, name: null, username: null },
-        roles: { roles: [] },
+        user: {},
+        roles: [],
         errorMessage: undefined,
     } as AuthState,
 
     reducers: {
         onChecking: (state) => {
             state.status = "checking";
-            state.user = { id_user: null, name: null, username: null };
-            state.roles = { roles: [] };
+            state.user = {};
+            state.roles = [];
             state.errorMessage = undefined;
         },
         onLogin: (state, { payload }: PayloadAction<any>) => {
@@ -45,8 +45,8 @@ export const authSlice = createSlice({
         },
         onLogout: (state, { payload }: PayloadAction<string | undefined>) => {
             state.status = "not-authenticated";
-            state.user = null;
-            state.roles = null;
+            state.user = {};
+            state.roles = [];
             state.errorMessage = payload;
         },
         clearErrorMessage: (state) => {

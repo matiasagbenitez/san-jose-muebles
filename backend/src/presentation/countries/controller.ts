@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CustomError, CountryDto } from "../../domain";
-import { CountryService } from "../services/country.service";
+import { CustomError, CountryDto, PaginationDto } from "../../domain";
+import { CountryService, CountryFilters } from '../services/country.service';
 
 export class CountryController {
 
@@ -16,7 +16,14 @@ export class CountryController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.countryService.getCountries()
+        const { page = 1, limit = 10, filters } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        let fil = {};
+        if (req.query.name) fil = { ...fil, name: req.query.name };
+
+        this.countryService.getCountries(paginationDto!, fil as CountryFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -39,6 +46,11 @@ export class CountryController {
     }
 
     create = async (req: Request, res: Response) => {
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase();
+            }
+        }
         const [error, createDto] = CountryDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
@@ -54,6 +66,12 @@ export class CountryController {
     update = async (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         if (!id) return res.status(400).json({ message: 'Missing id' });
+
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase();
+            }
+        }
         const [error, updateDto] = CountryDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 

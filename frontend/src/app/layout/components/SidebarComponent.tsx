@@ -1,4 +1,5 @@
-import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Link } from "react-router-dom";
+import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 interface SidebarComponentProps {
   collapsed: boolean;
 }
@@ -17,19 +18,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         fontSize: "15px",
       }}
     >
-      <Menu>
-        <MenuItem>
-          <i className="bi bi-house-door-fill me-2"></i> Item 1
+      <Menu style={{ marginLeft: "5px" }}>
+        <MenuItem component={<Link to="/" />} title="Inicio">
+          Inicio
         </MenuItem>
-        <MenuItem>
-          <i className="bi bi-house-door-fill me-2"></i> Item 2
-        </MenuItem>
-        <MenuItem>
-          <i className="bi bi-house-door-fill me-2"></i> Item 3
-        </MenuItem>
-        <MenuItem>
-          <i className="bi bi-house-door-fill me-2"></i> Item 4
-        </MenuItem>
+        <SubMenu label="Parámetros" title="Parámetros">
+          <MenuItem component={<Link to="/parametros/paises" />} title="Países">
+            Países
+          </MenuItem>
+        </SubMenu>
       </Menu>
     </Sidebar>
   );
