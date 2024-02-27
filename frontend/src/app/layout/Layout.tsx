@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
-
-import { Container } from "react-bootstrap";
+//
 import { SidebarComponent } from "./components/SidebarComponent";
 import { useState } from "react";
 import { NavbarComponent } from "./components";
@@ -14,12 +13,14 @@ export const Layout = () => {
 
   return (
     <div>
-      <NavbarComponent handleSidebarCollapse={handleSidebarCollapse} />
       <div className="d-flex">
         <SidebarComponent collapsed={sidebarCollapsed} />
-        <Container fluid className="p-0 m-0">
-          <Outlet />
-        </Container>
+        <div style={{ width: "100%" }}>
+          <NavbarComponent handleSidebarCollapse={handleSidebarCollapse} />
+          <div className="p-0 m-3">
+            <Outlet />
+          </div>
+        </div>
       </div>
     </div>
   );

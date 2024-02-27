@@ -1,10 +1,5 @@
 import DataTable, { TableColumn } from "react-data-table-component";
-import {
-  customStyles,
-  paginationOptions,
-  ProgressComponent,
-  NoDataComponent,
-} from ".";
+import { customStyles, paginationOptions, ProgressComponent, NoDataComponent } from ".";
 import { useMemo } from "react";
 
 interface ParamsDatatableProps {
@@ -58,12 +53,7 @@ export const ParamsDatatable = ({
   );
 
   return (
-    <div
-      className="m-3 border rounded"
-      style={{
-        overflow: "hidden",
-      }}
-    >
+    <div className="border rounded" style={{ overflow: "hidden" }}>
       {memoizedDataTable}
     </div>
   );

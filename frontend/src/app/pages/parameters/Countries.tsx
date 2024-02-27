@@ -83,7 +83,7 @@ export const Countries = () => {
   return (
     <div>
       <Form onSubmit={(e) => handleFiltersChange(e)} autoComplete="off">
-        <div className="d-flex justify-content-between m-3 gap-2">
+        <div className="d-flex justify-content-between mb-3 gap-2">
           <Form.Control
             id="name"
             autoComplete="off"

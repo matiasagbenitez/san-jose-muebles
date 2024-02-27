@@ -17,7 +17,7 @@ export const NavbarComponent = ({
   return (
     <Navbar
       className="bg-light border-bottom"
-      style={{ position: "sticky", top: 0, zIndex: 1000 }}
+      style={{ width: "100%", height: "50px" }}
     >
       <Container fluid>
         <Button
@@ -30,7 +30,7 @@ export const NavbarComponent = ({
         </Button>
 
         <div className="d-flex align-items-center gap-3 px-3">
-          <img src="/logos/logo-transparent.png" alt="logo" height={40} />
+          <img src="/logos/logo-transparent.png" alt="logo" height={35} />
           <span style={{ fontSize: "15px" }}>
             <b>SAN JOSÉ</b> MUEBLES
           </span>

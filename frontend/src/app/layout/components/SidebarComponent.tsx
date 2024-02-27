@@ -5,18 +5,18 @@ interface SidebarComponentProps {
 }
 
 export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
+  console.log("SidebarComponent");
   return (
     <Sidebar
       width="230px"
       collapsed={collapsed}
       collapsedWidth="0px"
       style={{
-        position: "sticky",
-        top: 57,
-        height: "100vh",
         backgroundColor: "#F8F9FA",
         fontSize: "15px",
+        minHeight: "100vh",
       }}
+      
     >
       <Menu style={{ marginLeft: "5px" }}>
         <MenuItem component={<Link to="/" />} title="Inicio">

@@ -1,5 +1,5 @@
 export const NoDataComponent = () => {
   return (
-    <small className="text-center text-muted">No hay datos para mostrar</small>
+    <small className="text-center text-muted mb-3">No hay datos para mostrar</small>
   )
 }
