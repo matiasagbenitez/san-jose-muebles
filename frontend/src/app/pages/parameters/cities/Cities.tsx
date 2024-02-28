@@ -18,6 +18,8 @@ interface DataRow {
   name: string;
   id_province: string | number;
   province: string;
+  id_country: string | number;
+  country: string;
 }
 
 export interface CityFormInterface {
@@ -142,6 +144,10 @@ export const Cities = () => {
     {
       name: "PROVINCIA",
       selector: (row: DataRow) => row.province,
+    },
+    {
+      name: "PAÍS",
+      selector: (row: DataRow) => row.country,
     },
     {
       name: "ACCIONES",

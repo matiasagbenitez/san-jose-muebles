@@ -30,13 +30,17 @@ export class CityService {
                 where,
                 include: [{
                     model: Province,
-                    as: 'province'
+                    as: 'province',
+                    include: [{
+                        model: Country,
+                        as: 'country'
+                    }]
                 }],
                 offset: (page - 1) * limit,
             }),
             City.count({ where })
         ]);
-        const citiesEntities = cities.map(city => CityEntity.fromObjectWithProvince(city));
+        const citiesEntities = cities.map(city => CityEntity.fromObjectWithProvinceAndCity(city));
         return { items: citiesEntities, total_items: total };
     }
 
@@ -44,7 +48,7 @@ export class CityService {
         const city = await City.findByPk(id, {
             include: [{
                 model: Province,
-                as: 'province'
+                as: 'province',
             }]
         });
         if (!city) throw CustomError.notFound('Ciudad no encontrada');

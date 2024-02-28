@@ -6,6 +6,8 @@ export class CityEntity {
         public name: string,
         public id_province: number,
         public province?: string,
+        public id_country?: number,
+        public country?: string
     ) { }
 
     static fromObject(object: { [key: string]: any }): CityEntity {
@@ -37,6 +39,28 @@ export class CityEntity {
             name,
             id_province,
             province.name
+        );
+    }
+
+    static fromObjectWithProvinceAndCity(object: { [key: string]: any }): CityEntity {
+
+        const { id, name, id_province, province} = object;
+
+        if (!id) throw CustomError.badRequest('Missing id');
+        if (!name) throw CustomError.badRequest('Missing name');
+        if (!id_province) throw CustomError.badRequest('Missing province id');
+        if (!province) throw CustomError.badRequest('Missing province');
+        if (!province.name) throw CustomError.badRequest('Missing province name');
+        if (!province.id_country) throw CustomError.badRequest('Missing country id');
+        if (!province.country) throw CustomError.badRequest('Missing country');
+
+        return new CityEntity(
+            id,
+            name,
+            id_province,
+            province.name,
+            province.id_country,
+            province.country.name
         );
     }
 }
