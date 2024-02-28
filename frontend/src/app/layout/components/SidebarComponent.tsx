@@ -28,6 +28,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <MenuItem component={<Link to="/parametros/provincias" />} title="Provincias">
             Provincias
           </MenuItem>
+          <MenuItem component={<Link to="/parametros/ciudades" />} title="Ciudades">
+            Ciudades
+          </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>

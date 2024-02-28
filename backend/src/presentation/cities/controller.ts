@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CustomError, CityEntity, CityDto } from "../../domain";
-import { CityService } from "../services/city.service";
+import { CustomError, PaginationDto, CityDto } from "../../domain";
+import { CityService, CityFilters } from "../services/city.service";
 
 export class CityController {
 
@@ -17,6 +17,23 @@ export class CityController {
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
         this.cityService.getCities()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+    getAllPaginated = async (req: Request, res: Response) => {
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        let filters = {};
+        if (req.query.name) filters = { ...filters, name: req.query.name };
+
+        this.cityService.getCitiesPaginated(paginationDto!, filters as CityFilters)
             .then((data) => {
                 res.json(data);
             })
