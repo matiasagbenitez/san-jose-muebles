@@ -1,10 +1,6 @@
 import DataTable, { TableColumn } from "react-data-table-component";
-import {
-  customStyles,
-  paginationOptions,
-  ProgressComponent,
-  NoDataComponent,
-} from ".";
+import { customStyles, paginationOptions } from ".";
+import { Spinner } from "react-bootstrap";
 import { useMemo } from "react";
 
 interface DatatableParamsProps {
@@ -16,6 +12,26 @@ interface DatatableParamsProps {
   handleRowsPerPageChange: (newPerPage: number, page: number) => Promise<void>;
   handlePageChange: (page: number) => Promise<void>;
 }
+
+const NoDataComponent = () => {
+  return (
+    <small className="text-center text-muted mb-3">
+      No hay datos para mostrar
+    </small>
+  );
+};
+
+const ProgressComponent = () => {
+  return (
+    <div
+      className="mb-3 d-flex align-items-center"
+      style={{ textAlign: "center" }}
+    >
+      <Spinner animation="grow" variant="secondary" />
+      <small className="ms-2 text-muted">Cargando...</small>
+    </div>
+  );
+};
 
 export const DatatableParams = ({
   title,

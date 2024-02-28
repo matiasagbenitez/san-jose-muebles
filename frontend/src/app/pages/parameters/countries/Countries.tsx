@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../../api/apiSJM";
-import {
-  DatatableParams,
-  initialState,
-  paramsReducer,
-  fetchData,
-} from "../shared";
+import { DatatableParams, initialState, paramsReducer, fetchData, ActionButtons } from "../shared";
 import { CountriesFilters, CountriesForm } from ".";
 import { SweetAlert2 } from "../../../utils";
 
@@ -33,6 +28,7 @@ export const Countries = () => {
   const [state, dispatch] = useReducer(paramsReducer, initialState);
   const endpoint = "/countries";
 
+  // DATOS Y PAGINACIÓN
   const fetch = async () => {
     await fetchData(endpoint, 1, state, dispatch);
   };
@@ -68,6 +64,7 @@ export const Countries = () => {
     }
   }, [state.error]);
 
+  // CREAR, EDITAR Y ELIMINAR
   const handleCreate = () => {
     setForm(initialForm);
     setIsModalOpen(true);
@@ -111,6 +108,7 @@ export const Countries = () => {
     }
   };
 
+  // COLUMNAS Y RENDERIZADO
   const columns: TableColumn<DataRow>[] = [
     {
       name: "ID",
@@ -119,33 +117,23 @@ export const Countries = () => {
       center: true,
     },
     {
-      name: "Nombre del país",
+      name: "PAÍS",
       selector: (row: DataRow) => row.name,
     },
     {
-      name: "Acciones",
+      name: "ACCIONES",
       button: true,
       cell: (row: any) => (
-        <div className="d-flex justify-content-center">
-          <button
-            title="Editar"
-            className="btn btn-transparent py-0 px-1"
-            onClick={() => handleEdit(row)}
-          >
-            <i className="bi bi-pencil-square text-secondary-emphasis"></i>
-          </button>
-          <button
-            title="Eliminar"
-            className="btn btn-transparent py-0 px-1"
-            onClick={() => handleDelete(row)}
-          >
-            <i className="bi bi-trash2 text-danger"></i>
-          </button>
-        </div>
+        <ActionButtons
+          row={row}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
       ),
     },
   ];
 
+  // MODAL
   const handleHide = () => {
     setIsModalOpen(false);
     setEditingId(null);
