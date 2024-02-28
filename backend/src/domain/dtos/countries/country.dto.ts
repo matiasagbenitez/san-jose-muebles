@@ -6,8 +6,7 @@ export class CountryDto {
     static create(object: { [key: string]: any }): [string?, CountryDto?] {
         const { name } = object;
 
-        if (!name) return ['Missing name'];
-
+        if (!name) return ['El nombre es requerido'];
 
         return [undefined, new CountryDto(name)];
     }

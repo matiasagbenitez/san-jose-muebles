@@ -14,8 +14,8 @@ interface Props {
 export const MyTextInput = ({ label, ...props }: Props) => {
   const [field] = useField(props);
   return (
-    <>
-      <Form.Label htmlFor={props.id || props.name} className="small">
+    <div className="mb-1">
+      <Form.Label htmlFor={props.id || props.name} className="small mb-1">
         {label}
       </Form.Label>
 
@@ -27,12 +27,11 @@ export const MyTextInput = ({ label, ...props }: Props) => {
         isInvalid={props.invalid ? true : false}
         size="sm"
       />
-
       <ErrorMessage
         name={props.name}
         component="span"
         className="error-message"
       />
-    </>
+    </div>
   );
 };

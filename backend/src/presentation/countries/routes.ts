@@ -11,6 +11,7 @@ export class CountryRoutes {
         const controller = new CountryController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
+        router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
         router.put('/:id', [AuthMiddleware.validateJWT], controller.update);

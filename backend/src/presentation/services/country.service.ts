@@ -7,7 +7,13 @@ export interface CountryFilters {
 }
 export class CountryService {
 
-    public async getCountries(paginationDto: PaginationDto, filters: CountryFilters) {
+    public async getCountries() {
+        const countries = await Country.findAll();
+        const countriesEntities = countries.map(country => CountryEntity.fromObject(country));
+        return { items: countriesEntities };
+    }
+
+    public async getCountriesPaginated(paginationDto: PaginationDto, filters: CountryFilters) {
         const { page, limit } = paginationDto;
 
         // FILTERS

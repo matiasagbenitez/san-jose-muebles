@@ -8,4 +8,6 @@ select {
 .error-message {
   color: red;
   font-size: 13px;
+  /* hacer que salte a  */
+  display: block;
 }

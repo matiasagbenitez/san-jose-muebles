@@ -1,7 +1,7 @@
 import { Button, Form, ButtonGroup, Row, Col } from "react-bootstrap";
 import { StateReducer, ActionReducer } from "../shared";
 
-interface CountriesFiltersProps {
+interface ProvincesFiltersProps {
   state: StateReducer<any>;
   dispatch: React.Dispatch<ActionReducer<any>>;
   handleFiltersChange: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -9,13 +9,13 @@ interface CountriesFiltersProps {
   handleCreate: () => void;
 }
 
-export const CountriesFilters = ({
+export const ProvincesFilters = ({
   state,
   dispatch,
   handleFiltersChange,
   handleResetFilters,
   handleCreate,
-}: CountriesFiltersProps) => {
+}: ProvincesFiltersProps) => {
   return (
     <Form onSubmit={(e) => handleFiltersChange(e)} autoComplete="off">
       <Row>
@@ -25,7 +25,7 @@ export const CountriesFilters = ({
             autoComplete="off"
             size="sm"
             type="text"
-            placeholder="Buscar por nombre de país"
+            placeholder="Buscar por nombre de provincia"
             value={state.filters.name || ""}
             onChange={(e) =>
               dispatch({

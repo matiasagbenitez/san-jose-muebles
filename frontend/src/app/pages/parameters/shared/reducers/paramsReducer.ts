@@ -56,7 +56,7 @@ const paramsReducer = <T>(state: StateReducer<T>, action: ActionReducer<T>): Sta
 const fetchData = async <T>(endpoint: string, page: number, state: StateReducer<T>, dispatch: React.Dispatch<ActionReducer<T>>) => {
     dispatch({ type: "FETCH_START" });
     try {
-        const { data: responseData } = await apiSJM.get(endpoint, {
+        const { data: responseData } = await apiSJM.get(`${endpoint}/paginated`, {
             params: {
                 page,
                 limit: state.perPage,
