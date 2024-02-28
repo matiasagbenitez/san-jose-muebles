@@ -1,0 +1,102 @@
+import { useEffect, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Form, ButtonGroup } from "react-bootstrap";
+
+import { initialState, paramsReducer, fetchData } from "../reducer";
+import { DatatableParams } from "../../../components";
+import { SonnerToast } from "../../../../utils";
+
+const columns: any[] = [
+  {
+    name: "ID",
+    selector: (row: any) => row.id,
+    width: "80px",
+    center: "true",
+  },
+  {
+    name: "Nombre del país",
+    selector: (row: any) => row.name,
+  },
+];
+
+export const Countries = () => {
+  const navigate = useNavigate();
+  const [state, dispatch] = useReducer(paramsReducer, initialState);
+  const endpoint = "/countries";
+
+  useEffect(() => {
+    fetchData(endpoint, 1, state, dispatch);
+  }, []);
+
+  const handlePageChange = async (page: number) => {
+    dispatch({ type: "PAGE_CHANGE", page });
+    fetchData(endpoint, page, state, dispatch);
+  };
+
+  const handleRowsPerPageChange = async (newPerPage: number, page: number) => {
+    dispatch({ type: "ROWS_PER_PAGE_CHANGE", newPerPage, page });
+    fetchData(endpoint, page, { ...state, perPage: newPerPage }, dispatch);
+  };
+
+  const handleFiltersChange = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch({ type: "FILTERS_CHANGE", newFilters: state.filters });
+    fetchData(endpoint, 1, state, dispatch);
+  };
+
+  const handleResetFilters = async () => {
+    dispatch({ type: "RESET_FILTERS" });
+    fetchData(endpoint, 1, initialState, dispatch);
+  };
+
+  useEffect(() => {
+    if (state.error) {
+      SonnerToast.error(state.error);
+      navigate("/");
+    }
+  }, [state.error]);
+
+  return (
+    <div>
+      <Form onSubmit={(e) => handleFiltersChange(e)} autoComplete="off">
+        <div className="d-flex justify-content-between mb-3 gap-2">
+          <Form.Control
+            name="name"
+            autoComplete="off"
+            size="sm"
+            type="text"
+            placeholder="Buscar por nombre"
+            value={state.filters.name || ""}
+            onChange={(e) =>
+              dispatch({
+                type: "FILTERS_CHANGE",
+                newFilters: { ...state.filters, name: e.target.value },
+              })
+            }
+          />
+          <ButtonGroup size="sm">
+            <Button variant="primary" type="submit">
+              Buscar
+            </Button>
+            <Button variant="secondary" onClick={handleResetFilters}>
+              Limpiar
+            </Button>
+            <Button variant="success" onClick={() => alert("Nuevo!")}>
+              Nuevo
+            </Button>
+          </ButtonGroup>
+        </div>
+      </Form>
+
+      <DatatableParams
+        title="Países"
+        columns={columns}
+        data={state.data}
+        loading={state.loading}
+        totalRows={state.totalRows}
+        handleRowsPerPageChange={handleRowsPerPageChange}
+        handlePageChange={handlePageChange}
+      />
+    </div>
+  );
+};

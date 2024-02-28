@@ -1,8 +1,13 @@
 import DataTable, { TableColumn } from "react-data-table-component";
-import { customStyles, paginationOptions, ProgressComponent, NoDataComponent } from ".";
+import {
+  customStyles,
+  paginationOptions,
+  ProgressComponent,
+  NoDataComponent,
+} from ".";
 import { useMemo } from "react";
 
-interface ParamsDatatableProps {
+interface DatatableParamsProps {
   title: string;
   columns: TableColumn<any>[];
   data: any;
@@ -12,7 +17,7 @@ interface ParamsDatatableProps {
   handlePageChange: (page: number) => Promise<void>;
 }
 
-export const ParamsDatatable = ({
+export const DatatableParams = ({
   title,
   columns,
   data,
@@ -20,7 +25,7 @@ export const ParamsDatatable = ({
   totalRows,
   handleRowsPerPageChange,
   handlePageChange,
-}: ParamsDatatableProps) => {
+}: DatatableParamsProps) => {
   const memoizedDataTable = useMemo(
     () => (
       <DataTable
@@ -39,6 +44,7 @@ export const ParamsDatatable = ({
         onChangeRowsPerPage={handleRowsPerPageChange}
         onChangePage={handlePageChange}
         customStyles={customStyles}
+        paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
       />
     ),
     [

@@ -5,7 +5,6 @@ interface SidebarComponentProps {
 }
 
 export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
-  console.log("SidebarComponent");
   return (
     <Sidebar
       width="230px"

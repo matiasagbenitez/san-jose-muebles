@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import apiSJM from "../../../api/apiSJM";
 import { TableColumn } from "react-data-table-component";
+import apiSJM from "../../../../api/apiSJM";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, ButtonGroup } from "react-bootstrap";
-import { ParamsDatatable } from "../../components";
+import { DatatableParams } from "../../../components";
 
 interface DataRow {
   id: number;
@@ -14,12 +14,10 @@ const columns: TableColumn<DataRow>[] = [
   {
     name: "ID",
     selector: (row) => row.id,
-    reorder: true,
   },
   {
     name: "Nombre del país",
     selector: (row) => row.name,
-    reorder: true,
   },
 ];
 
@@ -34,11 +32,7 @@ export const Countries = () => {
   const [perPage, setPerPage] = useState(10);
   const [filters, setFilters] = useState(initialFilters);
 
-  const fetchData = async (
-    page: number,
-    newPerPage?: number,
-    newFilters?: any
-  ) => {
+  const fetchData = async ( page: number, newPerPage?: number, newFilters?: any ) => {
     setLoading(true);
     try {
       const { data: responseData } = await apiSJM.get("/countries", {
@@ -107,7 +101,7 @@ export const Countries = () => {
         </div>
       </Form>
 
-      <ParamsDatatable
+      <DatatableParams
         title="Países"
         columns={columns}
         data={data}

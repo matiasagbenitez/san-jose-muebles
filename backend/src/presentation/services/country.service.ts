@@ -18,7 +18,7 @@ export class CountryService {
             Country.count({ where })
         ]);
         const countriesEntities = countries.map(country => CountryEntity.fromObject(country));
-        return { countries: countriesEntities, total };
+        return { items: countriesEntities, total };
     }
 
     public async getCountry(id: number) {

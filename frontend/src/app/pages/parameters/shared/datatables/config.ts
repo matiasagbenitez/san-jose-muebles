@@ -39,6 +39,6 @@ export const paginationOptions: PaginationOptions =
   rowsPerPageText: "Filas por página:",
   rangeSeparatorText: "de",
   noRowsPerPage: false,
-  selectAllRowsItem: false,
+  selectAllRowsItem: true,
   selectAllRowsItemText: "Todos",
 };
