@@ -7,12 +7,13 @@ interface Props {
   name: string;
   placeholder?: string;
   type?: "text" | "email" | "password";
-  invalid?: string;
+  isInvalid?: boolean;
   [x: string]: any;
 }
 
 export const MyTextInput = ({ label, ...props }: Props) => {
   const [field] = useField(props);
+
   return (
     <div className="mb-1">
       <Form.Label htmlFor={props.id || props.name} className="small mb-1">
@@ -24,7 +25,7 @@ export const MyTextInput = ({ label, ...props }: Props) => {
         autoComplete="off"
         {...field}
         {...props}
-        isInvalid={props.invalid ? true : false}
+        isInvalid={props.isInvalid}
         size="sm"
       />
       <ErrorMessage

@@ -45,7 +45,10 @@ export class CountryService {
             });
             const { ...countryEntity } = CountryEntity.fromObject(country);
             return { country: countryEntity, message: 'País creado correctamente' };
-        } catch (error) {
+        } catch (error: any) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw CustomError.badRequest('El país que intenta crear ya existe');
+            }
             throw CustomError.internalServerError(`${error}`);
         }
     }

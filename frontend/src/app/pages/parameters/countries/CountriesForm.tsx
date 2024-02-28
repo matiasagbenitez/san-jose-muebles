@@ -25,14 +25,14 @@ export const CountriesForm = ({ show, onHide, form, editingId, onSubmit }: FormP
           onSubmit={(values) => { onSubmit(values); }}
           validationSchema={Yup.object({ name: Yup.string().required("El nombre es requerido") })}
         >
-          {({ errors }) => (
+          {({ errors, touched }) => (
             <Form id="form">
               <MyTextInput
                 label="Nombre del país"
                 name="name"
                 type="text"
                 placeholder="Ingrese el nombre del país"
-                invalid={errors.name}
+                isInvalid={!!errors.name && touched.name}
               />
 
               <Button

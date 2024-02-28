@@ -2,30 +2,28 @@ import { Button, Modal } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import { MySelect, MyTextInput } from "../../../components/forms";
-import { CityFormInterface } from ".";
+import { MyTextInput } from "../../../components/forms";
+import { CurrencyFormInterface } from ".";
 
 interface FormProps {
   show: boolean;
   onHide: () => void;
   editingId: number | null;
-  form: CityFormInterface;
+  form: CurrencyFormInterface;
   onSubmit: (values: any) => void;
-  provinces: any[];
 }
 
-export const CitiesForm = ({
+export const CurrenciesForm = ({
   show,
   onHide,
   form,
   editingId,
   onSubmit,
-  provinces,
 }: FormProps) => {
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar ciudad" : "Crear ciudad"}</h1>
+        <h1 className="fs-5">{editingId ? "Editar moneda" : "Crear moneda"}</h1>
         <hr className="my-2" />
 
         <Formik
@@ -35,33 +33,26 @@ export const CitiesForm = ({
           }}
           validationSchema={Yup.object({
             name: Yup.string().required("El nombre es requerido"),
-            id_province: Yup.string().required("La provincia es requerida"),
+            code: Yup.string().required("El código es requerido"),
           })}
         >
           {({ errors, touched }) => (
             <Form id="form">
               <MyTextInput
-                label="Nombre de la ciudad"
+                label="Nombre de la moneda"
                 name="name"
                 type="text"
-                placeholder="Ingrese el nombre de la ciudad"
+                placeholder="Ingrese el nombre de la moneda"
                 isInvalid={!!errors.name && touched.name}
               />
 
-              <MySelect
-                label="Provincia"
-                name="id_province"
-                as="select"
-                placeholder="Seleccione una provincia"
-                isInvalid={!!errors.id_province && touched.id_province}
-              >
-                <option value="">Seleccione una provincia</option>
-                {provinces.map((province: any) => (
-                  <option key={province.id} value={province.id}>
-                    {province.name}
-                  </option>
-                ))}
-              </MySelect>
+              <MyTextInput
+                label="Código de la moneda"
+                name="code"
+                type="text"
+                placeholder="Ingrese el código de la moneda"
+                isInvalid={!!errors.code && touched.code}
+              />
 
               <Button
                 type="submit"

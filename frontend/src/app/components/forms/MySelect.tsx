@@ -6,7 +6,7 @@ interface Props {
   label: string;
   name: string;
   placeholder?: string;
-  invalid?: string;
+  isInvalid?: boolean;
   [x: string]: any;
 }
 
@@ -23,7 +23,7 @@ export const MySelect = ({ label, ...props }: Props) => {
         id={props.name}
         {...field}
         {...props}
-        isInvalid={props.invalid ? true : false}
+        isInvalid={props.isInvalid}
         size="sm"
       />
       <ErrorMessage

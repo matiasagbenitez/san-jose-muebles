@@ -31,6 +31,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <MenuItem component={<Link to="/parametros/ciudades" />} title="Ciudades">
             Ciudades
           </MenuItem>
+          <MenuItem component={<Link to="/parametros/monedas" />} title="Monedas">
+            Monedas
+          </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>

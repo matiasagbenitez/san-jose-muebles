@@ -40,14 +40,14 @@ export const ProvincesForm = ({
             id_country: Yup.string().required("El país es requerido"),
           })}
         >
-          {({ errors }) => (
+          {({ errors, touched }) => (
             <Form id="form">
               <MyTextInput
                 label="Nombre de la provincia"
                 name="name"
                 type="text"
                 placeholder="Ingrese el nombre de la provincia"
-                invalid={errors.name}
+                isInvalid={!!errors.name && touched.name}
               />
 
               <MySelect
@@ -55,7 +55,7 @@ export const ProvincesForm = ({
                 name="id_country"
                 as="select"
                 placeholder="Seleccione un país"
-                invalid={errors.id_country}
+                isInvalid={!!errors.id_country && touched.id_country}
               >
                 <option value="">Seleccione un país</option>
                 {countries.map((country: any) => (
