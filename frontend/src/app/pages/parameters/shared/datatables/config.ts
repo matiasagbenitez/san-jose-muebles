@@ -32,6 +32,14 @@ export const customStyles: TableStyles = {
       },
     },
   },
+  pagination: {
+    style: {
+      minHeight: "56px",
+      borderTopStyle: "solid",
+      borderTopWidth: "1px",
+      borderTopColor: defaultThemes.default.divider.default,
+    },
+  },
 };
 
 export const paginationOptions: PaginationOptions =

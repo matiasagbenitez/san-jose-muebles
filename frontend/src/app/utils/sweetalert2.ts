@@ -23,10 +23,25 @@ export class SweetAlert2 {
         }).fire();
     }
 
-    static errorToast(message: string) {
+    static errorAlert(message: string) {
         Swal.fire({
             icon: "error",
             title: "¡Algo salió mal!",
+            text: message,
+            customClass: {
+                icon: "fs-7",
+                title: "fs-title",
+                closeButton: "fs-3",
+            },
+            showCloseButton: true,
+            showConfirmButton: false,
+        });
+    }
+
+    static successAlert(message: string) {
+        Swal.fire({
+            icon: "success",
+            title: "¡Operación exitosa!",
             text: message,
             customClass: {
                 icon: "fs-7",

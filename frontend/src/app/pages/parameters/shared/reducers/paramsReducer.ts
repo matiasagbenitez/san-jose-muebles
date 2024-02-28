@@ -66,7 +66,7 @@ const fetchData = async <T>(endpoint: string, page: number, state: StateReducer<
         dispatch({
             type: "FETCH_SUCCESS",
             data: responseData.items,
-            totalRows: responseData.total,
+            totalRows: responseData.total_items,
         });
     } catch (error) {
         console.log(error);

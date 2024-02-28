@@ -1,0 +1,11 @@
+input,
+select {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  outline: none;
+}
+
+.error-message {
+  color: red;
+  font-size: 13px;
+}

@@ -9,8 +9,9 @@ export class CountryService {
 
     public async getCountries(paginationDto: PaginationDto, filters: CountryFilters) {
         const { page, limit } = paginationDto;
+
+        // FILTERS
         let where = {};
-        // filter.name LIKE name
         if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
 
         const [countries, total] = await Promise.all([
@@ -18,26 +19,26 @@ export class CountryService {
             Country.count({ where })
         ]);
         const countriesEntities = countries.map(country => CountryEntity.fromObject(country));
-        return { items: countriesEntities, total };
+        return { items: countriesEntities, total_items: total };
     }
 
     public async getCountry(id: number) {
         const country = await Country.findByPk(id);
-        if (!country) throw CustomError.notFound('Country not found');
+        if (!country) throw CustomError.notFound('País no encontrado');
         const { ...countryEntity } = CountryEntity.fromObject(country);
         return { country: countryEntity };
     }
 
     public async createCountry(createCountryDto: CountryDto) {
         const country = await Country.findOne({ where: { name: createCountryDto.name } });
-        if (country) throw CustomError.badRequest('Country already exists');
+        if (country) throw CustomError.badRequest('El país ya existe');
 
         try {
             const country = await Country.create({
                 name: createCountryDto.name
             });
             const { ...countryEntity } = CountryEntity.fromObject(country);
-            return { country: countryEntity };
+            return { country: countryEntity, message: 'País creado correctamente' };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
@@ -45,27 +46,30 @@ export class CountryService {
 
     public async updateCountry(id: number, updateCountryDto: CountryDto) {
         const country = await Country.findByPk(id);
-        if (!country) throw CustomError.notFound('Country not found');
+        if (!country) throw CustomError.notFound('País no encontrado');
 
         try {
             await country.update(updateCountryDto);
             const { ...countryEntity } = CountryEntity.fromObject(country);
-            return { country: countryEntity };
-        } catch (error) {
+            return { country: countryEntity, message: 'País actualizado correctamente' };
+        } catch (error: any) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw CustomError.badRequest('El país que intenta actualizar ya existe');
+            }
             throw CustomError.internalServerError(`${error}`);
         }
     }
 
     public async deleteCountry(id: number) {
         const country = await Country.findByPk(id, { include: [{ model: Province, as: 'provinces' }] });
-        if (!country) throw CustomError.notFound('Country not found');
+        if (!country) throw CustomError.notFound('País no encontrado');
         if (country.provinces) {
-            if (country.provinces.length > 0) throw CustomError.badRequest('Country has provinces');
+            if (country.provinces.length > 0) throw CustomError.badRequest('No se puede eliminar el país, tiene provincias asociadas');
         }
 
         try {
             await country.destroy();
-            return { message: 'Country deleted' };
+            return { message: 'País eliminado correctamente' };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

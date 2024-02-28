@@ -22,6 +22,7 @@ export const initCountryModel = (sequelize: Sequelize) => {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                unique: true,
             },
         },
         {

@@ -1,9 +1,15 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
-import { DatatableParams, initialState, paramsReducer, fetchData } from "../shared";
-import { CountriesFilters } from ".";
+import apiSJM from "../../../../api/apiSJM";
+import {
+  DatatableParams,
+  initialState,
+  paramsReducer,
+  fetchData,
+} from "../shared";
+import { CountriesFilters, CountriesForm } from ".";
 import { SweetAlert2 } from "../../../utils";
 
 interface DataRow {
@@ -11,8 +17,19 @@ interface DataRow {
   name: string;
 }
 
+export interface CountryFormInterface {
+  name: string;
+}
+
+const initialForm: CountryFormInterface = {
+  name: "",
+};
+
 export const Countries = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [form, setForm] = useState(initialForm);
   const [state, dispatch] = useReducer(paramsReducer, initialState);
   const endpoint = "/countries";
 
@@ -52,21 +69,47 @@ export const Countries = () => {
   }, [state.error]);
 
   const handleCreate = () => {
-    SweetAlert2.confirmationDialog("¿Desea crear un nuevo país?");
-  };
-  
-  const handleEdit = (id: number) => {
-    SweetAlert2.successToast("Editado");
+    setForm(initialForm);
+    setIsModalOpen(true);
   };
 
-  const handleSave = (data: DataRow) => {
-  }
-  
-  const handleDelete = (id: number) => {
-    SweetAlert2.errorToast("Eliminado");
+  const handleEdit = (row: DataRow) => {
+    setEditingId(row.id);
+    setForm(row);
+    setIsModalOpen(true);
   };
 
+  const handleSubmit = async (formData: CountryFormInterface) => {
+    try {
+      if (editingId) {
+        const { data } = await apiSJM.put(`${endpoint}/${editingId}`, formData);
+        SweetAlert2.successToast(data.message);
+        handleHide();
+      } else {
+        const { data } = await apiSJM.post(endpoint, formData);
+        SweetAlert2.successToast(data.message);
+        handleHide();
+      }
+      fetch();
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
 
+  const handleDelete = async (row: DataRow) => {
+    const confirmation = await SweetAlert2.confirmationDialog(
+      "¿Eliminar el país " + row.name + "?"
+    );
+    try {
+      if (confirmation.isConfirmed) {
+        const { data } = await apiSJM.delete(`${endpoint}/${row.id}`);
+        SweetAlert2.successToast(data.message);
+        fetch();
+      }
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
 
   const columns: TableColumn<DataRow>[] = [
     {
@@ -81,19 +124,33 @@ export const Countries = () => {
     },
     {
       name: "Acciones",
-      width: "200px",
+      button: true,
       cell: (row: any) => (
         <div className="d-flex justify-content-center">
-          <button className="btn btn-primary p-0" onClick={() => handleEdit(row.id)}>
-            Editar
+          <button
+            title="Editar"
+            className="btn btn-transparent py-0 px-1"
+            onClick={() => handleEdit(row)}
+          >
+            <i className="bi bi-pencil-square text-secondary-emphasis"></i>
           </button>
-          <button onClick={() => handleDelete(row.id)}>
-            Eliminar
+          <button
+            title="Eliminar"
+            className="btn btn-transparent py-0 px-1"
+            onClick={() => handleDelete(row)}
+          >
+            <i className="bi bi-trash2 text-danger"></i>
           </button>
         </div>
       ),
     },
   ];
+
+  const handleHide = () => {
+    setIsModalOpen(false);
+    setEditingId(null);
+    setForm(initialForm);
+  };
 
   return (
     <div>
@@ -113,6 +170,14 @@ export const Countries = () => {
         totalRows={state.totalRows}
         handleRowsPerPageChange={handleRowsPerPageChange}
         handlePageChange={handlePageChange}
+      />
+
+      <CountriesForm
+        show={isModalOpen}
+        onHide={handleHide}
+        form={form}
+        editingId={editingId}
+        onSubmit={handleSubmit}
       />
     </div>
   );

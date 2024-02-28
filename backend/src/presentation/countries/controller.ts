@@ -16,14 +16,14 @@ export class CountryController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        const { page = 1, limit = 10, filters } = req.query;
+        const { page = 1, limit = 10 } = req.query;
         const [error, paginationDto] = PaginationDto.create(+page, +limit);
         if (error) return res.status(400).json({ message: error });
 
-        let fil = {};
-        if (req.query.name) fil = { ...fil, name: req.query.name };
+        let filters = {};
+        if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.countryService.getCountries(paginationDto!, fil as CountryFilters)
+        this.countryService.getCountries(paginationDto!, filters as CountryFilters)
             .then((data) => {
                 res.json(data);
             })
