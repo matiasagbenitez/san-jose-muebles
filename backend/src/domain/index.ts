@@ -10,6 +10,7 @@ export * from './dtos/countries/country.dto';
 export * from './dtos/provinces/province.dto';
 export * from './dtos/cities/city.dto';
 export * from './dtos/currencies/currency.dto';
+export * from './dtos/payment_methods/payment_method.dto';
 
 export * from './entities/user.entity';
 export * from './entities/role.entity';
@@ -18,3 +19,4 @@ export * from './entities/country.entity';
 export * from './entities/province.entity';
 export * from './entities/city.entity';
 export * from './entities/currency.entity';
+export * from './entities/payment_method.entity';

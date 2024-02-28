@@ -6,6 +6,7 @@ import { CountryRoutes } from './countries/routes';
 import { ProvinceRoutes } from './provinces/routes';
 import { CityRoutes } from './cities/routes';
 import { CurrencyRoutes } from './currencies/routes';
+import { PaymentMethodRoutes } from './payment_methods/routes';
 
 export class AppRoutes {
 
@@ -25,6 +26,7 @@ export class AppRoutes {
         router.use('/api/provinces', ProvinceRoutes.routes);
         router.use('/api/cities', CityRoutes.routes);
         router.use('/api/currencies', CurrencyRoutes.routes);
+        router.use('/api/payment_methods', PaymentMethodRoutes.routes);
 
 
         return router;

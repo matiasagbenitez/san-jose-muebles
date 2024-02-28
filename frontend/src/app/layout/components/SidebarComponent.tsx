@@ -34,6 +34,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <MenuItem component={<Link to="/parametros/monedas" />} title="Monedas">
             Monedas
           </MenuItem>
+          <MenuItem component={<Link to="/parametros/metodos-pago" />} title="Métodos de pago">
+            Métodos de pago
+          </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>
