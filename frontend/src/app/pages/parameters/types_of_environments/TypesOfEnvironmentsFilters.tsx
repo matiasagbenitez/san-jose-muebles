@@ -1,7 +1,7 @@
 import { Button, Form, ButtonGroup, Row, Col } from "react-bootstrap";
 import { StateReducer, ActionReducer } from "../shared";
 
-interface PaymentMethodsFiltersProps {
+interface TypesOfEnvironmentsFiltersProps {
   state: StateReducer<any>;
   dispatch: React.Dispatch<ActionReducer<any>>;
   handleFiltersChange: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -9,13 +9,13 @@ interface PaymentMethodsFiltersProps {
   handleCreate: () => void;
 }
 
-export const PaymentMethodsFilters = ({
+export const TypesOfEnvironmentsFilters = ({
   state,
   dispatch,
   handleFiltersChange,
   handleResetFilters,
   handleCreate,
-}: PaymentMethodsFiltersProps) => {
+}: TypesOfEnvironmentsFiltersProps) => {
   return (
     <Form onSubmit={(e) => handleFiltersChange(e)} autoComplete="off">
       <Row>
@@ -25,7 +25,7 @@ export const PaymentMethodsFilters = ({
             autoComplete="off"
             size="sm"
             type="text"
-            placeholder="Buscar por nombre de método de pago"
+            placeholder="Buscar por nombre de tipo de ambiente"
             value={state.filters.name || ""}
             onChange={(e) =>
               dispatch({

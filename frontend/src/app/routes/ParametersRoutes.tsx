@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
-import { Countries, Provinces, Cities, Currencies, PaymentMethods } from "../pages/parameters";
+import { Countries, Provinces, Cities, Currencies, PaymentMethods, TypesOfEnvironments } from "../pages/parameters";
 
 const ParametersRoutes = () => {
   const { roles } = useSelector((state: RootState) => state.auth);
@@ -16,6 +16,7 @@ const ParametersRoutes = () => {
           <Route path="/ciudades" element={<Cities />} />
           <Route path="/monedas" element={<Currencies />} />
           <Route path="/metodos-pago" element={<PaymentMethods />} />
+          <Route path="/tipos-ambientes" element={<TypesOfEnvironments />} />
         </>
       )}
 
