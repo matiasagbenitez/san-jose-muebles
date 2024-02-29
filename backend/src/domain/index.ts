@@ -1,17 +1,15 @@
 export * from './errors/custom.error';
 
 export * from './dtos/shared/pagination.dto';
+export * from './dtos/shared/name.dto';
 export * from './dtos/auth/login-user.dto';
 export * from './dtos/auth/register-user.dto';
 
 export * from './dtos/roles/role.dto';
 export * from './dtos/roles_users/role_user.dto';
-export * from './dtos/countries/country.dto';
 export * from './dtos/provinces/province.dto';
 export * from './dtos/cities/city.dto';
 export * from './dtos/currencies/currency.dto';
-export * from './dtos/payment_methods/payment_method.dto';
-export * from './dtos/types_of_environments/type_of_environment.dto';
 
 export * from './entities/user.entity';
 export * from './entities/role.entity';

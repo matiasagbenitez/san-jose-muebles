@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Country, Province } from "../../database/mysql/models";
-import { CustomError, CountryDto, CountryEntity, PaginationDto } from "../../domain";
+import { CustomError, NameDto, CountryEntity, PaginationDto } from "../../domain";
 
 export interface CountryFilters {
     name: string;
@@ -35,13 +35,13 @@ export class CountryService {
         return { country: countryEntity };
     }
 
-    public async createCountry(createCountryDto: CountryDto) {
-        const country = await Country.findOne({ where: { name: createCountryDto.name } });
+    public async createCountry(createNameDto: NameDto) {
+        const country = await Country.findOne({ where: { name: createNameDto.name } });
         if (country) throw CustomError.badRequest('El país ya existe');
 
         try {
             const country = await Country.create({
-                name: createCountryDto.name
+                name: createNameDto.name
             });
             const { ...countryEntity } = CountryEntity.fromObject(country);
             return { country: countryEntity, message: 'País creado correctamente' };
@@ -53,12 +53,12 @@ export class CountryService {
         }
     }
 
-    public async updateCountry(id: number, updateCountryDto: CountryDto) {
+    public async updateCountry(id: number, updateNameDto: NameDto) {
         const country = await Country.findByPk(id);
         if (!country) throw CustomError.notFound('País no encontrado');
 
         try {
-            await country.update(updateCountryDto);
+            await country.update(updateNameDto);
             const { ...countryEntity } = CountryEntity.fromObject(country);
             return { country: countryEntity, message: 'País actualizado correctamente' };
         } catch (error: any) {

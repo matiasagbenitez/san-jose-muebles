@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { TypeOfEnvironment } from "../../database/mysql/models";
-import { CustomError, TypeOfEnvironmentDto, TypeOfEnvironmentEntity, PaginationDto } from "../../domain";
+import { CustomError, NameDto, TypeOfEnvironmentEntity, PaginationDto } from "../../domain";
 
 export interface TypeOfEnvironmentFilters {
     name: string;
@@ -35,13 +35,13 @@ export class TypeOfEnvironmentService {
         return { typeOfEnvironment: typeOfEnvironmentEntity };
     }
 
-    public async createTypeOfEnvironment(createTypeOfEnvironmentDto: TypeOfEnvironmentDto) {
-        const typeOfEnvironment = await TypeOfEnvironment.findOne({ where: { name: createTypeOfEnvironmentDto.name } });
+    public async createTypeOfEnvironment(createNameDto: NameDto) {
+        const typeOfEnvironment = await TypeOfEnvironment.findOne({ where: { name: createNameDto.name } });
         if (typeOfEnvironment) throw CustomError.badRequest('El tipo de ambiente ya existe');
 
         try {
             const typeOfEnvironment = await TypeOfEnvironment.create({
-                name: createTypeOfEnvironmentDto.name
+                name: createNameDto.name
             });
             const { ...typeOfEnvironmentEntity } = TypeOfEnvironmentEntity.fromObject(typeOfEnvironment);
             return { typeOfEnvironment: typeOfEnvironmentEntity, message: 'Tipo de ambiente creado correctamente' };
@@ -53,12 +53,12 @@ export class TypeOfEnvironmentService {
         }
     }
 
-    public async updateTypeOfEnvironment(id: number, updateTypeOfEnvironmentDto: TypeOfEnvironmentDto) {
+    public async updateTypeOfEnvironment(id: number, updateNameDto: NameDto) {
         const typeOfEnvironment = await TypeOfEnvironment.findByPk(id);
         if (!typeOfEnvironment) throw CustomError.notFound('Tipo de ambiente no encontrado');
 
         try {
-            await typeOfEnvironment.update(updateTypeOfEnvironmentDto);
+            await typeOfEnvironment.update(updateNameDto);
             const { ...typeOfEnvironmentEntity } = TypeOfEnvironmentEntity.fromObject(typeOfEnvironment);
             return { typeOfEnvironment: typeOfEnvironmentEntity, message: 'Tipo de ambiente actualizado correctamente' };
         } catch (error: any) {

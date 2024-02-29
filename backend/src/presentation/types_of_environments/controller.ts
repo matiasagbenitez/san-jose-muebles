@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, TypeOfEnvironmentDto, PaginationDto } from "../../domain";
+import { CustomError, NameDto, PaginationDto } from "../../domain";
 import { TypeOfEnvironmentService, TypeOfEnvironmentFilters } from '../services/type_of_environment.service';
 
 export class TypeOfEnvironmentController {
@@ -58,10 +58,10 @@ export class TypeOfEnvironmentController {
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, createDto] = TypeOfEnvironmentDto.create(req.body);
+        const [error, createDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.typeOfEnvironmentService.createTypeOfEnvironment(createDto!)
@@ -79,10 +79,10 @@ export class TypeOfEnvironmentController {
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = TypeOfEnvironmentDto.create(req.body);
+        const [error, updateDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.typeOfEnvironmentService.updateTypeOfEnvironment(id, updateDto!)

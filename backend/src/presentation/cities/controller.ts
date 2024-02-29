@@ -58,7 +58,7 @@ export class CityController {
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
 
@@ -80,7 +80,7 @@ export class CityController {
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
         const [error, updateDto] = CityDto.create(req.body);

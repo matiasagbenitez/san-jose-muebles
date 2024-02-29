@@ -3,8 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../../api/apiSJM";
-import { DatatableParams, initialState, paramsReducer, fetchData, ActionButtons } from "../shared";
-import { CountriesFilters, CountriesForm } from ".";
+import {
+  DatatableParams,
+  initialState,
+  paramsReducer,
+  fetchData,
+  ActionButtons,
+  FilterByName,
+  FormName,
+} from "../shared";
 import { SweetAlert2 } from "../../../utils";
 
 interface DataRow {
@@ -12,11 +19,12 @@ interface DataRow {
   name: string;
 }
 
-export interface CountryFormInterface {
+interface DataRow {
+  id: number;
   name: string;
 }
 
-const initialForm: CountryFormInterface = {
+const initialForm = {
   name: "",
 };
 
@@ -76,7 +84,7 @@ export const Countries = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (formData: CountryFormInterface) => {
+  const handleSubmit = async (formData: any) => {
     try {
       if (editingId) {
         const { data } = await apiSJM.put(`${endpoint}/${editingId}`, formData);
@@ -142,9 +150,10 @@ export const Countries = () => {
 
   return (
     <div>
-      <CountriesFilters
+      <FilterByName
         state={state}
         dispatch={dispatch}
+        placeholder="Buscar por nombre de país"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}
@@ -160,12 +169,14 @@ export const Countries = () => {
         handlePageChange={handlePageChange}
       />
 
-      <CountriesForm
+      <FormName
         show={isModalOpen}
         onHide={handleHide}
         form={form}
         editingId={editingId}
         onSubmit={handleSubmit}
+        prefix="del"
+        title="país"
       />
     </div>
   );

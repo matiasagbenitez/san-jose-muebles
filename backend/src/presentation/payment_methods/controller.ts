@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, PaymentMethodDto, PaginationDto } from "../../domain";
+import { CustomError, NameDto, PaginationDto } from "../../domain";
 import { PaymentMethodService, PaymentMethodFilters } from '../services/payment_method.service';
 
 export class PaymentMethodController {
@@ -58,10 +58,10 @@ export class PaymentMethodController {
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, createDto] = PaymentMethodDto.create(req.body);
+        const [error, createDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.paymentMethodService.createPaymentMethod(createDto!)
@@ -79,10 +79,10 @@ export class PaymentMethodController {
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = PaymentMethodDto.create(req.body);
+        const [error, updateDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.paymentMethodService.updatePaymentMethod(id, updateDto!)

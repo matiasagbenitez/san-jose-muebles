@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, CountryDto, PaginationDto } from "../../domain";
+import { CustomError, NameDto, PaginationDto } from "../../domain";
 import { CountryService, CountryFilters } from '../services/country.service';
 
 export class CountryController {
@@ -58,10 +58,10 @@ export class CountryController {
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, createDto] = CountryDto.create(req.body);
+        const [error, createDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.countryService.createCountry(createDto!)
@@ -79,10 +79,10 @@ export class CountryController {
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = CountryDto.create(req.body);
+        const [error, updateDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.countryService.updateCountry(id, updateDto!)

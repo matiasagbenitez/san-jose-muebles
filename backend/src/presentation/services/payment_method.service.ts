@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { PaymentMethod } from "../../database/mysql/models";
-import { CustomError, PaymentMethodDto, PaymentMethodEntity, PaginationDto } from "../../domain";
+import { CustomError, NameDto, PaymentMethodEntity, PaginationDto } from "../../domain";
 
 export interface PaymentMethodFilters {
     name: string;
@@ -35,13 +35,13 @@ export class PaymentMethodService {
         return { paymentMethod: paymentMethodEntity };
     }
 
-    public async createPaymentMethod(createPaymentMethodDto: PaymentMethodDto) {
-        const paymentMethod = await PaymentMethod.findOne({ where: { name: createPaymentMethodDto.name } });
+    public async createPaymentMethod(createNameDto: NameDto) {
+        const paymentMethod = await PaymentMethod.findOne({ where: { name: createNameDto.name } });
         if (paymentMethod) throw CustomError.badRequest('El método de pago ya existe');
 
         try {
             const paymentMethod = await PaymentMethod.create({
-                name: createPaymentMethodDto.name
+                name: createNameDto.name
             });
             const { ...paymentMethodEntity } = PaymentMethodEntity.fromObject(paymentMethod);
             return { paymentMethod: paymentMethodEntity, message: 'Método de pago creado correctamente' };
@@ -53,12 +53,12 @@ export class PaymentMethodService {
         }
     }
 
-    public async updatePaymentMethod(id: number, updatePaymentMethodDto: PaymentMethodDto) {
+    public async updatePaymentMethod(id: number, updateNameDto: NameDto) {
         const paymentMethod = await PaymentMethod.findByPk(id);
         if (!paymentMethod) throw CustomError.notFound('Método de pago no encontrado');
 
         try {
-            await paymentMethod.update(updatePaymentMethodDto);
+            await paymentMethod.update(updateNameDto);
             const { ...paymentMethodEntity } = PaymentMethodEntity.fromObject(paymentMethod);
             return { paymentMethod: paymentMethodEntity, message: 'Método de pago actualizado correctamente' };
         } catch (error: any) {

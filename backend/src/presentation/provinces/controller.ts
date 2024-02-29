@@ -59,7 +59,7 @@ export class ProvinceController {
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
 
@@ -81,7 +81,7 @@ export class ProvinceController {
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase();
+                req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
         const [error, updateDto] = ProvinceDto.create(req.body);

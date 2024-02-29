@@ -3,20 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../../api/apiSJM";
-import { DatatableParams, initialState, paramsReducer, fetchData, ActionButtons } from "../shared";
-import { TypesOfEnvironmentsFilters, TypesOfEnvironmentsForm } from "./";
 import { SweetAlert2 } from "../../../utils";
+import {
+  DatatableParams,
+  initialState,
+  paramsReducer,
+  fetchData,
+  ActionButtons,
+  FilterByName,
+  FormName,
+} from "../shared";
 
 interface DataRow {
   id: number;
   name: string;
 }
 
-export interface TypeOfEnvironmentFormInterface {
-  name: string;
-}
-
-const initialForm: TypeOfEnvironmentFormInterface = {
+const initialForm = {
   name: "",
 };
 
@@ -76,7 +79,7 @@ export const TypesOfEnvironments = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (formData: TypeOfEnvironmentFormInterface) => {
+  const handleSubmit = async (formData: any) => {
     try {
       if (editingId) {
         const { data } = await apiSJM.put(`${endpoint}/${editingId}`, formData);
@@ -142,9 +145,10 @@ export const TypesOfEnvironments = () => {
 
   return (
     <div>
-      <TypesOfEnvironmentsFilters
+      <FilterByName
         state={state}
         dispatch={dispatch}
+        placeholder="Buscar por tipo de ambiente"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}
@@ -160,12 +164,14 @@ export const TypesOfEnvironments = () => {
         handlePageChange={handlePageChange}
       />
 
-      <TypesOfEnvironmentsForm
+      <FormName
         show={isModalOpen}
         onHide={handleHide}
         form={form}
         editingId={editingId}
         onSubmit={handleSubmit}
+        prefix="del"
+        title="tipo de ambiente"
       />
     </div>
   );

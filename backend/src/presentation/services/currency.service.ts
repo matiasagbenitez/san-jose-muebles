@@ -19,7 +19,14 @@ export class CurrencyService {
 
         // FILTERS
         let where = {};
-        if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` }, code: { [Op.like]: `%${filters.name}%` } };
+        if (filters.name || filters.code) {
+            where = {
+                [Op.or]: [
+                    { name: { [Op.like]: `%${filters.name}%` } },
+                    { code: { [Op.like]: `%${filters.name}%` } }
+                ]
+            };
+        }
 
         const [currencies, total] = await Promise.all([
             Currency.findAll({ where, offset: (page - 1) * limit, limit }),

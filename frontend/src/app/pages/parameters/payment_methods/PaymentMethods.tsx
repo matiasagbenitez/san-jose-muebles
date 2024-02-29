@@ -3,8 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../../api/apiSJM";
-import { DatatableParams, initialState, paramsReducer, fetchData, ActionButtons } from "../shared";
-import { PaymentMethodsFilters, PaymentMethodsForm } from ".";
+import {
+  DatatableParams,
+  initialState,
+  paramsReducer,
+  fetchData,
+  ActionButtons,
+  FilterByName,
+  FormName,
+} from "../shared";
 import { SweetAlert2 } from "../../../utils";
 
 interface DataRow {
@@ -12,11 +19,7 @@ interface DataRow {
   name: string;
 }
 
-export interface PaymentMethodFormInterface {
-  name: string;
-}
-
-const initialForm: PaymentMethodFormInterface = {
+const initialForm = {
   name: "",
 };
 
@@ -76,7 +79,7 @@ export const PaymentMethods = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (formData: PaymentMethodFormInterface) => {
+  const handleSubmit = async (formData: any) => {
     try {
       if (editingId) {
         const { data } = await apiSJM.put(`${endpoint}/${editingId}`, formData);
@@ -142,9 +145,10 @@ export const PaymentMethods = () => {
 
   return (
     <div>
-      <PaymentMethodsFilters
+      <FilterByName
         state={state}
         dispatch={dispatch}
+        placeholder="Buscar por método de pago"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}
@@ -160,12 +164,14 @@ export const PaymentMethods = () => {
         handlePageChange={handlePageChange}
       />
 
-      <PaymentMethodsForm
+      <FormName
         show={isModalOpen}
         onHide={handleHide}
         form={form}
         editingId={editingId}
         onSubmit={handleSubmit}
+        prefix="del"
+        title="método de pago"
       />
     </div>
   );
