@@ -8,6 +8,7 @@ import { City, initCityModel } from './City.model';
 import { Currency, initCurrencyModel } from './Currency.model';
 import { PaymentMethod, initPaymentMethodModel } from './PaymentMethod.model';
 import { TypeOfEnvironment, initTypeOfEnvironmentModel } from './TypeOfEnvironment';
+import { Brand, initBrandModel } from './Brand.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -19,6 +20,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initCurrencyModel(sequelize);
   initPaymentMethodModel(sequelize);
   initTypeOfEnvironmentModel(sequelize);
+  initBrandModel(sequelize);
 };
 
 export {
@@ -31,4 +33,5 @@ export {
   Currency,
   PaymentMethod,
   TypeOfEnvironment,
+  Brand
 };

@@ -8,6 +8,7 @@ import { CityRoutes } from './cities/routes';
 import { CurrencyRoutes } from './currencies/routes';
 import { PaymentMethodRoutes } from './payment_methods/routes';
 import { TypeOfEnvironmentRoutes } from './types_of_environments/routes';
+import { BrandRoutes } from './brands/routes';
 
 export class AppRoutes {
 
@@ -29,6 +30,7 @@ export class AppRoutes {
         router.use('/api/currencies', CurrencyRoutes.routes);
         router.use('/api/payment_methods', PaymentMethodRoutes.routes);
         router.use('/api/types_of_environments', TypeOfEnvironmentRoutes.routes);
+        router.use('/api/brands', BrandRoutes.routes);
 
 
         return router;

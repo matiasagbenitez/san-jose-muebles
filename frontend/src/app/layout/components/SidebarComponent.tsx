@@ -40,6 +40,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <MenuItem component={<Link to="/parametros/tipos-ambientes" />} title="Tipos de ambientes">
             Tipos de ambientes
           </MenuItem>
+          <MenuItem component={<Link to="/parametros/marcas" />} title="Marcas">
+            Marcas
+          </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>
