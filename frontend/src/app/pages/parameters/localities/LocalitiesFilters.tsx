@@ -1,7 +1,7 @@
 import { Button, Form, ButtonGroup, Row, Col } from "react-bootstrap";
 import { StateReducer, ActionReducer } from "../shared";
 
-interface CitiesFiltersProps {
+interface LocalitiesFiltersProps {
   state: StateReducer<any>;
   dispatch: React.Dispatch<ActionReducer<any>>;
   handleFiltersChange: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -9,13 +9,13 @@ interface CitiesFiltersProps {
   handleCreate: () => void;
 }
 
-export const CitiesFilters = ({
+export const LocalitiesFilters = ({
   state,
   dispatch,
   handleFiltersChange,
   handleResetFilters,
   handleCreate,
-}: CitiesFiltersProps) => {
+}: LocalitiesFiltersProps) => {
   return (
     <Form onSubmit={(e) => handleFiltersChange(e)} autoComplete="off">
       <Row>
@@ -25,7 +25,7 @@ export const CitiesFilters = ({
             autoComplete="off"
             size="sm"
             type="text"
-            placeholder="Buscar por nombre de ciudad"
+            placeholder="Buscar por nombre de localidad"
             value={state.filters.name || ""}
             onChange={(e) =>
               dispatch({

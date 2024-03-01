@@ -1,6 +1,6 @@
 import { CustomError } from '../errors/custom.error';
 
-export class CityEntity {
+export class LocalityEntity {
     constructor(
         public id: string,
         public name: string,
@@ -10,7 +10,7 @@ export class CityEntity {
         public country?: string
     ) { }
 
-    static fromObject(object: { [key: string]: any }): CityEntity {
+    static fromObject(object: { [key: string]: any }): LocalityEntity {
 
         const { id, name, id_province } = object;
 
@@ -18,14 +18,14 @@ export class CityEntity {
         if (!name) throw CustomError.badRequest('Missing name');
         if (!id_province) throw CustomError.badRequest('Missing province id');
 
-        return new CityEntity(
+        return new LocalityEntity(
             id,
             name,
             id_province,
         );
     }
 
-    static fromObjectWithProvince(object: { [key: string]: any }): CityEntity {
+    static fromObjectWithProvince(object: { [key: string]: any }): LocalityEntity {
 
         const { id, name, id_province, province } = object;
 
@@ -34,7 +34,7 @@ export class CityEntity {
         if (!id_province) throw CustomError.badRequest('Missing province id');
         if (!province) throw CustomError.badRequest('Missing province');
 
-        return new CityEntity(
+        return new LocalityEntity(
             id,
             name,
             id_province,
@@ -42,7 +42,7 @@ export class CityEntity {
         );
     }
 
-    static fromObjectWithProvinceAndCity(object: { [key: string]: any }): CityEntity {
+    static fromObjectWithProvinceAndCountry(object: { [key: string]: any }): LocalityEntity {
 
         const { id, name, id_province, province} = object;
 
@@ -54,7 +54,7 @@ export class CityEntity {
         if (!province.id_country) throw CustomError.badRequest('Missing country id');
         if (!province.country) throw CustomError.badRequest('Missing country');
 
-        return new CityEntity(
+        return new LocalityEntity(
             id,
             name,
             id_province,

@@ -1,6 +1,6 @@
 export * from './countries/Countries';
 export * from './provinces';
-export * from './cities';
+export * from './localities';
 export * from './currencies';
 
 export * from './payment_methods/PaymentMethods';

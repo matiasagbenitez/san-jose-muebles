@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, CityDto } from "../../domain";
-import { CityService, CityFilters } from "../services/city.service";
+import { CustomError, PaginationDto, LocalityDto } from "../../domain";
+import { LocalityService, LocalityFilters } from "../services/locality.service";
 
-export class CityController {
+export class LocalityController {
 
-    protected cityService: CityService = new CityService();
+    protected localityService: LocalityService = new LocalityService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,7 +16,7 @@ export class CityController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.cityService.getCities()
+        this.localityService.getLocalities()
             .then((data) => {
                 res.json(data);
             })
@@ -33,7 +33,7 @@ export class CityController {
         let filters = {};
         if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.cityService.getCitiesPaginated(paginationDto!, filters as CityFilters)
+        this.localityService.getLocalitiesPaginated(paginationDto!, filters as LocalityFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -46,7 +46,7 @@ export class CityController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.cityService.getCity(parseInt(id))
+        this.localityService.getLocality(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -62,10 +62,10 @@ export class CityController {
             }
         }
 
-        const [error, createDto] = CityDto.create(req.body);
+        const [error, createDto] = LocalityDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.cityService.createCity(createDto!)
+        this.localityService.createLocality(createDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -83,10 +83,10 @@ export class CityController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = CityDto.create(req.body);
+        const [error, updateDto] = LocalityDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.cityService.updateCity(id, updateDto!)
+        this.localityService.updateLocality(id, updateDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -99,7 +99,7 @@ export class CityController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.cityService.deleteCity(parseInt(id))
+        this.localityService.deleteLocality(parseInt(id))
             .then((data) => {
                 res.json(data);
             })

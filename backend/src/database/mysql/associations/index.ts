@@ -1,6 +1,6 @@
 import { 
     User, Role, RoleUser,
-    Country, Province, City,
+    Country, Province, Locality,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -13,8 +13,8 @@ export const initializeAssociations = () => {
     Country.hasMany(Province, { foreignKey: 'id_country', as: 'provinces', onDelete: 'RESTRICT' });
     Province.belongsTo(Country, { foreignKey: 'id_country', as: 'country' });
 
-    // Province - City
-    Province.hasMany(City, { foreignKey: 'id_province', as: 'cities', onDelete: 'RESTRICT' });
-    City.belongsTo(Province, { foreignKey: 'id_province', as: 'province' });
+    // Province - Locality
+    Province.hasMany(Locality, { foreignKey: 'id_province', as: 'localities', onDelete: 'RESTRICT' });
+    Locality.belongsTo(Province, { foreignKey: 'id_province', as: 'province' });
 
 };

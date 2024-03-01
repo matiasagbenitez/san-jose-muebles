@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export class City extends Model {
+export class Locality extends Model {
     public id!: number;
     public name!: string;
     public id_province!: number;
@@ -9,8 +9,8 @@ export class City extends Model {
     public readonly updatedAt!: Date;
 }
 
-export const initCityModel = (sequelize: Sequelize) => {
-    City.init(
+export const initLocalityModel = (sequelize: Sequelize) => {
+    Locality.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -28,8 +28,8 @@ export const initCityModel = (sequelize: Sequelize) => {
         },
         {
             sequelize,
-            modelName: 'City',
-            tableName: 'cities',
+            modelName: 'Locality',
+            tableName: 'localities',
             timestamps: true,
         }
     );

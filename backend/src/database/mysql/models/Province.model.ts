@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Country } from './Country.model';
-import { City } from './City.model';
+import { Locality } from './Locality.model';
 
 export class Province extends Model {
     public id!: number;
@@ -8,7 +8,7 @@ export class Province extends Model {
     public id_country!: number;
 
     public readonly country!: Country;
-    public readonly cities?: City[];
+    public readonly localities?: Locality[];
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

@@ -3,18 +3,18 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import { MySelect, MyTextInput } from "../../../components/forms";
-import { CityFormInterface } from ".";
+import { LocalityFormInterface } from ".";
 
 interface FormProps {
   show: boolean;
   onHide: () => void;
   editingId: number | null;
-  form: CityFormInterface;
+  form: LocalityFormInterface;
   onSubmit: (values: any) => void;
   provinces: any[];
 }
 
-export const CitiesForm = ({
+export const LocalitiesForm = ({
   show,
   onHide,
   form,
@@ -25,7 +25,7 @@ export const CitiesForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar ciudad" : "Crear ciudad"}</h1>
+        <h1 className="fs-5">{editingId ? "Editar localidad" : "Crear localidad"}</h1>
         <hr className="my-2" />
 
         <Formik
@@ -41,10 +41,10 @@ export const CitiesForm = ({
           {({ errors, touched }) => (
             <Form id="form">
               <MyTextInput
-                label="Nombre de la ciudad"
+                label="Nombre de la localidad"
                 name="name"
                 type="text"
-                placeholder="Ingrese el nombre de la ciudad"
+                placeholder="Ingrese el nombre de la localidad"
                 isInvalid={!!errors.name && touched.name}
               />
 

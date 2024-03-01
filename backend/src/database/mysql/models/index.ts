@@ -4,7 +4,7 @@ import { Role, initRoleModel } from './Role.model';
 import { RoleUser, initRoleUserModel } from './RoleUser.model';
 import { Country, initCountryModel } from './Country.model';
 import { Province, initProvinceModel } from './Province.model';
-import { City, initCityModel } from './City.model';
+import { Locality, initLocalityModel } from './Locality.model';
 import { Currency, initCurrencyModel } from './Currency.model';
 import { PaymentMethod, initPaymentMethodModel } from './PaymentMethod.model';
 import { TypeOfEnvironment, initTypeOfEnvironmentModel } from './TypeOfEnvironment';
@@ -17,7 +17,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initRoleUserModel(sequelize);
   initCountryModel(sequelize);
   initProvinceModel(sequelize);
-  initCityModel(sequelize);
+  initLocalityModel(sequelize);
   initCurrencyModel(sequelize);
   initPaymentMethodModel(sequelize);
   initTypeOfEnvironmentModel(sequelize);
@@ -31,7 +31,7 @@ export {
   RoleUser,
   Country,
   Province,
-  City,
+  Locality,
   Currency,
   PaymentMethod,
   TypeOfEnvironment,

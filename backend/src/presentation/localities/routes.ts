@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { CityController } from './controller';
+import { LocalityController } from './controller';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 
-export class CityRoutes {
+export class LocalityRoutes {
 
     static get routes(): Router {
 
         const router = Router();
 
-        const controller = new CityController();
+        const controller = new LocalityController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);

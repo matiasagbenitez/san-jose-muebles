@@ -10,7 +10,7 @@ import {
   fetchData,
   ActionButtons,
 } from "../shared";
-import { CitiesFilters, CitiesForm } from ".";
+import { LocalitiesFilters, LocalitiesForm } from ".";
 import { SweetAlert2 } from "../../../utils";
 
 interface DataRow {
@@ -22,24 +22,24 @@ interface DataRow {
   country: string;
 }
 
-export interface CityFormInterface {
+export interface LocalityFormInterface {
   name: string;
   id_province: string | number;
 }
 
-const initialForm: CityFormInterface = {
+const initialForm: LocalityFormInterface = {
   name: "",
   id_province: "",
 };
 
-export const Cities = () => {
+export const Localities = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(initialForm);
   const [state, dispatch] = useReducer(paramsReducer, initialState);
   const [provinces, setProvinces] = useState([]);
-  const endpoint = "/cities";
+  const endpoint = "/localities";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
@@ -97,7 +97,7 @@ export const Cities = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (formData: CityFormInterface) => {
+  const handleSubmit = async (formData: LocalityFormInterface) => {
     try {
       if (editingId) {
         const { data } = await apiSJM.put(`${endpoint}/${editingId}`, formData);
@@ -116,7 +116,7 @@ export const Cities = () => {
 
   const handleDelete = async (row: DataRow) => {
     const confirmation = await SweetAlert2.confirmationDialog(
-      "¿Eliminar la ciudad " + row.name + "?"
+      "¿Eliminar la localidad " + row.name + "?"
     );
     try {
       if (confirmation.isConfirmed) {
@@ -138,7 +138,7 @@ export const Cities = () => {
       center: true,
     },
     {
-      name: "CIUDAD",
+      name: "LOCALIDAD",
       selector: (row: DataRow) => row.name,
     },
     {
@@ -171,7 +171,7 @@ export const Cities = () => {
 
   return (
     <div>
-      <CitiesFilters
+      <LocalitiesFilters
         state={state}
         dispatch={dispatch}
         handleFiltersChange={handleFiltersChange}
@@ -180,7 +180,7 @@ export const Cities = () => {
       />
 
       <DatatableParams
-        title="Ciudades"
+        title="Localidades"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}
         loading={state.loading}
@@ -189,7 +189,7 @@ export const Cities = () => {
         handlePageChange={handlePageChange}
       />
 
-      <CitiesForm
+      <LocalitiesForm
         show={isModalOpen}
         onHide={handleHide}
         form={form}

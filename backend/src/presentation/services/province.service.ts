@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Province, City, Country } from "../../database/mysql/models";
+import { Province, Locality, Country } from "../../database/mysql/models";
 import { CustomError, ProvinceDto, ProvinceEntity, PaginationDto } from "../../domain";
 
 export interface ProvinceFilters {
@@ -92,13 +92,13 @@ export class ProvinceService {
     public async deleteProvince(id: number) {
         const province = await Province.findByPk(id, {
             include: [{
-                model: City,
-                as: 'cities'
+                model: Locality,
+                as: 'localities'
             }]
         });
         if (!province) throw CustomError.notFound('Provincia no encontrada');
-        if (province.cities) {
-            if (province.cities.length > 0) throw CustomError.badRequest('No se puede eliminar la provincia, tiene ciudades asociadas');
+        if (province.localities) {
+            if (province.localities.length > 0) throw CustomError.badRequest('No se puede eliminar la provincia, tiene localidades asociadas');
         }
 
         try {
