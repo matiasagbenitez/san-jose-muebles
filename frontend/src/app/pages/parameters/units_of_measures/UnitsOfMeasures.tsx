@@ -3,36 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../../api/apiSJM";
-import { DatatableParams, initialState, paramsReducer, fetchData, ActionButtons } from "../shared";
-import { CurrenciesFilters, CurrenciesForm } from ".";
+import { DatatableParams, initialState, paramsReducer, fetchData, ActionButtons, FilterByName } from "../shared";
+import { UnitsOfMeasuresForm } from ".";
 import { SweetAlert2 } from "../../../utils";
 
 interface DataRow {
   id: number;
   name: string;
   symbol: string;
-  is_monetary: boolean;
 }
 
-export interface CurrencyFormInterface {
+export interface UnitOfMeasureFormInterface {
   name: string;
   symbol: string;
-  is_monetary: boolean;
 }
 
-const initialForm: CurrencyFormInterface = {
+const initialForm: UnitOfMeasureFormInterface = {
   name: "",
   symbol: "",
-  is_monetary: true,
 };
 
-export const Currencies = () => {
+export const UnitsOfMeasures = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(initialForm);
   const [state, dispatch] = useReducer(paramsReducer, initialState);
-  const endpoint = "/currencies";
+  const endpoint = "/units_of_measures";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
@@ -82,7 +79,7 @@ export const Currencies = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (formData: CurrencyFormInterface) => {
+  const handleSubmit = async (formData: UnitOfMeasureFormInterface) => {
     try {
       if (editingId) {
         const { data } = await apiSJM.put(`${endpoint}/${editingId}`, formData);
@@ -101,7 +98,7 @@ export const Currencies = () => {
 
   const handleDelete = async (row: DataRow) => {
     const confirmation = await SweetAlert2.confirmationDialog(
-      "¿Eliminar la moneda " + row.name + "?"
+      "¿Eliminar la unidad de medida " + row.name + "?"
     );
     try {
       if (confirmation.isConfirmed) {
@@ -123,17 +120,12 @@ export const Currencies = () => {
       center: true,
     },
     {
-      name: "MONEDA",
+      name: "UNIDAD DE MEDIDA",
       selector: (row: DataRow) => row.name,
     },
     {
       name: "SÍMBOLO",
       selector: (row: DataRow) => row.symbol,
-    },
-    {
-      name: "SÍMBOLO DE DINERO ($)",
-      selector: (row: DataRow) => (row.is_monetary ? "SÍ" : "NO"),
-      center: true,
     },
     {
       name: "ACCIONES",
@@ -157,7 +149,8 @@ export const Currencies = () => {
 
   return (
     <div>
-      <CurrenciesFilters
+      <FilterByName
+        placeholder="Buscar por nombre de unidad de medida"
         state={state}
         dispatch={dispatch}
         handleFiltersChange={handleFiltersChange}
@@ -166,7 +159,7 @@ export const Currencies = () => {
       />
 
       <DatatableParams
-        title="Monedas"
+        title="Unidades de medida"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}
         loading={state.loading}
@@ -175,7 +168,7 @@ export const Currencies = () => {
         handlePageChange={handlePageChange}
       />
 
-      <CurrenciesForm
+      <UnitsOfMeasuresForm
         show={isModalOpen}
         onHide={handleHide}
         form={form}

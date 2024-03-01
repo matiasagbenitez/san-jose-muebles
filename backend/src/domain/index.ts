@@ -10,6 +10,7 @@ export * from './dtos/roles_users/role_user.dto';
 export * from './dtos/provinces/province.dto';
 export * from './dtos/localities/locality.dto';
 export * from './dtos/currencies/currency.dto';
+export * from './dtos/units_of_measures/unit_of_measure.dto';
 
 export * from './entities/user.entity';
 export * from './entities/role.entity';
@@ -22,3 +23,4 @@ export * from './entities/payment_method.entity';
 export * from './entities/type_of_environment.entity';
 export * from './entities/brand.entity';
 export * from './entities/category.entity';
+export * from './entities/unit_of_measure.entity';

@@ -25,7 +25,7 @@ export const CurrenciesFilters = ({
             autoComplete="off"
             size="sm"
             type="text"
-            placeholder="Buscar por nombre de la moneda o el código"
+            placeholder="Buscar por nombre de la moneda"
             value={state.filters.name || ""}
             onChange={(e) =>
               dispatch({
