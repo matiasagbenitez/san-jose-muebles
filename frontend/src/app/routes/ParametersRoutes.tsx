@@ -13,6 +13,7 @@ import {
   Categories,
   UnitsOfMeasures,
   Priorities,
+  TypesOfProjects,
 } from "../pages/parameters";
 
 const ParametersRoutes = () => {
@@ -32,6 +33,7 @@ const ParametersRoutes = () => {
           <Route path="/categorias" element={<Categories />} />
           <Route path="/unidades-medida" element={<UnitsOfMeasures />} />
           <Route path="/prioridades" element={<Priorities />} />
+          <Route path="/tipos-proyectos" element={<TypesOfProjects />} />
         </>
       )}
 
