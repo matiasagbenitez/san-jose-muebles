@@ -43,6 +43,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <MenuItem component={<Link to="/parametros/marcas" />} title="Marcas">
             Marcas
           </MenuItem>
+          <MenuItem component={<Link to="/parametros/categorias" />} title="Categorías">
+            Categorías
+          </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>

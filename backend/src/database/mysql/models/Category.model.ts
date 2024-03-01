@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export class Brand extends Model {
+export class Category extends Model {
     public id!: number;
     public name!: string;
 
@@ -8,8 +8,8 @@ export class Brand extends Model {
     public readonly updatedAt!: Date;
 }
 
-export const initBrandModel = (sequelize: Sequelize) => {
-    Brand.init(
+export const initCategoryModel = (sequelize: Sequelize) => {
+    Category.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -24,8 +24,8 @@ export const initBrandModel = (sequelize: Sequelize) => {
         },
         {
             sequelize,
-            modelName: 'Brand',
-            tableName: 'brands',
+            modelName: 'Category',
+            tableName: 'categories',
             timestamps: true,
         }
     );

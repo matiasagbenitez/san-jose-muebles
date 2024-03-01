@@ -21,3 +21,4 @@ export * from './entities/currency.entity';
 export * from './entities/payment_method.entity';
 export * from './entities/type_of_environment.entity';
 export * from './entities/brand.entity';
+export * from './entities/category.entity';

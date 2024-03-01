@@ -9,6 +9,7 @@ import { Currency, initCurrencyModel } from './Currency.model';
 import { PaymentMethod, initPaymentMethodModel } from './PaymentMethod.model';
 import { TypeOfEnvironment, initTypeOfEnvironmentModel } from './TypeOfEnvironment';
 import { Brand, initBrandModel } from './Brand.model';
+import { Category, initCategoryModel} from './Category.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -21,6 +22,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initPaymentMethodModel(sequelize);
   initTypeOfEnvironmentModel(sequelize);
   initBrandModel(sequelize);
+  initCategoryModel(sequelize);
 };
 
 export {
@@ -33,5 +35,6 @@ export {
   Currency,
   PaymentMethod,
   TypeOfEnvironment,
-  Brand
+  Brand,
+  Category,
 };
