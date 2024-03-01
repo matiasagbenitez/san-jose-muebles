@@ -17,13 +17,15 @@ export const initLocalityModel = (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            name: {
+            name: { 
                 type: DataTypes.STRING,
                 allowNull: false,
+                unique: 'uniqueLocalityNameInProvince'
             },
             id_province: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
+                unique: 'uniqueLocalityNameInProvince'
             },
         },
         {
