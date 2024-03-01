@@ -49,6 +49,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <MenuItem component={<Link to="/parametros/unidades-medida" />} title="Unidades de medida">
             Unidades de medida
           </MenuItem>
+          <MenuItem component={<Link to="/parametros/prioridades" />} title="Prioridades">
+            Prioridades
+          </MenuItem>
         </SubMenu>
       </Menu>
     </Sidebar>

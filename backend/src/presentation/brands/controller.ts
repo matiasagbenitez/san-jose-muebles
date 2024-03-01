@@ -4,7 +4,7 @@ import { BrandService, BrandFilters } from '../services/brand.service';
 
 export class BrandController {
 
-    protected paymentMethodService: BrandService = new BrandService();
+    protected brandService: BrandService = new BrandService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,7 +16,7 @@ export class BrandController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.paymentMethodService.getBrands()
+        this.brandService.getBrands()
             .then((data) => {
                 res.json(data);
             })
@@ -33,7 +33,7 @@ export class BrandController {
         let filters = {};
         if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.paymentMethodService.getBrandsPaginated(paginationDto!, filters as BrandFilters)
+        this.brandService.getBrandsPaginated(paginationDto!, filters as BrandFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -46,7 +46,7 @@ export class BrandController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.paymentMethodService.getBrand(parseInt(id))
+        this.brandService.getBrand(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -64,7 +64,7 @@ export class BrandController {
         const [error, createDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.paymentMethodService.createBrand(createDto!)
+        this.brandService.createBrand(createDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -85,7 +85,7 @@ export class BrandController {
         const [error, updateDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.paymentMethodService.updateBrand(id, updateDto!)
+        this.brandService.updateBrand(id, updateDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -98,7 +98,7 @@ export class BrandController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.paymentMethodService.deleteBrand(parseInt(id))
+        this.brandService.deleteBrand(parseInt(id))
             .then((data) => {
                 res.json(data);
             })

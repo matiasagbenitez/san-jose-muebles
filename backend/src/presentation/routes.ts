@@ -11,6 +11,7 @@ import { TypeOfEnvironmentRoutes } from './types_of_environments/routes';
 import { BrandRoutes } from './brands/routes';
 import { CategoryRoutes } from './categories/routes';
 import { UnitOfMeasureRoutes } from './units_of_measures/routes';
+import { PriorityRoutes } from './priorities/routes';
 
 export class AppRoutes {
 
@@ -35,6 +36,7 @@ export class AppRoutes {
         router.use('/api/brands', BrandRoutes.routes);
         router.use('/api/categories', CategoryRoutes.routes);
         router.use('/api/units_of_measures', UnitOfMeasureRoutes.routes);
+        router.use('/api/priorities', PriorityRoutes.routes);
 
 
         return router;

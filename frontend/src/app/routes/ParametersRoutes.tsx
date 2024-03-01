@@ -2,7 +2,18 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
-import { Countries, Provinces, Localities, Currencies, PaymentMethods, TypesOfEnvironments, Brands, Categories, UnitsOfMeasures } from "../pages/parameters";
+import {
+  Countries,
+  Provinces,
+  Localities,
+  Currencies,
+  PaymentMethods,
+  TypesOfEnvironments,
+  Brands,
+  Categories,
+  UnitsOfMeasures,
+  Priorities,
+} from "../pages/parameters";
 
 const ParametersRoutes = () => {
   const { roles } = useSelector((state: RootState) => state.auth);
@@ -20,6 +31,7 @@ const ParametersRoutes = () => {
           <Route path="/marcas" element={<Brands />} />
           <Route path="/categorias" element={<Categories />} />
           <Route path="/unidades-medida" element={<UnitsOfMeasures />} />
+          <Route path="/prioridades" element={<Priorities />} />
         </>
       )}
 

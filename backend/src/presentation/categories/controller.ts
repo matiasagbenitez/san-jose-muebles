@@ -4,7 +4,7 @@ import { CategoryService, CategoryFilters } from '../services/category.service';
 
 export class CategoryController {
 
-    protected paymentMethodService: CategoryService = new CategoryService();
+    protected categoryService: CategoryService = new CategoryService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,7 +16,7 @@ export class CategoryController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.paymentMethodService.getCategories()
+        this.categoryService.getCategories()
             .then((data) => {
                 res.json(data);
             })
@@ -33,7 +33,7 @@ export class CategoryController {
         let filters = {};
         if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.paymentMethodService.getCategoriesPaginated(paginationDto!, filters as CategoryFilters)
+        this.categoryService.getCategoriesPaginated(paginationDto!, filters as CategoryFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -46,7 +46,7 @@ export class CategoryController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.paymentMethodService.getCategory(parseInt(id))
+        this.categoryService.getCategory(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -64,7 +64,7 @@ export class CategoryController {
         const [error, createDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.paymentMethodService.createCategory(createDto!)
+        this.categoryService.createCategory(createDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -85,7 +85,7 @@ export class CategoryController {
         const [error, updateDto] = NameDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.paymentMethodService.updateCategory(id, updateDto!)
+        this.categoryService.updateCategory(id, updateDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -98,7 +98,7 @@ export class CategoryController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.paymentMethodService.deleteCategory(parseInt(id))
+        this.categoryService.deleteCategory(parseInt(id))
             .then((data) => {
                 res.json(data);
             })

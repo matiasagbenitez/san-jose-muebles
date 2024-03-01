@@ -11,6 +11,7 @@ import { TypeOfEnvironment, initTypeOfEnvironmentModel } from './TypeOfEnvironme
 import { Brand, initBrandModel } from './Brand.model';
 import { Category, initCategoryModel} from './Category.model';
 import { UnitOfMeasure, initUnitOfMeasureModel } from './UnitOfMeasure.model';
+import { Priority, initPriorityModel } from './Priority.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -25,6 +26,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initBrandModel(sequelize);
   initCategoryModel(sequelize);
   initUnitOfMeasureModel(sequelize);
+  initPriorityModel(sequelize);
 };
 
 export {
@@ -40,4 +42,5 @@ export {
   Brand,
   Category,
   UnitOfMeasure,
+  Priority,
 };

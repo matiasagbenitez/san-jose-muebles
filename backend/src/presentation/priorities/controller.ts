@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { CustomError, UnitOfMeasureDto, PaginationDto } from "../../domain";
-import { UnitOfMeasureService, UnitOfMeasureFilters } from '../services/unit_of_measure.service';
+import { CustomError, PriorityDto, PaginationDto } from "../../domain";
+import { PriorityService, PriorityFilters } from '../services/priority.service';
 
-export class UnitOfMeasureController {
+export class PriorityController {
 
-    protected unitOfMeasureService: UnitOfMeasureService = new UnitOfMeasureService();
+    protected priorityService: PriorityService = new PriorityService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,7 +16,7 @@ export class UnitOfMeasureController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.unitOfMeasureService.getUnitOfMeasures()
+        this.priorityService.getPriorities()
             .then((data) => {
                 res.json(data);
             })
@@ -33,7 +33,7 @@ export class UnitOfMeasureController {
         let filters = {};
         if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.unitOfMeasureService.getUnitOfMeasuresPaginated(paginationDto!, filters as UnitOfMeasureFilters)
+        this.priorityService.getPrioritiesPaginated(paginationDto!, filters as PriorityFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -46,7 +46,7 @@ export class UnitOfMeasureController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.unitOfMeasureService.getUnitOfMeasure(parseInt(id))
+        this.priorityService.getPriority(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -61,10 +61,10 @@ export class UnitOfMeasureController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, createDto] = UnitOfMeasureDto.create(req.body);
+        const [error, createDto] = PriorityDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.unitOfMeasureService.createUnitOfMeasure(createDto!)
+        this.priorityService.createPriority(createDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -82,10 +82,10 @@ export class UnitOfMeasureController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = UnitOfMeasureDto.create(req.body);
+        const [error, updateDto] = PriorityDto.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.unitOfMeasureService.updateUnitOfMeasure(id, updateDto!)
+        this.priorityService.updatePriority(id, updateDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -98,7 +98,7 @@ export class UnitOfMeasureController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.unitOfMeasureService.deleteUnitOfMeasure(parseInt(id))
+        this.priorityService.deletePriority(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
