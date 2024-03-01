@@ -14,7 +14,7 @@ export const MySelect = ({ label, ...props }: Props) => {
   const [field] = useField(props);
 
   return (
-    <div className="mb-1">
+    <div className="mb-2">
       <Form.Label htmlFor={props.id || props.name} className="small mb-1">
         {label}
       </Form.Label>

@@ -37,7 +37,7 @@ export class MysqlDatabase {
 
     async syncModels() {
         if (this.sequelize) {
-            await this.sequelize.sync({ force: true }); 
+            await this.sequelize.sync({ force: false }); 
             console.log('Database synchronized.'); 
         } else {
             console.error('No Sequelize instance available.');

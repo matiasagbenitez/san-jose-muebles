@@ -3,7 +3,8 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class Currency extends Model {
     public id!: number;
     public name!: string;
-    public code!: string;
+    public symbol!: string;
+    public is_monetary!: boolean;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -22,10 +23,15 @@ export const initCurrencyModel = (sequelize: Sequelize) => {
                 allowNull: false,
                 unique: true,
             },
-            code: {
+            symbol: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
+            },
+            is_monetary: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true,
             },
         },
         {

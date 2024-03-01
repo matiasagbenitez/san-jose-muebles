@@ -4,7 +4,7 @@ import { CustomError, CurrencyDto, CurrencyEntity, PaginationDto } from "../../d
 
 export interface CurrencyFilters {
     name: string;
-    code: string;
+    symbol: string;
 }
 export class CurrencyService {
 
@@ -19,11 +19,11 @@ export class CurrencyService {
 
         // FILTERS
         let where = {};
-        if (filters.name || filters.code) {
+        if (filters.name || filters.symbol) {
             where = {
                 [Op.or]: [
                     { name: { [Op.like]: `%${filters.name}%` } },
-                    { code: { [Op.like]: `%${filters.name}%` } }
+                    { symbol: { [Op.like]: `%${filters.name}%` } }
                 ]
             };
         }
@@ -50,10 +50,11 @@ export class CurrencyService {
         try {
             const currency = await Currency.create({
                 name: createCurrencyDto.name,
-                code: createCurrencyDto.code
+                symbol: createCurrencyDto.symbol,
+                is_monetary: createCurrencyDto.is_monetary
             });
             const { ...currencyEntity } = CurrencyEntity.fromObject(currency);
-            return { currency: currencyEntity, message: 'Moneda creado correctamente' };
+            return { currency: currencyEntity, message: 'Moneda creada correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('La moneda que intenta crear ya existe');

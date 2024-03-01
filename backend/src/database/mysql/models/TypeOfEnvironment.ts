@@ -25,7 +25,7 @@ export const initTypeOfEnvironmentModel = (sequelize: Sequelize) => {
         {
             sequelize,
             modelName: 'TypeOfEnvironment',
-            tableName: 'type_of_environments',
+            tableName: 'types_of_environments',
             timestamps: true,
         }
     );

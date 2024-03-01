@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import { MyTextInput } from "../../../components/forms";
+import { MyCheckbox, MyTextInput } from "../../../components/forms";
 import { CurrencyFormInterface } from ".";
 
 interface FormProps {
@@ -33,7 +33,8 @@ export const CurrenciesForm = ({
           }}
           validationSchema={Yup.object({
             name: Yup.string().required("El nombre es requerido"),
-            code: Yup.string().required("El código es requerido"),
+            symbol: Yup.string().required("El símbolo es requerido"),
+            is_monetary: Yup.boolean().required("Debe especificar si es dinero"),
           })}
         >
           {({ errors, touched }) => (
@@ -42,17 +43,24 @@ export const CurrenciesForm = ({
                 label="Nombre de la moneda"
                 name="name"
                 type="text"
-                placeholder="Ingrese el nombre de la moneda"
+                placeholder="Ingrese el nombre de la moneda (ej. Dólar, Euro, etc.)"
                 isInvalid={!!errors.name && touched.name}
               />
 
               <MyTextInput
-                label="Código de la moneda"
-                name="code"
+                label="Símbolo de la moneda"
+                name="symbol"
                 type="text"
-                placeholder="Ingrese el código de la moneda"
-                isInvalid={!!errors.code && touched.code}
+                placeholder="Ingrese el símbolo de la moneda (ej. USD, EUR, etc.)"
+                isInvalid={!!errors.symbol && touched.symbol}
               />
+
+             <MyCheckbox
+                label="Agregar símbolo de dinero ($)"
+                name="is_monetary"
+                type="checkbox"
+                isInvalid={!!errors.is_monetary && touched.is_monetary}
+              /> 
 
               <Button
                 type="submit"

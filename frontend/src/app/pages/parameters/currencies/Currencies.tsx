@@ -10,17 +10,20 @@ import { SweetAlert2 } from "../../../utils";
 interface DataRow {
   id: number;
   name: string;
-  code: string;
+  symbol: string;
+  is_monetary: boolean;
 }
 
 export interface CurrencyFormInterface {
   name: string;
-  code: string;
+  symbol: string;
+  is_monetary: boolean;
 }
 
 const initialForm: CurrencyFormInterface = {
   name: "",
-  code: "",
+  symbol: "",
+  is_monetary: true,
 };
 
 export const Currencies = () => {
@@ -125,8 +128,13 @@ export const Currencies = () => {
       selector: (row: DataRow) => row.name,
     },
     {
-      name: "CÓDIGO",
-      selector: (row: DataRow) => row.code,
+      name: "SÍMBOLO",
+      selector: (row: DataRow) => row.symbol,
+    },
+    {
+      name: "SÍMBOLO DE DINERO ($)",
+      selector: (row: DataRow) => (row.is_monetary ? "SÍ" : "NO"),
+      center: true,
     },
     {
       name: "ACCIONES",
