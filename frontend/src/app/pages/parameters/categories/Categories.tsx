@@ -148,7 +148,7 @@ export const Categories = () => {
       <FilterByName
         state={state}
         dispatch={dispatch}
-        placeholder="Buscar por categoría de producto"
+        placeholder="Buscar por nombre de categoría de producto"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}

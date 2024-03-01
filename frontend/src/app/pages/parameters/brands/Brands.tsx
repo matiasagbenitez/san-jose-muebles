@@ -148,7 +148,7 @@ export const Brands = () => {
       <FilterByName
         state={state}
         dispatch={dispatch}
-        placeholder="Buscar por marca"
+        placeholder="Buscar por nombre de marca"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}

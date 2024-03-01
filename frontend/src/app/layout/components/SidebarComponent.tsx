@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 interface SidebarComponentProps {
   collapsed: boolean;
 }
@@ -21,41 +21,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem component={<Link to="/" />} title="Inicio">
           Inicio
         </MenuItem>
-        <SubMenu label="Parámetros" title="Parámetros">
-          <MenuItem component={<Link to="/parametros/paises" />} title="Países">
-            Países
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/provincias" />} title="Provincias">
-            Provincias
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/localidades" />} title="Localidades">
-            Localidades
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/monedas" />} title="Monedas">
-            Monedas
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/metodos-pago" />} title="Métodos de pago">
-            Métodos de pago
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/tipos-ambientes" />} title="Tipos de ambientes">
-            Tipos de ambientes
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/marcas" />} title="Marcas">
-            Marcas
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/categorias" />} title="Categorías">
-            Categorías
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/unidades-medida" />} title="Unidades de medida">
-            Unidades de medida
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/prioridades" />} title="Prioridades">
-            Prioridades
-          </MenuItem>
-          <MenuItem component={<Link to="/parametros/tipos-proyectos" />} title="Tipos de proyectos">
-            Tipos de proyectos
-          </MenuItem>
-        </SubMenu>
+        <MenuItem component={<Link to="/parametros" />} title="Parámetros">
+          Parámetros del sistema
+        </MenuItem>
       </Menu>
     </Sidebar>
   );

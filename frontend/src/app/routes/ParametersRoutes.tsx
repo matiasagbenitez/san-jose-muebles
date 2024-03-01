@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
 import {
+  Parameters,
   Countries,
   Provinces,
   Localities,
@@ -23,6 +24,7 @@ const ParametersRoutes = () => {
     <Routes>
       {roles.includes("ADMIN") && (
         <>
+          <Route path="/" element={<Parameters />} />
           <Route path="/paises" element={<Countries />} />
           <Route path="/provincias" element={<Provinces />} />
           <Route path="/localidades" element={<Localities />} />

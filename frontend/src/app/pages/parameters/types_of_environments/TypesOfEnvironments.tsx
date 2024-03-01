@@ -148,7 +148,7 @@ export const TypesOfEnvironments = () => {
       <FilterByName
         state={state}
         dispatch={dispatch}
-        placeholder="Buscar por tipo de ambiente"
+        placeholder="Buscar por nombre del tipo de ambiente"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}

@@ -148,7 +148,7 @@ export const PaymentMethods = () => {
       <FilterByName
         state={state}
         dispatch={dispatch}
-        placeholder="Buscar por método de pago"
+        placeholder="Buscar por nombre del método de pago"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}
