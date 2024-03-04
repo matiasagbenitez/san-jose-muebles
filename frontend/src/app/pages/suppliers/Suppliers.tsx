@@ -112,7 +112,7 @@ export const Suppliers = () => {
   };
 
   const handleClick = (row: DataRow) => {
-    console.log("Row clicked", row);
+    navigate(`/proveedores/${row.id}`);
   };
 
   return (
@@ -142,7 +142,6 @@ export const Suppliers = () => {
         show={isModalOpen}
         onHide={handleHide}
         onSubmit={handleSubmit}
-
       />
     </div>
   );

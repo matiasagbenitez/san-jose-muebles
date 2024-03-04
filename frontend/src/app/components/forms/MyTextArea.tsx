@@ -27,6 +27,7 @@ export const MyTextArea = ({ label, ...props }: Props) => {
         {...props}
         isInvalid={props.isInvalid}
         size="sm"
+        value={field.value || ""}
       />
       <ErrorMessage
         name={props.name}

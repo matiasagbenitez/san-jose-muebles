@@ -39,7 +39,14 @@ export class SupplierService {
     }
 
     public async getSupplier(id: number) {
-        const supplier = await Supplier.findByPk(id);
+        const supplier = await Supplier.findByPk(id, {
+            include: [{
+                association: 'locality',
+                include: [{
+                    association: 'province',
+                }]
+            }]
+        });
         if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
         const { ...supplierEntity } = SupplierEntity.fromObject(supplier);
         return { supplier: supplierEntity };
@@ -48,7 +55,7 @@ export class SupplierService {
     public async createSupplier(createSupplierDto: SupplierDto) {
 
         try {
-            const supplier = await Supplier.create({
+            await Supplier.create({
                 name: createSupplierDto.name,
                 dni_cuit: createSupplierDto.dni_cuit,
                 phone: createSupplierDto.phone,
@@ -57,8 +64,7 @@ export class SupplierService {
                 id_locality: createSupplierDto.id_locality,
                 annotations: createSupplierDto.annotations
             });
-            const { ...supplierEntity } = SupplierEntity.fromObject(supplier);
-            return { supplier: supplierEntity, message: 'Proveedor creado correctamente' };
+            return { message: 'Proveedor creado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('El proveedor que intenta crear ya existe');
@@ -70,11 +76,9 @@ export class SupplierService {
     public async updateSupplier(id: number, updateSupplierDto: SupplierDto) {
         const supplier = await Supplier.findByPk(id);
         if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
-
         try {
             await supplier.update(updateSupplierDto);
-            const { ...supplierEntity } = SupplierEntity.fromObject(supplier);
-            return { supplier: supplierEntity, message: 'Proveedor actualizado correctamente' };
+            return { message: 'Proveedor actualizado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('El proveedor que intenta actualizar ya existe');

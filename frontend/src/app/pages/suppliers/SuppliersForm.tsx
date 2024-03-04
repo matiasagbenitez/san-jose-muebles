@@ -37,6 +37,7 @@ interface FormProps {
   editMode?: boolean;
   onSubmit: (values: any) => void;
   initialForm?: SupplierFormInterface;
+  isFormSubmitted?: boolean;
 }
 
 export const SuppliersForm = ({
@@ -45,6 +46,7 @@ export const SuppliersForm = ({
   editMode = false,
   onSubmit,
   initialForm = supplierForm,
+  isFormSubmitted,
 }: FormProps) => {
   const [localities, setLocalities] = useState<LocalitiesInterface[]>([]);
 
@@ -162,6 +164,7 @@ export const SuppliersForm = ({
                 variant="primary"
                 className="mt-3 float-end"
                 size="sm"
+                disabled={isFormSubmitted}
               >
                 Guardar
               </Button>

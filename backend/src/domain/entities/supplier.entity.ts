@@ -17,8 +17,7 @@ export class SupplierEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): SupplierEntity {
-
-        const { id, name, dni_cuit, phone, email, address, id_locality, annotations } = object;
+        const { id, name, dni_cuit, phone, email, address, id_locality, locality, annotations } = object;
 
         if (!id) throw CustomError.badRequest('Missing id');
         if (!name) throw CustomError.badRequest('Missing name');
@@ -33,6 +32,7 @@ export class SupplierEntity {
             address,
             id_locality,
             annotations,
+            locality.name + ", " + locality.province.name,
         );
     }
 
