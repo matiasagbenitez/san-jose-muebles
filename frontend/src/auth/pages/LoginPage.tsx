@@ -17,11 +17,7 @@ export const LoginPage = () => {
     if (username === "" || password === "") return;
     startLogin({ username, password });
   };
-
-  useEffect(() => {
-    document.title = `SJM | Iniciar sesión`;
-  }, []);
-
+  
   useEffect(() => {
     if (errorMessage) {
       SonnerToast.error(errorMessage);

@@ -48,6 +48,7 @@ export const Parameters = () => {
                 <ul className="mt-2">
                     <li><Link to="/parametros/monedas" className="text-link">Monedas</Link></li>
                     <li><Link to="/parametros/metodos-pago" className="text-link">Métodos de pago</Link></li>
+                    <li><Link to="/parametros/bancos" className="text-link">Bancos</Link></li>
                 </ul>
             </Col>
         </Row>

@@ -28,3 +28,4 @@ export * from './entities/category.entity';
 export * from './entities/unit_of_measure.entity';
 export * from './entities/priority.entity';
 export * from './entities/type_of_project.entity';
+export * from './entities/bank.entity';

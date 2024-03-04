@@ -14,3 +14,5 @@ export * from './categories/Categories';
 export * from './units_of_measures';
 export * from './priorities/Priorities';
 export * from './types_of_projects';
+
+export * from './banks/Banks';
