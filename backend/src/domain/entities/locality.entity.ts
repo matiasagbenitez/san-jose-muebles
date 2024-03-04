@@ -4,7 +4,7 @@ export class LocalityEntity {
     constructor(
         public id: string,
         public name: string,
-        public id_province: number,
+        public id_province?: number,
         public province?: string,
         public id_country?: number,
         public country?: string
@@ -12,16 +12,14 @@ export class LocalityEntity {
 
     static fromObject(object: { [key: string]: any }): LocalityEntity {
 
-        const { id, name, id_province } = object;
+        const { id, name } = object;
 
         if (!id) throw CustomError.badRequest('Missing id');
         if (!name) throw CustomError.badRequest('Missing name');
-        if (!id_province) throw CustomError.badRequest('Missing province id');
 
         return new LocalityEntity(
             id,
             name,
-            id_province,
         );
     }
 

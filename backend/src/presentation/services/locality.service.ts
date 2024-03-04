@@ -8,13 +8,8 @@ export interface LocalityFilters {
 export class LocalityService {
 
     public async getLocalities() {
-        const localities = await Locality.findAll({
-            include: [{
-                model: Province,
-                as: 'province'
-            }]
-        });
-        const localitiesEntities = localities.map(locality => LocalityEntity.fromObjectWithProvince(locality));
+        const localities = await Locality.findAll();
+        const localitiesEntities = localities.map(locality => LocalityEntity.fromObject(locality));
         return { localities: localitiesEntities };
     }
 

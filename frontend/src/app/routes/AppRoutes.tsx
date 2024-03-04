@@ -4,6 +4,7 @@ import { Inicio } from "../pages/Inicio";
 // import { useAuthStore } from "../../hooks";
 // import { useEffect } from "react";
 import ParametersRoutes from "./ParametersRoutes";
+import SuppliersRoutes from "./SupplierRoutes";
 const AppRoutes = () => {
   // const { checkAuthToken } = useAuthStore();
 
@@ -16,6 +17,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Layout />}>
         <Route path="/" element={<Inicio />} />
         <Route path="/parametros/*" element={<ParametersRoutes />} />
+        <Route path="/proveedores/*" element={<SuppliersRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />

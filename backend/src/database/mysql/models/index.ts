@@ -14,6 +14,7 @@ import { UnitOfMeasure, initUnitOfMeasureModel } from './UnitOfMeasure.model';
 import { Priority, initPriorityModel } from './Priority.model';
 import { TypeOfProject, initTypeOfProjectModel } from './TypeOfProject';
 import { Bank, initBankModel } from './Bank.model';
+import { Supplier, initSupplierModel } from './Supplier.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -31,6 +32,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initPriorityModel(sequelize);
   initTypeOfProjectModel(sequelize);
   initBankModel(sequelize);
+  initSupplierModel(sequelize);
 };
 
 export {
@@ -48,5 +50,6 @@ export {
   UnitOfMeasure,
   Priority,
   TypeOfProject,
-  Bank
+  Bank,
+  Supplier
 };

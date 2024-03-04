@@ -13,6 +13,7 @@ export * from './dtos/currencies/currency.dto';
 export * from './dtos/units_of_measures/unit_of_measure.dto';
 export * from './dtos/priorities/priority.dto';
 export * from './dtos/types_of_projects/type_of_project.dto';
+export * from './dtos/suppliers/supplier.dto';
 
 export * from './entities/user.entity';
 export * from './entities/role.entity';
@@ -29,3 +30,4 @@ export * from './entities/unit_of_measure.entity';
 export * from './entities/priority.entity';
 export * from './entities/type_of_project.entity';
 export * from './entities/bank.entity';
+export * from './entities/supplier.entity';

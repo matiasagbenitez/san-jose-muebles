@@ -8,9 +8,9 @@ export interface BankFilters {
 export class BankService {
 
     public async getBanks() {
-        const brands = await Bank.findAll();
-        const brandsEntities = brands.map(brand => BankEntity.fromObject(brand));
-        return { items: brandsEntities };
+        const banks = await Bank.findAll();
+        const banksEntities = banks.map(bank => BankEntity.fromObject(bank));
+        return { items: banksEntities };
     }
 
     public async getBanksPaginated(paginationDto: PaginationDto, filters: BankFilters) {
@@ -20,31 +20,31 @@ export class BankService {
         let where = {};
         if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
 
-        const [brands, total] = await Promise.all([
+        const [banks, total] = await Promise.all([
             Bank.findAll({ where, offset: (page - 1) * limit, limit }),
             Bank.count({ where })
         ]);
-        const brandsEntities = brands.map(brand => BankEntity.fromObject(brand));
-        return { items: brandsEntities, total_items: total };
+        const banksEntities = banks.map(bank => BankEntity.fromObject(bank));
+        return { items: banksEntities, total_items: total };
     }
 
     public async getBank(id: number) {
-        const brand = await Bank.findByPk(id);
-        if (!brand) throw CustomError.notFound('Banco no encontrado');
-        const { ...brandEntity } = BankEntity.fromObject(brand);
-        return { brand: brandEntity };
+        const bank = await Bank.findByPk(id);
+        if (!bank) throw CustomError.notFound('Banco no encontrado');
+        const { ...bankEntity } = BankEntity.fromObject(bank);
+        return { bank: bankEntity };
     }
 
     public async createBank(createNameDto: NameDto) {
-        const brand = await Bank.findOne({ where: { name: createNameDto.name } });
-        if (brand) throw CustomError.badRequest('El banco ya existe');
+        const bank = await Bank.findOne({ where: { name: createNameDto.name } });
+        if (bank) throw CustomError.badRequest('El banco ya existe');
 
         try {
-            const brand = await Bank.create({
+            const bank = await Bank.create({
                 name: createNameDto.name
             });
-            const { ...brandEntity } = BankEntity.fromObject(brand);
-            return { brand: brandEntity, message: 'Banco creada correctamente' };
+            const { ...bankEntity } = BankEntity.fromObject(bank);
+            return { bank: bankEntity, message: 'Banco creado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('El banco que intenta crear ya existe');
@@ -54,13 +54,13 @@ export class BankService {
     }
 
     public async updateBank(id: number, updateNameDto: NameDto) {
-        const brand = await Bank.findByPk(id);
-        if (!brand) throw CustomError.notFound('Banco no encontrado');
+        const bank = await Bank.findByPk(id);
+        if (!bank) throw CustomError.notFound('Banco no encontrado');
 
         try {
-            await brand.update(updateNameDto);
-            const { ...brandEntity } = BankEntity.fromObject(brand);
-            return { brand: brandEntity, message: 'Banco actualizada correctamente' };
+            await bank.update(updateNameDto);
+            const { ...bankEntity } = BankEntity.fromObject(bank);
+            return { bank: bankEntity, message: 'Banco actualizado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('El banco que intenta actualizar ya existe');
@@ -70,11 +70,11 @@ export class BankService {
     }
 
     public async deleteBank(id: number) {
-        const brand = await Bank.findByPk(id);
-        if (!brand) throw CustomError.notFound('Banco no encontrado');
+        const bank = await Bank.findByPk(id);
+        if (!bank) throw CustomError.notFound('Banco no encontrado');
         
         try {
-            await brand.destroy();
+            await bank.destroy();
             return { message: 'Banco eliminado correctamente' };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);

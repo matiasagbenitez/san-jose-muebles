@@ -21,6 +21,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem component={<Link to="/" />} title="Inicio">
           Inicio
         </MenuItem>
+        <MenuItem component={<Link to="/proveedores" />} title="Proveedores">
+          Proveedores
+        </MenuItem>
         <MenuItem component={<Link to="/parametros" />} title="Parámetros">
           Parámetros del sistema
         </MenuItem>
