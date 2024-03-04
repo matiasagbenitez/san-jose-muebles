@@ -2,6 +2,8 @@ import {
     User, Role, RoleUser,
     Country, Province, Locality,
     Supplier,
+    BankAccount,
+    Bank,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -21,5 +23,12 @@ export const initializeAssociations = () => {
     // Locality - Supplier
     Locality.hasMany(Supplier, { foreignKey: 'id_locality', as: 'suppliers', onDelete: 'RESTRICT' });
     Supplier.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
+
+    // Supplier - BankAccount
+    Bank.hasMany(BankAccount, { foreignKey: 'id_bank', as: 'bank_accounts', onDelete: 'RESTRICT' });
+    BankAccount.belongsTo(Bank, { foreignKey: 'id_bank', as: 'bank' });
+    Supplier.hasMany(BankAccount, { foreignKey: 'id_supplier', as: 'bank_accounts', onDelete: 'RESTRICT' });
+    BankAccount.belongsTo(Supplier, { foreignKey: 'id_supplier', as: 'supplier' });
+
 
 };

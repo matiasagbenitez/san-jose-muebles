@@ -15,6 +15,7 @@ import { PriorityRoutes } from './priorities/routes';
 import { TypeOfProjectRoutes } from './types_of_projects/routes';           
 import { BankRoutes } from './banks/routes';
 import { SupplierRoutes } from './suppliers/routes';
+import { BankAccountRoutes } from './bank_accounts/routes';
 
 export class AppRoutes {
 
@@ -43,6 +44,7 @@ export class AppRoutes {
         router.use('/api/types_of_projects', TypeOfProjectRoutes.routes);
         router.use('/api/banks', BankRoutes.routes);
         router.use('/api/suppliers', SupplierRoutes.routes);
+        router.use('/api/bank_accounts', BankAccountRoutes.routes);
 
 
         return router;

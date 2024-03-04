@@ -42,7 +42,7 @@ export const initSupplierModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
             },
             annotations: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
             },
         },
         {

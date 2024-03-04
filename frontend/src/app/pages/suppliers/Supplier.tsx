@@ -107,7 +107,7 @@ export const Supplier = () => {
                 </tr>
               </tbody>
             </Table>
-            <div className="small d-flex">
+            <div className="small d-flex mb-4">
               <Button
                 variant="transparent"
                 size="sm"
