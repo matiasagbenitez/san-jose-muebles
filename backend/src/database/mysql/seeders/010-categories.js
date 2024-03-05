@@ -4,38 +4,81 @@ module.exports = {
   async up(queryInterface) {
     const list = [
       {
-        "name": "TABLERO MELAMINA",
+        "id": 1,
+        "name": "GUÍAS Y CORREDERAS",
       },
       {
-        "name": "TABLERO MDF",
-      },
-      {
+        "id": 2,
         "name": "BISAGRAS",
       },
       {
-        "name": "SISTEMAS CIERRE SUAVE",
+        "id": 3,
+        "name": "MANIJAS Y TIRADORES",
       },
       {
-        "name": "CORREDERAS",
+        "id": 4,
+        "name": "TABLEROS DE MELAMINA",
       },
       {
-        "name": "TIRADORES",
+        "id": 5,
+        "name": "PILETAS DE COCINA",
       },
       {
-        "name": "PERFILERIA DE ALUMINIO",
+        "id": 6,
+        "name": "SISTEMAS PARA PUERTAS CORREDIZAS",
       },
       {
-        "name": "TORNILLOS",
+        "id": 7,
+        "name": "ESCURRIDORES DE PLATOS Y VASOS",
       },
       {
-        "name": "ADHESIVOS",
+        "id": 8,
+        "name": "PATAS Y ZOCALOS PARA MUEBLES",
       },
       {
-        "name": "HERRAMIENTAS",
+        "id": 9,
+        "name": "SISTEMAS GIRATORIOS PARA RINCONEROS",
       },
       {
-        "name": "ACCESORIOS",
-      }
+        "id": 10,
+        "name": "SISTEMAS EXTRAIBLES PARA ARMARIOS",
+      },
+      {
+        "id": 11,
+        "name": "CUBIERTEROS PARA CAJÓN",
+      },
+      {
+        "id": 12,
+        "name": "CONTENEDORES DE RESIDUOS",
+      },
+      {
+        "id": 13,
+        "name": "SISTEMAS PARA PUERTAS ABATIBLES Y ELEVABLES",
+      },
+      {
+        "id": 14,
+        "name": "CANASTOS INTERNOS",
+      },
+      {
+        "id": 15,
+        "name": "SISTEMAS MATRIX PARA CAJONES",
+      },
+      {
+        "id": 16,
+        "name": "ILUMINACIÓN LED",
+      },
+      {
+        "id": 17,
+        "name": "SISTEMAS PARA PUERTAS PLEGABLES",
+      },
+      {
+        "id": 18,
+        "name": "MESADAS DE GRANITO",
+      },
+      {
+        "id": 19,
+        "name": "GRIFERÍA",
+      },
     ];
 
     const categories = list.map(item => {

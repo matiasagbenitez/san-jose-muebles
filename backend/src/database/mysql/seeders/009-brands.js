@@ -4,19 +4,16 @@ module.exports = {
   async up(queryInterface) {
     const list = [
       {
+        "name": "GREENWAY",
+      },
+      {
         "name": "EGGER",
       },
       {
         "name": "MASISA",
       },
       {
-        "name": "FAPLAC",
-      },
-      {
         "name": "HAFFELE",
-      },
-      {
-        "name": "GREENWAY",
       },
       {
         "name": "BLUM",

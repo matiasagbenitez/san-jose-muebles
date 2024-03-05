@@ -4,6 +4,12 @@ import {
     Supplier,
     BankAccount,
     Bank,
+
+    Product,
+    Brand,
+    Category,
+    Currency,
+
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -30,5 +36,13 @@ export const initializeAssociations = () => {
     Supplier.hasMany(BankAccount, { foreignKey: 'id_supplier', as: 'bank_accounts', onDelete: 'RESTRICT' });
     BankAccount.belongsTo(Supplier, { foreignKey: 'id_supplier', as: 'supplier' });
 
+    // PRODUCT
+    Brand.hasMany(Product, { foreignKey: 'id_brand', as: 'products', onDelete: 'RESTRICT' });
+    Product.belongsTo(Brand, { foreignKey: 'id_brand', as: 'brand' });
 
+    Category.hasMany(Product, { foreignKey: 'id_category', as: 'products', onDelete: 'RESTRICT' });
+    Product.belongsTo(Category, { foreignKey: 'id_category', as: 'category' });
+
+    Currency.hasMany(Product, { foreignKey: 'id_currency', as: 'products', onDelete: 'RESTRICT' });
+    Product.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
 };

@@ -16,6 +16,7 @@ import { TypeOfProjectRoutes } from './types_of_projects/routes';
 import { BankRoutes } from './banks/routes';
 import { SupplierRoutes } from './suppliers/routes';
 import { BankAccountRoutes } from './bank_accounts/routes';
+import { ProductRoutes } from './products/routes';
 
 export class AppRoutes {
 
@@ -45,6 +46,8 @@ export class AppRoutes {
         router.use('/api/banks', BankRoutes.routes);
         router.use('/api/suppliers', SupplierRoutes.routes);
         router.use('/api/bank_accounts', BankAccountRoutes.routes);
+
+        router.use('/api/products', ProductRoutes.routes);
 
 
         return router;
