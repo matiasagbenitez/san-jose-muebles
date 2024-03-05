@@ -4,12 +4,15 @@ module.exports = {
   async up(queryInterface) {
     const list = [
       {
+        "id": 1,
         "name": "ARGENTINA",
       },
       {
+        "id": 2,
         "name": "BRASIL",
       },
       {
+        "id": 3,
         "name": "PARAGUAY",
       }
     ];
@@ -17,6 +20,7 @@ module.exports = {
     const countries = list.map(item => {
       const timestamp = new Date();
       return {
+        id: item.id,
         name: item.name,
 
         // TIMESTAMPS
