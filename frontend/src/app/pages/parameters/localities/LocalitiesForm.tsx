@@ -25,7 +25,7 @@ export const LocalitiesForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar localidad" : "Crear localidad"}</h1>
+        <h1 className="fs-5">{editingId ? "Modificar localidad" : "Crear localidad"}</h1>
         <hr className="my-2" />
 
         <Formik

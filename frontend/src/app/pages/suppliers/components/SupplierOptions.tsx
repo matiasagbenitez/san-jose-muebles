@@ -3,9 +3,15 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
   id: number;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleDelete: () => Promise<void>;
 }
 
-export const SupplierOptions = ({ id }: Props) => {
+export const SupplierOptions = ({
+  id,
+  setIsModalOpen,
+  handleDelete,
+}: Props) => {
   const navigate = useNavigate();
 
   const redirectBankAccounts = () => {
@@ -14,7 +20,7 @@ export const SupplierOptions = ({ id }: Props) => {
 
   return (
     <>
-      <h2 className="fs-5" style={{ marginTop: "8px" }}>
+      <h2 className="fs-6" style={{ marginTop: "14px" }}>
         Menú de opciones
       </h2>
       <Table size="sm" responsive>
@@ -72,6 +78,36 @@ export const SupplierOptions = ({ id }: Props) => {
               >
                 <i className="bi bi-cash-stack me-2"></i>
                 Pagos realizados
+              </Button>
+            </td>
+          </tr>
+
+          <tr>
+            <td className="p-0 border-0">
+              <Button
+                variant="light"
+                size="sm"
+                className="text-start w-100 rounded-0"
+                title="Modificar información del proveedor"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <i className="bi bi-pencil me-2"></i>
+                Modificar información del proveedor
+              </Button>
+            </td>
+          </tr>
+
+          <tr>
+            <td className="p-0 border-0">
+              <Button
+                variant="light"
+                size="sm"
+                className="text-start w-100 rounded-0 text-danger"
+                title="Eliminar proveedor"
+                onClick={handleDelete}
+              >
+                <i className="bi bi-trash me-2"></i>
+                Eliminar proveedor
               </Button>
             </td>
           </tr>

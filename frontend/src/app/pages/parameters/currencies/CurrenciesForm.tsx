@@ -23,7 +23,7 @@ export const CurrenciesForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar moneda" : "Crear moneda"}</h1>
+        <h1 className="fs-5">{editingId ? "Modificar moneda" : "Crear moneda"}</h1>
         <hr className="my-2" />
 
         <Formik

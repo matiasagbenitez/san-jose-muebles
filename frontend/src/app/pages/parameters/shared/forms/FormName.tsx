@@ -31,7 +31,7 @@ export const FormName = ({
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
         <h1 className="fs-5">
-          {editingId ? `Editar ${title}` : `Crear ${title}`}
+          {editingId ? `Modificar ${title}` : `Crear ${title}`}
         </h1>
         <hr className="my-2" />
 

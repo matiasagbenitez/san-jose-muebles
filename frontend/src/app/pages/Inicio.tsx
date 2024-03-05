@@ -54,7 +54,6 @@ export const Inicio: React.FC = () => {
   };
 
   const handlePerRowsChange = async (newPerPage: number, page: number) => {
-    console.log({ newPerPage, page });
     setLoading(true);
     const response = await axios.get(
       `https://reqres.in/api/users?page=${page}&per_page=${newPerPage}`

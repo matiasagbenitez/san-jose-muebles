@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Row, Col } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { SupplierInterface } from "../../interfaces";
-import { Row, Col } from "react-bootstrap";
-import { SuppliersForm, SupplierInfo, SupplierButtons, SupplierOptions, } from ".";
+import { SuppliersForm, SupplierInfo, SupplierOptions } from ".";
+import { GoBackButton, LoadingSpinner } from "../../components";
 import { SweetAlert2 } from "../../utils";
-import { LoadingSpinner } from "../../components";
 
 export const Supplier = () => {
   const { id } = useParams();
@@ -37,6 +37,10 @@ export const Supplier = () => {
 
   const handleSubmit = async (formData: SupplierInterface) => {
     try {
+      const confirmation = await SweetAlert2.confirmationDialog(
+        "¿Estás seguro de que quieres modificar este proveedor?"
+      );
+      if (!confirmation.isConfirmed) return;
       setIsFormSubmitted(true);
       const { data } = await apiSJM.put(`/suppliers/${id}`, formData);
       SweetAlert2.successToast(data.message);
@@ -63,10 +67,6 @@ export const Supplier = () => {
     }
   };
 
-  const handleNavigateBack = () => {
-    navigate(-1);
-  };
-
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -75,20 +75,19 @@ export const Supplier = () => {
           <Row>
             <Col lg={6}>
               <SupplierInfo supplier={supplier} />
-              <SupplierButtons
-                handleNavigateBack={handleNavigateBack}
-                setIsModalOpen={setIsModalOpen}
-                handleDelete={handleDelete}
-              />
             </Col>
             <Col lg={6}>
-              <SupplierOptions id={+id!} />
+              <SupplierOptions id={+id!} setIsModalOpen={setIsModalOpen} handleDelete={handleDelete} />
+            </Col>
+            <Col lg={6}>
+              <GoBackButton />
             </Col>
           </Row>
 
           <SuppliersForm
             show={isModalOpen}
             onHide={handleHide}
+            editMode={true}
             onSubmit={handleSubmit}
             initialForm={supplier}
             isFormSubmitted={isFormSubmitted}

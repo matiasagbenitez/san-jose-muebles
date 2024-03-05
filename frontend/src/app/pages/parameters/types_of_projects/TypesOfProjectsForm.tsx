@@ -23,7 +23,7 @@ export const TypesOfProjectsForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar tipo de proyecto" : "Crear tipo de proyecto"}</h1>
+        <h1 className="fs-5">{editingId ? "Modificar tipo de proyecto" : "Crear tipo de proyecto"}</h1>
         <hr className="my-2" />
 
         <Formik

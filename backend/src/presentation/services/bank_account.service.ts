@@ -32,7 +32,7 @@ export class BankAccountService {
         try {
             const bank = await BankAccount.create({
                 ...createBankAccountDto,
-            });
+            }); 
             const { ...bankEntity } = BankAccountEntity.fromObject(bank);
             return { bank: bankEntity, message: 'Cuenta de banco creada correctamente' };
         } catch (error: any) {

@@ -23,7 +23,7 @@ export const UnitsOfMeasuresForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar unidad de medida" : "Crear unidad de medida"}</h1>
+        <h1 className="fs-5">{editingId ? "Modificar unidad de medida" : "Crear unidad de medida"}</h1>
         <hr className="my-2" />
 
         <Formik

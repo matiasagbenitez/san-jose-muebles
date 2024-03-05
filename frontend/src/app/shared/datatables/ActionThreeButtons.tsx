@@ -14,7 +14,7 @@ export const ActionThreeButtons = ({
   return (
     <div className="d-flex justify-content-center">
       <button
-        title="Editar"
+        title="Modificar"
         className="btn btn-transparent py-0 px-1"
         onClick={() => handleEdit(row)}
       >

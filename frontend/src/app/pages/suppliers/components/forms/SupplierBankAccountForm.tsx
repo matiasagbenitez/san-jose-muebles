@@ -3,9 +3,9 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import apiSJM from "../../../../api/apiSJM";
-import { MySelect, MyTextInput } from "../../../components/forms";
-import { BankAccountFormInterface } from "../SupplierBankAccounts";
+import apiSJM from "../../../../../api/apiSJM";
+import { MySelect, MyTextInput } from "../../../../components/forms";
+import { BankAccountFormInterface } from "../../SupplierBankAccounts";
 
 interface BanksInterface {
   id: number;
@@ -44,7 +44,7 @@ export const SupplierBankAccountForm = ({
     <Modal show={show} onHide={onHide} size="lg">
       <div className="p-4">
         <h1 className="fs-5">
-          {editingId ? "Editar cuenta bancaria" : "Crear cuenta bancaria"}
+          {editingId ? "Modificar cuenta bancaria" : "Crear cuenta bancaria"}
         </h1>
         <hr className="my-2" />
 

@@ -26,7 +26,7 @@ export const ProvincesForm = ({
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
         <h1 className="fs-5">
-          {editingId ? "Editar provincia" : "Crear provincia"}
+          {editingId ? "Modificar provincia" : "Crear provincia"}
         </h1>
         <hr className="my-2" />
 

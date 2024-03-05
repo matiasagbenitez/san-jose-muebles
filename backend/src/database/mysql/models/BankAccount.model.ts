@@ -33,16 +33,13 @@ export const initBankAccountModel = (sequelize: Sequelize) => {
                 type: DataTypes.STRING(100),
             },
             cbu_cvu: {
-                type: DataTypes.STRING(100),
-                unique: true,
+                type: DataTypes.STRING(100), 
             },
             alias: {
                 type: DataTypes.STRING(100),
-                unique: true,
             },
             account_number: {
                 type: DataTypes.STRING(100),
-                unique: true,
             },
         },
         {

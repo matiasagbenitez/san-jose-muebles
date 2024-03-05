@@ -1,4 +1,4 @@
 export * from './SupplierOptions';
 export * from './SupplierInfo';
-export * from './SupplierButtons';
-export * from './SupplierBankAccountForm';
+export * from './forms/SuppliersForm';
+export * from './forms/SupplierBankAccountForm';

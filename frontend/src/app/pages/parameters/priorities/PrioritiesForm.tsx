@@ -26,7 +26,7 @@ export const PrioritiesForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Editar prioridad" : "Crear prioridad"}</h1>
+        <h1 className="fs-5">{editingId ? "Modificar prioridad" : "Crear prioridad"}</h1>
         <hr className="my-2" />
 
         <Formik

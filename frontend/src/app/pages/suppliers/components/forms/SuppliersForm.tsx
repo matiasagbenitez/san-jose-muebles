@@ -3,8 +3,8 @@ import { Button, Col, Modal, Row } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import apiSJM from "../../../api/apiSJM";
-import { MySelect, MyTextArea, MyTextInput } from "../../components/forms";
+import apiSJM from "../../../../../api/apiSJM";
+import { MySelect, MyTextArea, MyTextInput } from "../../../../components/forms";
 
 interface SupplierFormInterface {
   name: string;
@@ -63,7 +63,7 @@ export const SuppliersForm = ({
     <Modal show={show} onHide={onHide} size="lg">
       <div className="p-4">
         <h1 className="fs-5">
-          {editMode ? "Editar proveedor" : "Crear proveedor"}
+          {editMode ? "Modificar proveedor" : "Crear proveedor"}
         </h1>
         <hr className="my-2" />
 
