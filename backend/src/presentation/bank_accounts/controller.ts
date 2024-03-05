@@ -54,7 +54,7 @@ export class BankAccountController {
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase().trim();
+                req.body[key] = req.body[key].trim();
             }
         }
         const [error, createDto] = BankAccountDto.create(req.body);
@@ -75,7 +75,7 @@ export class BankAccountController {
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase().trim();
+                req.body[key] = req.body[key].trim();
             }
         }
         const [error, updateDto] = BankAccountDto.create(req.body);

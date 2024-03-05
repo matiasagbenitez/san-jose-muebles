@@ -5,6 +5,7 @@ import { RootState } from "../../store/store";
 import {
   Supplier,
   Suppliers,
+  SupplierBankAccounts,
 } from "../pages/suppliers";
 
 const SuppliersRoutes = () => {
@@ -16,6 +17,7 @@ const SuppliersRoutes = () => {
         <>
           <Route path="/" element={<Suppliers />} />
           <Route path="/:id" element={<Supplier />} />
+          <Route path="/:id/cuentas-bancarias" element={<SupplierBankAccounts />} />
         </>
       )}
 

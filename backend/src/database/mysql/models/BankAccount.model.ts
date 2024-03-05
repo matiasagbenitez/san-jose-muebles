@@ -8,7 +8,6 @@ export class BankAccount extends Model {
     public cbu_cvu!: string;
     public alias!: string;
     public account_number!: string;
-    public annotations!: string;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -44,9 +43,6 @@ export const initBankAccountModel = (sequelize: Sequelize) => {
             account_number: {
                 type: DataTypes.STRING(100),
                 unique: true,
-            },
-            annotations: {
-                type: DataTypes.TEXT,
             },
         },
         {
