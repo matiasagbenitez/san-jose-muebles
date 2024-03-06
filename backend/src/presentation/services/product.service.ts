@@ -37,8 +37,10 @@ export class ProductService {
                     { association: 'brand' },
                     { association: 'category' },
                     { association: 'currency' },
+                    { association: 'unit'}
                 ],
-                offset: (page - 1) * limit, limit
+                offset: (page - 1) * limit, 
+                limit
             }),
             Product.count({ where })
         ]);

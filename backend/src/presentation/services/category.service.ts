@@ -8,7 +8,7 @@ export interface CategoryFilters {
 export class CategoryService {
 
     public async getCategories() {
-        const categories = await Category.findAll();
+        const categories = await Category.findAll({order: [['name', 'ASC']]});
         const categoriesEntities = categories.map(category => CategoryEntity.fromObject(category));
         return { items: categoriesEntities };
     }

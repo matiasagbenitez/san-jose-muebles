@@ -1,4 +1,5 @@
 export * from './MyInputText';
+export * from './MyInputNumber';
 export * from './MyCheckbox';
 export * from './MySelect';
 export * from './MyColorPicker';

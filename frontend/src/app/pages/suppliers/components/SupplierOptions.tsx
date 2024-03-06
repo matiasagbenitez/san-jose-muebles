@@ -43,6 +43,7 @@ export const SupplierOptions = ({
           <tr>
             <td className="p-0 border-0">
               <Button
+                disabled
                 variant="light"
                 size="sm"
                 className="text-start w-100 rounded-0"
@@ -57,6 +58,7 @@ export const SupplierOptions = ({
           <tr>
             <td className="p-0 border-0">
               <Button
+                disabled
                 variant="light"
                 size="sm"
                 className="text-start w-100 rounded-0"
@@ -71,6 +73,7 @@ export const SupplierOptions = ({
           <tr>
             <td className="p-0 border-0">
               <Button
+                disabled
                 variant="light"
                 size="sm"
                 className="text-start w-100 rounded-0"

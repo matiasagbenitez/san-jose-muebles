@@ -8,7 +8,7 @@ export interface BrandFilters {
 export class BrandService {
 
     public async getBrands() {
-        const brands = await Brand.findAll();
+        const brands = await Brand.findAll({order: [['name', 'ASC']]});
         const brandsEntities = brands.map(brand => BrandEntity.fromObject(brand));
         return { items: brandsEntities };
     }

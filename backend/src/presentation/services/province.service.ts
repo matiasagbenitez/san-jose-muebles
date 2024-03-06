@@ -28,6 +28,7 @@ export class ProvinceService {
                     as: 'country'
                 }],
                 offset: (page - 1) * limit,
+                limit
             }),
             Province.count({ where })
         ]);

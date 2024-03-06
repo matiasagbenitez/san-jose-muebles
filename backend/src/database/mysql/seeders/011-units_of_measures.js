@@ -4,19 +4,23 @@ module.exports = {
   async up(queryInterface) {
     const list = [
       {
-        "name": "UNIDADES",
+        "name": "UNIDAD",
         "symbol": "UN",
       },
       {
-        "name": "METROS",
+        "name": "PAR",
+        "symbol": "P",
+      },
+      {
+        "name": "METRO",
         "symbol": "M",
       },
       {
-        "name": "METROS CUADRADOS",
+        "name": "METRO CUADRADO",
         "symbol": "M2",
       },
       {
-        "name": "LITROS",
+        "name": "LITRO",
         "symbol": "L",
       },
     ];

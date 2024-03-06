@@ -9,6 +9,7 @@ import {
     Brand,
     Category,
     Currency,
+    UnitOfMeasure,
 
 } from '../models';
 
@@ -45,4 +46,7 @@ export const initializeAssociations = () => {
 
     Currency.hasMany(Product, { foreignKey: 'id_currency', as: 'products', onDelete: 'RESTRICT' });
     Product.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    UnitOfMeasure.hasMany(Product, { foreignKey: 'id_unit', as: 'products', onDelete: 'RESTRICT' });
+    Product.belongsTo(UnitOfMeasure, { foreignKey: 'id_unit', as: 'unit' });
 };

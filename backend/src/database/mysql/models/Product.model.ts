@@ -7,8 +7,9 @@ export class Product extends Model {
     public description!: string;
     public id_brand!: number;
     public id_category!: number;
+    public id_unit!: number;
     public actual_stock!: number;
-    public next_stock!: number;
+    public inc_stock!: number;
     public min_stock!: number;
     public rep_stock!: number;
     public last_price!: number;
@@ -44,13 +45,18 @@ export const initProductModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
+            id_unit: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
             actual_stock: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
                 defaultValue: 0,
             },
-            next_stock: {
+            inc_stock: {
                 type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
                 defaultValue: 0,
             },
             min_stock: {
@@ -63,7 +69,7 @@ export const initProductModel = (sequelize: Sequelize) => {
                 allowNull: false,
                 defaultValue: 0,
             },
-            last_price: {
+            last_price: { 
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,

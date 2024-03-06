@@ -32,6 +32,7 @@ export class LocalityService {
                     }]
                 }],
                 offset: (page - 1) * limit,
+                limit
             }),
             Locality.count({ where })
         ]);

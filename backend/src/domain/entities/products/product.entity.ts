@@ -8,8 +8,9 @@ export class ProductEntity {
         public description: string,
         public id_brand: string,
         public id_category: string,
+        public id_unit: string,
         public actual_stock: string,
-        public next_stock: string,
+        public inc_stock: string,
         public min_stock: string,
         public rep_stock: string,
         public last_price: string,
@@ -17,14 +18,15 @@ export class ProductEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): ProductEntity {
-        const { id, code, name, description, id_brand, id_category, actual_stock, next_stock, min_stock, rep_stock, last_price, id_currency } = object;
+        const { id, code, name, description, id_brand, id_category, id_unit, actual_stock, inc_stock, min_stock, rep_stock, last_price, id_currency } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!name) throw CustomError.badRequest('Falta el nombre');
         if (!id_brand) throw CustomError.badRequest('Falta la marca');
         if (!id_category) throw CustomError.badRequest('Falta la categoría');
+        if (!id_unit) throw CustomError.badRequest('Falta la unidad de medida');
         if (!actual_stock) throw CustomError.badRequest('Falta el stock actual');
-        if (!next_stock) throw CustomError.badRequest('Falta el stock futuro');
+        if (!inc_stock) throw CustomError.badRequest('Falta el stock futuro');
         if (!min_stock) throw CustomError.badRequest('Falta el stock mínimo');
         if (!rep_stock) throw CustomError.badRequest('Falta el stock de reposición');
         if (!last_price) throw CustomError.badRequest('Falta el último precio');
@@ -37,8 +39,9 @@ export class ProductEntity {
             description,
             id_brand,
             id_category,
+            id_unit,
             actual_stock,
-            next_stock,
+            inc_stock,
             min_stock,
             rep_stock,
             last_price,

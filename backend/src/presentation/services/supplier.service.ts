@@ -30,7 +30,8 @@ export class SupplierService {
                         association: 'province',
                     }]
                 }],
-                offset: (page - 1) * limit, limit
+                offset: (page - 1) * limit, 
+                limit
             }),
             Supplier.count({ where })
         ]);

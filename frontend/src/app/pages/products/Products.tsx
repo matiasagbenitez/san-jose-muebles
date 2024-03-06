@@ -8,22 +8,25 @@ import {
   initialState,
   paginationReducer,
   fetchData,
-  FilterByName,
 } from "../../shared";
+
+import { ProductsFilter } from "./components";
 
 interface DataRow {
   id: number;
   brand: string;
   category: string;
+  unit: string;
   code: string;
   name: string;
   actual_stock: number;
-  next_stock: number;
+  inc_stock: number;
   min_stock: number;
   last_price: number;
   monetary: boolean;
   currency: number;
-  next_stock_value: number;
+  unit_name: string;
+  inc_stock_value: number;
 }
 
 export const Products = () => {
@@ -92,20 +95,20 @@ export const Products = () => {
     },
     {
       name: "PRODUCTO",
-      minWidth: "300px",
+      minWidth: "250px",
       wrap: true,
       selector: (row: DataRow) => row.name,
     },
     {
       name: "A RECIBIR",
-      selector: (row: DataRow) => row.next_stock,
+      selector: (row: DataRow) => row.inc_stock + " " + row.unit,
       maxWidth: "170px",
       wrap: true,
       center: true,
     },
     {
       name: "STOCK ACTUAL",
-      selector: (row: DataRow) => row.actual_stock,
+      selector: (row: DataRow) => row.actual_stock + " " + row.unit,
       conditionalCellStyles: [
         {
           when: (row) => row.actual_stock <= row.min_stock,
@@ -120,7 +123,7 @@ export const Products = () => {
       center: true,
     },
     {
-      name: "ÚLTIMO PRECIO",
+      name: "COSTO ACTUAL",
       selector: (row: DataRow) =>
         `${row.currency} ${row.monetary ? "$" : ""} ${row.last_price}`,
       maxWidth: "170px",
@@ -130,9 +133,16 @@ export const Products = () => {
       omit: !roles.includes("ADMIN"),
     },
     {
+      name: "POR",
+      selector: (row: DataRow) => row.unit_name,
+      width: "100px",
+      // wrap: true,
+      center: true,
+    },
+    {
       name: "CAPITAL ACTUAL",
       selector: (row: DataRow) =>
-        `${row.currency} ${row.monetary ? "$" : ""} ${row.next_stock_value}`,
+        `${row.currency} ${row.monetary ? "$" : ""} ${row.inc_stock_value}`,
       maxWidth: "170px",
       wrap: true,
       right: true,
@@ -151,7 +161,7 @@ export const Products = () => {
 
   return (
     <div>
-      <FilterByName
+      <ProductsFilter
         state={state}
         dispatch={dispatch}
         placeholder="Buscar por nombre de producto"
