@@ -1,13 +1,12 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
 import { CustomError, ProductDto, ProductEntity, ProductListEntity, PaginationDto } from "../../domain";
 
 export interface ProductFilters {
-    name: string;
-    id_brand: number | string;
-    id_category: number | string;
-    normal_stock: boolean;
-    low_stock: boolean;
+    text: string | undefined;
+    id_brand: string | undefined;
+    id_category: string | undefined;
+    stock: string | undefined;
 }
 
 export class ProductService {
@@ -25,17 +24,28 @@ export class ProductService {
         return { items: productsEntities };
     }
 
-    public async getProductsPaginated(paginationDto: PaginationDto, filters: ProductFilters) {
+    public async getProductsPaginated(paginationDto: PaginationDto, filters: any) {
         const { page, limit } = paginationDto;
 
         // FILTERS
         let where = {};
-        if (filters.name) where = {
+        if (filters.text) where = {
             [Op.or]: [
-                { name: { [Op.like]: `%${filters.name}%` } },
-                { code: { [Op.like]: `%${filters.name}%` } },
+                { name: { [Op.like]: `%${filters.text}%` } },
+                { code: { [Op.like]: `%${filters.text}%` } },
             ]
         };
+        if (filters.id_brand) where = { ...where, id_brand: filters.id_brand };
+        if (filters.id_category) where = { ...where, id_category: filters.id_category };
+        if (filters.stock === 'low') {
+            where = { ...where, actual_stock: { [Op.lt]: Sequelize.col('min_stock') } };
+        } else if (filters.stock === 'normal') {
+            where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('min_stock') } };
+        } else if (filters.stock === 'high') {
+            where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('rep_stock') } };
+        } else if (filters.stock === 'empty') {
+            where = { ...where, actual_stock: 0 };
+        }
 
         const [products, total] = await Promise.all([
             Product.findAll({

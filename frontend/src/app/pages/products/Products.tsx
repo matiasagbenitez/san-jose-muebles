@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 import { useSelector } from "react-redux";
@@ -11,7 +11,12 @@ import {
 } from "../../shared";
 
 import { ProductsFilter } from "./components";
+import apiSJM from "../../../api/apiSJM";
 
+interface ParamsInterface {
+  id: string;
+  name: string;
+}
 interface DataRow {
   id: number;
   brand: string;
@@ -33,11 +38,20 @@ export const Products = () => {
   const navigate = useNavigate();
   const { roles } = useSelector((state: any) => state.auth);
   const [state, dispatch] = useReducer(paginationReducer, initialState);
+  const [brands, setBrands] = useState<ParamsInterface[]>([]);
+  const [categories, setCategories] = useState<ParamsInterface[]>([]);
+
   const endpoint = "/products";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
-    await fetchData(endpoint, 1, state, dispatch);
+    const [_, res2, res3] = await Promise.all([
+      fetchData(endpoint, 1, state, dispatch),
+      apiSJM.get("/brands"),
+      apiSJM.get("/categories"),
+    ]);
+    setBrands(res2.data.items);
+    setCategories(res3.data.items);
   };
 
   useEffect(() => {
@@ -80,14 +94,14 @@ export const Products = () => {
       center: true,
     },
     {
-      name: "MARCA",
-      selector: (row: DataRow) => row.brand,
+      name: "CÓDIGO",
+      selector: (row: DataRow) => row.code,
       maxWidth: "140px",
       wrap: true,
     },
     {
-      name: "CÓDIGO",
-      selector: (row: DataRow) => row.code,
+      name: "MARCA",
+      selector: (row: DataRow) => row.brand,
       maxWidth: "140px",
       wrap: true,
     },
@@ -144,7 +158,7 @@ export const Products = () => {
       center: true,
     },
     {
-      name: "CAPITAL ACUMULADO",
+      name: "CAPITAL",
       cell: (row: DataRow) => (
         <div className="d-flex justify-content-between align-items-center w-100">
           <span>{row.currency}</span>
@@ -174,10 +188,11 @@ export const Products = () => {
       <ProductsFilter
         state={state}
         dispatch={dispatch}
-        placeholder="Buscar por nombre de producto"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}
+        brands={brands}
+        categories={categories}
       />
 
       <Datatable

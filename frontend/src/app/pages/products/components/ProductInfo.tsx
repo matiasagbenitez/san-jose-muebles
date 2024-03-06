@@ -40,7 +40,7 @@ export const ProductInfo = ({ product }: any) => {
             <td colSpan={2}>Información de stock</td>
           </tr>
           <tr>
-            <th scope="row">Unidad compra</th>
+            <th scope="row">Unidad</th>
             <td>{product.unit}</td>
           </tr>
           <tr
@@ -93,10 +93,14 @@ export const ProductInfo = ({ product }: any) => {
             </td>
           </tr>
           <tr className="text-center fw-bold">
-            <td colSpan={2}>Información de compra y capital</td>
+            <td colSpan={2}>Información de compra</td>
           </tr>
           <tr>
-            <th scope="row">Moneda compra</th>
+            <th scope="row">Unidad</th>
+            <td>{product.unit}</td>
+          </tr>
+          <tr>
+            <th scope="row">Moneda de compra</th>
             <td>
               {product.currency_symbol} ({product.currency})
             </td>

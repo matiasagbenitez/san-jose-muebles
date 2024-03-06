@@ -31,7 +31,10 @@ export class ProductController {
         if (error) return res.status(400).json({ message: error });
 
         let filters = {};
-        if (req.query.name) filters = { ...filters, name: req.query.name };
+        if (req.query.text) filters = { ...filters, text: req.query.text };
+        if (req.query.id_brand) filters = { ...filters, id_brand: req.query.id_brand };
+        if (req.query.id_category) filters = { ...filters, id_category: req.query.id_category };
+        if (req.query.stock) filters = { ...filters, stock: req.query.stock };
 
         this.productService.getProductsPaginated(paginationDto!, filters as ProductFilters)
             .then((data) => {
