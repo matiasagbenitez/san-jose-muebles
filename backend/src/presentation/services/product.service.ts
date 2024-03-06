@@ -13,7 +13,14 @@ export interface ProductFilters {
 export class ProductService {
 
     public async getProducts() {
-        const products = await Product.findAll();
+        const products = await Product.findAll({
+            include: [
+                { association: 'brand' },
+                { association: 'category' },
+                { association: 'currency' },
+                { association: 'unit' }
+            ],
+        });
         const productsEntities = products.map(product => ProductEntity.fromObject(product));
         return { items: productsEntities };
     }
@@ -37,15 +44,15 @@ export class ProductService {
                     { association: 'brand' },
                     { association: 'category' },
                     { association: 'currency' },
-                    { association: 'unit'}
+                    { association: 'unit' }
                 ],
-                offset: (page - 1) * limit, 
+                offset: (page - 1) * limit,
                 limit
             }),
             Product.count({ where })
         ]);
         const productsEntities = products.map(product => ProductListEntity.fromObject(product));
-        return { items: productsEntities, total_items: total }; 
+        return { items: productsEntities, total_items: total };
     }
 
     public async getProduct(id: number) {
@@ -54,10 +61,11 @@ export class ProductService {
                 { association: 'brand' },
                 { association: 'category' },
                 { association: 'currency' },
+                { association: 'unit' }
             ]
         });
         if (!product) throw CustomError.notFound('Producto no encontrado');
-        const { ...productEntity } = ProductListEntity.fromObject(product);
+        const { ...productEntity } = ProductEntity.fromObject(product);
         return { product: productEntity };
     }
 

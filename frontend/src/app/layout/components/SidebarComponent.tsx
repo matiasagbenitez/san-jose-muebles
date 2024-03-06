@@ -24,9 +24,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <i className="bi bi-truck me-3 fs-6"></i>
           Proveedores
         </MenuItem>
-        <MenuItem component={<Link to="/productos" />} title="Productos" style={{  height: "45px" }}>
+        <MenuItem component={<Link to="/productos" />} title="Inventario" style={{  height: "45px" }}>
           <i className="bi bi-box me-3 fs-6"></i>
-          Productos
+          Inventario
         </MenuItem>
         <MenuItem component={<Link to="/parametros" />} title="Parámetros" style={{  height: "45px" }}>
           <i className="bi bi-gear-wide-connected me-3 fs-6"></i>

@@ -17,7 +17,7 @@ export class ProductListEntity {
         public monetary: boolean,
         public currency: string,
         public unit_name: string,
-        public inc_stock_value: string,
+        public actual_stock_value: string,
 
         public code?: string,
     ) { }

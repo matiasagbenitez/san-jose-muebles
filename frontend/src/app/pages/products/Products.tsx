@@ -26,7 +26,7 @@ interface DataRow {
   monetary: boolean;
   currency: number;
   unit_name: string;
-  inc_stock_value: number;
+  actual_stock_value: number;
 }
 
 export const Products = () => {
@@ -84,14 +84,12 @@ export const Products = () => {
       selector: (row: DataRow) => row.brand,
       maxWidth: "140px",
       wrap: true,
-      center: true,
     },
     {
       name: "CÓDIGO",
       selector: (row: DataRow) => row.code,
       maxWidth: "140px",
       wrap: true,
-      center: true,
     },
     {
       name: "PRODUCTO",
@@ -111,10 +109,11 @@ export const Products = () => {
       selector: (row: DataRow) => row.actual_stock + " " + row.unit,
       conditionalCellStyles: [
         {
-          when: (row) => row.actual_stock <= row.min_stock,
+          when: (row) => row.actual_stock < row.min_stock,
           style: {
             backgroundColor: "rgba(255, 0, 0, 0.2)",
             color: "red",
+            fontWeight: "bold",
           },
         },
       ],
@@ -123,7 +122,7 @@ export const Products = () => {
       center: true,
     },
     {
-      name: "COSTO ACTUAL",
+      name: "ÚLTIMO PRECIO",
       selector: (row: DataRow) =>
         `${row.currency} ${row.monetary ? "$" : ""} ${row.last_price}`,
       maxWidth: "170px",
@@ -142,7 +141,7 @@ export const Products = () => {
     {
       name: "CAPITAL ACTUAL",
       selector: (row: DataRow) =>
-        `${row.currency} ${row.monetary ? "$" : ""} ${row.inc_stock_value}`,
+        `${row.currency} ${row.monetary ? "$" : ""} ${row.actual_stock_value}`,
       maxWidth: "170px",
       wrap: true,
       right: true,
@@ -171,7 +170,7 @@ export const Products = () => {
       />
 
       <Datatable
-        title="Productos"
+        title="Inventario"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}
         loading={state.loading}

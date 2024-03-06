@@ -20,7 +20,7 @@ export const SupplierOptions = ({
 
   return (
     <>
-      <h2 className="fs-6" style={{ marginTop: "14px" }}>
+      <h2 className="fs-6" style={{ marginTop: "9px" }}>
         Menú de opciones
       </h2>
       <Table size="sm" responsive>

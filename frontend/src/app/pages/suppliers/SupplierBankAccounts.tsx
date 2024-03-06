@@ -257,8 +257,8 @@ export const SupplierBankAccounts = () => {
       {loading && <LoadingSpinner />}
       {bankAccounts && !loading && (
         <>
-          <div className="d-flex justify-content-between align-items-center">
-            <h1 className="fs-3">{supplier}</h1>
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <h1 className="fs-4 mb-0">{supplier}</h1>
             <Button size="sm" variant="success" onClick={handleCreate}>
               Nueva cuenta
             </Button>

@@ -15,7 +15,7 @@ interface Props {
 export const SupplierInfo = ({ supplier }: Props) => {
   return (
     <>
-      <h1 className="fs-3">{supplier.name}</h1>
+      <h1 className="fs-4">{supplier.name}</h1>
       <Table size="sm" className="small" striped bordered responsive>
         <tbody>
           <tr>
