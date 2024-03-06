@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Col, Row, Image } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
@@ -99,37 +99,17 @@ export const ProductForm = ({
         {({ errors, touched }) => (
           <Form id="form">
             <Row>
-              <Col md={2}>
-                <Image src="https://placehold.co/250" thumbnail width="100%" />
-              </Col>
-              <Col md={10}>
+              <Col lg={6}>
+                <h2 className="fs-6">Información del producto</h2>
                 <Row>
-                  <Col md={6}>
-                    <MySelect
-                      label="Marca *"
-                      name="id_brand"
-                      as="select"
-                      placeholder="Seleccione una marca"
-                      isInvalid={!!errors.id_brand && touched.id_brand}
-                    >
-                      <option value="">Seleccione una marca</option>
-                      {brands &&
-                        brands.map((brand) => (
-                          <option key={brand.id} value={brand.id}>
-                            {brand.name}
-                          </option>
-                        ))}
-                    </MySelect>
-                  </Col>
-                  <Col md={6}>
+                  <Col xs={6}>
                     <MySelect
                       label="Categoría *"
                       name="id_category"
                       as="select"
-                      placeholder="Seleccione una categoría"
                       isInvalid={!!errors.id_category && touched.id_category}
                     >
-                      <option value="">Seleccione una categoría</option>
+                      <option value="">Seleccione una opción</option>
                       {categories &&
                         categories.map((category) => (
                           <option key={category.id} value={category.id}>
@@ -138,40 +118,55 @@ export const ProductForm = ({
                         ))}
                     </MySelect>
                   </Col>
-                  <Col md={3}>
-                    <MyTextInput
-                      label="Código"
-                      name="code"
-                      placeholder="Ingrese código"
-                      isInvalid={!!errors.code && touched.code}
-                    />
+                  <Col xs={6}>
+                    <MySelect
+                      label="Marca *"
+                      name="id_brand"
+                      as="select"
+                      isInvalid={!!errors.id_brand && touched.id_brand}
+                    >
+                      <option value="">Seleccione una opción</option>
+                      {brands &&
+                        brands.map((brand) => (
+                          <option key={brand.id} value={brand.id}>
+                            {brand.name}
+                          </option>
+                        ))}
+                    </MySelect>
                   </Col>
-                  <Col md={9}>
-                    <MyTextInput
-                      label="Nombre *"
-                      name="name"
-                      placeholder="Ingrese nombre"
-                      isInvalid={!!errors.name && touched.name}
-                    />
-                  </Col>
-                  <Col xs={12}>
-                    <MyTextArea
-                      label="Descripción"
-                      name="description"
-                      placeholder="Ingrese una descripción adicional (opcional)"
-                      rows={4}
-                      isInvalid={!!errors.description && touched.description}
-                    />
-                  </Col>
-                  <Col md={6}>
+                </Row>
+
+                <MyTextInput
+                  label="Código"
+                  name="code"
+                  placeholder="Ingrese código"
+                  isInvalid={!!errors.code && touched.code}
+                />
+                <MyTextInput
+                  label="Nombre *"
+                  name="name"
+                  placeholder="Ingrese nombre"
+                  isInvalid={!!errors.name && touched.name}
+                />
+                <MyTextArea
+                  label="Descripción"
+                  name="description"
+                  placeholder="Ingrese una descripción adicional (opcional)"
+                  rows={4}
+                  isInvalid={!!errors.description && touched.description}
+                />
+              </Col>
+              <Col lg={6}>
+                <h2 className="fs-6 mt-5 mt-lg-0">Información de compra</h2>
+                <Row>
+                  <Col lg={6}>
                     <MySelect
                       label="Unidad de compra *"
                       name="id_unit"
                       as="select"
-                      placeholder="Seleccione una unidad de compra"
                       isInvalid={!!errors.id_unit && touched.id_unit}
                     >
-                      <option value="">Seleccione una unidad de compra</option>
+                      <option value="">Seleccione una opción</option>
                       {unitsOfMeasure &&
                         unitsOfMeasure.map((unit) => (
                           <option key={unit.id} value={unit.id}>
@@ -180,38 +175,14 @@ export const ProductForm = ({
                         ))}
                     </MySelect>
                   </Col>
-                  <Col md={2}>
-                    <MyNumberInput
-                      label="Stock actual"
-                      name="actual_stock"
-                      placeholder="Ingrese stock actual"
-                      isInvalid={!!errors.actual_stock && touched.actual_stock}
-                    />
-                  </Col>
-                  <Col md={2}>
-                    <MyNumberInput
-                      label="Stock mínimo"
-                      name="min_stock"
-                      placeholder="Ingrese stock mínimo"
-                      isInvalid={!!errors.min_stock && touched.min_stock}
-                    />
-                  </Col>
-                  <Col md={2}>
-                    <MyNumberInput
-                      label="Stock ideal"
-                      name="rep_stock"
-                      placeholder="Ingrese stock ideal"
-                      isInvalid={!!errors.rep_stock && touched.rep_stock}
-                    />
-                  </Col>
-                  <Col md={6}>
+                  <Col lg={6}>
                     <MySelect
                       label="Moneda de compra *"
                       name="id_currency"
                       as="select"
                       isInvalid={!!errors.id_currency && touched.id_currency}
                     >
-                      <option value="">Seleccione una moneda de compra</option>
+                      <option value="">Seleccione una opción</option>
                       {currencies &&
                         currencies.map((currency) => (
                           <option key={currency.id} value={currency.id}>
@@ -220,13 +191,66 @@ export const ProductForm = ({
                         ))}
                     </MySelect>
                   </Col>
-                  <Col md={2}>
+                </Row>
+                <MyNumberInput
+                  label="Costo / unidad de compra"
+                  name="last_price"
+                  placeholder="Ingrese costo actual"
+                  isInvalid={!!errors.last_price && touched.last_price}
+                />
+                <h2 className="fs-6 mt-5">Información de stock</h2>
+                <Row>
+                  <Col lg={4}>
                     <MyNumberInput
-                      label="Costo / un. compra"
-                      name="last_price"
-                      placeholder="Ingrese costo actual"
-                      isInvalid={!!errors.last_price && touched.last_price}
+                      label="Stock actual"
+                      name="actual_stock"
+                      placeholder="Ingrese stock actual"
+                      isInvalid={!!errors.actual_stock && touched.actual_stock}
                     />
+                    <p className="text-muted text-justify small lh-1">
+                      <small>
+                        <i className="bi bi-info-circle me-1"></i> El{" "}
+                        <b>stock actual</b> representa la cantidad existente del
+                        producto en la empresa en el momento de la consulta y
+                        expresado en la unidad de compra seleccionada
+                      </small>
+                    </p>
+                  </Col>
+
+                  <Col lg={4}>
+                    <MyNumberInput
+                      label="Stock mínimo"
+                      name="min_stock"
+                      placeholder="Ingrese stock mínimo"
+                      isInvalid={!!errors.min_stock && touched.min_stock}
+                    />
+                    <p className="text-muted text-justify small lh-1">
+                      <small>
+                        <i className="bi bi-info-circle me-1"></i> El{" "}
+                        <b>stock mínimo</b> representa la cantidad a partir de
+                        la cual se debería reabastecer el producto. Mostrará
+                        alertas en caso de que el stock actual sea menor al
+                        stock mínimo
+                      </small>
+                    </p>
+                  </Col>
+
+                  <Col lg={4}>
+                    <MyNumberInput
+                      label="Stock ideal"
+                      name="rep_stock"
+                      placeholder="Ingrese stock ideal"
+                      isInvalid={!!errors.rep_stock && touched.rep_stock}
+                    />
+                    <p className="text-muted text-justify small lh-1">
+                      <small>
+                        <i className="bi bi-info-circle me-1"></i> El{" "}
+                        <b>stock ideal</b> es el nivel de stock que se desea
+                        mantener del producto. Se utiliza para calcular la
+                        cantidad a reabastecer tomando como base el stock actual
+                        y el stock ideal
+                      </small>
+                    </p>
                   </Col>
                 </Row>
               </Col>

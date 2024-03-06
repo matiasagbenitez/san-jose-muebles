@@ -72,8 +72,8 @@ export class ProductService {
     public async createProduct(createProductDto: ProductDto) {
 
         try {
-            await Product.create({ ...createProductDto });
-            return { message: 'Producto creado correctamente' };
+            const product = await Product.create({ ...createProductDto });
+            return { id: product.id, message: 'Producto creado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('El product que intenta crear ya existe');

@@ -123,8 +123,14 @@ export const Products = () => {
     },
     {
       name: "ÚLTIMO PRECIO",
-      selector: (row: DataRow) =>
-        `${row.currency} ${row.monetary ? "$" : ""} ${row.last_price}`,
+      cell: (row: DataRow) => (
+        <div className="d-flex justify-content-between align-items-center w-100">
+          <span>{row.currency}</span>
+          <span>
+            {row.monetary ? "$" : ""} {row.last_price}
+          </span>
+        </div>
+      ),
       maxWidth: "170px",
       wrap: true,
       right: true,
@@ -135,13 +141,18 @@ export const Products = () => {
       name: "POR",
       selector: (row: DataRow) => row.unit_name,
       width: "100px",
-      // wrap: true,
       center: true,
     },
     {
-      name: "CAPITAL ACTUAL",
-      selector: (row: DataRow) =>
-        `${row.currency} ${row.monetary ? "$" : ""} ${row.actual_stock_value}`,
+      name: "CAPITAL ACUMULADO",
+      cell: (row: DataRow) => (
+        <div className="d-flex justify-content-between align-items-center w-100">
+          <span>{row.currency}</span>
+          <span>
+            {row.monetary ? "$" : ""} {row.actual_stock_value}
+          </span>
+        </div>
+      ),
       maxWidth: "170px",
       wrap: true,
       right: true,
@@ -170,7 +181,7 @@ export const Products = () => {
       />
 
       <Datatable
-        title="Inventario"
+        title="Listado de productos"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}
         loading={state.loading}

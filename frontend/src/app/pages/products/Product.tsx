@@ -5,7 +5,7 @@ import { Row, Col } from "react-bootstrap";
 import apiSJM from "../../../api/apiSJM";
 import { SupplierInterface } from "../../interfaces";
 import { GoBackButton, LoadingSpinner } from "../../components";
-import { ProductInfo } from ".";
+import { ProductInfo, ProductImage, ProductOptions } from ".";
 
 export const Product = () => {
   const { id } = useParams();
@@ -31,14 +31,27 @@ export const Product = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {product && !loading && <>
-        <Row>
-          <Col lg={9}>
-            <ProductInfo product={product} />
-          </Col>
-        </Row>
-        <GoBackButton />
-      </>}
+      {product && !loading && (
+        <>
+          <Row>
+            <h1 className="fs-4">{product.name}</h1>
+            <Col lg={8}>
+              <ProductInfo product={product} />
+            </Col>
+            <Col lg={4}>
+              <Row>
+                <Col xs={12}>
+                  <ProductImage />
+                </Col>
+                <Col xs={12}>
+                  <ProductOptions />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+          <GoBackButton />
+        </>
+      )}
     </>
   );
 };

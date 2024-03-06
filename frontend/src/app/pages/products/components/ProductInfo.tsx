@@ -5,7 +5,6 @@ export const ProductInfo = ({ product }: any) => {
   const bg_color = "rgba(255, 0, 0, 0.2)";
   return (
     <>
-      <h1 className="fs-4">{product.name}</h1>
       <Table size="sm" className="small" striped bordered responsive>
         <tbody>
           <tr className="text-center fw-bold">
@@ -64,7 +63,7 @@ export const ProductInfo = ({ product }: any) => {
               style={{
                 backgroundColor: low_stock ? bg_color : "transparent",
                 color: low_stock ? "red" : "black",
-                fontWeight: "bold"
+                fontWeight: "bold",
               }}
             >
               {product.actual_stock} {product.unit_symbol}
@@ -103,7 +102,7 @@ export const ProductInfo = ({ product }: any) => {
             </td>
           </tr>
           <tr>
-            <th scope="row">Último precio</th>
+            <th scope="row">Último precio pagado</th>
             <td>
               {product.currency_symbol}
               {product.price_monetary ? " $ " : " "}
@@ -111,7 +110,7 @@ export const ProductInfo = ({ product }: any) => {
             </td>
           </tr>
           <tr>
-            <th scope="row">Capital</th>
+            <th scope="row">Capital acumulado</th>
             <td>
               {product.currency_symbol}
               {product.price_monetary ? " $ " : " "}

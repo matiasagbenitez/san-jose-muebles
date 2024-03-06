@@ -15,7 +15,7 @@ export const ProductCreate = () => {
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post("/products", formData);
       SweetAlert2.successToast(data.message);
-      navigate("/productos");
+      navigate(`/productos/${data.id}`);
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     }
@@ -23,8 +23,8 @@ export const ProductCreate = () => {
 
   return (
     <div>
-      <h1 className="fs-3">Nuevo producto</h1>
-      <hr className="my-2" />
+      <h1 className="fs-4">Nuevo producto</h1>
+      <hr className="my-3" />
       <ProductForm onSubmit={onSubmit} />
     </div>
   );
