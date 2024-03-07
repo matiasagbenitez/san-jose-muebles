@@ -9,21 +9,16 @@ export class ProductListEntity {
         public unit: string,
         public name: string,
 
-        public actual_stock: number,
+        public actual_stock: number = 0,
         public inc_stock: number = 0,
         public min_stock: number = 0,
-
-        public last_price: string,
-        public monetary: boolean,
-        public currency: string,
-        public unit_name: string,
-        public actual_stock_value: string,
+        public rep_stock: number = 0,
 
         public code?: string,
     ) { }
 
     static fromObject(object: { [key: string]: any }): ProductListEntity {
-        const { id, brand, category, unit, name, actual_stock, inc_stock, min_stock, last_price, currency, code } = object;
+        const { id, brand, category, unit, name, actual_stock, inc_stock, min_stock, rep_stock, code } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!brand) throw CustomError.badRequest('Falta la marca');
@@ -31,17 +26,10 @@ export class ProductListEntity {
         if (!unit) throw CustomError.badRequest('Falta la unidad de medida');
         if (!name) throw CustomError.badRequest('Falta el nombre');
 
-        if (actual_stock === undefined || actual_stock === null || actual_stock === '') throw CustomError.badRequest('Falta el stock actual');
-        if (last_price === undefined || last_price === null || last_price === '') throw CustomError.badRequest('Falta el último precio');
-        const price_formatted = Intl.NumberFormat('es-ES', {
-            minimumFractionDigits: 2
-        }).format(parseFloat(last_price));
-
-        if (!currency) throw CustomError.badRequest('Falta la moneda');
-        const total_formatted = Intl.NumberFormat('es-ES', {
-            minimumFractionDigits: 2
-
-        }).format(actual_stock * parseFloat(last_price));
+        if (isNaN(actual_stock)) throw CustomError.badRequest('El stock actual debe ser un número');
+        if (isNaN(inc_stock)) throw CustomError.badRequest('El stock a recibir debe ser un número');
+        if (isNaN(min_stock)) throw CustomError.badRequest('El stock mínimo debe ser un número');
+        if (isNaN(rep_stock)) throw CustomError.badRequest('El stock ideal debe ser un número');
 
         return new ProductListEntity(
             id,
@@ -54,12 +42,7 @@ export class ProductListEntity {
             actual_stock,
             inc_stock,
             min_stock,
-
-            price_formatted,
-            currency.is_monetary,
-            currency.symbol,
-            unit.name,
-            total_formatted,
+            rep_stock,
 
             code
         );

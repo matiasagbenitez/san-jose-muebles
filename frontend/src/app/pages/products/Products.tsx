@@ -1,7 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
-import { useSelector } from "react-redux";
 
 import {
   Datatable,
@@ -19,24 +18,21 @@ interface ParamsInterface {
 }
 interface DataRow {
   id: number;
+
   brand: string;
   category: string;
   unit: string;
   code: string;
   name: string;
+
   actual_stock: number;
   inc_stock: number;
   min_stock: number;
-  last_price: number;
-  monetary: boolean;
-  currency: number;
-  unit_name: string;
-  actual_stock_value: number;
+  rep_stock: number;
 }
 
 export const Products = () => {
   const navigate = useNavigate();
-  const { roles } = useSelector((state: any) => state.auth);
   const [state, dispatch] = useReducer(paginationReducer, initialState);
   const [brands, setBrands] = useState<ParamsInterface[]>([]);
   const [categories, setCategories] = useState<ParamsInterface[]>([]);
@@ -112,14 +108,7 @@ export const Products = () => {
       selector: (row: DataRow) => row.name,
     },
     {
-      name: "A RECIBIR",
-      selector: (row: DataRow) => row.inc_stock + " " + row.unit,
-      maxWidth: "170px",
-      wrap: true,
-      center: true,
-    },
-    {
-      name: "STOCK ACTUAL",
+      name: <span className="py-1 text-center">STOCK ACTUAL</span>,
       selector: (row: DataRow) => row.actual_stock + " " + row.unit,
       conditionalCellStyles: [
         {
@@ -131,47 +120,41 @@ export const Products = () => {
           },
         },
       ],
-      maxWidth: "170px",
+      maxWidth: "150px",
       wrap: true,
       center: true,
     },
     {
-      name: "ÚLTIMO PRECIO",
-      cell: (row: DataRow) => (
-        <div className="d-flex justify-content-between align-items-center w-100">
-          <span>{row.currency}</span>
-          <span>
-            {row.monetary ? "$" : ""} {row.last_price}
-          </span>
-        </div>
-      ),
-      maxWidth: "170px",
+      name: <span className="py-1 text-center">STOCK A RECIBIR</span>,
+      selector: (row: DataRow) =>
+        row.inc_stock > 0 ? row.inc_stock + " " + row.unit : "",
+      maxWidth: "150px",
       wrap: true,
-      right: true,
-      reorder: true,
-      omit: !roles.includes("ADMIN"),
-    },
-    {
-      name: "POR",
-      selector: (row: DataRow) => row.unit_name,
-      width: "100px",
       center: true,
     },
     {
-      name: "CAPITAL",
-      cell: (row: DataRow) => (
-        <div className="d-flex justify-content-between align-items-center w-100">
-          <span>{row.currency}</span>
-          <span>
-            {row.monetary ? "$" : ""} {row.actual_stock_value}
-          </span>
-        </div>
-      ),
-      maxWidth: "170px",
+      name: <span className="py-1 text-center">STOCK TOTAL</span>,
+      selector: (row: DataRow) =>
+        row.inc_stock + row.actual_stock + " " + row.unit,
+      maxWidth: "150px",
       wrap: true,
-      right: true,
-      reorder: true,
-      omit: !roles.includes("ADMIN"),
+      center: true,
+    },
+    {
+      name: <span className="py-1 text-center">STOCK MÍNIMO</span>,
+      selector: (row: DataRow) =>
+        row.min_stock > 0 ? row.min_stock + " " + row.unit : "",
+      maxWidth: "150px",
+      wrap: true,
+      center: true,
+    },
+    {
+      name: <span className="py-1 text-center">STOCK IDEAL</span>,
+      selector: (row: DataRow) =>
+        row.rep_stock > 0 ? row.rep_stock + " " + row.unit : "",
+      maxWidth: "150px",
+      wrap: true,
+      center: true,
     },
   ];
 

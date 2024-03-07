@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductListEntity, PaginationDto } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductListEntity, ProductAdminListEntity, PaginationDto } from "../../domain";
 
 export interface ProductFilters {
     text: string | undefined;

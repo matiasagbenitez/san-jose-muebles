@@ -74,10 +74,15 @@ export const Supplier = () => {
         <>
           <Row>
             <Col lg={6}>
+              <h1 className="fs-4">{supplier.name}</h1>
               <SupplierInfo supplier={supplier} />
             </Col>
             <Col lg={6}>
-              <SupplierOptions id={+id!} setIsModalOpen={setIsModalOpen} handleDelete={handleDelete} />
+              <SupplierOptions
+                id={+id!}
+                setIsModalOpen={setIsModalOpen}
+                handleDelete={handleDelete}
+              />
             </Col>
             <Col lg={6}>
               <GoBackButton />

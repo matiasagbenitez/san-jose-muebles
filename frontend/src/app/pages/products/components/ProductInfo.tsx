@@ -96,10 +96,6 @@ export const ProductInfo = ({ product }: any) => {
             <td colSpan={2}>Información de compra</td>
           </tr>
           <tr>
-            <th scope="row">Unidad</th>
-            <td>{product.unit}</td>
-          </tr>
-          <tr>
             <th scope="row">Moneda de compra</th>
             <td>
               {product.currency_symbol} ({product.currency})
