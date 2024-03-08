@@ -90,14 +90,14 @@ export const Products = () => {
       center: true,
     },
     {
-      name: "CÓDIGO",
-      selector: (row: DataRow) => row.code,
+      name: "MARCA",
+      selector: (row: DataRow) => row.brand,
       maxWidth: "140px",
       wrap: true,
     },
     {
-      name: "MARCA",
-      selector: (row: DataRow) => row.brand,
+      name: "CÓDIGO",
+      selector: (row: DataRow) => row.code,
       maxWidth: "140px",
       wrap: true,
     },
@@ -134,28 +134,20 @@ export const Products = () => {
       name: <span className="py-1 text-center">STOCK TOTAL</span>,
       selector: (row: DataRow) =>
         row.inc_stock + row.actual_stock + " " + row.unit,
-        conditionalCellStyles: [
-          {
-            when: (row) => (row.inc_stock + row.actual_stock) < row.min_stock,
-            style: {
-              backgroundColor: "rgba(255, 0, 0, 0.2)",
-              color: "red",
-              fontWeight: "bold",
-            },
+      conditionalCellStyles: [
+        {
+          when: (row) => row.inc_stock + row.actual_stock < row.min_stock,
+          style: {
+            backgroundColor: "rgba(255, 0, 0, 0.2)",
+            color: "red",
+            fontWeight: "bold",
           },
-        ],
+        },
+      ],
       maxWidth: "150px",
       wrap: true,
       center: true,
     },
-    // {
-    //   name: <span className="py-1 text-center">STOCK IDEAL</span>,
-    //   selector: (row: DataRow) =>
-    //     row.ideal_stock > 0 ? row.ideal_stock + " " + row.unit : "",
-    //   maxWidth: "150px",
-    //   wrap: true,
-    //   center: true,
-    // },
   ];
 
   const handleClick = (row: DataRow) => {

@@ -32,24 +32,6 @@ export const ProductsFilter = ({
           <Row>
             <Col xl={3}>
               <Form.Control
-                name="text"
-                autoComplete="off"
-                size="sm"
-                type="text"
-                placeholder="Filtrar por nombre o código"
-                value={state.filters.text || ""}
-                onChange={(e) =>
-                  dispatch({
-                    type: "FILTERS_CHANGE",
-                    newFilters: { ...state.filters, text: e.target.value },
-                  })
-                }
-                className="mb-3"
-              />
-            </Col>
-
-            <Col xl={3}>
-              <Form.Control
                 name="brand"
                 as="select"
                 size="sm"
@@ -99,6 +81,24 @@ export const ProductsFilter = ({
 
             <Col xl={3}>
               <Form.Control
+                name="text"
+                autoComplete="off"
+                size="sm"
+                type="text"
+                placeholder="Filtrar por nombre o código"
+                value={state.filters.text || ""}
+                onChange={(e) =>
+                  dispatch({
+                    type: "FILTERS_CHANGE",
+                    newFilters: { ...state.filters, text: e.target.value },
+                  })
+                }
+                className="mb-3"
+              />
+            </Col>
+
+            <Col xl={3}>
+              <Form.Control
                 name="stock"
                 as="select"
                 size="sm"
@@ -113,7 +113,9 @@ export const ProductsFilter = ({
               >
                 <option value="">Filtrar por stock</option>
                 <option value="empty">Productos sin stock</option>
-                <option value="low">Productos con stock bajo (inferior al mínimo)</option>
+                <option value="low">
+                  Productos con stock bajo (inferior al mínimo)
+                </option>
                 <option value="normal">Productos con stock normal</option>
                 <option value="high">
                   Productos con stock alto (superior al ideal)

@@ -54,7 +54,7 @@ export const ProductInfo = ({ product }: any) => {
               scope="row"
               style={{
                 backgroundColor: low_stock ? bg_color : "transparent",
-                color: low_stock ? "red" : "black",
+                // color: low_stock ? "red" : "black",
               }}
             >
               Stock actual

@@ -68,7 +68,7 @@ export const Product = () => {
               </Row>
             </Col>
           </Row>
-          <GoBackButton />
+          <GoBackButton path="/productos" />
         </>
       )}
     </>
