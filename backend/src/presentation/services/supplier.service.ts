@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Supplier } from "../../database/mysql/models";
-import { CustomError, SupplierDto, SupplierEntity, PaginationDto } from "../../domain";
+import { CustomError, SupplierDto, SupplierEntity, PaginationDto, SupplierSelectEntity } from "../../domain";
 
 export interface SupplierFilters {
     name: string;
@@ -11,6 +11,19 @@ export class SupplierService {
     public async getSuppliers() {
         const suppliers = await Supplier.findAll();
         const suppliersEntities = suppliers.map(supplier => SupplierEntity.fromObject(supplier));
+        return { items: suppliersEntities };
+    }
+
+    public async getSuppliersSelect() {
+        const suppliers = await Supplier.findAll({
+            order: ['name'], include: [{
+                association: 'locality',
+                include: [{
+                    association: 'province',
+                }]
+            }],
+        });
+        const suppliersEntities = suppliers.map(supplier => SupplierSelectEntity.fromObject(supplier));
         return { items: suppliersEntities };
     }
 
@@ -30,7 +43,7 @@ export class SupplierService {
                         association: 'province',
                     }]
                 }],
-                offset: (page - 1) * limit, 
+                offset: (page - 1) * limit,
                 limit
             }),
             Supplier.count({ where })

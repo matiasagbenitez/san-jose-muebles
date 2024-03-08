@@ -11,6 +11,9 @@ import {
     Currency,
     UnitOfMeasure,
 
+    Purchase,
+    PurchaseItem,
+
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -49,4 +52,19 @@ export const initializeAssociations = () => {
 
     UnitOfMeasure.hasMany(Product, { foreignKey: 'id_unit', as: 'products', onDelete: 'RESTRICT' });
     Product.belongsTo(UnitOfMeasure, { foreignKey: 'id_unit', as: 'unit' });
+
+
+    // PURCHASE
+    Supplier.hasMany(Purchase, { foreignKey: 'id_supplier', as: 'purchases', onDelete: 'RESTRICT' });
+    Purchase.belongsTo(Supplier, { foreignKey: 'id_supplier', as: 'supplier' });
+
+    Currency.hasMany(Purchase, { foreignKey: 'id_currency', as: 'purchases', onDelete: 'RESTRICT' });
+    Purchase.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    // PURCHASE *-* PURCHASE ITEM *-* PRODUCT
+    Purchase.hasMany(PurchaseItem, { foreignKey: 'id_purchase', as: 'items', onDelete: 'RESTRICT' });
+    PurchaseItem.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
+    Product.hasMany(PurchaseItem, { foreignKey: 'id_product', as: 'purchases', onDelete: 'RESTRICT' });
+    PurchaseItem.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
+    
 };

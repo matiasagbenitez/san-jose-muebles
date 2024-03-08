@@ -9,7 +9,7 @@ import { Currency, initCurrencyModel } from './Currency.model';
 import { PaymentMethod, initPaymentMethodModel } from './PaymentMethod.model';
 import { TypeOfEnvironment, initTypeOfEnvironmentModel } from './TypeOfEnvironment';
 import { Brand, initBrandModel } from './Brand.model';
-import { Category, initCategoryModel} from './Category.model';
+import { Category, initCategoryModel } from './Category.model';
 import { UnitOfMeasure, initUnitOfMeasureModel } from './UnitOfMeasure.model';
 import { Priority, initPriorityModel } from './Priority.model';
 import { TypeOfProject, initTypeOfProjectModel } from './TypeOfProject';
@@ -17,6 +17,8 @@ import { Bank, initBankModel } from './Bank.model';
 import { Supplier, initSupplierModel } from './Supplier.model';
 import { BankAccount, initBankAccountModel } from './BankAccount.model';
 import { Product, initProductModel } from './Product.model';
+import { Purchase, initPurchaseModel } from './Purchase.model';
+import { PurchaseItem, initPurchaseItemModel } from './PurchaseItem.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -36,7 +38,11 @@ export const initializeModels = (sequelize: Sequelize) => {
   initBankModel(sequelize);
   initSupplierModel(sequelize);
   initBankAccountModel(sequelize);
+
   initProductModel(sequelize);
+  initPurchaseModel(sequelize);
+  initPurchaseItemModel(sequelize);
+
 };
 
 export {
@@ -58,4 +64,6 @@ export {
   Supplier,
   BankAccount,
   Product,
+  Purchase,
+  PurchaseItem
 };

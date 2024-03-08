@@ -35,3 +35,4 @@ export * from './entities/bank.entity';
 export * from './entities/supplier.entity';
 export * from './entities/bank_account.entity';
 export * from './entities/products';
+export * from './entities/suppliers';

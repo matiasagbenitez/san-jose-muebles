@@ -11,6 +11,7 @@ export class SupplierRoutes {
         const controller = new SupplierController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
+        router.get('/select', [AuthMiddleware.validateJWT], controller.getAllSelect);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);

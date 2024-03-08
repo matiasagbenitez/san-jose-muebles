@@ -4,6 +4,7 @@ import { Inicio } from "../pages/Inicio";
 import ParametersRoutes from "./ParametersRoutes";
 import SuppliersRoutes from "./SupplierRoutes";
 import ProductRoutes from "./ProductRoutes";
+import PurchaseRoutes from "./PurchaseRoutes";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const AppRoutes = () => {
         <Route path="/parametros/*" element={<ParametersRoutes />} />
         <Route path="/proveedores/*" element={<SuppliersRoutes />} />
         <Route path="/productos/*" element={<ProductRoutes />} />
+        <Route path="/compras/*" element={<PurchaseRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />
