@@ -35,7 +35,7 @@ export const Product = () => {
       const confirmation = await SweetAlert2.confirmationDialog(
         "¿Estás seguro de que deseas eliminar este producto?"
       );
-      if (!confirmation) return;
+      if (!confirmation.isConfirmed) return;
       setLoading(true);
       await apiSJM.delete(`/products/${productId}`);
       setLoading(false);

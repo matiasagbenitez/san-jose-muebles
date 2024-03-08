@@ -1,19 +1,19 @@
-import { CustomError } from '../errors/custom.error';
+import { CustomError } from '../../errors/custom.error';
 
-export class CategoryEntity {
+export class PaymentMethodEntity {
     constructor(
         public id: string,
         public name: string,
     ) { }
 
-    static fromObject(object: { [key: string]: any }): CategoryEntity {
+    static fromObject(object: { [key: string]: any }): PaymentMethodEntity {
 
         const { id, name } = object;
 
         if (!id) throw CustomError.badRequest('Missing id');
         if (!name) throw CustomError.badRequest('Missing name');
 
-        return new CategoryEntity(
+        return new PaymentMethodEntity(
             id,
             name,
         );
