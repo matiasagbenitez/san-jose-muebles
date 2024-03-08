@@ -19,14 +19,14 @@ interface ProductFormInterface {
   id_category: string;
   id_unit: string;
   actual_stock?: number;
-  // inc_stock?: number;
+  inc_stock?: number;
   min_stock?: number;
-  rep_stock?: number;
+  ideal_stock?: number;
   last_price?: number;
   id_currency: string;
 }
 
-const supplierForm: ProductFormInterface = {
+const productForm: ProductFormInterface = {
   code: "",
   name: "",
   description: "",
@@ -34,9 +34,9 @@ const supplierForm: ProductFormInterface = {
   id_category: "",
   id_unit: "",
   actual_stock: 0,
-  // inc_stock: 0,
+  inc_stock: 0,
   min_stock: 0,
-  rep_stock: 0,
+  ideal_stock: 0,
   last_price: 0,
   id_currency: "",
 };
@@ -52,12 +52,14 @@ interface FormProps {
   onSubmit: (values: any) => void;
   initialForm?: ProductFormInterface;
   isFormSubmitted?: boolean;
+  editMode?: boolean;
 }
 
 export const ProductForm = ({
   onSubmit,
-  initialForm = supplierForm,
+  initialForm = productForm,
   isFormSubmitted,
+  editMode = false,
 }: FormProps) => {
   const [brands, setBrands] = useState<ParamsInterface[]>([]);
   const [categories, setCategories] = useState<ParamsInterface[]>([]);
@@ -206,6 +208,7 @@ export const ProductForm = ({
                       name="actual_stock"
                       placeholder="Ingrese stock actual"
                       isInvalid={!!errors.actual_stock && touched.actual_stock}
+                      disabled={editMode}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -238,9 +241,9 @@ export const ProductForm = ({
                   <Col lg={4}>
                     <MyNumberInput
                       label="Stock ideal"
-                      name="rep_stock"
+                      name="ideal_stock"
                       placeholder="Ingrese stock ideal"
-                      isInvalid={!!errors.rep_stock && touched.rep_stock}
+                      isInvalid={!!errors.ideal_stock && touched.ideal_stock}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>

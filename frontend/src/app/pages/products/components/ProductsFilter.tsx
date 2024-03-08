@@ -113,7 +113,7 @@ export const ProductsFilter = ({
               >
                 <option value="">Filtrar por stock</option>
                 <option value="empty">Productos sin stock</option>
-                <option value="low">Productos con stock bajo</option>
+                <option value="low">Productos con stock bajo (inferior al mínimo)</option>
                 <option value="normal">Productos con stock normal</option>
                 <option value="high">
                   Productos con stock alto (superior al ideal)

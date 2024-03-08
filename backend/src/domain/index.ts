@@ -15,7 +15,7 @@ export * from './dtos/priorities/priority.dto';
 export * from './dtos/types_of_projects/type_of_project.dto';
 export * from './dtos/suppliers/supplier.dto';
 export * from './dtos/bank_accounts/bank_account.dto';
-export * from './dtos/products/product.dto';
+export * from './dtos/products';
 
 export * from './entities/user.entity';
 export * from './entities/role.entity';

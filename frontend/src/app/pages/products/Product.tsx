@@ -3,21 +3,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
-import { SupplierInterface } from "../../interfaces";
 import { GoBackButton, LoadingSpinner } from "../../components";
 import { ProductInfo, ProductImage, ProductOptions } from ".";
+import { SweetAlert2 } from "../../utils";
 
 export const Product = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [productId, setProductId] = useState<number>();
   const [loading, setLoading] = useState(true);
-  const [product, setSupplier] = useState<SupplierInterface>();
+  const [product, setProduct] = useState<any>();
 
   const fetch = async () => {
     try {
       setLoading(true);
       const { data } = await apiSJM.get(`/products/${id}`);
-      setSupplier(data.product);
+      setProduct(data.product);
+      setProductId(data.product.id);
       setLoading(false);
     } catch (error) {
       return navigate("/productos");
@@ -28,10 +30,27 @@ export const Product = () => {
     fetch();
   }, [id]);
 
+  const handleDelete = async () => {
+    try {
+      const confirmation = await SweetAlert2.confirmationDialog(
+        "¿Estás seguro de que deseas eliminar este producto?"
+      );
+      if (!confirmation) return;
+      setLoading(true);
+      await apiSJM.delete(`/products/${productId}`);
+      setLoading(false);
+      SweetAlert2.successToast("Producto eliminado");
+      navigate("/productos");
+    } catch (error: any) {
+      setLoading(false);
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
-      {product && !loading && (
+      {product && !loading && productId && (
         <>
           <Row>
             <h1 className="fs-4">{product.name}</h1>
@@ -44,7 +63,7 @@ export const Product = () => {
                   <ProductImage />
                 </Col>
                 <Col xs={12}>
-                  <ProductOptions />
+                  <ProductOptions id={productId} handleDelete={handleDelete} />
                 </Col>
               </Row>
             </Col>

@@ -1,4 +1,4 @@
-export * from './forms/ProductForm';
+export * from './forms';
 export * from './ProductsFilter';
 export * from './ProductInfo';
 export * from './ProductImage';

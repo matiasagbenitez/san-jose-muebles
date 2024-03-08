@@ -58,6 +58,19 @@ export class ProductController {
             });
     }
 
+    getByIdEditable = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: 'Missing id' });
+
+        this.productService.getProductEditable(parseInt(id))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {

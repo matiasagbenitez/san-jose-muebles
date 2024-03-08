@@ -11,6 +11,14 @@ export const ProductInfo = ({ product }: any) => {
             <td colSpan={2}>Información del producto</td>
           </tr>
           <tr>
+            <th scope="row">Categoría</th>
+            <td>{product.category}</td>
+          </tr>
+          <tr>
+            <th scope="row">Marca</th>
+            <td>{product.brand}</td>
+          </tr>
+          <tr>
             <th scope="row" className="col-3">
               Nombre
             </th>
@@ -19,14 +27,6 @@ export const ProductInfo = ({ product }: any) => {
           <tr>
             <th scope="row">Código</th>
             <td>{product.code}</td>
-          </tr>
-          <tr>
-            <th scope="row">Marca</th>
-            <td>{product.brand}</td>
-          </tr>
-          <tr>
-            <th scope="row">Categoría</th>
-            <td>{product.category}</td>
           </tr>
           <tr>
             <th scope="row">Descripción</th>
@@ -75,9 +75,15 @@ export const ProductInfo = ({ product }: any) => {
             </td>
           </tr>
           <tr>
-            <th scope="row">En camino</th>
+            <th scope="row">Stock a recibir</th>
             <td>
               {product.inc_stock} {product.unit_symbol}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Stock total</th>
+            <td>
+              {product.actual_stock + product.inc_stock} {product.unit_symbol}
             </td>
           </tr>
           <tr>
@@ -89,7 +95,7 @@ export const ProductInfo = ({ product }: any) => {
           <tr>
             <th scope="row">Stock ideal</th>
             <td>
-              {product.rep_stock} {product.unit_symbol}
+              {product.ideal_stock} {product.unit_symbol}
             </td>
           </tr>
           <tr className="text-center fw-bold">
@@ -110,7 +116,7 @@ export const ProductInfo = ({ product }: any) => {
             </td>
           </tr>
           <tr>
-            <th scope="row">Capital acumulado</th>
+            <th scope="row">Capital actual</th>
             <td>
               {product.currency_symbol}
               {product.price_monetary ? " $ " : " "}

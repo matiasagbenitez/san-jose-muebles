@@ -10,7 +10,7 @@ export class ProductDto {
         // STOCK
         public actual_stock: number = 0,
         public min_stock: number = 0,
-        public rep_stock: number = 0,
+        public ideal_stock: number = 0,
         public last_price: number = 0,
         
         public code?: string,
@@ -29,7 +29,7 @@ export class ProductDto {
 
             actual_stock,
             min_stock,
-            rep_stock,
+            ideal_stock,
             last_price,
 
             code,
@@ -52,7 +52,7 @@ export class ProductDto {
 
             actual_stock,
             min_stock,
-            rep_stock,
+            ideal_stock,
             last_price,
 
             code,

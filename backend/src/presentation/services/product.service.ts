@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductListEntity, ProductAdminListEntity, PaginationDto } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductListEntity, ProductAdminListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity } from "../../domain";
 
 export interface ProductFilters {
     text: string | undefined;
@@ -42,7 +42,7 @@ export class ProductService {
         } else if (filters.stock === 'normal') {
             where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('min_stock') } };
         } else if (filters.stock === 'high') {
-            where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('rep_stock') } };
+            where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('ideal_stock') } };
         } else if (filters.stock === 'empty') {
             where = { ...where, actual_stock: 0 };
         }
@@ -79,6 +79,13 @@ export class ProductService {
         return { product: productEntity };
     }
 
+    public async getProductEditable(id: number) {
+        const product = await Product.findByPk(id);
+        if (!product) throw CustomError.notFound('Producto no encontrado');
+        const { ...productEntity } = ProductEditableEntity.fromObject(product);
+        return { product: productEntity };
+    }
+
     public async createProduct(createProductDto: ProductDto) {
 
         try {
@@ -92,15 +99,15 @@ export class ProductService {
         }
     }
 
-    public async updateProduct(id: number, updateProductDto: ProductDto) {
+    public async updateProduct(id: number, updateProductDto: ProductInfoDto | ProductStockDto | ProductPriceDto) {
         const product = await Product.findByPk(id);
         if (!product) throw CustomError.notFound('Producto no encontrado');
         try {
-            await product.update(updateProductDto);
-            return { message: 'Producto actualizado correctamente' };
+            await product.update({ ...updateProductDto });
+            return { id: product.id, message: 'Producto actualizado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
-                throw CustomError.badRequest('El product que intenta actualizar ya existe');
+                throw CustomError.badRequest('El producto que intenta actualizar ya existe');
             }
             throw CustomError.internalServerError(`${error}`);
         }

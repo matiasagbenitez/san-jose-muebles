@@ -11,7 +11,7 @@ export class Product extends Model {
     public actual_stock!: number;
     public inc_stock!: number;
     public min_stock!: number;
-    public rep_stock!: number;
+    public ideal_stock!: number;
     public last_price!: number;
     public id_currency!: number;
 
@@ -64,7 +64,7 @@ export const initProductModel = (sequelize: Sequelize) => {
                 allowNull: false,
                 defaultValue: 0,
             },
-            rep_stock: {
+            ideal_stock: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
                 defaultValue: 0,

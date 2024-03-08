@@ -19,7 +19,7 @@ export class ProductEntity {
         public actual_stock: number,        // FORM
         public inc_stock: number = 0,       // FORM
         public min_stock: number = 0,       // FORM
-        public rep_stock: number = 0,       // FORM
+        public ideal_stock: number = 0,       // FORM
 
         public last_price: string,          // FORM
         public id_currency: number,         // FORM
@@ -32,7 +32,7 @@ export class ProductEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): ProductEntity {
-        const { id, id_brand, brand, id_category, category, id_unit, unit, code, name, description, actual_stock, inc_stock, min_stock, rep_stock, last_price, id_currency, currency } = object;
+        const { id, id_brand, brand, id_category, category, id_unit, unit, code, name, description, actual_stock, inc_stock, min_stock, ideal_stock, last_price, id_currency, currency } = object;
         
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!name) throw CustomError.badRequest('Falta el nombre');
@@ -66,7 +66,7 @@ export class ProductEntity {
             actual_stock,
             inc_stock,
             min_stock,
-            rep_stock,
+            ideal_stock,
             lp_formatted,
             id_currency,
             currency.name,

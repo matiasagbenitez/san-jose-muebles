@@ -28,7 +28,7 @@ interface DataRow {
   actual_stock: number;
   inc_stock: number;
   min_stock: number;
-  rep_stock: number;
+  ideal_stock: number;
 }
 
 export const Products = () => {
@@ -108,18 +108,16 @@ export const Products = () => {
       selector: (row: DataRow) => row.name,
     },
     {
+      name: <span className="py-1 text-center">STOCK MÍNIMO</span>,
+      selector: (row: DataRow) =>
+        row.min_stock > 0 ? row.min_stock + " " + row.unit : "",
+      maxWidth: "150px",
+      wrap: true,
+      center: true,
+    },
+    {
       name: <span className="py-1 text-center">STOCK ACTUAL</span>,
       selector: (row: DataRow) => row.actual_stock + " " + row.unit,
-      conditionalCellStyles: [
-        {
-          when: (row) => row.actual_stock < row.min_stock,
-          style: {
-            backgroundColor: "rgba(255, 0, 0, 0.2)",
-            color: "red",
-            fontWeight: "bold",
-          },
-        },
-      ],
       maxWidth: "150px",
       wrap: true,
       center: true,
@@ -136,26 +134,28 @@ export const Products = () => {
       name: <span className="py-1 text-center">STOCK TOTAL</span>,
       selector: (row: DataRow) =>
         row.inc_stock + row.actual_stock + " " + row.unit,
+        conditionalCellStyles: [
+          {
+            when: (row) => (row.inc_stock + row.actual_stock) < row.min_stock,
+            style: {
+              backgroundColor: "rgba(255, 0, 0, 0.2)",
+              color: "red",
+              fontWeight: "bold",
+            },
+          },
+        ],
       maxWidth: "150px",
       wrap: true,
       center: true,
     },
-    {
-      name: <span className="py-1 text-center">STOCK MÍNIMO</span>,
-      selector: (row: DataRow) =>
-        row.min_stock > 0 ? row.min_stock + " " + row.unit : "",
-      maxWidth: "150px",
-      wrap: true,
-      center: true,
-    },
-    {
-      name: <span className="py-1 text-center">STOCK IDEAL</span>,
-      selector: (row: DataRow) =>
-        row.rep_stock > 0 ? row.rep_stock + " " + row.unit : "",
-      maxWidth: "150px",
-      wrap: true,
-      center: true,
-    },
+    // {
+    //   name: <span className="py-1 text-center">STOCK IDEAL</span>,
+    //   selector: (row: DataRow) =>
+    //     row.ideal_stock > 0 ? row.ideal_stock + " " + row.unit : "",
+    //   maxWidth: "150px",
+    //   wrap: true,
+    //   center: true,
+    // },
   ];
 
   const handleClick = (row: DataRow) => {
