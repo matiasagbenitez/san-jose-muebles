@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductListEntity, ProductAdminListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductListEntity, ProductAdminListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity } from "../../domain";
 
 export interface ProductFilters {
     text: string | undefined;
@@ -15,12 +15,9 @@ export class ProductService {
         const products = await Product.findAll({
             include: [
                 { association: 'brand' },
-                { association: 'category' },
-                { association: 'currency' },
-                { association: 'unit' }
             ],
         });
-        const productsEntities = products.map(product => ProductEntity.fromObject(product));
+        const productsEntities = products.map(product => ProductSelectEntity.fromObject(product));
         return { items: productsEntities };
     }
 

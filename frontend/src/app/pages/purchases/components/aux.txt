@@ -1,0 +1,285 @@
+import { useState, useEffect } from "react";
+import { Button, Col, Row, Form as FormRB } from "react-bootstrap";
+import { Formik, Form, FieldArray } from "formik";
+import * as Yup from "yup";
+
+import apiSJM from "../../../../api/apiSJM";
+import { MySelect, MyInputDate } from "../../../components/forms";
+
+interface CurrencyInterface {
+  id: string;
+  name: string;
+}
+
+interface SupplierInterface {
+  id: string;
+  name: string;
+  locality: string;
+}
+
+interface ProductItemInterface {
+  id_product: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+interface ProductFormInterface {
+  id_supplier: string;
+  id_currency: string;
+  date: string;
+  products: ProductItemInterface[];
+}
+
+interface ProductInterface {
+  id: string;
+  brand: string;
+  name: string;
+  code: string;
+}
+
+const initialForm: ProductFormInterface = {
+  id_supplier: "",
+  id_currency: "",
+  date: "",
+  products: [
+    {
+      quantity: 0,
+      id_product: "",
+      price: 0,
+      subtotal: 0,
+    },
+  ],
+};
+
+interface FormProps {
+  onSubmit: (values: any) => void;
+  isFormSubmitted?: boolean;
+}
+
+export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
+  const [currencies, setCurrencies] = useState<CurrencyInterface[]>([]);
+  const [suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
+  const [products, setProducts] = useState<ProductInterface[]>([]);
+  const [purchaseItems, setPurchaseItems] = useState<ProductItemInterface[]>(
+    initialForm.products
+  );
+
+  const fetch = async () => {
+    const [res1, res2, res3] = await Promise.all([
+      apiSJM.get("/currencies"),
+      apiSJM.get("/suppliers/select"),
+      apiSJM.get("/products"),
+    ]);
+    setCurrencies(res1.data.items);
+    setSuppliers(res2.data.items);
+    setProducts(res3.data.items);
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const handleAddItem = () => {
+    setPurchaseItems([
+      ...purchaseItems,
+      {
+        id_product: "",
+        quantity: 0,
+        price: 0,
+        subtotal: 0,
+      },
+    ]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    const newItems = [...purchaseItems];
+    newItems.splice(index, 1);
+    setPurchaseItems(newItems);
+  };
+
+  return (
+    <>
+      <Formik
+        initialValues={initialForm}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+        validationSchema={Yup.object({
+          date: Yup.date().required("La fecha es requerida"),
+          id_supplier: Yup.string().required("El proveedor es requerido"),
+          id_currency: Yup.string().required("La moneda es requerida"),
+          // Validate array of objects
+          products_list: Yup.array().of(
+            Yup.object({
+              id_product: Yup.string().required("El producto es requerido"),
+              quantity: Yup.number()
+                .moreThan(0, "La cantidad debe ser mayor a 0")
+                .required("La cantidad es requerida"),
+              price: Yup.number()
+                .moreThan(0, "El precio debe ser mayor a 0")
+                .required("El precio es requerido"),
+              subtotal: Yup.number()
+                .moreThan(0, "El subtotal debe ser mayor a 0")
+                .required("El subtotal es requerido"),
+            })
+          ).length(1, "Debe haber al menos un ítem"),
+        })}
+      >
+        {({ errors, touched }) => (
+          <Form id="form">
+            <Row>
+              <Col xxl={3} className="mb-4">
+                <h2 className="fs-6">Información general</h2>
+                <MySelect
+                  label="Proveedor *"
+                  name="id_supplier"
+                  as="select"
+                  isInvalid={!!errors.id_supplier && touched.id_supplier}
+                >
+                  <option value="">Seleccione una opción</option>
+                  {suppliers &&
+                    suppliers.map((supplier) => (
+                      <option key={supplier.id} value={supplier.id}>
+                        {supplier.name} ({supplier.locality})
+                      </option>
+                    ))}
+                </MySelect>
+                <MySelect
+                  label="Moneda de compra *"
+                  name="id_currency"
+                  as="select"
+                  isInvalid={!!errors.id_currency && touched.id_currency}
+                >
+                  <option value="">Seleccione una opción</option>
+                  {currencies &&
+                    currencies.map((currency) => (
+                      <option key={currency.id} value={currency.id}>
+                        {currency.name}
+                      </option>
+                    ))}
+                </MySelect>
+                <MyInputDate label="Fecha *" name="date" />
+              </Col>
+
+              <Col xxl={9}>
+                <h2 className="fs-6 mt-5 mt-lg-0">Detalle de la compra</h2>
+                <Row className="small mb-1">
+                  <Col xs={1}>Cantidad</Col>
+                  <Col xs={6}>Producto</Col>
+                  <Col xs={2}>Precio</Col>
+                  <Col xs={2}>Subtotal</Col>
+                </Row>
+                <FieldArray name="products_list">
+                  {() => (
+                    <>
+                      {purchaseItems.map((_item, index) => (
+                        <Row key={index} className="mb-2">
+                          <Col xs={1}>
+                            <FormRB.Control
+                              size="sm"
+                              defaultValue={0}
+                              type="number"
+                              name={`products.${index}.quantity`}
+                              onChange={(e: any) => {
+                                const value = e.target.value;
+                                const newItems = [...purchaseItems];
+                                newItems[index].quantity = value;
+                                newItems[index].subtotal =
+                                  value * newItems[index].price;
+                                setPurchaseItems(newItems);
+                              }}
+                            />
+                          </Col>
+                          <Col xs={6}>
+                            <FormRB.Select
+                              size="sm"
+                              name={`products.${index}.id_product`}
+                              onChange={(e: any) => {
+                                const value = e.target.value;
+                                const newItems = [...purchaseItems];
+                                newItems[index].id_product = value;
+                                setPurchaseItems(newItems);
+                              }}
+                            >
+                              <option value="">Seleccione una opción</option>
+                              {products &&
+                                products.map((product) => (
+                                  <option key={product.id} value={product.id}>
+                                    {product.brand} {product.name} (
+                                    {product.code})
+                                  </option>
+                                ))}
+                            </FormRB.Select>
+                          </Col>
+                          <Col xs={2}>
+                            <FormRB.Control
+                              size="sm"
+                              defaultValue={0}
+                              type="number"
+                              name={`products.${index}.price`}
+                              onChange={(e: any) => {
+                                const value = e.target.value;
+                                const newItems = [...purchaseItems];
+                                newItems[index].price = value;
+                                newItems[index].subtotal =
+                                  value * newItems[index].quantity;
+                                setPurchaseItems(newItems);
+                              }}
+                            />
+                          </Col>
+                          <Col xs={2}>
+                            <FormRB.Control
+                              size="sm"
+                              name={`products.${index}.subtotal`}
+                              value={
+                                purchaseItems[index].quantity *
+                                purchaseItems[index].price
+                              }
+                              disabled
+                            />
+                          </Col>
+                          <Col xs={1}>
+                            <Button
+                              size="sm"
+                              variant="danger"
+                              className="py-0 px-1"
+                              onClick={() => handleRemoveItem(index)}
+                              title="Eliminar ítem"
+                            >
+                              <i className="bi bi-x"></i>
+                            </Button>
+                          </Col>
+                        </Row>
+                      ))}
+                      <Button variant="secondary" onClick={handleAddItem} size="sm">
+                        Agregar ítem
+                      </Button>
+
+                      {/* {errors.products && ( */}
+                      <div>{JSON.stringify(errors, null, 2)}</div>
+                      <div>
+                         {JSON.stringify(products, null, 2)}
+                      </div>
+                      {/* )} */}
+                    </>
+                  )}
+                </FieldArray>
+              </Col>
+            </Row>
+
+            <Button
+              type="submit"
+              variant="primary"
+              className="mt-3 float-end"
+              size="sm"
+              disabled={isFormSubmitted}
+            >
+              Guardar
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
+};

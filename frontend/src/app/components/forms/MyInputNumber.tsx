@@ -3,11 +3,12 @@ import Form from "react-bootstrap/Form";
 import "./styles.css";
 
 interface Props {
-  label: string;
+  label?: string;
   name: string;
   placeholder?: string;
   isInvalid?: boolean;
   [x: string]: any;
+  minValue?: number;
 }
 
 export const MyNumberInput = ({ label, ...props }: Props) => {
@@ -15,9 +16,12 @@ export const MyNumberInput = ({ label, ...props }: Props) => {
 
   return (
     <div className="mb-2">
-      <Form.Label htmlFor={props.id || props.name} className="small mb-1">
-        {label}
-      </Form.Label>
+      
+      {label && (
+        <Form.Label htmlFor={props.id || props.name} className="small mb-1">
+          {label}
+        </Form.Label>
+      )}
 
       <Form.Control
         id={props.name}
@@ -27,7 +31,7 @@ export const MyNumberInput = ({ label, ...props }: Props) => {
         {...props}
         isInvalid={props.isInvalid}
         size="sm"
-        min={0}
+        min={props.minValue || 0}
       />
       <ErrorMessage
         name={props.name}
