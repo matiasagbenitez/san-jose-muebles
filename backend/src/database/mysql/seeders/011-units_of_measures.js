@@ -12,6 +12,10 @@ module.exports = {
         "symbol": "P",
       },
       {
+        "name": "CAJA",
+        "symbol": "C",
+      },
+      {
         "name": "METRO",
         "symbol": "M",
       },

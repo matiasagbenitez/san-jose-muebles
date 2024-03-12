@@ -3,82 +3,25 @@
 module.exports = {
   async up(queryInterface) {
     const list = [
-      {
-        "id": 1,
-        "name": "GUÍAS Y CORREDERAS",
-      },
-      {
-        "id": 2,
-        "name": "BISAGRAS",
-      },
-      {
-        "id": 3,
-        "name": "MANIJAS Y TIRADORES",
-      },
-      {
-        "id": 4,
-        "name": "TABLEROS DE MELAMINA",
-      },
-      {
-        "id": 5,
-        "name": "PILETAS DE COCINA",
-      },
-      {
-        "id": 6,
-        "name": "SISTEMAS PARA PUERTAS CORREDIZAS",
-      },
-      {
-        "id": 7,
-        "name": "ESCURRIDORES DE PLATOS Y VASOS",
-      },
-      {
-        "id": 8,
-        "name": "PATAS Y ZOCALOS PARA MUEBLES",
-      },
-      {
-        "id": 9,
-        "name": "SISTEMAS GIRATORIOS PARA RINCONEROS",
-      },
-      {
-        "id": 10,
-        "name": "SISTEMAS EXTRAIBLES PARA ARMARIOS",
-      },
-      {
-        "id": 11,
-        "name": "CUBIERTEROS PARA CAJÓN",
-      },
-      {
-        "id": 12,
-        "name": "CONTENEDORES DE RESIDUOS",
-      },
-      {
-        "id": 13,
-        "name": "SISTEMAS PARA PUERTAS ABATIBLES Y ELEVABLES",
-      },
-      {
-        "id": 14,
-        "name": "CANASTOS INTERNOS",
-      },
-      {
-        "id": 15,
-        "name": "SISTEMAS MATRIX PARA CAJONES",
-      },
-      {
-        "id": 16,
-        "name": "ILUMINACIÓN LED",
-      },
-      {
-        "id": 17,
-        "name": "SISTEMAS PARA PUERTAS PLEGABLES",
-      },
-      {
-        "id": 18,
-        "name": "MESADAS DE GRANITO",
-      },
-      {
-        "id": 19,
-        "name": "GRIFERÍA",
-      },
+      { "id": 1, "name": "TABLEROS DE FIBROFÁCIL" },
+      { "id": 2, "name": "TABLEROS DE MELAMINA 18MM" },
+      { "id": 3, "name": "TABLEROS DE MELAMINA ALTA RESISTENCIA 25MM" },
+      { "id": 4, "name": "RUEDAS PARA MUEBLES" },
+      { "id": 5, "name": "PATAS PARA MUEBLES" },
+      { "id": 6, "name": "BISAGRAS" },
+      { "id": 7, "name": "EXPULSORES" },
+      { "id": 8, "name": "GUÍAS TIPO Z" },
+      { "id": 9, "name": "GUÍAS TELESCÓPICAS" },
+      { "id": 10, "name": "ELEMENTOS DE UNIÓN/CONEXIÓN" },
+      { "id": 11, "name": "MANIJAS Y TIRADORES" },
+      { "id": 12, "name": "ACCESORIOS DE COCINA" },
+      { "id": 13, "name": "ACCESORIOS DE PLACARD" },
+      { "id": 14, "name": "RINCONEROS" },
+      { "id": 15, "name": "PERFILES DE ALUMINIO" },
+      { "id": 16, "name": "SISTEMAS EXTRAIBLES" },
+      { "id": 17, "name": "SISTEMAS ELEVABLES" },
+      { "id": 18, "name": "SISTEMAS CORREDIZOS" },
+      { "id": 19, "name": "ZÓCALOS PARA MUEBLES" },
     ];
 
     const categories = list.map(item => {

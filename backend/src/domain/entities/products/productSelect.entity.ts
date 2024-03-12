@@ -5,7 +5,7 @@ export class ProductSelectEntity {
         public id: number,
         public brand: string,
         public name: string,
-        public code: string,
+        public code?: string,
     ) { }
 
     static fromObject(object: { [key: string]: any }): ProductSelectEntity {
@@ -14,7 +14,6 @@ export class ProductSelectEntity {
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!brand) throw CustomError.badRequest('Falta la marca');
         if (!name) throw CustomError.badRequest('Falta el nombre');
-        if (!code) throw CustomError.badRequest('Falta el código');
 
         return new ProductSelectEntity(
             id,
