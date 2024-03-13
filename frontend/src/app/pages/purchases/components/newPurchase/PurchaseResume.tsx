@@ -9,7 +9,7 @@ export const PurchaseResume = ({
 }: any) => {
   return (
     <>
-      <Row className="mb-1" style={{ height: "35px" }}>
+      <Row className="mb-1" style={{ height: "" }}>
         <Col xs={2} className="small mt-1">
           <Button
             title="Agregar un nuevo producto al detalle"
@@ -54,7 +54,7 @@ export const PurchaseResume = ({
         </Col>
       </Row>
 
-      <Row className="mb-1 text-end" style={{ height: "35px" }}>
+      <Row className="mb-1 text-end" style={{ height: "" }}>
         <Col xs={10} className="small mt-1">
           <i>Descuento</i>
         </Col>
@@ -86,7 +86,7 @@ export const PurchaseResume = ({
         </Col>
       </Row>
 
-      <Row className="mb-1 text-end" style={{ height: "35px" }}>
+      <Row className="mb-1 text-end" style={{ height: "" }}>
         <Col xs={10} className="small mt-1">
           <i>Envío (flete)</i>
         </Col>
@@ -120,7 +120,7 @@ export const PurchaseResume = ({
         </Col>
       </Row>
 
-      <Row className="mb-1 text-end" style={{ height: "35px" }}>
+      <Row className="mb-1 text-end" style={{ height: "" }}>
         <Col xs={10} className="small mt-1">
           <i>Impuestos adicionales</i>
         </Col>
@@ -158,10 +158,10 @@ export const PurchaseResume = ({
         </Col>
       </Row>
 
-      <Row className="mb-1 text-end" style={{ height: "35px" }}>
+      <Row className="mb-1 text-end" style={{ height: "" }}>
         <Col xs={10} className="small mt-1">
           <b className="text-uppercase">Total compra</b>
-        </Col>  
+        </Col>
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
             <InputGroup.Text>$</InputGroup.Text>
@@ -174,10 +174,11 @@ export const PurchaseResume = ({
               disabled
               value={
                 (values.total =
-                  values.subtotal -
-                  values.discount +
-                  values.shipping +
-                  values.fees)
+                  (values.subtotal -
+                    values.discount +
+                    values.shipping +
+                    values.fees) *
+                  100) / 100
               }
               step="0.01"
             />
@@ -185,7 +186,7 @@ export const PurchaseResume = ({
         </Col>
       </Row>
 
-      <Row className="text-end" style={{ height: "35px" }}>
+      <Row className="text-end" style={{ height: "" }}>
         <Col xs={10}></Col>
 
         <Col xs={2}>

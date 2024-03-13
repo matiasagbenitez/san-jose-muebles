@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Button, Col, Form as FormRB, InputGroup, Row } from "react-bootstrap";
+import Select from "react-select";
 
 interface ProductItemProps {
   index: number;
@@ -18,7 +19,7 @@ export const ProductItem = ({
   remove,
 }: ProductItemProps) => {
   return (
-    <Row key={index} className="mb-1" style={{ height: "35px" }}>
+    <Row key={index} className="mb-1" style={{ height: "" }}>
       <Col xs={1}>
         <Button
           variant="danger"
@@ -61,23 +62,30 @@ export const ProductItem = ({
         </InputGroup>
       </Col>
       <Col xs={6}>
-        <FormRB.Select
-          size="sm"
+        <Select
+          placeholder="Seleccione un producto"
           name={`products_list.${index}.id_product`}
-          value={values.products_list[index].id_product}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            setFieldValue(`products_list.${index}.id_product`, e.target.value);
+          options={products}
+          onChange={(e: any) => {
+            setFieldValue(`products_list.${index}.id_product`, e.id);
           }}
+          styles={{
+            control: (_provided, _state) => ({
+              height: "31px",
+              minHeight: "31px",
+              border: "1px solid #ced4da",
+              borderRadius: "0.25rem",
+              fontSize: "0.9rem",
+              display: "flex",
+            }),
+            menu: (provided, _state) => ({
+              ...provided,
+              fontSize: "0.9rem",
+            }),
+          }}
+          getOptionValue={(option) => option.id}
           required
-        >
-          <option value="">Seleccione una opción</option>
-          {products &&
-            products.map((product: any) => (
-              <option key={product.id} value={product.id}>
-                {product.name} &nbsp; CÓDIGO: {product.code} &nbsp; MARCA: {product.brand}
-              </option>
-            ))}
-        </FormRB.Select>
+        />
       </Col>
       <Col xs={2}>
         <InputGroup className="mb-3" size="sm">

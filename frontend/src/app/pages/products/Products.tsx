@@ -92,13 +92,13 @@ export const Products = () => {
     {
       name: "MARCA",
       selector: (row: DataRow) => row.brand,
-      maxWidth: "140px",
+      maxWidth: "160px",
       wrap: true,
     },
     {
       name: "CÓDIGO",
       selector: (row: DataRow) => row.code,
-      maxWidth: "140px",
+      maxWidth: "160px",
       wrap: true,
     },
     {

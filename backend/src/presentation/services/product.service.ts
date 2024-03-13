@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductListEntity, ProductAdminListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity } from "../../domain";
 
 export interface ProductFilters {
     text: string | undefined;
@@ -84,7 +84,6 @@ export class ProductService {
     }
 
     public async createProduct(createProductDto: ProductDto) {
-
         try {
             const product = await Product.create({ ...createProductDto });
             return { id: product.id, message: 'Producto creado correctamente' };
@@ -113,7 +112,6 @@ export class ProductService {
     public async deleteProduct(id: number) {
         const product = await Product.findByPk(id);
         if (!product) throw CustomError.notFound('Producto no encontrado');
-
         try {
             await product.destroy();
             return { message: 'Producto eliminado correctamente' };

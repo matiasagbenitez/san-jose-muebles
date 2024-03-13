@@ -3,9 +3,7 @@ import { CustomError } from '../../errors/custom.error';
 export class ProductSelectEntity {
     constructor(
         public id: number,
-        public brand: string,
-        public name: string,
-        public code?: string,
+        public label: string,
     ) { }
 
     static fromObject(object: { [key: string]: any }): ProductSelectEntity {
@@ -17,10 +15,8 @@ export class ProductSelectEntity {
 
         return new ProductSelectEntity(
             id,
-            brand.name,
-            name,
-            code,
+            `${name} | MARCA: ${brand.name} | CÓDIGO: ${code || '---'}`
         );
-         
+
     }
 }
