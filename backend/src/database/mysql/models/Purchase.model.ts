@@ -54,11 +54,7 @@ export const initPurchaseModel = (sequelize: Sequelize) => {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
             }, 
-            shipping: {
-                type: DataTypes.DECIMAL(10, 2),
-                allowNull: false,
-            },
-            fees: {
+            other_charges: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
             },

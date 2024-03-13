@@ -29,8 +29,8 @@ export const PurchaseResume = ({
             &ensp; Agregar producto
           </Button>
         </Col>
-        <Col xs={8} className="small mt-1 text-end">
-          <b>Subtotal productos</b>
+        <Col xs={8} className="small mt-1 text-end text-uppercase">
+          <b>Subtotal *</b>
         </Col>
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
@@ -91,7 +91,13 @@ export const PurchaseResume = ({
 
       <Row className="mb-1 text-end" style={{ height: "" }}>
         <Col xs={10} className="small mt-1">
-          <i>Envío (flete)</i>
+          <i>
+            Otros cargos &ensp;
+            <i
+              className="bi bi-info-circle"
+              title="Cargos adicionales que deben ser pagados AL PROVEEDOR (flete a cargo del proveedor, seguros, impuestos, etc.)"
+            ></i>
+          </i>
         </Col>
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
@@ -101,19 +107,19 @@ export const PurchaseResume = ({
               autoComplete="off"
               className="text-end"
               type="number"
-              name={`shipping`}
+              name={`other_charges`}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (!isNaN(parseFloat(e.target.value))) {
-                  const shipping = parseFloat(e.target.value);
-                  setFieldValue(`shipping`, shipping);
+                  const other_charges = parseFloat(e.target.value);
+                  setFieldValue(`other_charges`, other_charges);
                   setFieldValue(
                     `total`,
                     Math.round(
-                      (values.subtotal - values.discount + shipping) * 100
+                      (values.subtotal - values.discount + other_charges) * 100
                     ) / 100
                   );
                 } else {
-                  setFieldValue(`shipping`, 0);
+                  setFieldValue(`other_charges`, 0);
                 }
               }}
               step="0.01"
@@ -124,46 +130,9 @@ export const PurchaseResume = ({
       </Row>
 
       <Row className="mb-1 text-end" style={{ height: "" }}>
-        <Col xs={10} className="small mt-1">
-          <i>Impuestos adicionales</i>
-        </Col>
-        <Col xs={2}>
-          <InputGroup className="mb-3" size="sm">
-            <InputGroup.Text>$</InputGroup.Text>
-            <FormRB.Control
-              min={0}
-              autoComplete="off"
-              className="text-end"
-              type="number"
-              name={`fees`}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                if (!isNaN(parseFloat(e.target.value))) {
-                  const fees = parseFloat(e.target.value);
-                  setFieldValue(`fees`, fees);
-                  setFieldValue(
-                    `total`,
-                    Math.round(
-                      (values.subtotal -
-                        values.discount +
-                        values.shipping +
-                        fees) *
-                        100
-                    ) / 100
-                  );
-                } else {
-                  setFieldValue(`fees`, 0);
-                }
-              }}
-              step="0.01"
-              defaultValue={0}
-            />
-          </InputGroup>
-        </Col>
-      </Row>
-
-      <Row className="mb-1 text-end" style={{ height: "" }}>
-        <Col xs={10} className="small mt-1">
-          <b className="text-uppercase">Total compra</b>
+        <Col xs={10} className="small mt-1 d-flex justify-content-between">
+          <small>(*) Los campos marcados con asterisco son requeridos</small>
+          <b className="text-uppercase">Total a pagar al proveedor *</b>
         </Col>
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
@@ -178,10 +147,7 @@ export const PurchaseResume = ({
               value={
                 (values.total =
                   Math.round(
-                    (values.subtotal -
-                      values.discount +
-                      values.shipping +
-                      values.fees) *
+                    (values.subtotal - values.discount + values.other_charges) *
                       100
                   ) / 100)
               }

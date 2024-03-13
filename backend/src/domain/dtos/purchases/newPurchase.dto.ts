@@ -12,8 +12,7 @@ export class NewPurchaseDto {
 
         public subtotal: number,
         public discount: number = 0,
-        public shipping: number = 0,
-        public fees: number = 0,
+        public other_charges: number = 0,
         public total: number,
 
         public products_list: PurchaseItem[] = [],
@@ -26,15 +25,14 @@ export class NewPurchaseDto {
     ) { }
 
     static create(object: { [key: string]: any }): [string?, NewPurchaseDto?] {
-        const { date, id_supplier, id_currency, subtotal, discount, shipping, fees, total, products_list } = object;
+        const { date, id_supplier, id_currency, subtotal, discount, other_charges, total, products_list } = object;
 
         if (!date) return ['La fecha de la compra es requerida'];
         if (!id_supplier) return ['El proveedor es requerido'];
         if (!id_currency) return ['La moneda es requerida'];
         if (!subtotal) return ['El subtotal es requerido'];
         if (isNaN(discount)) return ['El descuento debe ser un número'];
-        if (isNaN(shipping)) return ['El envío debe ser un número'];
-        if (isNaN(fees)) return ['Los impuestos deben ser un número'];
+        if (isNaN(other_charges)) return ['El valor de otros cargos debe ser un número'];
         if (!total) return ['El total es requerido'];
         if (!products_list) return ['La lista de productos es requerida'];
 
@@ -55,11 +53,11 @@ export class NewPurchaseDto {
             if (product.subtotal !== product_subtotal) return [`El subtotal del producto ${i + 1} no coincide con el precio y la cantidad`];
             local_subtotal += product.subtotal;
         }
-
+ 
         if (local_subtotal !== subtotal) return ['El subtotal no coincide con la suma de los subtotales de los productos'];
 
-        const local_total = Math.round((subtotal - discount + shipping + fees) * 100) / 100;
-        if (local_total !== total) return ['El total no coincide con el cálculo de los subtotales, descuento, envío e impuestos'];
+        const local_total = Math.round((subtotal - discount + other_charges) * 100) / 100;
+        if (local_total !== total) return ['El total no coincide con el cálculo de los subtotales, descuento y otros cargos'];
 
         return [undefined, new NewPurchaseDto(
             date,
@@ -67,8 +65,7 @@ export class NewPurchaseDto {
             id_currency,
             subtotal,
             discount,
-            shipping,
-            fees,
+            other_charges,
             total,
             products_list,
 

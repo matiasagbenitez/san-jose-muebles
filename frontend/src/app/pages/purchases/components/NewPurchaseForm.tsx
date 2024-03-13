@@ -22,8 +22,7 @@ interface ProductFormInterface {
   products_list: ProductItemInterface[];
   subtotal: number;
   discount: number;
-  shipping: number;
-  fees: number;
+  other_charges: number;
   total: number;
 }
 
@@ -41,8 +40,7 @@ const initialForm: ProductFormInterface = {
   ],
   subtotal: 0,
   discount: 0,
-  shipping: 0,
-  fees: 0,
+  other_charges: 0,
   total: 0,
 };
 
@@ -106,8 +104,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
               .min(1, "Debe agregar al menos un producto"),
             subtotal: Yup.number().moreThan(0, "Revisar").required("Revisar"),
             discount: Yup.number().min(0, "Revisar").required("Revisar"),
-            shipping: Yup.number().min(0, "Revisar").required("Revisar"),
-            fees: Yup.number().min(0, "Revisar").required("Revisar"),
+            other_charges: Yup.number().min(0, "Revisar").required("Revisar"),
             total: Yup.number().moreThan(0, "Revisar").required("Revisar"),
           })}
         >
@@ -165,16 +162,16 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
                           <span>Eliminar</span>
                         </Col>
                         <Col xs={1}>
-                          <span>Cantidad</span>
+                          <span>Cantidad *</span>
                         </Col>
                         <Col xs={6}>
-                          <span>Producto</span>
+                          <span>Producto *</span>
                         </Col>
                         <Col xs={2}>
-                          <span>Precio</span>
+                          <span>Precio *</span>
                         </Col>
                         <Col xs={2}>
-                          <span>Subtotal producto</span>
+                          <span>Subtotal producto *</span>
                         </Col>
                       </Row>
                     ) : (

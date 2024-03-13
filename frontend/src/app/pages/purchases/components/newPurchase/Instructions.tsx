@@ -42,16 +42,14 @@ export const Instructions = () => {
           el campo en 0.
         </li>
         <li>
-          Indique el costo del <b>envío (flete)</b> si corresponde o bien, deje
-          el campo en 0.
-        </li>
-        <li>
-          Indique los <b>impuestos adicionales</b> que se aplicaron a la compra
-          (si los hubo) o bien, deje el campo en 0.
+          Indique <b>otros cargos</b> que se aplicaron a la compra. Estos cargos no corresponden
+          al costo de los productos en sí, sino a otros gastos asociados a la compra
+          y que deben ser pagados al proveedor (flete a cargo del proveedor, seguros, impuestos, etc.).
+          Si no los hubo, deje el campo en 0.
         </li>
         <li>
           El <b>total</b> de la compra se calculará de manera automática en base
-          al subtotal, descuento, envío e impuestos adicionales.
+          al subtotal, descuento y otros cargos.
         </li>
         <li>
           Haga click en <b>Guardar</b> para registrar la compra.
