@@ -4,6 +4,11 @@ export class PurchaseItem extends Model {
     public id!: number;
     public id_purchase!: number;
     public id_product!: number;
+    public quantity!: number;
+    public price!: number;
+    public subtotal!: number;
+    public actual_stocked!: number;
+    public fully_stocked!: boolean;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

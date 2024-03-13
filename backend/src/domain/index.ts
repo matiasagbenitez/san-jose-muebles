@@ -23,3 +23,6 @@ export * from './entities/suppliers';
 // PRODUCTS
 export * from './dtos/products';
 export * from './entities/products';
+
+// PURCHASES
+export * from './dtos/purchases';

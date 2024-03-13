@@ -1,11 +1,23 @@
+interface PurchaseItem {
+    quantity: number,
+    id_product: number,
+    price: number,
+    subtotal: number,
+}
 export class NewPurchaseDto {
     private constructor(
-        public id_supplier: number,
         public date: Date,
+        public id_supplier: number,
         public id_currency: number,
+
         public subtotal: number,
         public discount: number = 0,
+        public shipping: number = 0,
+        public fees: number = 0,
         public total: number,
+
+        public products_list: PurchaseItem[] = [],
+
         public paid_amount: number = 0,
         public credit_balance: number,
         public payed_off: boolean = false,
@@ -14,40 +26,56 @@ export class NewPurchaseDto {
     ) { }
 
     static create(object: { [key: string]: any }): [string?, NewPurchaseDto?] {
-        const {
-            id_supplier,
-            date,
-            id_currency,
-            subtotal,
-            discount,
-            total,
-            paid_amount,
-            credit_balance,
-            payed_off,
-            fully_stocked,
-            nullified,
-        } = object;
+        const { date, id_supplier, id_currency, subtotal, discount, shipping, fees, total, products_list } = object;
 
-        if (!id_supplier) return ['El ID del proveedor es requerido'];
-        if (!date) return ['La fecha es requerida'];
-        if (!(date instanceof Date)) return ['La fecha tiene un formato inválido'];
-        if (!id_currency) return ['El ID de la moneda es requerido'];
+        if (!date) return ['La fecha de la compra es requerida'];
+        if (!id_supplier) return ['El proveedor es requerido'];
+        if (!id_currency) return ['La moneda es requerida'];
         if (!subtotal) return ['El subtotal es requerido'];
+        if (isNaN(discount)) return ['El descuento debe ser un número'];
+        if (isNaN(shipping)) return ['El envío debe ser un número'];
+        if (isNaN(fees)) return ['Los impuestos deben ser un número'];
         if (!total) return ['El total es requerido'];
-        if (!credit_balance) return ['El crédito es requerido'];
+        if (!products_list) return ['La lista de productos es requerida'];
+
+        // Revisar que products_list cumpla con el formato
+        if (!Array.isArray(products_list)) return ['La lista de productos debe ser un arreglo'];
+        if (products_list.length === 0) return ['La lista de productos no puede estar vacía'];
+
+        let local_subtotal = 0;
+        for (let i = 0; i < products_list.length; i++) {
+            const product = products_list[i];
+            if (!product.quantity) return [`La cantidad del producto ${i + 1} es requerida`];
+            if (!product.id_product) return [`El ID del producto ${i + 1} es requerido`];
+            if (!product.price) return [`El precio del producto ${i + 1} es requerido`];
+            if (!product.subtotal) return [`El subtotal del producto ${i + 1} es requerido`];
+
+            // Verificar que los subtotales sean correctos
+            const product_subtotal = Math.round(product.price * product.quantity * 100) / 100;
+            if (product.subtotal !== product_subtotal) return [`El subtotal del producto ${i + 1} no coincide con el precio y la cantidad`];
+            local_subtotal += product.subtotal;
+        }
+
+        if (local_subtotal !== subtotal) return ['El subtotal no coincide con la suma de los subtotales de los productos'];
+
+        const local_total = Math.round((subtotal - discount + shipping + fees) * 100) / 100;
+        if (local_total !== total) return ['El total no coincide con el cálculo de los subtotales, descuento, envío e impuestos'];
 
         return [undefined, new NewPurchaseDto(
-            id_supplier,
             date,
+            id_supplier,
             id_currency,
             subtotal,
             discount,
+            shipping,
+            fees,
             total,
-            paid_amount,
-            credit_balance,
-            payed_off,
-            fully_stocked,
-            nullified,
+            products_list,
+
+            0,
+            total,
+            false,
+            false,
         )];
     }
 }

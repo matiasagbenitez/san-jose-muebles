@@ -1,14 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Offcanvas, Button } from "react-bootstrap";
 import { Instructions, NewPurchaseForm } from "./components";
+import apiSJM from "../../../api/apiSJM";
+import { SweetAlert2 } from "../../utils";
 
 export const CreatePurchase = () => {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSubmit = (formData: any) => {
-    console.log(formData);
+  const handleSubmit = async (formData: any) => {
+    try {
+      const { data } = await apiSJM.post("/purchases", formData);
+      SweetAlert2.successToast(data.message);
+      navigate(`/purchases/${data.id}`);
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
   };
 
   return (
@@ -26,10 +36,6 @@ export const CreatePurchase = () => {
         </Button>
       </div>
       <hr />
-      {/* <p className="text-muted small">
-        ¿Necesitas ayuda? Puedes consultar las instrucciones para registrar
-        una nueva compra haciendo <Button size="sm" className="p-0" variant="link" onClick={handleShow}>click aquí</Button>.
-      </p> */}
       <NewPurchaseForm onSubmit={handleSubmit} />
       <>
         <Offcanvas show={show} onHide={handleClose}>

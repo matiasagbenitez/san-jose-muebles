@@ -43,10 +43,13 @@ export const PurchaseResume = ({
               name={`subtotal`}
               disabled
               value={
-                (values.subtotal = values.products_list.reduce(
-                  (acc: any, item: any) => acc + item.subtotal,
-                  0
-                ))
+                (values.subtotal =
+                  Math.round(
+                    values.products_list.reduce(
+                      (acc: number, product: any) => acc + product.subtotal,
+                      0
+                    ) * 100
+                  ) / 100)
               }
               step="0.01"
             />
@@ -174,11 +177,13 @@ export const PurchaseResume = ({
               disabled
               value={
                 (values.total =
-                  (values.subtotal -
-                    values.discount +
-                    values.shipping +
-                    values.fees) *
-                  100) / 100
+                  Math.round(
+                    (values.subtotal -
+                      values.discount +
+                      values.shipping +
+                      values.fees) *
+                      100
+                  ) / 100)
               }
               step="0.01"
             />

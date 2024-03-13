@@ -17,6 +17,7 @@ import { BankRoutes } from './banks/routes';
 import { SupplierRoutes } from './suppliers/routes';
 import { BankAccountRoutes } from './bank_accounts/routes';
 import { ProductRoutes } from './products/routes';
+import { PurchaseRoutes } from './purchases/routes';
 
 export class AppRoutes {
 
@@ -48,6 +49,7 @@ export class AppRoutes {
         router.use('/api/bank_accounts', BankAccountRoutes.routes);
 
         router.use('/api/products', ProductRoutes.routes);
+        router.use('/api/purchases', PurchaseRoutes.routes);
 
 
         return router;
