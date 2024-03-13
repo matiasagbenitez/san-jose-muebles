@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Purchase, PurchaseItem } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity } from "../../domain";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity } from "../../domain";
 
 export interface PurchaseFilters {
     name: string;
@@ -36,19 +36,53 @@ export class PurchaseService {
         return { items: listable, total_items: total };
     }
 
-    // public async getPurchase(id: number) {
-    //     const supplier = await Purchase.findByPk(id, {
-    //         include: [{
-    //             association: 'locality',
-    //             include: [{
-    //                 association: 'province',
-    //             }]
-    //         }]
-    //     });
-    //     if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
-    //     const { ...supplierEntity } = PurchaseEntity.fromObject(supplier);
-    //     return { supplier: supplierEntity };
-    // }
+    public async getPurchase(id: number) {
+        const purchase = await Purchase.findByPk(id, {
+            attributes: {
+                exclude: ['id_supplier', 'id_currency', 'created_by', 'nullified_by'],
+            },
+            include: [{
+                association: 'items',
+                attributes: ['id', 'quantity', 'price', 'subtotal', 'actual_stocked', 'fully_stocked'],
+                include: [{
+                    association: 'product',
+                    attributes: ['code', 'name'],
+                    include: [{
+                        association: 'brand',
+                        attributes: ['name']
+                    }, {
+                        association: 'unit',
+                        attributes: ['name', 'symbol']
+                    }]
+                },]
+            }, {
+                association: 'currency',
+                attributes: ['name', 'symbol', 'is_monetary']
+            }, {
+                association: 'supplier',
+                attributes: ['name', 'dni_cuit', 'phone'],
+                include: [{
+                    association: 'locality',
+                    attributes: ['name'],
+                    include: [{
+                        association: 'province',
+                        attributes: ['name']
+                    }]
+                }]
+            }, {
+                association: 'creator',
+                attributes: ['name']
+            }, {
+                association: 'nullifier',
+                attributes: ['name']
+            }],
+
+        });
+
+        if (!purchase) throw CustomError.notFound('Compra no encontrada');
+        const { ...entity } = DetailPurchaseEntity.fromObject(purchase);
+        return { purchase: entity };
+    }
 
     public async createPurchase(form: NewPurchaseDto, id_user: number) {
 

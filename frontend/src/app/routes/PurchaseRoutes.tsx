@@ -5,6 +5,7 @@ import { RootState } from "../../store/store";
 import {
   Purchases,
   CreatePurchase,
+  Purchase,
 } from "../pages/purchases";
 
 const PurchaseRoutes = () => {
@@ -16,6 +17,7 @@ const PurchaseRoutes = () => {
         <>
           <Route path="/" element={<Purchases />} />
           <Route path="/registrar" element={<CreatePurchase />} />
+          <Route path="/:id" element={<Purchase />} />
         </>
       )}
 

@@ -43,18 +43,18 @@ export class PurchaseController {
             });
     }
 
-    // getById = async (req: Request, res: Response) => {
-    //     const id = req.params.id;
-    //     if (!id) return res.status(400).json({ message: 'Missing id' });
+    getById = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: 'Missing id' });
 
-    //     this.purchaseService.getPurchase(parseInt(id))
-    //         .then((data) => {
-    //             res.json(data);
-    //         })
-    //         .catch((error) => {
-    //             this.handleError(error, res);
-    //         });
-    // }
+        this.purchaseService.getPurchase(parseInt(id))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
 
     create = async (req: Request, res: Response) => {
 
