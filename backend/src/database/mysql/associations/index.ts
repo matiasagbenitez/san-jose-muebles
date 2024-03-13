@@ -66,5 +66,8 @@ export const initializeAssociations = () => {
     PurchaseItem.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
     Product.hasMany(PurchaseItem, { foreignKey: 'id_product', as: 'purchases', onDelete: 'RESTRICT' });
     PurchaseItem.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
-    
+
+    Purchase.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
+    Purchase.belongsTo(User, { foreignKey: 'nullified_by', as: 'nullifier' });
+
 };

@@ -13,9 +13,12 @@ export const CreatePurchase = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
+      const confirmation = await SweetAlert2.confirmationDialog("¿Desea registrar la compra?");
+      if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post("/purchases", formData);
       SweetAlert2.successToast(data.message);
-      navigate(`/purchases/${data.id}`);
+      // navigate(`/purchases/${data.id}`);
+      navigate("/compras");
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     }

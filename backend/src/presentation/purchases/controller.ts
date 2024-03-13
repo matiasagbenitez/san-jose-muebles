@@ -15,33 +15,33 @@ export class PurchaseController {
     }
 
     // Métodos de la clase
-    // getAll = async (req: Request, res: Response) => {
+    getAll = async (req: Request, res: Response) => {
 
-    //     this.purchaseService.getPurchases()
-    //         .then((data) => {
-    //             res.json(data);
-    //         })
-    //         .catch((error) => {
-    //             this.handleError(error, res);
-    //         });
-    // }
+        this.purchaseService.getPurchases()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
 
-    // getAllPaginated = async (req: Request, res: Response) => {
-    //     const { page = 1, limit = 10 } = req.query;
-    //     const [error, paginationDto] = PaginationDto.create(+page, +limit);
-    //     if (error) return res.status(400).json({ message: error });
+    getAllPaginated = async (req: Request, res: Response) => {
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
 
-    //     let filters = {};
-    //     if (req.query.name) filters = { ...filters, name: req.query.name };
+        let filters = {};
+        // if (req.query.name) filters = { ...filters, name: req.query.name };
 
-    //     this.purchaseService.getPurchasesPaginated(paginationDto!, filters as PurchaseFilters)
-    //         .then((data) => {
-    //             res.json(data);
-    //         })
-    //         .catch((error) => {
-    //             this.handleError(error, res);
-    //         });
-    // }
+        this.purchaseService.getPurchasesPaginated(paginationDto!, filters as PurchaseFilters)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
 
     // getById = async (req: Request, res: Response) => {
     //     const id = req.params.id;

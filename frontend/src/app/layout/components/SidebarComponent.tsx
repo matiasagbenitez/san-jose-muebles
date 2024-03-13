@@ -51,7 +51,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
             title="Listado de compras realizadas"
             style={{ height: "45px", marginLeft: "10px" }}
           >
-            <small>Compras realizadas</small>
+            <small>Listado de compras</small>
           </MenuItem>
           <MenuItem
             component={<Link to="/compras/registrar" />}

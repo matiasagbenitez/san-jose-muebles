@@ -3,7 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
 import {
-  CreatePurchase
+  Purchases,
+  CreatePurchase,
 } from "../pages/purchases";
 
 const PurchaseRoutes = () => {
@@ -13,6 +14,7 @@ const PurchaseRoutes = () => {
     <Routes>
       {roles.includes("ADMIN") && (
         <>
+          <Route path="/" element={<Purchases />} />
           <Route path="/registrar" element={<CreatePurchase />} />
         </>
       )}

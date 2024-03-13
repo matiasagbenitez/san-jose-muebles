@@ -26,3 +26,4 @@ export * from './entities/products';
 
 // PURCHASES
 export * from './dtos/purchases';
+export * from './entities/purchases';

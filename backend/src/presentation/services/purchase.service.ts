@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Purchase, PurchaseItem } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto } from "../../domain";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity } from "../../domain";
 
 export interface PurchaseFilters {
     name: string;
@@ -8,37 +8,33 @@ export interface PurchaseFilters {
 }
 export class PurchaseService {
 
-    // public async getPurchases() {
-    //     const suppliers = await Purchase.findAll();
-    //     const suppliersEntities = suppliers.map(supplier => PurchaseEntity.fromObject(supplier));
-    //     return { items: suppliersEntities };
-    // }
+    public async getPurchases() {
+        const purchases = await Purchase.findAll({ include: ['supplier', 'currency'] });
+        const listable = purchases.map(item => ListablePurchaseEntity.fromObject(item));
+        return { items: listable };
+    }
 
 
-    // public async getPurchasesPaginated(paginationDto: PaginationDto, filters: PurchaseFilters) {
-    //     const { page, limit } = paginationDto;
+    public async getPurchasesPaginated(paginationDto: PaginationDto, filters: PurchaseFilters) {
+        const { page, limit } = paginationDto;
 
-    //     // FILTERS
-    //     let where = {};
-    //     if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
+        // FILTERS
+        let where = {};
+        // if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
 
-    //     const [suppliers, total] = await Promise.all([
-    //         Purchase.findAll({
-    //             where,
-    //             include: [{
-    //                 association: 'locality',
-    //                 include: [{
-    //                     association: 'province',
-    //                 }]
-    //             }],
-    //             offset: (page - 1) * limit,
-    //             limit
-    //         }),
-    //         Purchase.count({ where })
-    //     ]);
-    //     const suppliersEntities = suppliers.map(supplier => PurchaseEntity.listablePurchase(supplier));
-    //     return { items: suppliersEntities, total_items: total };
-    // }
+        const [purchases, total] = await Promise.all([
+            Purchase.findAll({
+                where,
+                include: ['supplier', 'currency'],
+                offset: (page - 1) * limit,
+                limit,
+                order: [['payed_off', 'ASC'], ['fully_stocked', 'ASC'], ['date', 'DESC'], ['createdAt', 'DESC']],
+            }),
+            Purchase.count({ where })
+        ]);
+        const listable = purchases.map(item => ListablePurchaseEntity.fromObject(item));
+        return { items: listable, total_items: total };
+    }
 
     // public async getPurchase(id: number) {
     //     const supplier = await Purchase.findByPk(id, {
