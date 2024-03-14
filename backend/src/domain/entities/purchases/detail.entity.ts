@@ -3,6 +3,8 @@ import { CustomError } from '../../errors/custom.error';
 
 interface PurchaseInterface {
     date: string;
+    currency: string;
+    is_monetary: boolean;
     subtotal: number;
     discount: number;
     other_charges: number;
@@ -11,6 +13,7 @@ interface PurchaseInterface {
     credit_balance: number;
     payed_off: boolean;
     fully_stocked: boolean;
+    nullified: boolean;
 }
 
 interface SupplierInterface {
@@ -35,7 +38,6 @@ interface ItemInterface {
 interface AuditInterface {
     created_by: string;
     created_at: string;
-    nullified: boolean;
     nullified_by: string;
     nullified_date: string;
     nullified_reason: string;
@@ -57,6 +59,7 @@ export class DetailPurchaseEntity {
             supplier,
             creator,
             createdAt,
+            currency,
             subtotal,
             discount,
             other_charges,
@@ -77,6 +80,7 @@ export class DetailPurchaseEntity {
         if (!supplier) throw CustomError.badRequest('Falta el proveedor');
         if (!creator) throw CustomError.badRequest('Falta el creador');
         if (!createdAt) throw CustomError.badRequest('Falta la fecha de creación');
+        if (!currency) throw CustomError.badRequest('Falta la moneda');
         if (!subtotal) throw CustomError.badRequest('Falta el subtotal');
         if (!discount) throw CustomError.badRequest('Falta el descuento');
         if (!other_charges) throw CustomError.badRequest('Faltan otros cargos');
@@ -91,6 +95,8 @@ export class DetailPurchaseEntity {
 
         const purchaseEntity: PurchaseInterface = {
             date,
+            currency: currency.name + ' (' + currency.symbol + ')',
+            is_monetary: currency.is_monetary,
             subtotal,
             discount,
             other_charges,
@@ -99,6 +105,7 @@ export class DetailPurchaseEntity {
             credit_balance,
             payed_off,
             fully_stocked,
+            nullified,
         };
 
         const supplierEntity: SupplierInterface = {
@@ -126,7 +133,6 @@ export class DetailPurchaseEntity {
         const auditEntity: AuditInterface = {
             created_by: creator.name,
             created_at: createdAt,
-            nullified: nullified,
             nullified_by: nullifier.name,
             nullified_date: nullified_date,
             nullified_reason: nullified_reason,
