@@ -60,7 +60,7 @@ export class PurchaseService {
                 attributes: ['name', 'symbol', 'is_monetary']
             }, {
                 association: 'supplier',
-                attributes: ['name', 'dni_cuit', 'phone'],
+                attributes: ['id', 'name'],
                 include: [{
                     association: 'locality',
                     attributes: ['name'],

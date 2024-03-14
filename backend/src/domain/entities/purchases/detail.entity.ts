@@ -1,33 +1,32 @@
 // import { DayJsAdapter, MoneyAdapter } from '../../../config';
 import { CustomError } from '../../errors/custom.error';
 
-interface PurchaseInterface {
+interface SupplierInterface {
+    id: number;
+    name: string;
+    locality: string;
+}
+interface ResumeInterface {
     date: string;
+    supplier: SupplierInterface;
     currency: string;
     is_monetary: boolean;
-    subtotal: number;
-    discount: number;
-    other_charges: number;
     total: number;
     paid_amount: number;
     credit_balance: number;
     payed_off: boolean;
-    fully_stocked: boolean;
+    created_at: string;
+    created_by: string;
     nullified: boolean;
+    nullified_by: string;
+    nullified_date: string;
+    nullified_reason: string;
 }
-
-interface SupplierInterface {
-    id: number;
-    name: string;
-    dni_cuit: string;
-    phone: string;
-    locality: string;
-}
-
 interface ItemInterface {
     id: number;
     quantity: number;
     unit: string;
+    brand: string;
     product: string;
     price: number;
     subtotal: number;
@@ -35,21 +34,20 @@ interface ItemInterface {
     fully_stocked?: boolean;
 }
 
-interface AuditInterface {
-    created_by: string;
-    created_at: string;
-    nullified_by: string;
-    nullified_date: string;
-    nullified_reason: string;
+interface DetailInterface {
+    items: ItemInterface[];
+    currency: string;
+    is_monetary: boolean;
+    subtotal: number;
+    discount: number;
+    other_charges: number;
+    total: number;
 }
-
 export class DetailPurchaseEntity {
     constructor(
         public id: number,
-        public purchase: PurchaseInterface,
-        public supplier: SupplierInterface,
-        public items: ItemInterface[],
-        public audit: AuditInterface,
+        public resume: ResumeInterface,
+        public detail: DetailInterface
     ) { }
 
     static fromObject(object: { [key: string]: any }): DetailPurchaseEntity {
@@ -93,26 +91,9 @@ export class DetailPurchaseEntity {
         if (!nullifier) throw CustomError.badRequest('Falta el anulador');
         if (!items) throw CustomError.badRequest('Faltan los ítems');
 
-        const purchaseEntity: PurchaseInterface = {
-            date,
-            currency: currency.name + ' (' + currency.symbol + ')',
-            is_monetary: currency.is_monetary,
-            subtotal,
-            discount,
-            other_charges,
-            total,
-            paid_amount,
-            credit_balance,
-            payed_off,
-            fully_stocked,
-            nullified,
-        };
-
         const supplierEntity: SupplierInterface = {
             id: supplier.id,
             name: supplier.name,
-            dni_cuit: supplier.dni_cuit,
-            phone: supplier.phone,
             locality: supplier.locality.name + ', ' + supplier.locality.province.name,
         };
 
@@ -122,6 +103,7 @@ export class DetailPurchaseEntity {
                 id: items[i].id,
                 quantity: items[i].quantity,
                 unit: items[i].product.unit.symbol,
+                brand: items[i].product.brand.name,
                 product: items[i].product.name,
                 price: items[i].price,
                 subtotal: items[i].subtotal,
@@ -130,20 +112,37 @@ export class DetailPurchaseEntity {
             });
         }
 
-        const auditEntity: AuditInterface = {
-            created_by: creator.name,
+        const detail: DetailInterface = {
+            items: itemsArray,
+            currency: currency.name + ' (' + currency.symbol + ')',
+            is_monetary: currency.is_monetary,
+            subtotal: subtotal,
+            discount: discount,
+            other_charges: other_charges,
+            total: total,
+        };
+
+        const resume: ResumeInterface = {
+            date,
+            supplier: supplierEntity,
+            currency: currency.name + ' (' + currency.symbol + ')',
+            is_monetary: currency.is_monetary,
+            total,
+            paid_amount,
+            credit_balance,
+            payed_off,
             created_at: createdAt,
+            created_by: creator.name,
+            nullified,
             nullified_by: nullifier.name,
-            nullified_date: nullified_date,
-            nullified_reason: nullified_reason,
+            nullified_date,
+            nullified_reason,
         };
 
         return new DetailPurchaseEntity(
             id,
-            purchaseEntity,
-            supplierEntity,
-            itemsArray,
-            auditEntity
+            resume,
+            detail
         );
 
     }

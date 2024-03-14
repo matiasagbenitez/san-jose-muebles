@@ -1,21 +1,48 @@
-export interface SupplierInfoProps {
-    date: Date;
+interface SupplierInterface {
+    id: number;
     name: string;
-    dni_cuit: string;
-    phone: string;
     locality: string;
 }
+export interface ResumeInterface {
+    date: Date;
+    supplier: SupplierInterface;
+    currency: string;
+    is_monetary: boolean;
+    total: number;
+    paid_amount: number;
+    credit_balance: number;
+    payed_off: boolean;
+    created_at: Date;
+    created_by: string;
+    nullified: boolean;
+    nullified_by: string;
+    nullified_date: Date;
+    nullified_reason: string;
+}
+interface ItemInterface {
+    id: number;
+    quantity: number;
+    unit: string;
+    brand: string;
+    product: string;
+    price: number;
+    subtotal: number;
+    actual_stocked?: number;
+    fully_stocked?: boolean;
+}
 
-export interface PurchaseInfoProps {
+export interface DetailInterface {
+    items: ItemInterface[];
     currency: string;
     is_monetary: boolean;
     subtotal: number;
     discount: number;
     other_charges: number;
     total: number;
-    paid_amount: number;
-    credit_balance: number;
-    payed_off: boolean;
-    fully_stocked: boolean;
-    nullified: boolean;
+}
+
+export interface PurchaseDetailInterface {
+    id: number;
+    resume: ResumeInterface;
+    detail: DetailInterface;
 }
