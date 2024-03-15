@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Purchase, PurchaseItem } from "../../database/mysql/models";
+import { Purchase, PurchaseItem, User } from "../../database/mysql/models";
 import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity } from "../../domain";
 
 export interface PurchaseFilters {
@@ -136,9 +136,9 @@ export class PurchaseService {
 
             const item_updated = await item.save();
 
-            await this.checkPurchaseFullyStocked(id_purchase);
-
+            const is_fully_stocked = await this.checkPurchaseFullyStocked(id_purchase);
             return {
+                fully_stocked: is_fully_stocked,
                 item: {
                     id: item_updated.id,
                     quantity: Number(item_updated.quantity),
@@ -165,13 +165,14 @@ export class PurchaseService {
             if (purchase) {
                 purchase.fully_stocked = true;
                 await purchase.save();
+
             }
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
     }
 
-    public async checkPurchaseFullyStocked(id_purchase: number) {
+    public async checkPurchaseFullyStocked(id_purchase: number): Promise<boolean> {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
             const fully_stocked = items.every(item => item.fully_stocked);
@@ -180,24 +181,40 @@ export class PurchaseService {
                 if (purchase) {
                     purchase.fully_stocked = true;
                     await purchase.save();
+                    return true;
                 }
             }
+            return false;
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
     }
 
 
-    // public async deletePurchase(id: number) {
-    //     const supplier = await Purchase.findByPk(id);
-    //     if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
+    public async nullifyPurchase(id: number, reason: string, id_user: number) {
+        const PurchaseDetailInterface = await Purchase.findByPk(id);
+        if (!PurchaseDetailInterface) throw CustomError.notFound('Compra no encontrada');
 
-    //     try {
-    //         await supplier.destroy();
-    //         return { message: 'Proveedor eliminado correctamente' };
-    //     } catch (error) {
-    //         throw CustomError.internalServerError(`${error}`);
-    //     }
-    // }
+        try {
+            const user = await User.findByPk(id_user);
+            if (!user) throw CustomError.notFound('Usuario no encontrado');
+
+            const now = Date.now();
+
+            await PurchaseDetailInterface.update({
+                nullified: true, nullified_by: user.id, nullified_reason: reason, nullified_date: now
+            })
+
+            const nullifiedData = {
+                nullifier: user.name,
+                nullified_reason: reason,
+                nullified_date: now
+            }
+
+            return { nullifiedData, message: 'Compra anulada correctamente. Se reestableció el stock de los productos incluidos.' };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
 
 }

@@ -6,7 +6,7 @@ interface SupplierInterface {
     name: string;
     locality: string;
 }
-interface ResumeInterface {
+interface DataInterface {
     date: string;
     supplier: SupplierInterface;
     currency: string;
@@ -17,10 +17,6 @@ interface ResumeInterface {
     payed_off: boolean;
     created_at: string;
     created_by: string;
-    nullified: boolean;
-    nullified_by: string;
-    nullified_date: string;
-    nullified_reason: string;
 }
 interface ItemInterface {
     id: number;
@@ -30,12 +26,11 @@ interface ItemInterface {
     product: string;
     price: number;
     subtotal: number;
-    actual_stocked?: number;
-    fully_stocked?: boolean;
+    actual_stocked: number;
+    fully_stocked: boolean;
 }
 
-interface DetailInterface {
-    items: ItemInterface[];
+interface TotalsInterface { 
     currency: string;
     is_monetary: boolean;
     subtotal: number;
@@ -43,11 +38,22 @@ interface DetailInterface {
     other_charges: number;
     total: number;
 }
+
+interface NullifiedInterface {
+    nullifier: string;
+    nullified_date: string;
+    nullified_reason: string;
+}
 export class DetailPurchaseEntity {
     constructor(
         public id: number,
-        public resume: ResumeInterface,
-        public detail: DetailInterface
+        public nullified: boolean,
+        public fully_stocked: boolean,
+        public payed_off: boolean,
+        public data: DataInterface,
+        public items: ItemInterface[],
+        public totals: TotalsInterface,
+        public nullifiedData: NullifiedInterface
     ) { }
 
     static fromObject(object: { [key: string]: any }): DetailPurchaseEntity {
@@ -97,6 +103,19 @@ export class DetailPurchaseEntity {
             locality: supplier.locality.name + ', ' + supplier.locality.province.name,
         };
 
+        const data: DataInterface = {
+            date,
+            supplier: supplierEntity,
+            currency: currency.name + ' (' + currency.symbol + ')',
+            is_monetary: currency.is_monetary,
+            total,
+            paid_amount,
+            credit_balance,
+            payed_off,
+            created_at: createdAt,
+            created_by: creator.name,
+        };
+
         let itemsArray: ItemInterface[] = [];
         for (let i = 0; i < items.length; i++) {
             itemsArray.push({
@@ -112,37 +131,30 @@ export class DetailPurchaseEntity {
             });
         }
 
-        const detail: DetailInterface = {
-            items: itemsArray,
+        const totals: TotalsInterface = {
             currency: currency.name + ' (' + currency.symbol + ')',
             is_monetary: currency.is_monetary,
-            subtotal: subtotal,
-            discount: discount,
-            other_charges: other_charges,
-            total: total,
+            subtotal,
+            discount,
+            other_charges,
+            total,
         };
 
-        const resume: ResumeInterface = {
-            date,
-            supplier: supplierEntity,
-            currency: currency.name + ' (' + currency.symbol + ')',
-            is_monetary: currency.is_monetary,
-            total,
-            paid_amount,
-            credit_balance,
-            payed_off,
-            created_at: createdAt,
-            created_by: creator.name,
-            nullified,
-            nullified_by: nullifier.name,
+        const nullifiedData: NullifiedInterface = {
+            nullifier: nullifier.name,
             nullified_date,
             nullified_reason,
         };
 
         return new DetailPurchaseEntity(
             id,
-            resume,
-            detail
+            nullified,
+            fully_stocked,
+            payed_off,
+            data,
+            itemsArray,
+            totals,
+            nullifiedData
         );
 
     }

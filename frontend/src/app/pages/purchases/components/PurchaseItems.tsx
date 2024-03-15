@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dropdown, Table, Modal } from "react-bootstrap";
-import { DetailInterface, ItemInterface } from "../interfaces";
+import { ItemInterface } from "../interfaces";
 import { toMoney } from "../../../../helpers";
 import { SweetAlert2 } from "../../../utils";
 import apiSJM from "../../../../api/apiSJM";
@@ -18,17 +18,23 @@ const initialItem: ItemInterface = {
 };
 
 export const PurchaseItems = ({
-  id: purchaseId,
-  detail,
+  id,
+  isNullified,
+  items,
+  totals,
+  updateItemFullStock,
+  showModal,
+  setShowModal,
 }: {
   id: number;
-  detail: DetailInterface;
+  isNullified: boolean;
+  items: ItemInterface[];
+  totals: any;
+  updateItemFullStock: any;
+  showModal: boolean;
+  setShowModal: any;
 }) => {
-  const { items, is_monetary } = detail;
-
-  const [itemsList, setItemsList] = useState<ItemInterface[]>(items);
-
-  const [showModal, setShowModal] = useState(false);
+  const { is_monetary } = totals;
   const [selectedItem, setSelectedItem] = useState<ItemInterface>(initialItem);
   const [quantity, setQuantity] = useState<number>(0);
 
@@ -41,31 +47,6 @@ export const PurchaseItems = ({
     setSelectedItem(initialItem);
     setQuantity(0);
     setShowModal(false);
-  };
-
-  const updateStock = async ( e: React.FormEvent, id: number, quantity_updated: number ) => {
-    e.preventDefault();
-
-    try {
-      const confirmation = await SweetAlert2.confirmationDialog("¿Está seguro de actualizar el stock?");
-      if (!confirmation.isConfirmed) return;
-      const { data } = await apiSJM.post(`/purchases/${purchaseId}/update-item-stock/${id}`,{ quantity_updated });
-
-      const updatedItems: ItemInterface[] = itemsList.map((item) => {
-        if (item.id === data.item.id) {
-          item.quantity = data.item.quantity;
-          item.actual_stocked = data.item.actual_stocked;
-          item.fully_stocked = data.item.fully_stocked;
-        }
-        return item;
-      });
-
-      setItemsList(updatedItems);
-      SweetAlert2.successToast(data.message);
-      closeModal();
-    } catch (error: any) {
-      SweetAlert2.errorAlert(error.response.data.message);
-    }
   };
 
   return (
@@ -89,7 +70,7 @@ export const PurchaseItems = ({
           </tr>
         </thead>
         <tbody>
-          {itemsList.map((item) => (
+          {items.map((item) => (
             <tr key={item.id}>
               <td className="text-center">{item.quantity}</td>
               <td className="text-center">{item.unit}</td>
@@ -114,7 +95,7 @@ export const PurchaseItems = ({
                 )}
               </td>
               <td className="text-center">
-                {!item.fully_stocked && (
+                {!item.fully_stocked && !isNullified && (
                   <Dropdown>
                     <Dropdown.Toggle
                       size="sm"
@@ -134,7 +115,7 @@ export const PurchaseItems = ({
                         className="small"
                         disabled={item.fully_stocked}
                         onClick={(e) =>
-                          updateStock(e, item.id, Number(item.quantity))
+                          updateItemFullStock(e, item.id, item.quantity)
                         }
                       >
                         Recepción total
@@ -151,7 +132,7 @@ export const PurchaseItems = ({
             </td>
             <td className="text-end fst-italic">
               {is_monetary && "$"}
-              {toMoney(detail.subtotal)}
+              {toMoney(totals.subtotal)}
             </td>
             <td colSpan={3}></td>
           </tr>
@@ -162,7 +143,7 @@ export const PurchaseItems = ({
             <td className="text-end fst-italic">
               {" - "}
               {is_monetary && "$"}
-              {toMoney(detail.discount)}
+              {toMoney(totals.discount)}
             </td>
             <td colSpan={3}></td>
           </tr>
@@ -172,7 +153,7 @@ export const PurchaseItems = ({
             </td>
             <td className="text-end fst-italic">
               {is_monetary && "$"}
-              {toMoney(detail.other_charges)}
+              {toMoney(totals.other_charges)}
             </td>
             <td colSpan={3}></td>
           </tr>
@@ -182,10 +163,10 @@ export const PurchaseItems = ({
             </td>
             <td className="text-end fw-bold">
               {is_monetary && "$"}
-              {toMoney(detail.total)}
+              {toMoney(totals.total)}
             </td>
             <td colSpan={3} className="fw-bold text-uppercase">
-              {detail.currency}
+              {totals.currency}
             </td>
           </tr>
         </tbody>
@@ -210,7 +191,9 @@ export const PurchaseItems = ({
             <strong>Stock pendiente:</strong>{" "}
             {selectedItem.quantity - selectedItem.actual_stocked}
           </p>
-          <form onSubmit={(e) => updateStock(e, selectedItem.id, quantity)}>
+          <form
+            onSubmit={(e) => updateItemFullStock(e, selectedItem.id, quantity)}
+          >
             <label htmlFor="quantity" className="fw-bold mb-1">
               Cantidad a recibir
             </label>

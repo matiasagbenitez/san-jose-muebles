@@ -109,17 +109,25 @@ export class PurchaseController {
 
 
 
-    // delete = async (req: Request, res: Response) => {
-    //     const id = req.params.id;
-    //     if (!id) return res.status(400).json({ message: 'Missing id' });
+    nullifyPurchase = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: 'Missing id' });
 
-    //     this.purchaseService.deletePurchase(parseInt(id))
-    //         .then((data) => {
-    //             res.json(data);
-    //         })
-    //         .catch((error) => {
-    //             this.handleError(error, res);
-    //         });
-    // }
+        const { reason } = req.body;
+        if (!reason) return res.status(400).json({ message: 'Missing reason' });
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+        if (loggedUserIdDto) {
+            this.purchaseService.nullifyPurchase(parseInt(id), reason, loggedUserIdDto.id_user)
+                .then((data) => {
+                    res.json(data);
+                })
+                .catch((error) => {
+                    this.handleError(error, res);
+                });
+        }
+    }
 
 }

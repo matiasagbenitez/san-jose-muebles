@@ -1,29 +1,42 @@
 import { Table, Badge, Alert } from "react-bootstrap";
-import { ResumeInterface } from "../interfaces";
+import { ResumeInterface, NullifiedInterface } from "../interfaces";
 import { DayJsAdapter, toMoney } from "../../../../helpers";
 
-export const PurchaseData = ({ resume }: { resume: ResumeInterface }) => {
+export const PurchaseData = ({
+  isNullified,
+  data,
+  nullifiedData,
+}: {
+  isNullified: boolean;
+  data: ResumeInterface;
+  nullifiedData: NullifiedInterface;
+}) => {
   const {
+    date,
+    supplier,
     currency,
     is_monetary,
     total,
     paid_amount,
     credit_balance,
     payed_off,
-    nullified,
-  } = resume;
+    created_at,
+    created_by,
+  } = data;
+
+  const { nullifier, nullified_date, nullified_reason } = nullifiedData;
+
   return (
     <>
-      {nullified && (
+      {isNullified && (
         <Alert variant="danger" className="small">
           <Alert.Heading className="fs-6">
             <i className="bi bi-exclamation-triangle"></i> Compra anulada el{" "}
-            {DayJsAdapter.toDayMonthYearHour(resume.nullified_date)} (
-            {resume.nullified_by})
+            {DayJsAdapter.toDayMonthYearHour(nullified_date)} ({nullifier})
           </Alert.Heading>
           <hr className="my-2" />
           <p className="mb-0">
-            <u>Motivo:</u> {resume.nullified_reason || "No especificado"}
+            <u>Motivo:</u> {nullified_reason || "No especificado"}
           </p>
         </Alert>
       )}
@@ -37,7 +50,7 @@ export const PurchaseData = ({ resume }: { resume: ResumeInterface }) => {
             <th scope="row">Validez</th>
             <td className="text-end text-uppercase">
               {" "}
-              {nullified ? (
+              {isNullified ? (
                 <Badge bg="danger">Compra anulada</Badge>
               ) : (
                 <Badge bg="success">Compra válida</Badge>
@@ -46,14 +59,12 @@ export const PurchaseData = ({ resume }: { resume: ResumeInterface }) => {
           </tr>
           <tr>
             <th scope="row">Fecha compra</th>
-            <td className="text-end">
-              {DayJsAdapter.toDayMonthYear(resume.date)}
-            </td>
+            <td className="text-end">{DayJsAdapter.toDayMonthYear(date)}</td>
           </tr>
           <tr>
             <th scope="row">Proveedor</th>
             <td className="text-end">
-              {resume.supplier.name} ({resume.supplier.locality})
+              {supplier.name} ({supplier.locality})
             </td>
           </tr>
           <tr>
@@ -97,8 +108,7 @@ export const PurchaseData = ({ resume }: { resume: ResumeInterface }) => {
             <td colSpan={2}>
               <small className="text-muted">
                 Compra registrada el{" "}
-                {DayJsAdapter.toDayMonthYearHour(resume.created_at)} por{" "}
-                {resume.created_by}
+                {DayJsAdapter.toDayMonthYearHour(created_at)} por {created_by}
               </small>
             </td>
           </tr>

@@ -71,4 +71,23 @@ export class SweetAlert2 {
         });
     }
 
+    static inputDialog(message: string, iconReceived: SweetAlertIcon = "question") {
+        return Swal.fire({
+            title: "Ingrese un valor",
+            text: message,
+            icon: iconReceived,
+            input: 'text',
+            showCancelButton: true,
+            confirmButtonColor: "#157347",
+            confirmButtonText: 'Confirmar',
+            cancelButtonColor: '#DC2626',
+            cancelButtonText: 'Cancelar',
+            customClass: {
+                icon: "fs-7 mt-3",
+                title: "fs-title",
+                actions: "mt-2",
+            },
+        });
+    }
+
 }

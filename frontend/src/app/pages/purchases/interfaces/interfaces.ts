@@ -46,3 +46,12 @@ export interface PurchaseDetailInterface {
     resume: ResumeInterface;
     detail: DetailInterface;
 }
+
+
+
+
+export interface NullifiedInterface {
+    nullifier: string;
+    nullified_date: Date;
+    nullified_reason: string;
+}

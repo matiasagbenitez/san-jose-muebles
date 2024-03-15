@@ -115,9 +115,13 @@ export const Purchases = () => {
       name: "ESTADO CUENTA",
       selector: (row: DataRow) => row.payed_off,
       format: (row: DataRow) => (
-        <Badge bg={row.payed_off ? "success" : "warning"}>
-          {row.payed_off ? "PAGADO" : "PENDIENTE"}
-        </Badge>
+        <>
+          {!row.nullified && (
+            <Badge bg={row.payed_off ? "success" : "warning"}>
+              {row.payed_off ? "PAGADO" : "PENDIENTE"}
+            </Badge>
+          )}
+        </>
       ),
       maxWidth: "150px",
       center: true,
@@ -126,9 +130,13 @@ export const Purchases = () => {
       name: "STOCK RECIBIDO",
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (
-        <Badge bg={row.fully_stocked ? "success" : "warning"}>
-          {row.fully_stocked ? "COMPLETO" : "INCOMPLETO"}
-        </Badge>
+        <>
+          {!row.nullified && (
+            <Badge bg={row.fully_stocked ? "success" : "warning"}>
+              {row.fully_stocked ? "COMPLETO" : "INCOMPLETO"}
+            </Badge>
+          )}
+        </>
       ),
       maxWidth: "150px",
       center: true,
@@ -138,7 +146,7 @@ export const Purchases = () => {
       selector: (row: DataRow) => row.nullified,
       format: (row: DataRow) => (
         <Badge bg={row.nullified ? "danger" : "success"}>
-          {row.nullified ? "ANULADO" : "VIGENTE"}
+          {row.nullified ? "ANULADA" : "VIGENTE"}
         </Badge>
       ),
       maxWidth: "120px",

@@ -15,9 +15,9 @@ export class PurchaseRoutes {
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
         router.post('/:id_purchase/update-item-stock/:id_item', [AuthMiddleware.validateJWT], controller.updateItemStock);
-        router.put('/:id_purchase/update-full-stock', [AuthMiddleware.validateJWT], controller.updatePurchaseFullyStocked);
+        router.post('/:id_purchase/update-full-stock', [AuthMiddleware.validateJWT], controller.updatePurchaseFullyStocked);
 
-        // router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);
+        router.post('/:id/nullify', [AuthMiddleware.validateJWT], controller.nullifyPurchase);  
 
         return router;
     }
