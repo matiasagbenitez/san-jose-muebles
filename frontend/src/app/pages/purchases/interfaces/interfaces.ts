@@ -19,7 +19,7 @@ export interface ResumeInterface {
     nullified_date: Date;
     nullified_reason: string;
 }
-interface ItemInterface {
+export interface ItemInterface {
     id: number;
     quantity: number;
     unit: string;
@@ -27,8 +27,8 @@ interface ItemInterface {
     product: string;
     price: number;
     subtotal: number;
-    actual_stocked?: number;
-    fully_stocked?: boolean;
+    actual_stocked: number;
+    fully_stocked: boolean;
 }
 
 export interface DetailInterface {

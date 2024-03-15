@@ -101,13 +101,13 @@ export class DetailPurchaseEntity {
         for (let i = 0; i < items.length; i++) {
             itemsArray.push({
                 id: items[i].id,
-                quantity: items[i].quantity,
+                quantity: Number(items[i].quantity),
                 unit: items[i].product.unit.symbol,
                 brand: items[i].product.brand.name,
                 product: items[i].product.name,
                 price: items[i].price,
                 subtotal: items[i].subtotal,
-                actual_stocked: items[i].actual_stocked,
+                actual_stocked: Number(items[i].actual_stocked),
                 fully_stocked: items[i].fully_stocked,
             });
         }

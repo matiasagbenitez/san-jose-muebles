@@ -114,6 +114,80 @@ export class PurchaseService {
         }
     }
 
+    public async updatePurchaseItemStock(id_purchase: number, id_item: number, quantity_received: number) {
+
+        try {
+            const item = await PurchaseItem.findOne({ where: { id: id_item, id_purchase } });
+            if (!item) throw CustomError.notFound('No se encontró el ítem de la compra');
+
+            const buyed_quantity = Number(item.quantity);
+            const actual_stocked = Number(item.actual_stocked);
+            const received = Number(quantity_received);
+
+            if (received <= 0) throw CustomError.badRequest('¡La cantidad recibida debe ser mayor a 0!');
+            if (item.fully_stocked) throw CustomError.badRequest('¡El ítem ya está completamente stockeado!');
+
+            if (actual_stocked + received >= buyed_quantity) {
+                item.actual_stocked = buyed_quantity;
+                item.fully_stocked = true;
+            } else {
+                item.actual_stocked = actual_stocked + received;
+            }
+
+            const item_updated = await item.save();
+
+            await this.checkPurchaseFullyStocked(id_purchase);
+
+            return {
+                item: {
+                    id: item_updated.id,
+                    quantity: Number(item_updated.quantity),
+                    actual_stocked: item_updated.actual_stocked,
+                    pending: item_updated.quantity - item_updated.actual_stocked,
+                    fully_stocked: item_updated.fully_stocked,
+                }, message: '¡Stock actualizado correctamente!'
+            };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+
+    }
+
+    public async updatePurchaseFullyStocked(id_purchase: number) {
+        try {
+            const items = await PurchaseItem.findAll({ where: { id_purchase } });
+            items.forEach(async (item) => {
+                item.actual_stocked = item.quantity;
+                item.fully_stocked = true;
+                await item.save();
+            });
+            const purchase = await Purchase.findByPk(id_purchase);
+            if (purchase) {
+                purchase.fully_stocked = true;
+                await purchase.save();
+            }
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async checkPurchaseFullyStocked(id_purchase: number) {
+        try {
+            const items = await PurchaseItem.findAll({ where: { id_purchase } });
+            const fully_stocked = items.every(item => item.fully_stocked);
+            if (fully_stocked) {
+                const purchase = await Purchase.findByPk(id_purchase);
+                if (purchase) {
+                    purchase.fully_stocked = true;
+                    await purchase.save();
+                }
+            }
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+
     // public async deletePurchase(id: number) {
     //     const supplier = await Purchase.findByPk(id);
     //     if (!supplier) throw CustomError.notFound('Proveedor no encontrado');

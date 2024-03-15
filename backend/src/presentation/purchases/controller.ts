@@ -78,6 +78,35 @@ export class PurchaseController {
         }
     }
 
+    updateItemStock = async (req: Request, res: Response) => {
+        const { id_purchase, id_item } = req.params;
+        if (!id_purchase || !id_item) return res.status(400).json({ message: 'Missing id_purchase or id_item' });
+
+        const { quantity_updated } = req.body;
+        if (!quantity_updated) return res.status(400).json({ message: 'Missing quantity_updated' });
+
+        this.purchaseService.updatePurchaseItemStock(parseInt(id_purchase), parseInt(id_item), +quantity_updated)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+    updatePurchaseFullyStocked = async (req: Request, res: Response) => {
+        const id_purchase = req.params.id_purchase;
+        if (!id_purchase) return res.status(400).json({ message: 'Missing id_purchase' });
+
+        this.purchaseService.updatePurchaseFullyStocked(parseInt(id_purchase))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
 
 
     // delete = async (req: Request, res: Response) => {
