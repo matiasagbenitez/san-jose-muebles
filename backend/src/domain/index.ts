@@ -27,3 +27,11 @@ export * from './entities/products';
 // PURCHASES
 export * from './dtos/purchases';
 export * from './entities/purchases';
+
+// PURCHASES ITEMS DETAILS
+export * from './dtos/reception_partial';
+export * from './entities/reception_partial';
+
+// RECEPTION TOTAL
+export * from './dtos/reception_total';
+export * from './entities/reception_total';

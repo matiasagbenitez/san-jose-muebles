@@ -111,13 +111,13 @@ export const Purchases = () => {
       right: true,
     },
        {
-      name: "STOCK RECIBIDO",
+      name: "STOCK",
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (
         <>
           {!row.nullified && (
             <Badge bg={row.fully_stocked ? "success" : "warning"}>
-              {row.fully_stocked ? "COMPLETO" : "INCOMPLETO"}
+              {row.fully_stocked ? "COMPLETO" : "PENDIENTE"}
             </Badge>
           )}
         </>

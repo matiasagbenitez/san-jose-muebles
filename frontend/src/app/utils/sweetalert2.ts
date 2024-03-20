@@ -73,8 +73,8 @@ export class SweetAlert2 {
 
     static inputDialog(message: string, iconReceived: SweetAlertIcon = "question") {
         return Swal.fire({
-            title: "Ingrese un valor",
-            text: message,
+            title: message,
+            // text: message,
             icon: iconReceived,
             input: 'text',
             showCancelButton: true,

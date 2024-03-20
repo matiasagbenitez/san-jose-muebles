@@ -76,7 +76,7 @@ export const Purchase = () => {
         "¿Está seguro de actualizar el stock de todos los productos?"
       );
       if (!confirmation.isConfirmed) return;
-      await apiSJM.post(`/purchases/${purchaseId}/update-full-stock`);
+      const { data } = await apiSJM.post(`/purchases/${purchaseId}/update-full-stock`);
       if (items) {
         const updatedItems = items.map((item: any) => {
           item.actual_stocked = item.quantity;
@@ -86,6 +86,7 @@ export const Purchase = () => {
         setItems(updatedItems);
         setIsFullyStocked(true);
       }
+      SweetAlert2.successToast(data.message);
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     }

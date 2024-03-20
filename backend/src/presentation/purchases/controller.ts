@@ -103,20 +103,23 @@ export class PurchaseController {
         }
     }
 
-    updatePurchaseFullyStocked = async (req: Request, res: Response) => {
+    updatePurchaseFullStock = async (req: Request, res: Response) => {
         const id_purchase = req.params.id_purchase;
         if (!id_purchase) return res.status(400).json({ message: 'Missing id_purchase' });
 
-        this.purchaseService.updatePurchaseFullyStocked(parseInt(id_purchase))
-            .then((data) => {
-                res.json(data);
-            })
-            .catch((error) => {
-                this.handleError(error, res);
-            });
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+        if (loggedUserIdDto && id_purchase) {
+            this.purchaseService.updatePurchaseFullStock(parseInt(id_purchase), loggedUserIdDto.id_user)
+                .then((data) => {
+                    res.json(data);
+                })
+                .catch((error) => {
+                    this.handleError(error, res);
+                });
+        }
     }
-
-
 
     nullifyPurchase = async (req: Request, res: Response) => {
         const id = req.params.id;

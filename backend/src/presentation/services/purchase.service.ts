@@ -1,6 +1,7 @@
-import { Op } from "sequelize";
 import { Purchase, PurchaseItem, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto } from "../../domain";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
+import { ReceptionPartialService } from "./reception_partial.service";
+import { ReceptionTotalService } from "./reception_total.service.service";
 
 export interface PurchaseFilters {
     name: string;
@@ -28,7 +29,7 @@ export class PurchaseService {
                 include: ['supplier', 'currency'],
                 offset: (page - 1) * limit,
                 limit,
-                order: [['fully_stocked', 'ASC'], ['date', 'DESC'], ['createdAt', 'DESC']],
+                order: [['date', 'DESC'], ['createdAt', 'DESC']],
             }),
             Purchase.count({ where })
         ]);
@@ -136,18 +137,25 @@ export class PurchaseService {
                 await item.update({ actual_stocked: actual + quantity_received });
             }
 
-            // TODO: REGISTER USER WHO UPDATED THE STOCK
+            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
+            const [detailError, detailDto] = ReceptionPartialDto.create({ id_purchase_item: id_item, quantity_received, id_user });
+            if (detailError) throw CustomError.badRequest(detailError);
 
-            const is_fully_stocked = await this.checkPurchaseFullyStocked(id_purchase);
+            const detailService = new ReceptionPartialService();
+            if (!detailService) throw CustomError.internalServerError('Error al crear el detalle de la compra');
+            if (detailDto) await detailService.createReceptionPartial(detailDto);
+
+            const is_fully_stocked = await this.checkOrUpdateFullyStocked(id_purchase);
+
             return {
                 fully_stocked: is_fully_stocked,
                 item: {
                     id: item.id,
                     quantity: Number(item.quantity),
                     actual_stocked: item.actual_stocked,
-                    pending: item.quantity - item.actual_stocked,
                     fully_stocked: item.fully_stocked,
-                }, message: '¡Stock actualizado correctamente!'
+                }, 
+                message: '¡Stock actualizado correctamente!'
             };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
@@ -155,32 +163,36 @@ export class PurchaseService {
 
     }
 
-    public async updatePurchaseFullyStocked(id_purchase: number) {
+    public async updatePurchaseFullStock(id_purchase: number, id_user: number) {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
             items.forEach(async (item) => {
-                item.actual_stocked = item.quantity;
-                item.fully_stocked = true;
-                await item.save();
+                await item.update({ actual_stocked: item.quantity, fully_stocked: true });
             });
-            const purchase = await Purchase.findByPk(id_purchase);
-            if (purchase) {
-                purchase.fully_stocked = true;
-                await purchase.save();
 
-            }
+            const purchase = await Purchase.findByPk(id_purchase);
+            if (!purchase) throw CustomError.notFound('Compra no encontrada');
+            await purchase.update({ fully_stocked: true });
+
+            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
+            const [detailError, detailDto] = ReceptionTotalDto.create({ id_purchase, id_user });
+            if (detailError) throw CustomError.badRequest(detailError);
+
+            const detailService = new ReceptionTotalService();
+            if (!detailService) throw CustomError.internalServerError('Error al crear el detalle de la compra');
+            if (detailDto) await detailService.createReceptionTotal(detailDto);
+
+            return { message: '¡Stock de la compra actualizado correctamente!' };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
     }
 
-    public async checkPurchaseFullyStocked(id_purchase: number): Promise<boolean> {
+    public async checkOrUpdateFullyStocked(id_purchase: number): Promise<boolean> {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
             const fully_stocked = items.every(item => item.fully_stocked);
-            if (!fully_stocked) {
-                return false;
-            }
+            if (!fully_stocked) return false;
             await Purchase.update({ fully_stocked }, { where: { id: id_purchase } });
             return true;
         } catch (error) {

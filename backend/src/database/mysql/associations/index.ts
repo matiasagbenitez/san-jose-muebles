@@ -1,4 +1,4 @@
-import { 
+import {
     User, Role, RoleUser,
     Country, Province, Locality,
     Supplier,
@@ -13,6 +13,8 @@ import {
 
     Purchase,
     PurchaseItem,
+    ReceptionPartial,
+    ReceptionTotal,
 
 } from '../models';
 
@@ -70,4 +72,10 @@ export const initializeAssociations = () => {
     Purchase.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
     Purchase.belongsTo(User, { foreignKey: 'nullified_by', as: 'nullifier' });
 
+    ReceptionPartial.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+    ReceptionPartial.belongsTo(PurchaseItem, { foreignKey: 'id_purchase_item', as: 'item' });
+    PurchaseItem.hasMany(ReceptionPartial, { foreignKey: 'id_purchase_item', as: 'details', onDelete: 'RESTRICT' });
+
+    Purchase.hasOne(ReceptionTotal, { foreignKey: 'id_purchase', as: 'reception_total', onDelete: 'RESTRICT' });
+    ReceptionTotal.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
 };
