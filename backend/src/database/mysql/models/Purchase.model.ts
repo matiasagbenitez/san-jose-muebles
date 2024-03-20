@@ -9,9 +9,6 @@ export class Purchase extends Model {
     public subtotal!: number;
     public discount!: number;
     public total!: number;
-    public paid_amount!: number;
-    public credit_balance!: number;
-    public payed_off!: boolean;
     public fully_stocked!: boolean;
     public nullified!: boolean;
     public nullified_by!: number;
@@ -53,25 +50,13 @@ export const initPurchaseModel = (sequelize: Sequelize) => {
             discount: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
-            }, 
+            },
             other_charges: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
             },
             total: {
                 type: DataTypes.DECIMAL(10, 2),
-                allowNull: false,
-            },
-            paid_amount: {
-                type: DataTypes.DECIMAL(10, 2),
-                allowNull: false,
-            },
-            credit_balance: {
-                type: DataTypes.DECIMAL(10, 2),
-                allowNull: false,
-            },
-            payed_off: {
-                type: DataTypes.BOOLEAN,
                 allowNull: false,
             },
             fully_stocked: {

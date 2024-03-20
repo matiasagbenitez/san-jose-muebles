@@ -22,7 +22,6 @@ interface DataRow {
   date: string;
   supplier: string;
   total: string;
-  payed_off: boolean;
   payed_status: string;
   payed_message: string;
   fully_stocked: boolean;
@@ -111,22 +110,7 @@ export const Purchases = () => {
       wrap: true,
       right: true,
     },
-    {
-      name: "ESTADO CUENTA",
-      selector: (row: DataRow) => row.payed_off,
-      format: (row: DataRow) => (
-        <>
-          {!row.nullified && (
-            <Badge bg={row.payed_off ? "success" : "warning"}>
-              {row.payed_off ? "PAGADO" : "PENDIENTE"}
-            </Badge>
-          )}
-        </>
-      ),
-      maxWidth: "150px",
-      center: true,
-    },
-    {
+       {
       name: "STOCK RECIBIDO",
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (

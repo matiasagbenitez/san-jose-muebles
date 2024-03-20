@@ -17,9 +17,6 @@ export class NewPurchaseDto {
 
         public products_list: PurchaseItem[] = [],
 
-        public paid_amount: number = 0,
-        public credit_balance: number,
-        public payed_off: boolean = false,
         public fully_stocked: boolean = false,
         public nullified: boolean = false,
     ) { }
@@ -53,7 +50,7 @@ export class NewPurchaseDto {
             if (product.subtotal !== product_subtotal) return [`El subtotal del producto ${i + 1} no coincide con el precio y la cantidad`];
             local_subtotal += product.subtotal;
         }
- 
+
         if (local_subtotal !== subtotal) return ['El subtotal no coincide con la suma de los subtotales de los productos'];
 
         const local_total = Math.round((subtotal - discount + other_charges) * 100) / 100;
@@ -63,14 +60,14 @@ export class NewPurchaseDto {
             date,
             id_supplier,
             id_currency,
+
             subtotal,
             discount,
             other_charges,
             total,
+
             products_list,
 
-            0,
-            total,
             false,
             false,
         )];

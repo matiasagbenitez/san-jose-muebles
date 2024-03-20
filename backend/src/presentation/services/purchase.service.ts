@@ -28,7 +28,7 @@ export class PurchaseService {
                 include: ['supplier', 'currency'],
                 offset: (page - 1) * limit,
                 limit,
-                order: [['payed_off', 'ASC'], ['fully_stocked', 'ASC'], ['date', 'DESC'], ['createdAt', 'DESC']],
+                order: [['fully_stocked', 'ASC'], ['date', 'DESC'], ['createdAt', 'DESC']],
             }),
             Purchase.count({ where })
         ]);

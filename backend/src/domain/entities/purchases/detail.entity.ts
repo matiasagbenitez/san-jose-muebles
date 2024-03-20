@@ -12,9 +12,6 @@ interface DataInterface {
     currency: string;
     is_monetary: boolean;
     total: number;
-    paid_amount: number;
-    credit_balance: number;
-    payed_off: boolean;
     created_at: string;
     created_by: string;
 }
@@ -30,7 +27,7 @@ interface ItemInterface {
     fully_stocked: boolean;
 }
 
-interface TotalsInterface { 
+interface TotalsInterface {
     currency: string;
     is_monetary: boolean;
     subtotal: number;
@@ -49,7 +46,6 @@ export class DetailPurchaseEntity {
         public id: number,
         public nullified: boolean,
         public fully_stocked: boolean,
-        public payed_off: boolean,
         public data: DataInterface,
         public items: ItemInterface[],
         public totals: TotalsInterface,
@@ -68,9 +64,6 @@ export class DetailPurchaseEntity {
             discount,
             other_charges,
             total,
-            paid_amount,
-            credit_balance,
-            payed_off,
             fully_stocked,
             nullified,
             nullifier,
@@ -89,9 +82,6 @@ export class DetailPurchaseEntity {
         if (!discount) throw CustomError.badRequest('Falta el descuento');
         if (!other_charges) throw CustomError.badRequest('Faltan otros cargos');
         if (!total) throw CustomError.badRequest('Falta el total');
-        if (!paid_amount) throw CustomError.badRequest('Falta el monto pagado');
-        if (!credit_balance) throw CustomError.badRequest('Falta el saldo deudor');
-        if (payed_off === undefined) throw CustomError.badRequest('Falta si está pagado');
         if (fully_stocked === undefined) throw CustomError.badRequest('Falta si está completamente abastecido');
         if (nullified === undefined) throw CustomError.badRequest('Falta si está anulado');
         if (!nullifier) throw CustomError.badRequest('Falta el anulador');
@@ -109,9 +99,6 @@ export class DetailPurchaseEntity {
             currency: currency.name + ' (' + currency.symbol + ')',
             is_monetary: currency.is_monetary,
             total,
-            paid_amount,
-            credit_balance,
-            payed_off,
             created_at: createdAt,
             created_by: creator.name,
         };
@@ -150,7 +137,6 @@ export class DetailPurchaseEntity {
             id,
             nullified,
             fully_stocked,
-            payed_off,
             data,
             itemsArray,
             totals,

@@ -18,9 +18,6 @@ export class PurchaseEntity {
         public subtotal: string,            // TABLE
         public discount: string,            // TABLE
         public total: string,               // TABLE
-        public paid_amount: string,         // TABLE
-        public credit_balance: string,      // TABLE
-        public payed_off: boolean,          // TABLE
         public fully_stocked: boolean,      // TABLE
 
         public nullified: boolean,          // TABLE
@@ -43,9 +40,6 @@ export class PurchaseEntity {
             subtotal,
             discount,
             total,
-            paid_amount,
-            credit_balance,
-            payed_off,
             fully_stocked,
             nullified,
             nullified_by,
@@ -65,9 +59,6 @@ export class PurchaseEntity {
         if (isNaN(subtotal)) throw CustomError.badRequest('El subtotal debe ser un número');
         if (isNaN(discount)) throw CustomError.badRequest('El descuento debe ser un número');
         if (isNaN(total)) throw CustomError.badRequest('El total debe ser un número');
-        if (isNaN(paid_amount)) throw CustomError.badRequest('El monto pagado debe ser un número');
-        if (isNaN(credit_balance)) throw CustomError.badRequest('El crédito debe ser un número');
-        if (payed_off === undefined) throw CustomError.badRequest('Falta el estado de pago');
         if (fully_stocked === undefined) throw CustomError.badRequest('Falta el estado de stock');
         if (nullified === undefined) throw CustomError.badRequest('Falta el estado de anulado');
         if (!nullified_by) throw CustomError.badRequest('Falta el ID del anulador');
@@ -79,8 +70,6 @@ export class PurchaseEntity {
         const subtotal_f = Intl.NumberFormat('es-ES', { minimumFractionDigits: 2 }).format(subtotal);
         const discount_f = Intl.NumberFormat('es-ES', { minimumFractionDigits: 2 }).format(discount);
         const total_f = Intl.NumberFormat('es-ES', { minimumFractionDigits: 2 }).format(total);
-        const paid_amount_f = Intl.NumberFormat('es-ES', { minimumFractionDigits: 2 }).format(paid_amount);
-        const credit_balance_f = Intl.NumberFormat('es-ES', { minimumFractionDigits: 2 }).format(credit_balance);
 
         return new PurchaseEntity(
             id,
@@ -94,9 +83,6 @@ export class PurchaseEntity {
             subtotal_f,
             discount_f,
             total_f,
-            paid_amount_f,
-            credit_balance_f,
-            payed_off,
             fully_stocked,
             nullified,
             nullified_by,

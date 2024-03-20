@@ -16,7 +16,6 @@ export const Purchase = () => {
   const [purchaseId, setPurchaseId] = useState<number>();
   const [isNullified, setIsNullified] = useState<boolean>(false);
   const [isFullyStocked, setIsFullyStocked] = useState<boolean>(false);
-  const [isPayedOff, setIsPayedOff] = useState<boolean>(false);
   const [data, setData] = useState();
   const [items, setItems] = useState<ItemInterface[]>();
   const [totals, setTotals] = useState();
@@ -30,7 +29,6 @@ export const Purchase = () => {
       setPurchaseId(data.purchase.id);
       setIsNullified(data.purchase.nullified);
       setIsFullyStocked(data.purchase.fully_stocked);
-      setIsPayedOff(data.purchase.payed_off);
       setData(data.purchase.data);
       setItems(data.purchase.items);
       setTotals(data.purchase.totals);
@@ -132,15 +130,6 @@ export const Purchase = () => {
               <div className="d-flex justify-content-between align-items-cente">
                 <h1 className="fs-4">Compra #{purchaseId}</h1>
                 <div className="d-flex align-items-center ">
-                  {!isNullified && isPayedOff ? (
-                    <Badge bg="success" className="me-2">
-                      PAGADO
-                    </Badge>
-                  ) : (
-                    <Badge bg="warning" className="me-2">
-                      PAGO PENDIENTE
-                    </Badge>
-                  )}
                   {!isNullified && isFullyStocked ? (
                     <Badge bg="success" className="me-2">
                       STOCK COMPLETO

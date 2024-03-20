@@ -9,9 +9,6 @@ export interface ResumeInterface {
     currency: string;
     is_monetary: boolean;
     total: number;
-    paid_amount: number;
-    credit_balance: number;
-    payed_off: boolean;
     created_at: Date;
     created_by: string;
     nullified: boolean;

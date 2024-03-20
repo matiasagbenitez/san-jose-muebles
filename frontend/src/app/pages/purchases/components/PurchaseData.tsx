@@ -17,9 +17,6 @@ export const PurchaseData = ({
     currency,
     is_monetary,
     total,
-    paid_amount,
-    credit_balance,
-    payed_off,
     created_at,
     created_by,
   } = data;
@@ -76,32 +73,6 @@ export const PurchaseData = ({
             <td className="text-end">
               {is_monetary && "$"}
               {toMoney(total)}
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Importe pagado</th>
-            <td className="text-end">
-              {is_monetary && "$"}
-              {toMoney(paid_amount)}
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Saldo pendiente</th>
-            <td className="text-end">
-              {payed_off ? (
-                <i
-                  className="bi bi-check-circle-fill text-success me-2"
-                  title="No registra saldo pendiente"
-                ></i>
-              ) : (
-                <i
-                  className="bi bi-exclamation-triangle-fill text-warning me-2"
-                  title="Saldo pendiente"
-                ></i>
-              )}
-
-              {is_monetary && "$"}
-              {toMoney(credit_balance)}
             </td>
           </tr>
           <tr>
