@@ -115,7 +115,7 @@ export const Localities = () => {
   };
 
   const handleDelete = async (row: DataRow) => {
-    const confirmation = await SweetAlert2.confirmationDialog(
+    const confirmation = await SweetAlert2.confirm(
       "¿Eliminar la localidad " + row.name + "?"
     );
     try {

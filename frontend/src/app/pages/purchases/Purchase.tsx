@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Badge } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { PurchaseData, PurchaseItems, PurchaseOptions } from "./components";
+import {
+  PurchaseData,
+  PurchaseItems,
+  PurchaseNullified,
+  PurchaseOptions,
+  PurchaseTitle,
+} from "./components";
 import { ItemInterface } from "./interfaces";
 import { SweetAlert2 } from "../../utils";
 
@@ -45,7 +51,7 @@ export const Purchase = () => {
 
   const nullifyPurchase = async () => {
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
+      const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de anular la compra?"
       );
       if (!confirmation.isConfirmed) return;
@@ -53,7 +59,6 @@ export const Purchase = () => {
         "Motivo de anulación"
       );
       if (!reason) return;
-      console.log(reason);
       const { data } = await apiSJM.post(`/purchases/${purchaseId}/nullify`, {
         reason,
       });
@@ -67,7 +72,7 @@ export const Purchase = () => {
 
   const updatePurchaseFullStock = async () => {
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
+      const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de actualizar el stock de todos los productos?"
       );
       if (!confirmation.isConfirmed) return;
@@ -86,21 +91,20 @@ export const Purchase = () => {
     }
   };
 
-  const updateItemFullStock = async (
+  const updateItemStock = async (
     e: React.FormEvent,
     id: number,
-    quantity_updated: number
+    item: string,
+    quantity_received: number
   ) => {
     e.preventDefault();
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
-        "¿Está seguro de actualizar el stock?"
+      const confirmation = await SweetAlert2.confirm(
+        "¿Actualizar el stock del producto " + item + "?"
       );
+      const endpoint = `/purchases/${purchaseId}/update-item-stock/${id}`;
       if (!confirmation.isConfirmed) return;
-      const { data } = await apiSJM.post(
-        `/purchases/${purchaseId}/update-item-stock/${id}`,
-        { quantity_updated }
-      );
+      const { data } = await apiSJM.post(endpoint, { quantity_received });
       if (items) {
         const updatedItems = items.map((item: any) => {
           if (item.id === data.item.id) {
@@ -126,26 +130,18 @@ export const Purchase = () => {
       {purchaseId && data && items && totals && nullifiedData && !loading && (
         <>
           <Row>
+            {isNullified && (
+              <Col xs={12}>
+                <PurchaseNullified nullifiedData={nullifiedData} />
+              </Col>
+            )}
             <Col xl={6}>
-              <div className="d-flex justify-content-between align-items-cente">
-                <h1 className="fs-4">Compra #{purchaseId}</h1>
-                <div className="d-flex align-items-center ">
-                  {!isNullified && isFullyStocked ? (
-                    <Badge bg="success" className="me-2">
-                      STOCK COMPLETO
-                    </Badge>
-                  ) : (
-                    <Badge bg="warning" className="me-2">
-                      STOCK PENDIENTE
-                    </Badge>
-                  )}
-                </div>
-              </div>
-              <PurchaseData
-                data={data}
+              <PurchaseTitle
+                purchaseId={purchaseId}
                 isNullified={isNullified}
-                nullifiedData={nullifiedData}
+                isFullyStocked={isFullyStocked}
               />
+              <PurchaseData data={data} />
             </Col>
             <Col xl={6}>
               <PurchaseOptions
@@ -159,11 +155,10 @@ export const Purchase = () => {
             <Col xs={12}>
               <h2 className="fs-5">Detalle de productos</h2>
               <PurchaseItems
-                id={purchaseId}
                 isNullified={isNullified}
                 items={items}
                 totals={totals}
-                updateItemFullStock={updateItemFullStock}
+                updateItemStock={updateItemStock}
                 showModal={showModal}
                 setShowModal={setShowModal}
               />

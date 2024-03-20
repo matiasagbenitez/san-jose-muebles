@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Purchase, PurchaseItem, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity } from "../../domain";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto } from "../../domain";
 
 export interface PurchaseFilters {
     name: string;
@@ -114,37 +114,39 @@ export class PurchaseService {
         }
     }
 
-    public async updatePurchaseItemStock(id_purchase: number, id_item: number, quantity_received: number) {
+    public async updatePurchaseItemStock(updateItemDto: UpdateItemStockDto, id_user: number) {
 
         try {
+            const { id_purchase, id_item, quantity_received } = updateItemDto;
+
             const item = await PurchaseItem.findOne({ where: { id: id_item, id_purchase } });
             if (!item) throw CustomError.notFound('No se encontró el ítem de la compra');
 
-            const buyed_quantity = Number(item.quantity);
-            const actual_stocked = Number(item.actual_stocked);
-            const received = Number(quantity_received);
+            const buyed = Number(item.quantity);
+            const actual = Number(item.actual_stocked);
+            const max_to_receive = buyed - actual;
 
-            if (received <= 0) throw CustomError.badRequest('¡La cantidad recibida debe ser mayor a 0!');
+            if (quantity_received <= 0) throw CustomError.badRequest('¡La cantidad recibida debe ser mayor a 0!');
             if (item.fully_stocked) throw CustomError.badRequest('¡El ítem ya está completamente stockeado!');
+            if (quantity_received > max_to_receive) throw CustomError.badRequest(`¡La cantidad recibida no puede ser superior a ${max_to_receive}!`);
 
-            if (actual_stocked + received >= buyed_quantity) {
-                item.actual_stocked = buyed_quantity;
-                item.fully_stocked = true;
+            if (actual + quantity_received == buyed) {
+                await item.update({ actual_stocked: buyed, fully_stocked: true });
             } else {
-                item.actual_stocked = actual_stocked + received;
+                await item.update({ actual_stocked: actual + quantity_received });
             }
 
-            const item_updated = await item.save();
+            // TODO: REGISTER USER WHO UPDATED THE STOCK
 
             const is_fully_stocked = await this.checkPurchaseFullyStocked(id_purchase);
             return {
                 fully_stocked: is_fully_stocked,
                 item: {
-                    id: item_updated.id,
-                    quantity: Number(item_updated.quantity),
-                    actual_stocked: item_updated.actual_stocked,
-                    pending: item_updated.quantity - item_updated.actual_stocked,
-                    fully_stocked: item_updated.fully_stocked,
+                    id: item.id,
+                    quantity: Number(item.quantity),
+                    actual_stocked: item.actual_stocked,
+                    pending: item.quantity - item.actual_stocked,
+                    fully_stocked: item.fully_stocked,
                 }, message: '¡Stock actualizado correctamente!'
             };
         } catch (error) {
@@ -176,15 +178,11 @@ export class PurchaseService {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
             const fully_stocked = items.every(item => item.fully_stocked);
-            if (fully_stocked) {
-                const purchase = await Purchase.findByPk(id_purchase);
-                if (purchase) {
-                    purchase.fully_stocked = true;
-                    await purchase.save();
-                    return true;
-                }
+            if (!fully_stocked) {
+                return false;
             }
-            return false;
+            await Purchase.update({ fully_stocked }, { where: { id: id_purchase } });
+            return true;
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

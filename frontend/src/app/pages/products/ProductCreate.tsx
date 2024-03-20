@@ -9,7 +9,7 @@ export const ProductCreate = () => {
 
   const onSubmit = async (formData: any) => {
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
+      const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de que deseas crear este producto?"
       );
       if (!confirmation.isConfirmed) return;

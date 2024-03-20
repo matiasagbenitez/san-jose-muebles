@@ -25,11 +25,11 @@ export const PurchaseOptions = ({
       <div className="list-group small">
         <button
           className="list-group-item list-group-item-action py-1"
-          title="Gestionar pagos realizados"
+          title="Registrar un pago"
           onClick={handleRedirectPayments}
         >
           <i className="bi bi-cash-stack me-2 fs-6"></i>
-          Gestionar pagos realizados
+          Registrar un pago en concepto de esta compra
         </button>
         <button
           className="list-group-item list-group-item-action py-1"
@@ -39,6 +39,13 @@ export const PurchaseOptions = ({
         >
           <i className="bi bi-check2-square me-2 fs-56"></i>
           Marcar todos los productos como recibidos
+        </button>
+        <button
+          className="list-group-item list-group-item-action py-1"
+          title="Ver registros de recepción de productos"
+        >
+          <i className="bi bi-search me-2 fs-56"></i>
+          Ver registros de recepción de productos
         </button>
         <button
           className="list-group-item list-group-item-action py-1"

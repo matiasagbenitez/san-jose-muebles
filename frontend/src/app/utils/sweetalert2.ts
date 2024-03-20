@@ -53,7 +53,7 @@ export class SweetAlert2 {
         });
     }
 
-    static confirmationDialog(message: string, iconReceived: SweetAlertIcon = "question") {
+    static confirm(message: string, iconReceived: SweetAlertIcon = "question") {
         return Swal.fire({
             title: "Confirme la operación",
             text: message,

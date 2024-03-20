@@ -97,7 +97,7 @@ export const TypesOfProjects = () => {
   };
 
   const handleDelete = async (row: DataRow) => {
-    const confirmation = await SweetAlert2.confirmationDialog(
+    const confirmation = await SweetAlert2.confirm(
       "¿Eliminar el tipo de proyecto " + row.name + "?"
     );
     try {

@@ -1,16 +1,8 @@
-import { Table, Badge, Alert } from "react-bootstrap";
-import { ResumeInterface, NullifiedInterface } from "../interfaces";
+import { Table, Button } from "react-bootstrap";
+import { ResumeInterface } from "../interfaces";
 import { DayJsAdapter, toMoney } from "../../../../helpers";
 
-export const PurchaseData = ({
-  isNullified,
-  data,
-  nullifiedData,
-}: {
-  isNullified: boolean;
-  data: ResumeInterface;
-  nullifiedData: NullifiedInterface;
-}) => {
+export const PurchaseData = ({ data }: { data: ResumeInterface }) => {
   const {
     date,
     supplier,
@@ -21,38 +13,12 @@ export const PurchaseData = ({
     created_by,
   } = data;
 
-  const { nullifier, nullified_date, nullified_reason } = nullifiedData;
-
   return (
     <>
-      {isNullified && (
-        <Alert variant="danger" className="small">
-          <Alert.Heading className="fs-6">
-            <i className="bi bi-exclamation-triangle"></i> Compra anulada el{" "}
-            {DayJsAdapter.toDayMonthYearHour(nullified_date)} ({nullifier})
-          </Alert.Heading>
-          <hr className="my-2" />
-          <p className="mb-0">
-            <u>Motivo:</u> {nullified_reason || "No especificado"}
-          </p>
-        </Alert>
-      )}
-
       <Table size="sm" className="small" striped bordered responsive>
         <tbody>
           <tr className="text-center fw-bold text-uppercase">
             <th colSpan={2}>Resumen de la compra</th>
-          </tr>
-          <tr>
-            <th scope="row">Validez</th>
-            <td className="text-end text-uppercase">
-              {" "}
-              {isNullified ? (
-                <Badge bg="danger">Compra anulada</Badge>
-              ) : (
-                <Badge bg="success">Compra válida</Badge>
-              )}
-            </td>
           </tr>
           <tr>
             <th scope="row">Fecha compra</th>
@@ -61,7 +27,10 @@ export const PurchaseData = ({
           <tr>
             <th scope="row">Proveedor</th>
             <td className="text-end">
-              {supplier.name} ({supplier.locality})
+              <a href={`/proveedores/${supplier.id}`} target="_blank" title="Ver proveedor">
+                <i className="bi bi-box-arrow-up-right me-2"></i>
+                {supplier.name} ({supplier.locality})
+              </a>
             </td>
           </tr>
           <tr>

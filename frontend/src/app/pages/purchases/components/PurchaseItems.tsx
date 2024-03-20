@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Dropdown, Table, Modal } from "react-bootstrap";
+import { Dropdown, Table } from "react-bootstrap";
 import { ItemInterface } from "../interfaces";
 import { toMoney } from "../../../../helpers";
-import { SweetAlert2 } from "../../../utils";
-import apiSJM from "../../../../api/apiSJM";
+import { UpdateItemStockForm } from ".";
 
 const initialItem: ItemInterface = {
   id: 0,
@@ -18,25 +17,22 @@ const initialItem: ItemInterface = {
 };
 
 export const PurchaseItems = ({
-  id,
   isNullified,
   items,
   totals,
-  updateItemFullStock,
+  updateItemStock,
   showModal,
   setShowModal,
 }: {
-  id: number;
   isNullified: boolean;
   items: ItemInterface[];
   totals: any;
-  updateItemFullStock: any;
+  updateItemStock: any;
   showModal: boolean;
   setShowModal: any;
 }) => {
   const { is_monetary } = totals;
   const [selectedItem, setSelectedItem] = useState<ItemInterface>(initialItem);
-  const [quantity, setQuantity] = useState<number>(0);
 
   const openModal = (item: ItemInterface) => {
     setSelectedItem(item);
@@ -45,7 +41,6 @@ export const PurchaseItems = ({
 
   const closeModal = () => {
     setSelectedItem(initialItem);
-    setQuantity(0);
     setShowModal(false);
   };
 
@@ -54,16 +49,15 @@ export const PurchaseItems = ({
       <Table size="sm" className="small" striped bordered responsive>
         <thead className="text-center fw-bold text-uppercase">
           <tr>
-            <th colSpan={6}>Productos</th>
+            <th colSpan={5}>Productos</th>
             <th colSpan={3}>Stock</th>
           </tr>
           <tr>
-            <th className="px-4">Cant.</th>
-            <th className="px-4">Unidad</th>
-            <th className="px-4">Marca</th>
+            <th className="col-1">Cantidad</th>
+            <th className="col-1">Marca</th>
             <th className="col-5">Nombre</th>
-            <th className="col-2">Precio </th>
-            <th className="col-2">Subtotal</th>
+            <th className="col-1">Precio </th>
+            <th className="col-1">Subtotal</th>
             <th className="col-1">Recibido</th>
             <th className="col-1">Pendiente</th>
             <th className="col-1">Actualizar</th>
@@ -72,29 +66,33 @@ export const PurchaseItems = ({
         <tbody>
           {items.map((item) => (
             <tr key={item.id}>
-              <td className="text-center">{item.quantity}</td>
-              <td className="text-center">{item.unit}</td>
-              <td>{item.brand}</td>
-              <td>{item.product}</td>
-              <td className="text-end">
+              <td className="text-center px-2">
+                {item.quantity} {item.unit}
+              </td>
+              <td className="text-center px-2">{item.brand}</td>
+              <td className="px-2">{item.product}</td>
+              <td className="text-end px-2">
                 {is_monetary && "$"}
                 {toMoney(item.price)}
               </td>
-              <td className="text-end">
+              <td className="text-end px-2">
                 {is_monetary && "$"}
                 {toMoney(item.subtotal)}
               </td>
-              <td className="text-center">
-                <div className="d-flex gap-1 justify-content-center">
-                  {item.actual_stocked} / {item.quantity}
-                </div>
+              <td className="text-center px-2">
+                {/* RECIBIDO */}
+                {item.actual_stocked} / {item.quantity} {item.unit}
               </td>
-              <td className="text-center">
+              <td className="text-center px-2">
+                {/* PENDIENTE */}
                 {!item.fully_stocked && (
-                  <>{item.quantity - item.actual_stocked}</>
+                  <>
+                    {item.quantity - item.actual_stocked} {item.unit}
+                  </>
                 )}
               </td>
-              <td className="text-center">
+              <td className="text-center px-2">
+                {/* ACTUALIZAR */}
                 {!item.fully_stocked && !isNullified && (
                   <Dropdown>
                     <Dropdown.Toggle
@@ -115,7 +113,12 @@ export const PurchaseItems = ({
                         className="small"
                         disabled={item.fully_stocked}
                         onClick={(e) =>
-                          updateItemFullStock(e, item.id, item.quantity)
+                          updateItemStock(
+                            e,
+                            item.id,
+                            item.product,
+                            item.quantity - item.actual_stocked
+                          )
                         }
                       >
                         Recepción total
@@ -127,20 +130,20 @@ export const PurchaseItems = ({
             </tr>
           ))}
           <tr>
-            <td colSpan={5} className="text-end fw-bold text-uppercase">
+            <td colSpan={4} className="text-end fst-italic text-uppercase px-2">
               Subtotal
             </td>
-            <td className="text-end fst-italic">
+            <td className="text-end fst-italic px-2">
               {is_monetary && "$"}
               {toMoney(totals.subtotal)}
             </td>
             <td colSpan={3}></td>
           </tr>
           <tr>
-            <td colSpan={5} className="text-end fw-bold text-uppercase">
+            <td colSpan={4} className="text-end fst-italic text-uppercase px-2">
               Descuento
             </td>
-            <td className="text-end fst-italic">
+            <td className="text-end fst-italic px-2">
               {" - "}
               {is_monetary && "$"}
               {toMoney(totals.discount)}
@@ -148,83 +151,37 @@ export const PurchaseItems = ({
             <td colSpan={3}></td>
           </tr>
           <tr>
-            <td colSpan={5} className="text-end fw-bold text-uppercase">
+            <td colSpan={4} className="text-end fst-italic text-uppercase px-2">
               Otros cargos
             </td>
-            <td className="text-end fst-italic">
+            <td className="text-end fst-italic px-2">
               {is_monetary && "$"}
               {toMoney(totals.other_charges)}
             </td>
             <td colSpan={3}></td>
           </tr>
           <tr>
-            <td colSpan={5} className="text-end fw-bold text-uppercase">
+            <td colSpan={4} className="text-end fw-bold text-uppercase px-2">
               Total compra
             </td>
-            <td className="text-end fw-bold">
+            <td className="text-end fw-bold px-2">
               {is_monetary && "$"}
               {toMoney(totals.total)}
             </td>
-            <td colSpan={3} className="fw-bold text-uppercase">
+            <td colSpan={3} className="fw-bold text-uppercase px-2">
               {totals.currency}
             </td>
           </tr>
         </tbody>
       </Table>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Recepción parcial</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="small">
-          <p className="mb-2">
-            <strong>Producto:</strong> {selectedItem.product}
-          </p>
-          <p className="mb-2">
-            <strong>Cantidad comprada:</strong> {selectedItem.quantity}{" "}
-            {selectedItem.unit}
-          </p>
-          <p className="mb-2">
-            <strong>Stock recibido:</strong> {selectedItem.actual_stocked}
-          </p>
-          <p className="mb-2">
-            <strong>Stock pendiente:</strong>{" "}
-            {selectedItem.quantity - selectedItem.actual_stocked}
-          </p>
-          <form
-            onSubmit={(e) => updateItemFullStock(e, selectedItem.id, quantity)}
-          >
-            <label htmlFor="quantity" className="fw-bold mb-1">
-              Cantidad a recibir
-            </label>
-            <div className="d-flex align-items-center">
-              <input
-                id="quantity"
-                type="number"
-                className="form-control form-control-sm me-2 w-50"
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                min={0}
-                step={0.1}
-                max={selectedItem.quantity - selectedItem.actual_stocked}
-                required
-              />
-              / {selectedItem.quantity}
-            </div>
-            <div className="d-flex justify-content-end mt-2">
-              <button
-                type="button"
-                className="btn btn-sm btn-secondary mt-2 me-2"
-                onClick={() => closeModal()}
-              >
-                Cancelar
-              </button>
-              <button type="submit" className="btn btn-sm btn-primary mt-2">
-                Registrar
-              </button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <UpdateItemStockForm
+        selectedItem={selectedItem}
+        updateItemStock={updateItemStock}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        closeModal={closeModal}
+      />
     </>
   );
 };

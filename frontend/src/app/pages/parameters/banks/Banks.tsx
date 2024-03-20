@@ -97,7 +97,7 @@ export const Banks = () => {
   };
 
   const handleDelete = async (row: DataRow) => {
-    const confirmation = await SweetAlert2.confirmationDialog(
+    const confirmation = await SweetAlert2.confirm(
       "¿Eliminar el bacno " + row.name + "?"
     );
     try {

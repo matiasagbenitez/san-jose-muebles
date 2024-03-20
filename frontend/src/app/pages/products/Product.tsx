@@ -32,7 +32,7 @@ export const Product = () => {
 
   const handleDelete = async () => {
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
+      const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de que deseas eliminar este producto?"
       );
       if (!confirmation.isConfirmed) return;

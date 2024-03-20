@@ -97,7 +97,7 @@ export const TypesOfEnvironments = () => {
   };
 
   const handleDelete = async (row: DataRow) => {
-    const confirmation = await SweetAlert2.confirmationDialog(
+    const confirmation = await SweetAlert2.confirm(
       "¿Eliminar el tipo de ambiente" + row.name + "?"
     );
     try {

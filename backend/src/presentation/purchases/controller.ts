@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, NewPurchaseDto, LoggedUserIdDto } from "../../domain";
+import { CustomError, PaginationDto, NewPurchaseDto, LoggedUserIdDto, UpdateItemStockDto } from "../../domain";
 import { PurchaseService, PurchaseFilters } from "../services/purchase.service";
 
 export class PurchaseController {
@@ -82,16 +82,25 @@ export class PurchaseController {
         const { id_purchase, id_item } = req.params;
         if (!id_purchase || !id_item) return res.status(400).json({ message: 'Missing id_purchase or id_item' });
 
-        const { quantity_updated } = req.body;
-        if (!quantity_updated) return res.status(400).json({ message: 'Missing quantity_updated' });
+        const { quantity_received } = req.body;
+        if (!quantity_received || isNaN(quantity_received)) return res.status(400).json({ message: 'Missing quantity_received' });
 
-        this.purchaseService.updatePurchaseItemStock(parseInt(id_purchase), parseInt(id_item), +quantity_updated)
-            .then((data) => {
-                res.json(data);
-            })
-            .catch((error) => {
-                this.handleError(error, res);
-            });
+        const [error, updateItemDto] = UpdateItemStockDto.create({ id_purchase, id_item, quantity_received });
+        if (error) return res.status(400).json({ message: error });
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+
+        if (updateItemDto && loggedUserIdDto) {
+            this.purchaseService.updatePurchaseItemStock(updateItemDto, loggedUserIdDto.id_user)
+                .then((data) => {
+                    res.json(data);
+                })
+                .catch((error) => {
+                    this.handleError(error, res);
+                });
+        }
     }
 
     updatePurchaseFullyStocked = async (req: Request, res: Response) => {

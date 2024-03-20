@@ -37,7 +37,7 @@ export const Supplier = () => {
 
   const handleSubmit = async (formData: SupplierInterface) => {
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
+      const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de que quieres modificar este proveedor?"
       );
       if (!confirmation.isConfirmed) return;
@@ -54,7 +54,7 @@ export const Supplier = () => {
 
   const handleDelete = async () => {
     try {
-      const confirmation = await SweetAlert2.confirmationDialog(
+      const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de que quieres eliminar este proveedor?"
       );
       if (confirmation.isConfirmed) {

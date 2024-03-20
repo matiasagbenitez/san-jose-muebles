@@ -107,12 +107,12 @@ export const SupplierBankAccounts = () => {
     try {
 
       if (editingId) {
-        const confirmation = await SweetAlert2.confirmationDialog("¿Actualizar cuenta bancaria?");
+        const confirmation = await SweetAlert2.confirm("¿Actualizar cuenta bancaria?");
         if (!confirmation.isConfirmed) return;
         const { data } = await apiSJM.put(`/bank_accounts/${editingId}`, values);
         SweetAlert2.successToast(data.message);
       } else {
-        const confirmation = await SweetAlert2.confirmationDialog("¿Agregar cuenta bancaria?");
+        const confirmation = await SweetAlert2.confirm("¿Agregar cuenta bancaria?");
         if (!confirmation.isConfirmed) return;
         const { data } = await apiSJM.post("/bank_accounts", { ...values, id_supplier: id });
         SweetAlert2.successToast(data.message);
@@ -125,7 +125,7 @@ export const SupplierBankAccounts = () => {
   };
 
   const handleDelete = async (row: DataRow) => {
-    const confirmation = await SweetAlert2.confirmationDialog(
+    const confirmation = await SweetAlert2.confirm(
       "¿Eliminar la cuenta bancaria " + row.bank + "?"
     );
     try {

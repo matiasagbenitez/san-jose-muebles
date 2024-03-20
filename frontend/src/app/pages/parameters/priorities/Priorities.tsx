@@ -104,7 +104,7 @@ export const Priorities = () => {
   };
 
   const handleDelete = async (row: DataRow) => {
-    const confirmation = await SweetAlert2.confirmationDialog(
+    const confirmation = await SweetAlert2.confirm(
       "¿Eliminar la prioridad " + row.name + "?"
     );
     try {
