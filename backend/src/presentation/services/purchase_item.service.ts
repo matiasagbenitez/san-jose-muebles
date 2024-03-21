@@ -1,13 +1,12 @@
-import { Product, Purchase, PurchaseItem, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
+import { Purchase, PurchaseItem } from "../../database/mysql/models";
+import { CustomError, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
 import { ProductService } from "./product.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
 
 export class PurchaseItemService {
 
-
-    public async createPurchaseItem(id_purchase: number, item: any) {
+    public async createPurchaseItem(id_purchase: number, id_currency: number, item: any) {
         try {
             await PurchaseItem.create({
                 id_purchase,
@@ -15,6 +14,8 @@ export class PurchaseItemService {
                 actual_stocked: 0,
                 fully_stocked: false,
             });
+            const productService = new ProductService();
+            await productService.updateIncomingStockAndLastPrice(item.id_product, id_currency, item.quantity, item.price);
         } catch (error: any) {
             if (error.name === 'SequelizeValidationError') {
                 throw CustomError.badRequest(`Ocurrió un error al crear un detalle de compra: ${error.errors[0].message}`);
@@ -53,18 +54,11 @@ export class PurchaseItemService {
             if (!detailService) throw CustomError.internalServerError('Error al crear el detalle de la compra');
             if (detailDto) await detailService.createReceptionPartial(detailDto);
 
-            // const is_fully_stocked = await this.checkOrUpdateFullyStocked(id_purchase);
+            const productService = new ProductService();
+            await productService.updateStockByReception(item.id_product, quantity_received);
 
-            // return {
-            //     fully_stocked: is_fully_stocked,
-            //     item: {
-            //         id: item.id,
-            //         quantity: Number(item.quantity),
-            //         actual_stocked: item.actual_stocked,
-            //         fully_stocked: item.fully_stocked,
-            //     },
-            //     message: '¡Stock actualizado correctamente!'
-            // };
+            return item;
+
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
@@ -74,13 +68,11 @@ export class PurchaseItemService {
     public async updatePurchaseFullStock(id_purchase: number, id_user: number) {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
+            const productService = new ProductService();
             items.forEach(async (item) => {
                 await item.update({ actual_stocked: item.quantity, fully_stocked: true });
+                await productService.updateStockByReception(item.id_product, item.quantity);
             });
-
-            const purchase = await Purchase.findByPk(id_purchase);
-            if (!purchase) throw CustomError.notFound('Compra no encontrada');
-            await purchase.update({ fully_stocked: true });
 
             // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
             const [detailError, detailDto] = ReceptionTotalDto.create({ id_purchase, id_user });
@@ -91,6 +83,7 @@ export class PurchaseItemService {
             if (detailDto) await detailService.createReceptionTotal(detailDto);
 
             return { message: '¡Stock de la compra actualizado correctamente!' };
+
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

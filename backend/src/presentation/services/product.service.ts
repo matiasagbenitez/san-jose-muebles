@@ -120,12 +120,24 @@ export class ProductService {
         }
     }
 
-    public async updateIncomingStockAndLastPrice(id: number, quantity: number, last_price: number, id_currency: number): Promise<void> {
+    public async updateIncomingStockAndLastPrice(id: number, id_currency: number, quantity: number, last_price: number): Promise<void> {
         const product = await Product.findByPk(id);
         if (!product) throw CustomError.notFound('Producto no encontrado');
         try {
             const inc_stock = Number(product.inc_stock) + Number(quantity);
             await product.update({ inc_stock, last_price, id_currency });
+        } catch (error: any) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateStockByReception(id: number, quantity: number): Promise<void> {
+        const product = await Product.findByPk(id);
+        if (!product) throw CustomError.notFound('Producto no encontrado');
+        try {
+            const inc_stock = Number(product.inc_stock) - Number(quantity);
+            const actual_stock = Number(product.actual_stock) + Number(quantity);
+            await product.update({ inc_stock, actual_stock });
         } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);
         }
