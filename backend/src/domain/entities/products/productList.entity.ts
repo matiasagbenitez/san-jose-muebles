@@ -39,10 +39,10 @@ export class ProductListEntity {
             unit.symbol,
             name,
 
-            actual_stock,
-            inc_stock,
-            min_stock,
-            ideal_stock,
+            Number(actual_stock),
+            Number(inc_stock),
+            Number(min_stock),
+            Number(ideal_stock),
 
             code
         );

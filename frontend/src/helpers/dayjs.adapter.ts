@@ -8,7 +8,7 @@ export class DayJsAdapter {
     }
 
     static toDayMonthYearHour(date: Date): string {
-        return dayjs(date).format('DD/MM/YY HH:mm');
+        return dayjs(date).format('DD/MM/YYYY HH:mm');
     }
 
 }

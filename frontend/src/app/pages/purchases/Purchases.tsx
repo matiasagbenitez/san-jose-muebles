@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
+import { toMoney, DayJsAdapter } from "../../../helpers";
 
 import {
   Datatable,
@@ -18,10 +19,14 @@ interface ParamsInterface {
 }
 interface DataRow {
   id: number;
-  created_at: string;
-  date: string;
+  created_at: Date;
+  date: Date;
   supplier: string;
-  total: string;
+  currency: {
+    symbol: string;
+    is_monetary: boolean;
+  };
+  total: number;
   payed_status: string;
   payed_message: string;
   fully_stocked: boolean;
@@ -88,14 +93,16 @@ export const Purchases = () => {
     },
     {
       name: "FECHA REGISTRO",
-      selector: (row: DataRow) => row.created_at,
-      maxWidth: "140px",
+      selector: (row: DataRow) => row.created_at as any,
+      format: (row: DataRow) => DayJsAdapter.toDayMonthYearHour(row.created_at),
+      maxWidth: "150px",
       center: true,
     },
     {
       name: "FECHA COMPRA",
-      selector: (row: DataRow) => row.date,
-      maxWidth: "140px",
+      selector: (row: DataRow) => row.date as any,
+      format: (row: DataRow) => DayJsAdapter.toDayMonthYear(row.date),
+      maxWidth: "150px",
       center: true,
     },
     {
@@ -106,11 +113,18 @@ export const Purchases = () => {
     {
       name: "TOTAL COMPRA",
       selector: (row: DataRow) => row.total,
-      maxWidth: "200px",
+      format: (row: DataRow) => (
+        <>
+          <small className="text-muted">{row.currency.symbol}</small>
+          {row.currency.is_monetary && " $"}
+          {toMoney(row.total)}
+        </>
+      ),
+      maxWidth: "175px",
       wrap: true,
       right: true,
     },
-       {
+    {
       name: "STOCK",
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (
@@ -133,7 +147,7 @@ export const Purchases = () => {
           {row.nullified ? "ANULADA" : "VIGENTE"}
         </Badge>
       ),
-      maxWidth: "120px",
+      maxWidth: "150px",
       center: true,
     },
   ];

@@ -18,7 +18,6 @@ export const CreatePurchase = () => {
       const { data } = await apiSJM.post("/purchases", formData);
       SweetAlert2.successToast(data.message);
       navigate(`/compras/${data.id}`);
-      // navigate("/compras");
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     }

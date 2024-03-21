@@ -1,5 +1,7 @@
-import { Purchase, PurchaseItem, User } from "../../database/mysql/models";
+import { Product, Purchase, PurchaseItem, User } from "../../database/mysql/models";
 import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
+import { ProductService } from "./product.service";
+import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
 
@@ -31,7 +33,7 @@ export class PurchaseService {
                 limit,
                 order: [['date', 'DESC'], ['createdAt', 'DESC']],
             }),
-            Purchase.count({ where })
+            Purchase.count({ where }),
         ]);
         const listable = purchases.map(item => ListablePurchaseEntity.fromObject(item));
         return { items: listable, total_items: total };
@@ -96,16 +98,15 @@ export class PurchaseService {
                 nullified_by: id_user,
             });
 
+            const purchaseItemService = new PurchaseItemService();
+            const productService = new ProductService();
+
             products_list.forEach(async (item) => {
-                await PurchaseItem.create({
-                    id_purchase: purchase.id,
-                    ...item,
-                    actual_stocked: 0,
-                    fully_stocked: false,
-                });
+                await purchaseItemService.createPurchaseItem(purchase.id, item);
+                await productService.updateIncomingStockAndLastPrice(item.id_product, item.quantity, item.price, purchase.id_currency); 
             });
 
-            return { message: '¡La compra se creó correctamente!' };
+            return { id: purchase.id, message: '¡La compra se creó correctamente!' };
 
         } catch (error: any) {
             if (error.name === 'SequelizeValidationError') {
@@ -154,7 +155,7 @@ export class PurchaseService {
                     quantity: Number(item.quantity),
                     actual_stocked: item.actual_stocked,
                     fully_stocked: item.fully_stocked,
-                }, 
+                },
                 message: '¡Stock actualizado correctamente!'
             };
         } catch (error) {

@@ -50,22 +50,22 @@ export const initProductModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             actual_stock: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
             inc_stock: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
             min_stock: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
             ideal_stock: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
