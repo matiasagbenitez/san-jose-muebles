@@ -29,9 +29,13 @@ interface DataRow {
   inc_stock: number;
   min_stock: number;
   ideal_stock: number;
+
+  total_stock: number;
+  is_low_stock: boolean;
 }
 
 export const Products = () => {
+
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(paginationReducer, initialState);
   const [brands, setBrands] = useState<ParamsInterface[]>([]);
@@ -92,13 +96,13 @@ export const Products = () => {
     {
       name: "MARCA",
       selector: (row: DataRow) => row.brand,
-      maxWidth: "160px",
+      maxWidth: "150px",
       wrap: true,
     },
     {
       name: "CÓDIGO",
       selector: (row: DataRow) => row.code,
-      maxWidth: "160px",
+      maxWidth: "150px",
       wrap: true,
     },
     {
@@ -106,14 +110,6 @@ export const Products = () => {
       minWidth: "250px",
       wrap: true,
       selector: (row: DataRow) => row.name,
-    },
-    {
-      name: <span className="py-1 text-center">STOCK MÍNIMO</span>,
-      selector: (row: DataRow) =>
-        row.min_stock > 0 ? row.min_stock + " " + row.unit : "",
-      maxWidth: "150px",
-      wrap: true,
-      center: true,
     },
     {
       name: <span className="py-1 text-center">STOCK ACTUAL</span>,
@@ -132,11 +128,25 @@ export const Products = () => {
     },
     {
       name: <span className="py-1 text-center">STOCK TOTAL</span>,
-      selector: (row: DataRow) =>
-        row.inc_stock + row.actual_stock + " " + row.unit,
+      cell: (row: DataRow) => (
+        <>
+          {row.is_low_stock ? (
+            <div
+              className="text-center"
+              title={`Stock mínimo: ${row.min_stock}`}
+            >
+              {row.total_stock} {row.unit}
+            </div>
+          ) : (
+            <div className="text-center" title="Stock normal">
+              {row.total_stock} {row.unit}
+            </div>
+          )}
+        </>
+      ),
       conditionalCellStyles: [
         {
-          when: (row) => row.inc_stock + row.actual_stock < row.min_stock,
+          when: (row) => row.is_low_stock,
           style: {
             backgroundColor: "rgba(255, 0, 0, 0.2)",
             color: "red",

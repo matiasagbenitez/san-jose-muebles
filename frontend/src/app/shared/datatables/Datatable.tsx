@@ -64,8 +64,7 @@ export const Datatable = ({
         onChangeRowsPerPage={handleRowsPerPageChange}
         onChangePage={handlePageChange}
         customStyles={customStyles}
-        paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
-
+        paginationRowsPerPageOptions={[20, 30, 40, 50]}
         highlightOnHover={clickableRows}
         pointerOnHover={clickableRows}
         onRowClicked={ clickableRows ? onRowClicked : undefined }

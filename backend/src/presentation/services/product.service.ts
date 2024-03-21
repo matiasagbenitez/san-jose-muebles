@@ -120,7 +120,8 @@ export class ProductService {
         }
     }
 
-    public async updateIncomingStockAndLastPrice(id: number, id_currency: number, quantity: number, last_price: number): Promise<void> {
+    // ACTUALIZAR PRODUCTO POR COMPRA REGISTRADA
+    public async updateProductByPurchase(id: number, id_currency: number, quantity: number, last_price: number): Promise<void> {
         const product = await Product.findByPk(id);
         if (!product) throw CustomError.notFound('Producto no encontrado');
         try {
@@ -131,6 +132,7 @@ export class ProductService {
         }
     }
 
+    // ACTUALIZAR STOCK POR RECEPCIÓN DEL PRODUCTO COMPRADO
     public async updateStockByReception(id: number, quantity: number): Promise<void> {
         const product = await Product.findByPk(id);
         if (!product) throw CustomError.notFound('Producto no encontrado');

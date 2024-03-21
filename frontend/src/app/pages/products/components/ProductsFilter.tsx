@@ -44,7 +44,7 @@ export const ProductsFilter = ({
                 }
                 className="mb-3"
               >
-                <option value="">Filtrar por marca</option>
+                <option value="">Todas las marcas</option>
                 {brands.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
@@ -70,7 +70,7 @@ export const ProductsFilter = ({
                 }
                 className="mb-3"
               >
-                <option value="">Filtrar por categoría</option>
+                <option value="">Todas las categorías</option>
                 {categories.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
@@ -111,7 +111,7 @@ export const ProductsFilter = ({
                 }
                 className="mb-3"
               >
-                <option value="">Filtrar por stock</option>
+                <option value="">Todos los niveles de stock</option>
                 <option value="empty">Productos sin stock</option>
                 <option value="low">
                   Productos con stock bajo (inferior al mínimo)

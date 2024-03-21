@@ -23,7 +23,7 @@ const initialState = {
     data: [],
     loading: false,
     totalRows: 0,
-    perPage: 10,
+    perPage: 20,
     filters: {},
 };
 

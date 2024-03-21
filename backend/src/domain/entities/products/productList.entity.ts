@@ -14,6 +14,9 @@ export class ProductListEntity {
         public min_stock: number = 0,
         public ideal_stock: number = 0,
 
+        public total_stock: number = 0,
+        public is_low_stock: boolean = false,
+
         public code?: string,
     ) { }
 
@@ -31,6 +34,11 @@ export class ProductListEntity {
         if (isNaN(min_stock)) throw CustomError.badRequest('El stock mínimo debe ser un número');
         if (isNaN(ideal_stock)) throw CustomError.badRequest('El stock ideal debe ser un número');
 
+        if (code && typeof code !== 'string') throw CustomError.badRequest('El código debe ser un texto');
+
+        const total_stock: number = Number(actual_stock) + Number(inc_stock);
+        const is_low_stock: boolean = total_stock < Number(min_stock);
+
         return new ProductListEntity(
             id,
 
@@ -43,6 +51,9 @@ export class ProductListEntity {
             Number(inc_stock),
             Number(min_stock),
             Number(ideal_stock),
+
+            total_stock,
+            is_low_stock,
 
             code
         );

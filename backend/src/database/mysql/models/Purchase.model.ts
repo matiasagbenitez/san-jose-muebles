@@ -1,4 +1,5 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { PurchaseItem } from './PurchaseItem.model';
 
 export class Purchase extends Model {
     public id!: number;
@@ -17,6 +18,9 @@ export class Purchase extends Model {
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    // relationships
+    public items: PurchaseItem[] | undefined;
 }
 
 export const initPurchaseModel = (sequelize: Sequelize) => {

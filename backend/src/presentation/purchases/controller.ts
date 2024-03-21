@@ -78,7 +78,7 @@ export class PurchaseController {
         }
     }
 
-    updateItemStock = async (req: Request, res: Response) => {
+    updateReceivedStock = async (req: Request, res: Response) => {
         const { id_purchase, id_item } = req.params;
         if (!id_purchase || !id_item) return res.status(400).json({ message: 'Missing id_purchase or id_item' });
 
@@ -91,9 +91,8 @@ export class PurchaseController {
         const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
         if (id_error) return res.status(400).json({ message: id_error });
 
-
         if (updateItemDto && loggedUserIdDto) {
-            this.purchaseService.updatePurchaseItemStock(updateItemDto, loggedUserIdDto.id_user)
+            this.purchaseService.updateReceivedStock(updateItemDto, loggedUserIdDto.id_user)
                 .then((data) => {
                     res.json(data);
                 })
@@ -111,7 +110,7 @@ export class PurchaseController {
         if (id_error) return res.status(400).json({ message: id_error });
 
         if (loggedUserIdDto && id_purchase) {
-            this.purchaseService.updatePurchaseFullStock(parseInt(id_purchase), loggedUserIdDto.id_user)
+            this.purchaseService.setPurchaseFullyStocked(parseInt(id_purchase), loggedUserIdDto.id_user)
                 .then((data) => {
                     res.json(data);
                 })
