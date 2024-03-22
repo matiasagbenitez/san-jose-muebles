@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { SupplierInterface } from "../../interfaces";
 import { SuppliersForm, SupplierInfo, SupplierOptions } from ".";
-import { GoBackButton, LoadingSpinner } from "../../components";
+import { LoadingSpinner } from "../../components";
 import { SweetAlert2 } from "../../utils";
 
 export const Supplier = () => {
@@ -74,7 +74,18 @@ export const Supplier = () => {
         <>
           <Row>
             <Col lg={6}>
-              <h1 className="fs-4">{supplier.name}</h1>
+              <div className="d-flex gap-2 align-items-center mb-3">
+                <Button
+                  variant="light border text-muted"
+                  size="sm"
+                  onClick={() => navigate(`/proveedores`)}
+                  title="Volver al listado de proveedores"
+                >
+                  <i className="bi bi-arrow-left me-2"></i>
+                  Atrás
+                </Button>
+                <h1 className="fs-5 my-0">Proveedor #{supplier.id}: {supplier.name}</h1>
+              </div>
               <SupplierInfo supplier={supplier} />
             </Col>
             <Col lg={6}>
@@ -83,9 +94,6 @@ export const Supplier = () => {
                 setIsModalOpen={setIsModalOpen}
                 handleDelete={handleDelete}
               />
-            </Col>
-            <Col lg={6}>
-              <GoBackButton />
             </Col>
           </Row>
 

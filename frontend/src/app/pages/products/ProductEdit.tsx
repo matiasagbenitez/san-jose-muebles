@@ -5,6 +5,7 @@ import apiSJM from "../../../api/apiSJM";
 import { SweetAlert2 } from "../../utils";
 import { ProductForm } from ".";
 import { LoadingSpinner } from "../../components";
+import { Button } from "react-bootstrap";
 
 interface ProductFormInterface {
   code: string;
@@ -61,7 +62,18 @@ export const ProductEdit = () => {
       {loading && <LoadingSpinner />}
       {product && !loading && (
         <>
-          <h1 className="fs-4">Editar producto</h1>
+          <div className="d-flex gap-2 align-items-center mb-3">
+            <Button
+              variant="light border text-muted"
+              size="sm"
+              onClick={() => navigate(`/productos/${id}`)}
+              title="Volver al detalle del producto"
+            >
+              <i className="bi bi-arrow-left me-2"></i>
+              Atrás
+            </Button>
+            <h1 className="fs-5 my-0">Editar producto</h1>
+          </div>
           <hr className="my-3" />
           <ProductForm onSubmit={onSubmit} initialForm={product} editMode />
         </>

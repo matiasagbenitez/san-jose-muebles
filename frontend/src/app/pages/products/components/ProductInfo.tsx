@@ -1,4 +1,5 @@
 import { Table } from "react-bootstrap";
+import { toMoney } from "../../../../helpers";
 
 export const ProductInfo = ({ product }: any) => {
   const low_stock = product.actual_stock <= product.min_stock;
@@ -7,7 +8,7 @@ export const ProductInfo = ({ product }: any) => {
     <>
       <Table size="sm" className="small" striped bordered responsive>
         <tbody>
-          <tr className="text-center fw-bold">
+          <tr className="text-center fw-bold text-uppercase">
             <td colSpan={2}>Información del producto</td>
           </tr>
           <tr>
@@ -36,7 +37,7 @@ export const ProductInfo = ({ product }: any) => {
               </div>
             </td>
           </tr>
-          <tr className="text-center fw-bold">
+          <tr className="text-center fw-bold text-uppercase">
             <td colSpan={2}>Información de stock</td>
           </tr>
           <tr>
@@ -98,7 +99,7 @@ export const ProductInfo = ({ product }: any) => {
               {product.ideal_stock} {product.unit_symbol}
             </td>
           </tr>
-          <tr className="text-center fw-bold">
+          <tr className="text-center fw-bold text-uppercase">
             <td colSpan={2}>Información de compra</td>
           </tr>
           <tr>
@@ -111,16 +112,16 @@ export const ProductInfo = ({ product }: any) => {
             <th scope="row">Último precio pagado</th>
             <td>
               {product.currency_symbol}
-              {product.price_monetary ? " $ " : " "}
-              {product.last_price} x {product.unit}
+              {product.price_monetary && " $ "}
+              {toMoney(product.last_price)} x {product.unit}
             </td>
           </tr>
           <tr>
-            <th scope="row">Capital actual</th>
+            <th scope="row">Capital actual en fábrica</th>
             <td>
               {product.currency_symbol}
-              {product.price_monetary ? " $ " : " "}
-              {product.stock_value}
+              {product.price_monetary && " $ "}
+              {toMoney(product.stock_value)}
             </td>
           </tr>
         </tbody>

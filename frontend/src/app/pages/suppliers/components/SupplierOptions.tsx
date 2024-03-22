@@ -19,8 +19,8 @@ export const SupplierOptions = ({
 
   return (
     <div>
-      <h2 className="fs-6 mt-2">Menú de opciones</h2>
-      <div className="list-group small">
+      <h2 className="fs-6 mt-3">Menú de opciones</h2>
+      <div className="list-group small" style={{ marginTop: "10px" }}>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Cuentas bancarias del proveedor"

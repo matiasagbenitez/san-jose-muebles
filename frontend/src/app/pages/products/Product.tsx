@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
-import { GoBackButton, LoadingSpinner } from "../../components";
+import { LoadingSpinner } from "../../components";
 import { ProductInfo, ProductImage, ProductOptions } from ".";
 import { SweetAlert2 } from "../../utils";
 
@@ -53,7 +53,18 @@ export const Product = () => {
       {product && !loading && productId && (
         <>
           <Row>
-            <h1 className="fs-4">{product.name}</h1>
+            <div className="d-flex gap-2 align-items-center mb-3">
+              <Button
+                variant="light border text-muted"
+                size="sm"
+                onClick={() => navigate(`/productos`)}
+                title="Volver al listado de productos"
+              >
+                <i className="bi bi-arrow-left me-2"></i>
+                Atrás
+              </Button>
+              <h1 className="fs-5 my-0">Producto #{productId} - {product.name}</h1>
+            </div>
             <Col lg={8}>
               <ProductInfo product={product} />
             </Col>
@@ -68,7 +79,6 @@ export const Product = () => {
               </Row>
             </Col>
           </Row>
-          <GoBackButton path="/productos" />
         </>
       )}
     </>

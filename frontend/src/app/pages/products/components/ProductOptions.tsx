@@ -29,7 +29,7 @@ export const ProductOptions = ({ id, handleDelete }: Props) => {
           title="Eliminar producto"
           onClick={handleDelete}
         >
-          <i className="bi bi-trash me-2 fs-6"></i>
+          <i className="bi bi-x-circle-fill me-2 fs-6"></i>
           Eliminar producto
         </button>
       </div>

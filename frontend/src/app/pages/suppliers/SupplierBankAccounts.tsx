@@ -4,7 +4,7 @@ import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../api/apiSJM";
 import { SweetAlert2 } from "../../utils";
-import { GoBackButton, LoadingSpinner } from "../../components";
+import { LoadingSpinner } from "../../components";
 import { ActionButtons, DatatableNoPagination } from "../../shared";
 import { Button } from "react-bootstrap";
 import { SupplierBankAccountForm } from "./components";
@@ -257,8 +257,19 @@ export const SupplierBankAccounts = () => {
       {loading && <LoadingSpinner />}
       {bankAccounts && !loading && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h1 className="fs-4 mb-0">{supplier}</h1>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="d-flex gap-2 align-items-center">
+            <Button
+                  variant="light border text-muted"
+                  size="sm"
+                  onClick={() => navigate(`/proveedores/${id}`)}
+                  title="Volver al detalle del proveedor"
+                >
+                  <i className="bi bi-arrow-left me-2"></i>
+                  Atrás
+                </Button>
+            <h1 className="fs-5 my-0">Cuentas bancarias: {supplier}</h1>
+            </div>
             <Button size="sm" variant="success" onClick={handleCreate}>
               Nueva cuenta
             </Button>
@@ -270,8 +281,6 @@ export const SupplierBankAccounts = () => {
             data={bankAccounts}
             loading={loading}
           />
-
-          <GoBackButton className="mt-3" />
 
           <SupplierBankAccountForm
             show={isModalOpen}

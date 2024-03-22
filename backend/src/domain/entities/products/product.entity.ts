@@ -4,11 +4,8 @@ export class ProductEntity {
     constructor(
         public id: string,
 
-        public id_brand: number,            // FORM
         public brand: string,
-        public id_category: number,         // FORM
         public category: string,
-        public id_unit: number,             // FORM
         public unit: string,
         public unit_symbol: string,
 
@@ -21,13 +18,12 @@ export class ProductEntity {
         public min_stock: number = 0,       // FORM
         public ideal_stock: number = 0,       // FORM
 
-        public last_price: string,          // FORM
-        public id_currency: number,         // FORM
+        public last_price: number,          // FORM
         public currency: string,
         public currency_symbol: string,
         public price_monetary: boolean,
 
-        public stock_value: string,
+        public stock_value: number,
 
     ) { }
 
@@ -43,36 +39,28 @@ export class ProductEntity {
         if (last_price === undefined || last_price === null || last_price === '') throw CustomError.badRequest('Falta el último precio');
         if (!id_currency) throw CustomError.badRequest('Falta la moneda');
 
-        const lp_formatted = Intl.NumberFormat('es-ES', {
-            minimumFractionDigits: 2
-        }).format(parseFloat(last_price));
-
-        const stock_value = Intl.NumberFormat('es-ES', {
-            minimumFractionDigits: 2
-        }).format(actual_stock * parseFloat(last_price));
+        const stock_value = Number(actual_stock) * Number(last_price);
 
         return new ProductEntity(
             id,
-            id_brand,
             brand.name,
-            id_category,
             category.name,
-            id_unit,
             unit.name,
             unit.symbol,
             code,
             name,
             description,
-            actual_stock,
-            inc_stock,
-            min_stock,
-            ideal_stock,
-            lp_formatted,
-            id_currency,
+            Number(actual_stock),
+            Number(inc_stock),
+            Number(min_stock),
+            Number(ideal_stock),
+
+            last_price,
             currency.name,
             currency.symbol,
             currency.is_monetary,
             stock_value
+
         );
     }
 }

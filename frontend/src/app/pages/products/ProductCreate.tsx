@@ -23,7 +23,7 @@ export const ProductCreate = () => {
 
   return (
     <div>
-      <h1 className="fs-4">Nuevo producto</h1>
+      <h1 className="fs-5">Registrar un nuevo producto</h1>
       <hr className="my-3" />
       <ProductForm onSubmit={onSubmit} />
     </div>

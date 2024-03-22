@@ -25,8 +25,8 @@ export const CreatePurchase = () => {
 
   return (
     <>
-      <div className="d-flex align-items-center gap-3">
-        <h1 className="fs-4 mb-0">Registrar una nueva compra</h1>
+      <div className="d-flex align-items-center gap-2">
+        <h1 className="fs-5 my-0">Registrar una nueva compra</h1>
         <Button
           size="sm"
           variant="transparent"
@@ -37,7 +37,7 @@ export const CreatePurchase = () => {
           <i className="bi bi-question-circle"></i>&ensp;Instrucciones
         </Button>
       </div>
-      <hr />
+      <hr className="my-" />
       <NewPurchaseForm onSubmit={handleSubmit} />
       <>
         <Offcanvas show={show} onHide={handleClose}>
