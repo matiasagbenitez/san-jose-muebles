@@ -31,9 +31,8 @@ export const ProductsFilter = ({
         <Col xl={9}>
           <Row>
             <Col xl={3}>
-              <Form.Control
+              <Form.Select
                 name="brand"
-                as="select"
                 size="sm"
                 value={state.filters.id_brand || ""}
                 onChange={(e) =>
@@ -50,13 +49,12 @@ export const ProductsFilter = ({
                     {item.name}
                   </option>
                 ))}
-              </Form.Control>
+              </Form.Select>
             </Col>
 
             <Col xl={3}>
-              <Form.Control
+              <Form.Select
                 name="category"
-                as="select"
                 size="sm"
                 value={state.filters.id_category || ""}
                 onChange={(e) =>
@@ -76,7 +74,7 @@ export const ProductsFilter = ({
                     {item.name}
                   </option>
                 ))}
-              </Form.Control>
+              </Form.Select>
             </Col>
 
             <Col xl={3}>
@@ -98,10 +96,10 @@ export const ProductsFilter = ({
             </Col>
 
             <Col xl={3}>
-              <Form.Control
-                name="stock"
-                as="select"
+              <Form.Select
                 size="sm"
+                className="mb-3"
+                name="stock"
                 value={state.filters.stock || ""}
                 onChange={(e) =>
                   dispatch({
@@ -109,18 +107,13 @@ export const ProductsFilter = ({
                     newFilters: { ...state.filters, stock: e.target.value },
                   })
                 }
-                className="mb-3"
               >
                 <option value="">Todos los niveles de stock</option>
                 <option value="empty">Productos sin stock</option>
-                <option value="low">
-                  Productos con stock bajo (inferior al mínimo)
-                </option>
+                <option value="low">Productos con stock bajo</option>
                 <option value="normal">Productos con stock normal</option>
-                <option value="high">
-                  Productos con stock alto (superior al ideal)
-                </option>
-              </Form.Control>
+                <option value="incoming">Productos con stock a recibir</option>
+              </Form.Select>
             </Col>
           </Row>
         </Col>

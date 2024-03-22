@@ -6,3 +6,4 @@ export * from './PurchaseOptions';
 export * from './PurchaseNullified';
 export * from './PurchaseTitle';
 export * from './UpdateItemStockForm';
+export * from './PurchasesFilters';

@@ -35,11 +35,11 @@ export class ProductService {
         if (filters.id_brand) where = { ...where, id_brand: filters.id_brand };
         if (filters.id_category) where = { ...where, id_category: filters.id_category };
         if (filters.stock === 'low') {
-            where = { ...where, actual_stock: { [Op.lt]: Sequelize.col('min_stock') } };
+            where = { ...where, min_stock: { [Op.gte]: Sequelize.literal('inc_stock + actual_stock'), } };
         } else if (filters.stock === 'normal') {
             where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('min_stock') } };
-        } else if (filters.stock === 'high') {
-            where = { ...where, actual_stock: { [Op.gte]: Sequelize.col('ideal_stock') } };
+        } else if (filters.stock === 'incoming') {
+            where = { ...where, inc_stock: { [Op.gt]: 0 } };
         } else if (filters.stock === 'empty') {
             where = { ...where, actual_stock: 0 };
         }
@@ -47,7 +47,7 @@ export class ProductService {
         const [products, total] = await Promise.all([
             Product.findAll({
                 where,
-                include: [
+                include: [ 
                     { association: 'brand' },
                     { association: 'category' },
                     { association: 'currency' },

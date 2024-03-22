@@ -12,6 +12,7 @@ import {
 
 import apiSJM from "../../../api/apiSJM";
 import { Badge } from "react-bootstrap";
+import { PurchasesFilters } from "./components";
 
 interface ParamsInterface {
   id: string;
@@ -36,20 +37,17 @@ interface DataRow {
 export const Purchases = () => {
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(paginationReducer, initialState);
-  const [brands, setBrands] = useState<ParamsInterface[]>([]);
-  const [categories, setCategories] = useState<ParamsInterface[]>([]);
+  const [suppliers, setSuppliers] = useState<ParamsInterface[]>([]);
 
   const endpoint = "/purchases";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
-    const [_, res2, res3] = await Promise.all([
+    const [_, res2] = await Promise.all([
       fetchData(endpoint, 1, state, dispatch),
-      apiSJM.get("/brands"),
-      apiSJM.get("/categories"),
+      apiSJM.get("/suppliers/select"),
     ]);
-    setBrands(res2.data.items);
-    setCategories(res3.data.items);
+    setSuppliers(res2.data.items);
   };
 
   useEffect(() => {
@@ -162,6 +160,16 @@ export const Purchases = () => {
 
   return (
     <div>
+
+      <PurchasesFilters
+        state={state}
+        dispatch={dispatch}
+        handleFiltersChange={handleFiltersChange}
+        handleResetFilters={handleResetFilters}
+        handleCreate={handleCreate}
+        suppliers={suppliers}
+      />
+
       <Datatable
         title="Listado de compras"
         columns={columns as TableColumn<DataRow>[]}

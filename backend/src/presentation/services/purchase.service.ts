@@ -1,14 +1,18 @@
-import { Product, Purchase, PurchaseItem, User } from "../../database/mysql/models";
+import { Op } from "sequelize";
+import { Purchase, User } from "../../database/mysql/models";
 import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
-import { ProductService } from "./product.service";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
 
 export interface PurchaseFilters {
-    name: string;
-    id_locality: number;
+    id_supplier: string | undefined;
+    from_date: Date | undefined;
+    to_date: Date | undefined;
+    stock: string | undefined;
+    nullified: string | undefined;
 }
+
 export class PurchaseService {
 
     public async getPurchases() {
@@ -23,7 +27,28 @@ export class PurchaseService {
 
         // FILTERS
         let where = {};
-        // if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
+        if (filters.id_supplier) where = { ...where, id_supplier: filters.id_supplier };
+
+        if (filters.from_date && filters.to_date) {
+            where = { ...where, date: { [Op.between]: [filters.from_date, filters.to_date] } }
+        } else if (filters.from_date) {
+            where = { ...where, date: { [Op.gte]: filters.from_date } }
+        } else if (filters.to_date) {
+            where = { ...where, date: { [Op.lte]: filters.to_date } }
+        }
+
+        
+        if (filters.stock === 'fully_stocked') {
+            where = { ...where, fully_stocked: true, nullified: false };
+        } else if (filters.stock === 'not_fully_stocked') {
+            where = { ...where, fully_stocked: false, nullified: false };
+        }
+
+        if (filters.nullified === 'true') {
+            where = { ...where, nullified: true };
+        } else if (filters.nullified === 'false') {
+            where = { ...where, nullified: false };
+        }
 
         const [purchases, total] = await Promise.all([
             Purchase.findAll({
@@ -136,7 +161,7 @@ export class PurchaseService {
             const purchaseItemService = new PurchaseItemService();
             const item = await purchaseItemService.updateItemStock(updateItemDto, id_user);
             const fully_stocked = await this.checkFullyStocked(updateItemDto.id_purchase);
-            
+
             // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
             const { quantity_received } = updateItemDto;
             const [detailError, detailDto] = ReceptionPartialDto.create({ id_purchase_item: item.id, id_user, quantity_received });

@@ -32,7 +32,14 @@ export class PurchaseController {
         if (error) return res.status(400).json({ message: error });
 
         let filters = {};
-        // if (req.query.name) filters = { ...filters, name: req.query.name };
+        const { id_supplier, from_date, to_date, stock, nullified } = req.query;
+        if (id_supplier) filters = { ...filters, id_supplier };
+        if (from_date) filters = { ...filters, from_date };
+        if (to_date) filters = { ...filters, to_date };
+        if (stock) filters = { ...filters, stock };
+        if (nullified) filters = { ...filters, nullified };
+
+        console.log('filters', filters);
 
         this.purchaseService.getPurchasesPaginated(paginationDto!, filters as PurchaseFilters)
             .then((data) => {

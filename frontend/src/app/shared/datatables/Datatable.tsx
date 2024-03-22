@@ -67,7 +67,8 @@ export const Datatable = ({
         paginationRowsPerPageOptions={[20, 30, 40, 50]}
         highlightOnHover={clickableRows}
         pointerOnHover={clickableRows}
-        onRowClicked={ clickableRows ? onRowClicked : undefined }
+        // onRowClicked={ clickableRows ? onRowClicked : undefined }
+        onRowDoubleClicked={ clickableRows ? onRowClicked : undefined}
       />
     ),
     [
