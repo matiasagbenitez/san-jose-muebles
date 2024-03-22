@@ -1,4 +1,4 @@
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { ResumeInterface } from "../interfaces";
 import { DayJsAdapter, toMoney } from "../../../../helpers";
 

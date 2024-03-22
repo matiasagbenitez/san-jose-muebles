@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Purchase, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
@@ -37,7 +37,7 @@ export class PurchaseService {
             where = { ...where, date: { [Op.lte]: filters.to_date } }
         }
 
-        
+
         if (filters.stock === 'fully_stocked') {
             where = { ...where, fully_stocked: true, nullified: false };
         } else if (filters.stock === 'not_fully_stocked') {
@@ -206,11 +206,9 @@ export class PurchaseService {
     }
 
 
-
-
     public async nullifyPurchase(id: number, reason: string, id_user: number) {
-        const PurchaseDetailInterface = await Purchase.findByPk(id);
-        if (!PurchaseDetailInterface) throw CustomError.notFound('Compra no encontrada');
+        const purchase = await Purchase.findByPk(id);
+        if (!purchase) throw CustomError.notFound('Compra no encontrada');
 
         try {
             const user = await User.findByPk(id_user);
@@ -218,7 +216,7 @@ export class PurchaseService {
 
             const now = Date.now();
 
-            await PurchaseDetailInterface.update({
+            await purchase.update({
                 nullified: true, nullified_by: user.id, nullified_reason: reason, nullified_date: now
             })
 
@@ -232,6 +230,62 @@ export class PurchaseService {
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
+    }
+
+    public async getPurchaseReceptions(id_purchase: number) {
+        try {
+            const purchase = await Purchase.findByPk(id_purchase, {
+                include: [{
+                    association: 'items',
+                    attributes: ['id', 'quantity'],
+                    include: [{
+                        association: 'product',
+                        attributes: ['name']
+                    }, {
+                        association: 'receptions',
+                        attributes: ['id', 'quantity_received', 'createdAt'],
+                        include: [{
+                            association: 'user',
+                            attributes: ['name']
+
+                        }]
+                    },]
+                }, {
+                    association: 'reception',
+                    attributes: ['id', 'createdAt'],
+                    include: [{
+                        association: 'user',
+                        attributes: ['name']
+                    }]
+                }, {
+                    association: 'supplier',
+                    attributes: ['name']
+                }]
+            });
+
+            if (!purchase) throw CustomError.notFound('Compra no encontrada');
+            if (!purchase.items) throw CustomError.notFound('No se encontraron ítems de la compra');
+
+            const partials_receptions = purchase.items.map(item => {
+                if (!item.receptions || item.receptions.length === 0) return null;
+                const receptions = item.receptions.map(reception => reception);
+                return { id: item.id, product: item.product.name, quantity: item.quantity, receptions };
+            }).filter(item => item !== null) as { id: number; product: string; quantity: number; receptions: [] }[];
+
+            const partialsEntities = partials_receptions.map(item => PartialReceptionEntity.fromObject(item));
+            const total_reception = purchase.reception ? TotalReceptionEntity.fromObject(purchase.reception) : null;
+            const purchaseData = {
+                id: purchase.id,
+                date: purchase.date,
+                supplier: purchase.supplier.name,
+            }
+
+
+            return { purchaseData, partials: partialsEntities, total: total_reception };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+
     }
 
 }

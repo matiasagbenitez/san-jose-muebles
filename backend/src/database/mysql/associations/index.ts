@@ -72,10 +72,11 @@ export const initializeAssociations = () => {
     Purchase.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
     Purchase.belongsTo(User, { foreignKey: 'nullified_by', as: 'nullifier' });
 
+    PurchaseItem.hasMany(ReceptionPartial, { foreignKey: 'id_purchase_item', as: 'receptions', onDelete: 'RESTRICT' });
     ReceptionPartial.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
     ReceptionPartial.belongsTo(PurchaseItem, { foreignKey: 'id_purchase_item', as: 'item' });
-    PurchaseItem.hasMany(ReceptionPartial, { foreignKey: 'id_purchase_item', as: 'details', onDelete: 'RESTRICT' });
 
-    Purchase.hasOne(ReceptionTotal, { foreignKey: 'id_purchase', as: 'reception_total', onDelete: 'RESTRICT' });
+    Purchase.hasOne(ReceptionTotal, { foreignKey: 'id_purchase', as: 'reception', onDelete: 'RESTRICT' });
+    ReceptionTotal.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
     ReceptionTotal.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
 };

@@ -1,4 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { ReceptionPartial } from './ReceptionPartial.model';
+import { Product } from './Product.model';
 
 export class PurchaseItem extends Model {
     public id!: number;
@@ -12,6 +14,10 @@ export class PurchaseItem extends Model {
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    // relationships
+    public receptions: ReceptionPartial[] | undefined;
+    public product!: Product;
 }
 
 export const initPurchaseItemModel = (sequelize: Sequelize) => {

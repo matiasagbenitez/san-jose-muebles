@@ -18,6 +18,7 @@ export class PurchaseRoutes {
         router.post('/:id_purchase/update-full-stock', [AuthMiddleware.validateJWT], controller.updatePurchaseFullStock);
 
         router.post('/:id/nullify', [AuthMiddleware.validateJWT], controller.nullifyPurchase);  
+        router.get('/:id/receptions', [AuthMiddleware.validateJWT], controller.getReceptions);  
 
         return router;
     }

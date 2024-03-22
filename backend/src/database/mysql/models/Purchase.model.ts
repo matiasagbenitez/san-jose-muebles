@@ -1,5 +1,7 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import { PurchaseItem } from './PurchaseItem.model';
+import { ReceptionTotal } from './ReceptionTotal.model';
+import { Supplier } from './Supplier.model';
 
 export class Purchase extends Model {
     public id!: number;
@@ -21,6 +23,8 @@ export class Purchase extends Model {
 
     // relationships
     public items: PurchaseItem[] | undefined;
+    public reception: ReceptionTotal | undefined;
+    public supplier!: Supplier;
 }
 
 export const initPurchaseModel = (sequelize: Sequelize) => {

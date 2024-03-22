@@ -52,3 +52,29 @@ export interface NullifiedInterface {
     nullified_date: Date;
     nullified_reason: string;
 }
+
+export interface ReceptionDataInterface {
+    id: number;
+    supplier: string;
+    date: string;
+}
+
+export interface ReceptionInterface {
+    id: number;
+    user: string;
+    date: Date;
+    quant: number;
+}
+
+export interface ProductReceptionInterface {
+    id: number;
+    prod: string;
+    quant: number;
+    recep: ReceptionInterface[];
+}
+
+export interface PurchaseReceptionInterface {
+    id: number;
+    user: string;
+    date: Date;
+}
