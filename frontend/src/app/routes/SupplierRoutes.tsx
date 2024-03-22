@@ -6,6 +6,7 @@ import {
   Supplier,
   Suppliers,
   SupplierBankAccounts,
+  SupplierAccounts,
 } from "../pages/suppliers";
 
 const SuppliersRoutes = () => {
@@ -18,6 +19,7 @@ const SuppliersRoutes = () => {
           <Route path="/" element={<Suppliers />} />
           <Route path="/:id" element={<Supplier />} />
           <Route path="/:id/cuentas-bancarias" element={<SupplierBankAccounts />} />
+          <Route path="/:id/cuentas-corrientes" element={<SupplierAccounts />} />
         </>
       )}
 

@@ -74,7 +74,7 @@ export const Supplier = () => {
         <>
           <Row>
             <Col lg={6}>
-              <div className="d-flex gap-2 align-items-center mb-3">
+              <div className="d-flex gap-3 align-items-center mb-3">
                 <Button
                   variant="light border text-muted"
                   size="sm"

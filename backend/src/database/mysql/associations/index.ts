@@ -15,6 +15,9 @@ import {
     PurchaseItem,
     ReceptionPartial,
     ReceptionTotal,
+    SupplierAccount,
+    SupplierAccountTransaction,
+    PurchaseTransaction,
 
 } from '../models';
 
@@ -79,4 +82,17 @@ export const initializeAssociations = () => {
     Purchase.hasOne(ReceptionTotal, { foreignKey: 'id_purchase', as: 'reception', onDelete: 'RESTRICT' });
     ReceptionTotal.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
     ReceptionTotal.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
+
+
+    // SUPPLIER ACCOUNT TRANSACTIONS
+    Supplier.hasMany(SupplierAccount, { foreignKey: 'id_supplier', as: 'accounts', onDelete: 'RESTRICT' });
+    SupplierAccount.belongsTo(Supplier, { foreignKey: 'id_supplier', as: 'supplier' });
+    SupplierAccount.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    SupplierAccount.hasMany(SupplierAccountTransaction, { foreignKey: 'id_supplier_account', as: 'transactions', onDelete: 'RESTRICT' });
+    SupplierAccountTransaction.belongsTo(SupplierAccount, { foreignKey: 'id_supplier_account', as: 'account' });
+    SupplierAccountTransaction.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    SupplierAccountTransaction.hasOne(PurchaseTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'purchase_transaction', onDelete: 'RESTRICT' });
+    PurchaseTransaction.belongsTo(SupplierAccountTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'supplier_account_transaction' });
 };

@@ -62,7 +62,7 @@ export const ProductEdit = () => {
       {loading && <LoadingSpinner />}
       {product && !loading && (
         <>
-          <div className="d-flex gap-2 align-items-center mb-3">
+          <div className="d-flex gap-3 align-items-center mb-3">
             <Button
               variant="light border text-muted"
               size="sm"

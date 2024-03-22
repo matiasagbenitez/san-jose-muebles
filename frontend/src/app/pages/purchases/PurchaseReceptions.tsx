@@ -39,7 +39,7 @@ export const PurchaseReceptions = () => {
       {loading && <LoadingSpinner />}
       {!loading && purchaseData && (
         <div>
-          <div className="d-flex gap-2 align-items-center">
+          <div className="d-flex gap-3 align-items-center">
             <Button
               variant="light border text-muted"
               size="sm"

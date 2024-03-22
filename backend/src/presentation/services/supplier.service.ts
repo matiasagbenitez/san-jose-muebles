@@ -8,6 +8,12 @@ export interface SupplierFilters {
 }
 export class SupplierService {
 
+    public async getSupplierData(id: number) {
+        const supplier = await Supplier.findByPk(id);
+        if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
+        return supplier;
+    }
+
     public async getSuppliers() {
         const suppliers = await Supplier.findAll();
         const suppliersEntities = suppliers.map(supplier => SupplierEntity.fromObject(supplier));

@@ -35,3 +35,7 @@ export * from './entities/reception_partial';
 // RECEPTION TOTAL
 export * from './dtos/reception_total';
 export * from './entities/reception_total';
+
+// SUPPLIER ACCOUNT
+export * from './dtos/supplier_account';
+export * from './entities/supplier_account';

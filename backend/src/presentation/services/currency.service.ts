@@ -14,6 +14,12 @@ export class CurrencyService {
         return { items: currenciesEntities };
     }
 
+    public async getCurrenciesMonetaries() {
+        const currencies = await Currency.findAll({ where: { is_monetary: true } });
+        const currenciesEntities = currencies.map(currency => CurrencyEntity.fromObject(currency));
+        return { items: currenciesEntities };
+    }
+
     public async getCurrenciesPaginated(paginationDto: PaginationDto, filters: CurrencyFilters) {
         const { page, limit } = paginationDto;
 

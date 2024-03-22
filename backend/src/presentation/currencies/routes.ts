@@ -11,6 +11,7 @@ export class CurrencyRoutes {
         const controller = new CurrencyController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
+        router.get('/monetaries', [AuthMiddleware.validateJWT], controller.getAllMonetaries);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);

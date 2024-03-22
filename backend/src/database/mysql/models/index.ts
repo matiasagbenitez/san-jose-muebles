@@ -22,6 +22,10 @@ import { PurchaseItem, initPurchaseItemModel } from './PurchaseItem.model';
 import { ReceptionPartial, initReceptionPartialModel } from './ReceptionPartial.model';
 import { ReceptionTotal, initReceptionTotalModel } from './ReceptionTotal.model';
 
+import { SupplierAccount, initSupplierAccountModel } from './SupplierAccount.model';
+import { SupplierAccountTransaction, initSupplierAccountTransactionModel } from './SupplierAccountTransaction.model';
+import { PurchaseTransaction, initPurchaseTransactionModel } from './PurchaseTransaction.model';
+
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
   initRoleModel(sequelize);
@@ -46,6 +50,10 @@ export const initializeModels = (sequelize: Sequelize) => {
   initPurchaseItemModel(sequelize);
   initReceptionPartialModel(sequelize);
   initReceptionTotalModel(sequelize);
+
+  initSupplierAccountModel(sequelize);
+  initSupplierAccountTransactionModel(sequelize);
+  initPurchaseTransactionModel(sequelize);
 
 };
 
@@ -72,4 +80,8 @@ export {
   PurchaseItem,
   ReceptionPartial,
   ReceptionTotal,
+
+  SupplierAccount,
+  SupplierAccountTransaction,
+  PurchaseTransaction,
 };

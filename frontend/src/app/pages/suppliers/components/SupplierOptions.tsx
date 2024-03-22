@@ -17,6 +17,10 @@ export const SupplierOptions = ({
     navigate(`/proveedores/${id}/cuentas-bancarias`);
   };
 
+  const redirectAccounts = () => {
+    navigate(`/proveedores/${id}/cuentas-corrientes`);
+  };
+
   return (
     <div>
       <h2 className="fs-6 mt-3">Menú de opciones</h2>
@@ -27,31 +31,15 @@ export const SupplierOptions = ({
           onClick={redirectBankAccounts}
         >
           <i className="bi bi-bank me-2 fs-6"></i>
-          Cuentas bancarias
+          Datos de cuentas bancarias
         </button>
         <button
           className="list-group-item list-group-item-action py-1"
-          title="Registrar una nueva compra"
-          disabled
+          title="Cuentas corrientes del proveedor"
+          onClick={redirectAccounts}
         >
-          <i className="bi bi-cart-plus-fill me-2 fs-6"></i>
-          Registrar una nueva compra
-        </button>
-        <button
-          className="list-group-item list-group-item-action py-1"
-          title="Compras registradas del proveedor"
-          disabled
-        >
-          <i className="bi bi-cart4 me-2 fs-6"></i>
-          Compras registradas
-        </button>
-        <button
-          className="list-group-item list-group-item-action py-1"
-          title="Pagos realizados al proveedor"
-          disabled
-        >
-          <i className="bi bi-cash-stack me-2 fs-6"></i>
-          Pagos realizados
+          <i className="bi bi-wallet2 me-2 fs-6"></i>
+          Gestionar cuentas corrientes
         </button>
         <button
           className="list-group-item list-group-item-action py-1"
@@ -66,7 +54,7 @@ export const SupplierOptions = ({
           title="Eliminar proveedor"
           onClick={handleDelete}
         >
-          <i className="bi bi-trash me-2 fs-6"></i>
+          <i className="bi bi-x-circle-fill me-2 fs-6"></i>
           Eliminar proveedor
         </button>
       </div>

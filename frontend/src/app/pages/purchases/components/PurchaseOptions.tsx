@@ -15,10 +15,6 @@ export const PurchaseOptions = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleRedirectPayments = () => {
-    navigate(`/compras/${id}/pagos`);
-  };
-
   const handleRedirectReceptions = () => {
     navigate(`/compras/${id}/recepciones`);
   };
@@ -27,14 +23,6 @@ export const PurchaseOptions = ({
     <div className="mb-4">
       <h2 className="fs-6 mt-3">Menú de opciones</h2>
       <div className="list-group small" style={{ marginTop: "10px" }}>
-        <button
-          className="list-group-item list-group-item-action py-1"
-          title="Registrar un pago"
-          onClick={handleRedirectPayments}
-        >
-          <i className="bi bi-cash-stack me-2 fs-6"></i>
-          Registrar un pago en concepto de esta compra
-        </button>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Marcar todos los productos como recibidos"
