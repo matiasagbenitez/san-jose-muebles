@@ -1,8 +1,6 @@
-import { Purchase, PurchaseItem } from "../../database/mysql/models";
-import { CustomError, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto } from "../../domain";
+import { PurchaseItem } from "../../database/mysql/models";
+import { CustomError, UpdateItemStockDto } from "../../domain";
 import { ProductService } from "./product.service";
-import { ReceptionPartialService } from "./reception_partial.service";
-import { ReceptionTotalService } from "./reception_total.service.service";
 
 export class PurchaseItemService {
 
@@ -59,16 +57,44 @@ export class PurchaseItemService {
 
     }
 
-    public async updateAllItemsStock(id_purchase: number, id_user: number) {
+    public async updateAllItemsStock(id_purchase: number) {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
 
             const productService = new ProductService();
             items.forEach(async (item) => {
+                const received: number = Number(item.quantity) - Number(item.actual_stocked);
                 await item.update({ actual_stocked: item.quantity, fully_stocked: true });
-                await productService.updateStockByReception(item.id_product, item.quantity);
+                await productService.updateStockByReception(item.id_product, received);
             });
 
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async hasOneItemReceived(id_purchase: number): Promise<boolean> {
+        try {
+            const items = await PurchaseItem.findAll({ where: { id_purchase } });
+            return items.some(item => item.actual_stocked > 0);
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async decreaseIncomingStockByCancellation(id_purchase: number) {
+        try {
+            const items = await PurchaseItem.findAll({ where: { id_purchase } });
+            const productService = new ProductService();
+    
+            // Array para almacenar las actualizaciones que se realizarán
+            const updates = items.map((item) => ({
+                id_product: item.id_product,
+                quantity: Number(item.quantity),
+            }));
+    
+            // Actualizar el stock de cada producto en una sola operación
+            await productService.decreaseIncomingStockInBulk(updates);
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

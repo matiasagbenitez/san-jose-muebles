@@ -1,9 +1,12 @@
 import { Op } from "sequelize";
-import { Purchase, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity } from "../../domain";
+import { Purchase, SupplierAccountTransaction, User } from "../../database/mysql/models";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
+import { SupplierAccountService } from "./supplier_account.service";
+import { SupplierAccountTransactionService } from "./supplier_account_transaction.service";
+import { PurchaseTransactionService } from "./purchase_transaction.service";
 
 export interface PurchaseFilters {
     id_supplier: string | undefined;
@@ -117,15 +120,46 @@ export class PurchaseService {
         try {
             const { products_list, ...rest } = form;
 
+            // CREAR CUENTA CORRIENTE SI NO EXISTE
+            const { id_supplier, id_currency } = rest;
+            const supplierAccountService = new SupplierAccountService();
+            const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
+
+            // CREAR COMPRA
             const purchase = await Purchase.create({
                 ...rest,
                 created_by: id_user,
                 nullified_by: id_user,
             });
 
+            // ASOCIAR PRODUCTOS A LA COMPRA
             const purchaseItemService = new PurchaseItemService();
             products_list.forEach(async (item) => {
                 await purchaseItemService.createItem(purchase.id, purchase.id_currency, item);
+            });
+
+            // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
+            const supplierAccountTransactionService = new SupplierAccountTransactionService();
+            const balance: number = Number(supplierAccount.balance) - Number(purchase.total);
+            await supplierAccountTransactionService.createInTransactionFromPurchase({
+                id_supplier_account: supplierAccount.id,
+                id_purchase: purchase.id,
+                date: purchase.date,
+                amount: purchase.total,
+                balance: balance,
+                id_user,
+            });
+
+            // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
+            await supplierAccount.update({ 
+                balance: balance
+            });
+
+            // CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
+            const purchaseTransactionService = new PurchaseTransactionService();
+            await purchaseTransactionService.createPurchaseTransaction({
+                id_purchase: purchase.id,
+                id_supplier_account_transaction: supplierAccount.id,
             });
 
             return { id: purchase.id, message: '¡La compra se creó correctamente!' };
@@ -190,7 +224,7 @@ export class PurchaseService {
             const purchase = await Purchase.findByPk(id_purchase);
             if (!purchase) throw CustomError.notFound('Compra no encontrada');
             const purchaseItemService = new PurchaseItemService();
-            await purchaseItemService.updateAllItemsStock(id_purchase, id_user);
+            await purchaseItemService.updateAllItemsStock(id_purchase);
             await purchase.update({ fully_stocked: true });
 
             // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
@@ -211,6 +245,11 @@ export class PurchaseService {
         if (!purchase) throw CustomError.notFound('Compra no encontrada');
 
         try {
+
+            const purchaseItemService = new PurchaseItemService();
+            const hasOneItemReceived = await purchaseItemService.hasOneItemReceived(id);
+            if (hasOneItemReceived) throw CustomError.badRequest('¡No se puede anular la compra porque ya se ha registrado una recepción!');
+
             const user = await User.findByPk(id_user);
             if (!user) throw CustomError.notFound('Usuario no encontrado');
 
@@ -225,6 +264,37 @@ export class PurchaseService {
                 nullified_reason: reason,
                 nullified_date: now
             }
+
+            await purchaseItemService.decreaseIncomingStockByCancellation(id);
+
+             // CREAR CUENTA CORRIENTE SI NO EXISTE
+             const { id_supplier, id_currency } = purchase;
+             const supplierAccountService = new SupplierAccountService();
+             const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
+
+            // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
+            const supplierAccountTransactionService = new SupplierAccountTransactionService();
+            const balance: number = Number(supplierAccount.balance) + Number(purchase.total);
+            const transaction = await supplierAccountTransactionService.createOutTransactionFromPurchase({
+                id_supplier_account: supplierAccount.id,
+                id_purchase: purchase.id,
+                date: purchase.date,
+                amount: purchase.total,
+                balance: balance,
+                id_user,
+            });
+
+            // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
+            await supplierAccount.update({ 
+                balance: balance
+            });
+
+            // CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
+            const purchaseTransactionService = new PurchaseTransactionService();
+            await purchaseTransactionService.createPurchaseTransaction({
+                id_purchase: purchase.id,
+                id_supplier_account_transaction: transaction.id,
+            });
 
             return { nullifiedData, message: 'Compra anulada correctamente. Se reestableció el stock de los productos incluidos.' };
         } catch (error) {

@@ -65,8 +65,8 @@ export const Purchase = () => {
       setIsNullified(true);
       setNullifiedData(data.nullifiedData);
       SweetAlert2.successToast(data.message);
-    } catch (error) {
-      return navigate("/");
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
     }
   };
 
