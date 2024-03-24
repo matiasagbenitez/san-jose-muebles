@@ -28,6 +28,19 @@ export class SupplierAccountController {
             });
     }
 
+    getTransactionsFromAccount = async (req: Request, res: Response) => {
+        const id_supplier_account = parseInt(req.params.id);
+        if (!id_supplier_account) return res.status(400).json({ message: 'Missing id_supplier_account' });
+
+        this.service.getAccountTransactionsById(id_supplier_account)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {

@@ -15,10 +15,6 @@ interface SupplierAccount {
   updated_at: string;
 }
 
-interface CreationResponseInterface {
-  message: string;
-  account: SupplierAccount;
-}
 const initialForm = {
   id_currency: "",
 };
@@ -78,10 +74,13 @@ export const SupplierAccounts = () => {
         handleClose();
       }
     } catch (error: any) {
-      console.error(error);
       SweetAlert2.errorAlert(error.response.data.message);
     }
   };
+
+  const handleRedirectAccount = (id: number) => {
+    navigate(`/cuentas-proveedores/${id}`);
+  }
 
   return (
     <>
@@ -137,7 +136,7 @@ export const SupplierAccounts = () => {
                           </span>
                         )}
                       </Card.Subtitle>
-                      <Button variant="primary" size="sm">
+                      <Button variant="primary" size="sm" onClick={() => handleRedirectAccount(account.id)}>
                         Ir a cuenta
                       </Button>
                     </Card.Body>

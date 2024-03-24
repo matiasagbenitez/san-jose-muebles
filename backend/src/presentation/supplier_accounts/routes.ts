@@ -11,6 +11,7 @@ export class SupplierAccountRoutes {
         const controller = new SupplierAccountController();
 
         router.get('/supplier/:id_supplier', [AuthMiddleware.validateJWT], controller.getBySupplier);
+        router.get('/:id/transactions', [AuthMiddleware.validateJWT], controller.getTransactionsFromAccount);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
 
         return router;

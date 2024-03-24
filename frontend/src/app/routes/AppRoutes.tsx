@@ -5,6 +5,7 @@ import ParametersRoutes from "./ParametersRoutes";
 import SuppliersRoutes from "./SupplierRoutes";
 import ProductRoutes from "./ProductRoutes";
 import PurchaseRoutes from "./PurchaseRoutes";
+import SupplierAccountRoutes from "./SupplierAccountRoutes";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
         <Route path="/proveedores/*" element={<SuppliersRoutes />} />
         <Route path="/productos/*" element={<ProductRoutes />} />
         <Route path="/compras/*" element={<PurchaseRoutes />} />
+        <Route path="/cuentas-proveedores/*" element={<SupplierAccountRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />

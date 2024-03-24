@@ -10,8 +10,30 @@ interface DataInterface {
     id_user: number;
 }
 
-
 export class SupplierAccountTransactionService {
+
+    public async getTransactionsFromAccount(id_supplier_account: number) {
+        try {
+            const rows = await SupplierAccountTransaction.findAll({
+                where: { id_supplier_account },
+                include: [
+                    {
+                        association: 'user',
+                        attributes: ['name'],
+                    },
+                    {
+                        association: 'purchase_transaction',
+                        attributes: ['id_purchase'],
+                    },
+                ],
+                attributes: { exclude: ['id_user', 'updatedAt'] },
+            });
+            console.log(rows);
+            return rows;
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
 
     public async createInTransactionFromPurchase(data: DataInterface) {
         try {
