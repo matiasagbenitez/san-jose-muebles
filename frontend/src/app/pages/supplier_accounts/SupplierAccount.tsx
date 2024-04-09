@@ -109,11 +109,12 @@ export const SupplierAccount = () => {
 
           <Table striped bordered hover size="sm" className="small mt-3">
             <thead>
-              <tr className="text-center text-uppercase">
+              <tr className="text-center text-uppercase align-middle">
+                <th className="px-3">ID</th>
                 <th className="col-1">Usuario</th>
                 <th className="col-1">Fecha registro</th>
                 <th className="col-1">Fecha movimiento</th>
-                <th className="col-4">Descripción movimiento</th>
+                <th className="col-6">Descripción movimiento</th>
                 <th className="col-1">A cuenta</th>
                 <th className="col-1">Pago</th>
                 <th className="col-1">Saldo</th>
@@ -124,7 +125,8 @@ export const SupplierAccount = () => {
                 <>
                   {transactions.map((transaction) => (
                     <tr key={transaction.id}>
-                      <td className="px-2">{transaction.user.name}</td>
+                      <td className="text-center">{transaction.id}</td>
+                      <td>{transaction.user.name}</td>
                       <td className="text-center">
                         {DayJsAdapter.toDayMonthYearHour(transaction.createdAt)}
                       </td>
@@ -150,12 +152,25 @@ export const SupplierAccount = () => {
                         )}
                       </td>
                       <td className="text-end">
-                        {account.currency.is_monetary && "$ "}
-                        {toMoney(transaction.amount_in)}
+                        {transaction.amount_in > 0 ||
+                        transaction.isCancellation ? (
+                          <>
+                            {account.currency.is_monetary && "$ "}
+                            {toMoney(transaction.amount_in)}
+                          </>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="text-end">
-                        {account.currency.is_monetary && "$ "}
-                        {toMoney(transaction.amount_out)}
+                        {transaction.amount_out > 0 ? (
+                          <>
+                            {account.currency.is_monetary && "$ "}
+                            {toMoney(transaction.amount_out)}
+                          </>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="text-end fw-bold">
                         {account.currency.is_monetary && "$ "}

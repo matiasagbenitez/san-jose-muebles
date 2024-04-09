@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { Purchase, SupplierAccountTransaction, User } from "../../database/mysql/models";
 import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";

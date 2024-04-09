@@ -22,7 +22,8 @@ export class SupplierAccountService {
             const transactions = await SupplierAccount.findByPk(id, {
                 include: [
                     {
-                        association: 'transactions', include: [{
+                        association: 'transactions', 
+                        include: [{
                             association: 'user',
                             attributes: ['name'],
                         },

@@ -28,7 +28,6 @@ export class SupplierAccountTransactionService {
                 ],
                 attributes: { exclude: ['id_user', 'updatedAt'] },
             });
-            console.log(rows);
             return rows;
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
@@ -53,7 +52,6 @@ export class SupplierAccountTransactionService {
             throw CustomError.internalServerError(`${error}`);
         }
     }
-
     public async createOutTransactionFromPurchase(data: DataInterface): Promise<SupplierAccountTransaction> {
         try {
             const item = await SupplierAccountTransaction.create({
@@ -61,8 +59,8 @@ export class SupplierAccountTransactionService {
                 date: data.date,
                 isCancellation: true,
                 description: 'ANULACIÓN DE COMPRA N° ' + data.id_purchase,
-                amount_in: 0,
-                amount_out: data.amount,
+                amount_in: - data.amount,
+                amount_out: 0,
                 balance: data.balance,
                 id_user: data.id_user,
             });

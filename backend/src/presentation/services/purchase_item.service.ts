@@ -4,6 +4,30 @@ import { ProductService } from "./product.service";
 
 export class PurchaseItemService {
 
+    public async createItems(id_purchase: number, id_currency: number, items: any[]) {
+        try {
+            
+            const productService = new ProductService();
+            const itemsToCreate = items.map((item) => ({
+                id_purchase,
+                ...item,
+                actual_stocked: 0,
+                fully_stocked: false,
+            }));
+
+            const itemsCreated = await PurchaseItem.bulkCreate(itemsToCreate);
+            itemsCreated.forEach(async (item) => {
+                await productService.updateProductByPurchase(item.id_product, id_currency, item.quantity, item.price);
+            });
+
+        } catch (error: any) {
+            if (error.name === 'SequelizeValidationError') {
+                throw CustomError.badRequest(`Ocurrió un error al crear los detalles de compra: ${error.errors[0].message}`);
+            }
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
     public async createItem(id_purchase: number, id_currency: number, item: any) {
         try {
             await PurchaseItem.create({
@@ -86,13 +110,13 @@ export class PurchaseItemService {
         try {
             const items = await PurchaseItem.findAll({ where: { id_purchase } });
             const productService = new ProductService();
-    
+
             // Array para almacenar las actualizaciones que se realizarán
             const updates = items.map((item) => ({
                 id_product: item.id_product,
                 quantity: Number(item.quantity),
             }));
-    
+
             // Actualizar el stock de cada producto en una sola operación
             await productService.decreaseIncomingStockInBulk(updates);
         } catch (error) {

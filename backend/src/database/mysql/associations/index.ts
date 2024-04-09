@@ -95,4 +95,5 @@ export const initializeAssociations = () => {
 
     SupplierAccountTransaction.hasOne(PurchaseTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'purchase_transaction', onDelete: 'RESTRICT' });
     PurchaseTransaction.belongsTo(SupplierAccountTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'supplier_account_transaction' });
+    PurchaseTransaction.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
 };

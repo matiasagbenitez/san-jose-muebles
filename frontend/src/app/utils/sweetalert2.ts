@@ -77,6 +77,7 @@ export class SweetAlert2 {
             // text: message,
             icon: iconReceived,
             input: 'text',
+            allowEscapeKey: true,
             showCancelButton: true,
             confirmButtonColor: "#157347",
             confirmButtonText: 'Confirmar',
