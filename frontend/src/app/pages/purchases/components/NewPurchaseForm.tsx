@@ -57,7 +57,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
   const fetch = async () => {
     setLoading(true);
     const [res1, res2, res3] = await Promise.all([
-      apiSJM.get("/currencies"),
+      apiSJM.get("/currencies/monetaries"),
       apiSJM.get("/suppliers/select"),
       apiSJM.get("/products"),
     ]);

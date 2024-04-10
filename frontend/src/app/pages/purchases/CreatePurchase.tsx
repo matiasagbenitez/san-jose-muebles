@@ -28,7 +28,7 @@ export const CreatePurchase = () => {
   return (
     <>
       <div className="d-flex align-items-center gap-2">
-        <h1 className="fs-5 my-0">Registrar una nueva compra</h1>
+        <h1 className="fs-5 my-0">Registrar nueva compra de productos</h1>
         <Button
           size="sm"
           variant="transparent"

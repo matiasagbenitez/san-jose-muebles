@@ -27,9 +27,11 @@ interface TransactionInterface {
     | "NEW_PURCHASE"
     | "X_PURCHASE"
     | "NEW_IN"
+    | "X_IN"
     | "NEW_CLIENT_PAYMENT"
     | "X_CLIENT_PAYMENT"
-    | "NEW_OUT";
+    | "NEW_OUT"
+    | "X_OUT";
   balance: number;
   createdAt: Date;
   description: string;
