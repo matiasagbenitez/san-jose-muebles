@@ -4,7 +4,6 @@ import { SupplierAccountTransaction } from "../../database/mysql/models";
 interface DataInterface {
     id_supplier_account: number;
     id_purchase: number;
-    date: Date;
     amount: number;
     balance: number;
     id_user: number;
@@ -28,18 +27,20 @@ export class SupplierAccountTransactionService {
                 ],
                 attributes: { exclude: ['id_user', 'updatedAt'] },
             });
-            return rows;
+
+            const etc = await SupplierAccountTransaction.findAll({ where: { id_supplier_account }, include: ['purchase_transaction'] });
+            return etc;
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
     }
 
+    // NEW_PURCHASE
     public async createInTransactionFromPurchase(data: DataInterface) {
         try {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
-                date: data.date,
-                isCancellation: false,
+                type: 'NEW_PURCHASE',
                 description: 'COMPRA DE PRODUCTOS N° ' + data.id_purchase,
                 amount_in: data.amount,
                 amount_out: 0,
@@ -52,20 +53,21 @@ export class SupplierAccountTransactionService {
             throw CustomError.internalServerError(`${error}`);
         }
     }
-    public async createOutTransactionFromPurchase(data: DataInterface): Promise<SupplierAccountTransaction> {
+
+    // X_PURCHASE
+    public async createOutTransactionFromPurchase(data: DataInterface) {
         try {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
-                date: data.date,
-                isCancellation: true,
+                type: 'X_PURCHASE',
                 description: 'ANULACIÓN DE COMPRA N° ' + data.id_purchase,
-                amount_in: - data.amount,
+                amount_in: data.amount * -1,
                 amount_out: 0,
                 balance: data.balance,
                 id_user: data.id_user,
             });
             if (!item) throw CustomError.internalServerError('¡Error al registrar la transacción de compra!');
-            return item;
+            return { transaction: item, message: '¡Transacción de compra registrada correctamente!' };
         } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);
         }

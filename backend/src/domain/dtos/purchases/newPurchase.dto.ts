@@ -27,6 +27,7 @@ export class NewPurchaseDto {
         if (!date) return ['La fecha de la compra es requerida'];
         if (!id_supplier) return ['El proveedor es requerido'];
         if (!id_currency) return ['La moneda es requerida'];
+        
         if (!subtotal) return ['El subtotal es requerido'];
         if (isNaN(discount)) return ['El descuento debe ser un número'];
         if (isNaN(other_charges)) return ['El valor de otros cargos debe ser un número'];

@@ -134,24 +134,23 @@ export class PurchaseService {
 
             // ASOCIAR PRODUCTOS A LA COMPRA
             const purchaseItemService = new PurchaseItemService();
-            products_list.forEach(async (item) => {
-                await purchaseItemService.createItem(purchase.id, purchase.id_currency, item);
-            });
+            purchaseItemService.createItems(purchase.id, id_currency, products_list);
+
+            // CALCULAR BALANCE ACTUAL DE LA CUENTA CORRIENTE
+            const balance: number = Number(supplierAccount.balance) - Number(purchase.total);
 
             // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
             const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            const balance: number = Number(supplierAccount.balance) - Number(purchase.total);
-            await supplierAccountTransactionService.createInTransactionFromPurchase({
+            const { transaction } = await supplierAccountTransactionService.createInTransactionFromPurchase({
                 id_supplier_account: supplierAccount.id,
                 id_purchase: purchase.id,
-                date: purchase.date,
                 amount: purchase.total,
                 balance: balance,
                 id_user,
             });
 
             // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
-            await supplierAccount.update({ 
+            await supplierAccount.update({
                 balance: balance
             });
 
@@ -159,7 +158,7 @@ export class PurchaseService {
             const purchaseTransactionService = new PurchaseTransactionService();
             await purchaseTransactionService.createPurchaseTransaction({
                 id_purchase: purchase.id,
-                id_supplier_account_transaction: supplierAccount.id,
+                id_supplier_account_transaction: transaction.id,
             });
 
             return { id: purchase.id, message: '¡La compra se creó correctamente!' };
@@ -267,25 +266,26 @@ export class PurchaseService {
 
             await purchaseItemService.decreaseIncomingStockByCancellation(id);
 
-             // CREAR CUENTA CORRIENTE SI NO EXISTE
-             const { id_supplier, id_currency } = purchase;
-             const supplierAccountService = new SupplierAccountService();
-             const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
+            // CREAR CUENTA CORRIENTE SI NO EXISTE
+            const { id_supplier, id_currency } = purchase;
+            const supplierAccountService = new SupplierAccountService();
+            const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
+
+            //  CALCULAR BALANCE ACTUAL DE LA CUENTA CORRIENTE
+            const balance: number = Number(supplierAccount.balance) + Number(purchase.total);
 
             // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
             const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            const balance: number = Number(supplierAccount.balance) + Number(purchase.total);
-            const transaction = await supplierAccountTransactionService.createOutTransactionFromPurchase({
+            const { transaction } = await supplierAccountTransactionService.createOutTransactionFromPurchase({
                 id_supplier_account: supplierAccount.id,
                 id_purchase: purchase.id,
-                date: purchase.date,
                 amount: purchase.total,
                 balance: balance,
                 id_user,
             });
 
             // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
-            await supplierAccount.update({ 
+            await supplierAccount.update({
                 balance: balance
             });
 

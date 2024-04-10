@@ -1,4 +1,4 @@
-import { SupplierAccount } from "../../database/mysql/models";
+import { SupplierAccount, SupplierAccountTransaction } from "../../database/mysql/models";
 import { CustomError, SupplierAccountDto, SupplierAccountEntity } from "../../domain";
 import { SupplierService } from "./supplier.service";
 import { SupplierAccountTransactionService } from "./supplier_account_transaction.service";
@@ -16,25 +16,42 @@ export class SupplierAccountService {
             });
             if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
 
-            // const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            // const transactions = await supplierAccountTransactionService.getTransactionsFromAccount(id);
+            // const transactions = await SupplierAccount.findByPk(id, {
+            //     include: [
+            //         {
+            //             association: 'transactions',
+            //             include: [
+            //                 {
+            //                     association: 'user',
+            //                     attributes: ['name'],
+            //                 },
+            //                 {
+            //                     association: 'purchase_transaction',
+            //                     attributes: ['id_purchase'],
+            //                 },  
+            //             ],
+            //             order: [['createdAt', 'ASC']],
+            //         }
+            //     ],
+            // });
 
-            const transactions = await SupplierAccount.findByPk(id, {
+            const transactions = await SupplierAccountTransaction.findAll({
+                where: { id_supplier_account: id },
                 include: [
                     {
-                        association: 'transactions', 
-                        include: [{
-                            association: 'user',
-                            attributes: ['name'],
-                        },
-                        {
-                            association: 'purchase_transaction',
-                            attributes: ['id_purchase'],
-                        },]
-                    }
+                        association: 'user',
+                        attributes: ['name'],
+                    },
+                    {
+                        association: 'purchase_transaction',
+                        attributes: ['id_purchase'],
+                    },
                 ],
-                // attributes: { exclude: ['id_user', 'updatedAt'] },
+                order: [['createdAt', 'DESC']],
             });
+
+            // console.log(transactions);
+
             return { account, transactions };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);

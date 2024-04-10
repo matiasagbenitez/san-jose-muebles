@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, Card, Row, Col, Modal, Form, Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
 import { DayJsAdapter, toMoney } from "../../../helpers";
-import { SweetAlert2 } from "../../utils";
 
 interface AccountInterface {
   id: number;
@@ -24,12 +23,17 @@ interface AccountInterface {
 interface TransactionInterface {
   amount_in: number;
   amount_out: number;
+  type:
+    | "NEW_PURCHASE"
+    | "X_PURCHASE"
+    | "NEW_IN"
+    | "NEW_CLIENT_PAYMENT"
+    | "X_CLIENT_PAYMENT"
+    | "NEW_OUT";
   balance: number;
   createdAt: Date;
-  date: Date;
   description: string;
   id: number;
-  isCancellation: boolean;
   purchase_transaction: {
     id_purchase: number;
   };
@@ -54,9 +58,8 @@ export const SupplierAccount = () => {
       const { data } = await apiSJM.get(
         `/supplier_accounts/${id}/transactions`
       );
-      console.log(data);
       setAccount(data.account);
-      setTransactions(data.transactions.transactions);
+      setTransactions(data.transactions);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -111,10 +114,9 @@ export const SupplierAccount = () => {
             <thead>
               <tr className="text-center text-uppercase align-middle">
                 <th className="px-3">ID</th>
-                <th className="col-1">Usuario</th>
-                <th className="col-1">Fecha registro</th>
-                <th className="col-1">Fecha movimiento</th>
-                <th className="col-6">Descripción movimiento</th>
+                <th className="col-1">Registrado el</th>
+                <th className="col-1">Registrado por</th>
+                <th className="col-7">Descripción de la transacción</th>
                 <th className="col-1">A cuenta</th>
                 <th className="col-1">Pago</th>
                 <th className="col-1">Saldo</th>
@@ -126,13 +128,11 @@ export const SupplierAccount = () => {
                   {transactions.map((transaction) => (
                     <tr key={transaction.id}>
                       <td className="text-center">{transaction.id}</td>
-                      <td>{transaction.user.name}</td>
                       <td className="text-center">
                         {DayJsAdapter.toDayMonthYearHour(transaction.createdAt)}
                       </td>
-                      <td className="text-center">
-                        {DayJsAdapter.toDayMonthYear(transaction.date)}
-                      </td>
+
+                      <td className="text-center">{transaction.user.name}</td>
 
                       <td>
                         {transaction.description}
@@ -152,24 +152,21 @@ export const SupplierAccount = () => {
                         )}
                       </td>
                       <td className="text-end">
-                        {transaction.amount_in > 0 ||
-                        transaction.isCancellation ? (
+                        {(transaction.amount_in > 0 ||
+                          transaction.type === "X_PURCHASE") && (
                           <>
                             {account.currency.is_monetary && "$ "}
                             {toMoney(transaction.amount_in)}
                           </>
-                        ) : (
-                          "-"
                         )}
                       </td>
                       <td className="text-end">
-                        {transaction.amount_out > 0 ? (
+                        {(transaction.amount_out > 0 ||
+                          transaction.type === "X_CLIENT_PAYMENT") && (
                           <>
                             {account.currency.is_monetary && "$ "}
                             {toMoney(transaction.amount_out)}
                           </>
-                        ) : (
-                          "-"
                         )}
                       </td>
                       <td className="text-end fw-bold">

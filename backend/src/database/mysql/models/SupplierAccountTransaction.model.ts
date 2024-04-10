@@ -3,8 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class SupplierAccountTransaction extends Model {
     public id!: number;
     public id_supplier_account!: number;
-    public date!: Date;
-    public isCancellation!: boolean;
+    public type!: 'NEW_PURCHASE' | 'X_PURCHASE' | 'NEW_IN' | 'NEW_CLIENT_PAYMENT' | 'X_CLIENT_PAYMENT' | 'NEW_OUT';
     public description!: string;
     public amount_in!: number;
     public amount_out!: number;
@@ -27,14 +26,9 @@ export const initSupplierAccountTransactionModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
-            date: {
-                type: DataTypes.DATEONLY,
+            type: {
+                type: DataTypes.ENUM('NEW_PURCHASE', 'X_PURCHASE', 'NEW_IN', 'NEW_CLIENT_PAYMENT', 'X_CLIENT_PAYMENT', 'NEW_OUT'),
                 allowNull: false,
-            },
-            isCancellation: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                defaultValue: false,
             },
             description: {
                 type: DataTypes.STRING(200),

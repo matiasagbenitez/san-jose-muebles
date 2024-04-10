@@ -15,7 +15,10 @@ export class PurchaseItemService {
                 fully_stocked: false,
             }));
 
+            // CREAMOS LOS ITEMS DE COMPRA
             const itemsCreated = await PurchaseItem.bulkCreate(itemsToCreate);
+
+            // ACTUALIZAMOS EL INC_STOCK DE LOS PRODUCTOS, LA MONEDA Y EL PRECIO
             itemsCreated.forEach(async (item) => {
                 await productService.updateProductByPurchase(item.id_product, id_currency, item.quantity, item.price);
             });
