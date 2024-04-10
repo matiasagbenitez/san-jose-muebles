@@ -3,6 +3,8 @@ import React from "react";
 import { Button, Col, Form as FormRB, InputGroup, Row } from "react-bootstrap";
 import Select from "react-select";
 
+import { NumericFormat } from "react-number-format";
+
 interface ProductItemProps {
   index: number;
   products: any;
@@ -23,7 +25,7 @@ export const ProductItem = ({
       <Col xs={1}>
         <Button
           variant="danger"
-          className="p-0 -0 text-white w-100"
+          className="p-0 text-white w-100"
           style={{ height: "31px" }}
           title="Eliminar ítem"
           onClick={() => {
@@ -46,9 +48,13 @@ export const ProductItem = ({
                 setFieldValue(`products_list.${index}.quantity`, quantity);
                 const price = values.products_list[index].price;
                 const subtotal = price * quantity;
+                const formattedSubtotal = Intl.NumberFormat("es-AR", {
+                  style: "decimal",
+                  minimumFractionDigits: 2,
+                }).format(subtotal);
                 setFieldValue(
                   `products_list.${index}.subtotal`,
-                  Math.round(subtotal * 100) / 100
+                  formattedSubtotal
                 );
               } else {
                 setFieldValue(`products_list.${index}.quantity`, "");
@@ -90,28 +96,25 @@ export const ProductItem = ({
       <Col xs={2}>
         <InputGroup className="mb-3" size="sm">
           <InputGroup.Text>$</InputGroup.Text>
-          <FormRB.Control
+          <NumericFormat
+            thousandSeparator="."
+            decimalSeparator=","
+            decimalScale={2}
+            fixedDecimalScale
+            className="text-end form-control"
             value={values.products_list[index].price}
-            className="text-end"
-            type="number"
             name={`products_list.${index}.price`}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              if (!isNaN(parseFloat(e.target.value))) {
-                const price = parseFloat(e.target.value);
-                setFieldValue(`products_list.${index}.price`, price);
-                const quantity = values.products_list[index].quantity;
-                const subtotal = price * quantity;
-                setFieldValue(
-                  `products_list.${index}.subtotal`,
-                  Math.round(subtotal * 100) / 100
-                );
-              } else {
-                setFieldValue(`products_list.${index}.price`, "");
-                setFieldValue(`products_list.${index}.subtotal`, "");
-              }
+            onValueChange={(valuesLocal) => {
+              const price = valuesLocal.floatValue || 0;
+              setFieldValue(`products_list.${index}.price`, price);
+              const quantity = values.products_list[index].quantity;
+              const subtotal = price * quantity;
+              setFieldValue(
+                `products_list.${index}.subtotal`,
+                Math.round(subtotal * 100) / 100
+              );
             }}
             step="0.01"
-            min={1}
             required
           />
         </InputGroup>
@@ -119,13 +122,22 @@ export const ProductItem = ({
       <Col xs={2} className="d-flex gap-2">
         <InputGroup className="mb-3" size="sm">
           <InputGroup.Text>$</InputGroup.Text>
-          <FormRB.Control
-            className="text-end"
-            type="number"
-            name={`products_list.${index}.subtotal`}
-            disabled
+          <NumericFormat
+            // prefix="$"
+            thousandSeparator="."
+            decimalSeparator=","
+            decimalScale={2}
+            fixedDecimalScale
+            className="text-end form-control"
             value={values.products_list[index].subtotal}
+            name={`products_list.${index}.subtotal`}
+            onValueChange={(valuesLocal) => {
+              const subtotal = valuesLocal.floatValue || 0;
+              setFieldValue(`products_list.${index}.subtotal`, subtotal);
+            }}
             step="0.01"
+            required
+            disabled
           />
         </InputGroup>
       </Col>

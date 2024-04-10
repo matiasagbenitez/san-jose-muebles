@@ -13,7 +13,9 @@ export const CreatePurchase = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
-      const confirmation = await SweetAlert2.confirm("¿Desea registrar la compra?");
+      const confirmation = await SweetAlert2.confirm(
+        "¿Desea registrar la compra?"
+      );
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post("/purchases", formData);
       SweetAlert2.successToast(data.message);
@@ -37,18 +39,19 @@ export const CreatePurchase = () => {
           <i className="bi bi-question-circle"></i>&ensp;Instrucciones
         </Button>
       </div>
-      <hr className="my-" />
+
+      <hr className="my-3" />
+
       <NewPurchaseForm onSubmit={handleSubmit} />
-      <>
-        <Offcanvas show={show} onHide={handleClose}>
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Registrar una nueva compra</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Instructions />
-          </Offcanvas.Body>
-        </Offcanvas>
-      </>
+
+      <Offcanvas show={show} onHide={handleClose}>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Registrar una nueva compra</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <Instructions />
+        </Offcanvas.Body>
+      </Offcanvas>
     </>
   );
 };

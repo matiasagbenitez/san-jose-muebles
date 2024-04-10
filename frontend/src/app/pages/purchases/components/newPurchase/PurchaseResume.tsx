@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Col, Row, InputGroup, Form as FormRB } from "react-bootstrap";
 
+import { NumericFormat } from "react-number-format";
+
 export const PurchaseResume = ({
   push,
   values,
@@ -35,7 +37,7 @@ export const PurchaseResume = ({
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
             <InputGroup.Text>$</InputGroup.Text>
-            <FormRB.Control
+            {/* <FormRB.Control
               min={1}
               autoComplete="off"
               className="text-end"
@@ -52,6 +54,23 @@ export const PurchaseResume = ({
                   ) / 100)
               }
               step="0.01"
+            /> */}
+            <NumericFormat
+              thousandSeparator="."
+              decimalSeparator=","
+              decimalScale={2}
+              fixedDecimalScale
+              className="form-control text-end"
+              value={
+                (values.subtotal =
+                  Math.round(
+                    values.products_list.reduce(
+                      (acc: number, product: any) => acc + product.subtotal,
+                      0
+                    ) * 100
+                  ) / 100)
+              }
+              disabled
             />
           </InputGroup>
         </Col>
@@ -64,7 +83,7 @@ export const PurchaseResume = ({
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
             <InputGroup.Text>- $</InputGroup.Text>
-            <FormRB.Control
+            {/* <FormRB.Control
               min={0}
               autoComplete="off"
               className="text-end"
@@ -84,6 +103,23 @@ export const PurchaseResume = ({
               }}
               step="0.01"
               defaultValue={0}
+            /> */}
+            <NumericFormat
+              thousandSeparator="."
+              decimalSeparator=","
+              decimalScale={2}
+              fixedDecimalScale
+              className="form-control text-end"
+              onValueChange={(values: any) => {
+                setFieldValue(`discount`, values.floatValue);
+                setFieldValue(
+                  `total`,
+                  Math.round((values.subtotal - values.floatValue) * 100) / 100
+                );
+              }}
+              value={values.discount}
+              min={0}
+              max={values.subtotal}
             />
           </InputGroup>
         </Col>
@@ -102,7 +138,7 @@ export const PurchaseResume = ({
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
             <InputGroup.Text>$</InputGroup.Text>
-            <FormRB.Control
+            {/* <FormRB.Control
               min={0}
               autoComplete="off"
               className="text-end"
@@ -124,6 +160,24 @@ export const PurchaseResume = ({
               }}
               step="0.01"
               defaultValue={0}
+            /> */}
+            <NumericFormat
+              thousandSeparator="."
+              decimalSeparator=","
+              decimalScale={2}
+              fixedDecimalScale
+              className="form-control text-end"
+              onValueChange={(values: any) => {
+                setFieldValue(`other_charges`, values.floatValue);
+                setFieldValue(
+                  `total`,
+                  Math.round(
+                    (values.subtotal - values.discount + values.floatValue) * 100
+                  ) / 100
+                );
+              }}
+              value={values.other_charges}
+              min={0}
             />
           </InputGroup>
         </Col>
@@ -137,7 +191,7 @@ export const PurchaseResume = ({
         <Col xs={2}>
           <InputGroup className="mb-3" size="sm">
             <InputGroup.Text>$</InputGroup.Text>
-            <FormRB.Control
+            {/* <FormRB.Control
               min={1}
               autoComplete="off"
               className="text-end"
@@ -152,6 +206,22 @@ export const PurchaseResume = ({
                   ) / 100)
               }
               step="0.01"
+            /> */}
+
+            <NumericFormat
+              thousandSeparator="."
+              decimalSeparator=","
+              decimalScale={2}
+              fixedDecimalScale
+              className="form-control text-end"
+              value={
+                (values.total =
+                  Math.round(
+                    (values.subtotal - values.discount + values.other_charges) *
+                      100
+                  ) / 100)
+              }
+              disabled
             />
           </InputGroup>
         </Col>
@@ -162,7 +232,7 @@ export const PurchaseResume = ({
 
         <Col xs={2}>
           <Button
-            title="Guardar la compra"
+            title="Registrar la compra"
             type="submit"
             variant="primary"
             className="w-100"
@@ -170,7 +240,7 @@ export const PurchaseResume = ({
             disabled={isFormSubmitted}
           >
             <i className="bi bi-floppy"></i>
-            &ensp; Guardar
+            &ensp; Registrar compra
           </Button>
         </Col>
       </Row>

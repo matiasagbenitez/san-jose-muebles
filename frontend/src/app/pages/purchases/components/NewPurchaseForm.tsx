@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col, InputGroup, Row, Form as FormRB } from "react-bootstrap";
 import { Formik, Form, FieldArray } from "formik";
 import * as Yup from "yup";
 
 import apiSJM from "../../../../api/apiSJM";
-import { MySelect, MyInputDate } from "../../../components/forms";
 import { ProductItem, PurchaseResume } from ".";
 import { LoadingSpinner } from "../../../components";
 
@@ -111,67 +110,92 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
           {({ values, errors, touched, setFieldValue }) => (
             <Form id="form">
               <Row>
-                <h2 className="fs-6 mt-0">Información general</h2>
+                <p className="mb-3 text-muted small">Para registrar una nueva compra, complete los siguientes campos del formulario:</p>
                 <Col xs={12} lg={2}>
-                  <MyInputDate label="Fecha *" name="date" />
+                  <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Text id="from">Fecha compra *</InputGroup.Text>
+                    <FormRB.Control
+                      type="date"
+                      name="date"
+                      isInvalid={!!errors.date && touched.date}
+                      value={values.date}
+                      onChange={(e: any) => {
+                        setFieldValue("date", e.target.value);
+                      }}
+                      required
+                    />
+                  </InputGroup>
                 </Col>
                 <Col xs={12} lg={6}>
-                  <MySelect
-                    label="Proveedor *"
-                    name="id_supplier"
-                    as="select"
-                    isInvalid={!!errors.id_supplier && touched.id_supplier}
-                  >
-                    <option value="">Seleccione una opción</option>
-                    {suppliers &&
-                      suppliers.map((supplier: any) => (
-                        <option key={supplier.id} value={supplier.id}>
-                          {supplier.name} ({supplier.locality})
-                        </option>
-                      ))}
-                  </MySelect>
+                  <InputGroup size="sm" className="mb-3" hasValidation>
+                    <InputGroup.Text id="from">Proveedor *</InputGroup.Text>
+                    <FormRB.Select
+                      name="id_supplier"
+                      size="sm"
+                      isInvalid={!!errors.id_supplier && touched.id_supplier}
+                      value={values.id_supplier}
+                      onChange={(e: any) => {
+                        setFieldValue("id_supplier", e.target.value);
+                      }}
+                      required
+                    >
+                      <option value="">Seleccione una opción</option>
+                      {suppliers &&
+                        suppliers.map((supplier: any) => (
+                          <option key={supplier.id} value={supplier.id}>
+                            {supplier.name} ({supplier.locality})
+                          </option>
+                        ))}
+                    </FormRB.Select>
+                  </InputGroup>
                 </Col>
                 <Col xs={12} lg={4}>
-                  <MySelect
-                    label="Moneda de compra *"
-                    name="id_currency"
-                    as="select"
-                    isInvalid={!!errors.id_currency && touched.id_currency}
-                  >
-                    <option value="">Seleccione una opción</option>
-                    {currencies &&
-                      currencies.map((currency: any) => (
-                        <option key={currency.id} value={currency.id}>
-                          {currency.name}
-                        </option>
-                      ))}
-                  </MySelect>
+                  <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Text id="from">Moneda de compra *</InputGroup.Text>
+                    <FormRB.Select
+                      name="id_currency"
+                      size="sm"
+                      isInvalid={!!errors.id_currency && touched.id_currency}
+                      value={values.id_currency}
+                      onChange={(e: any) => {
+                        setFieldValue("id_currency", e.target.value);
+                      }}
+                      required
+                    >
+                      <option value="">Seleccione una opción</option>
+                      {currencies &&
+                        currencies.map((currency: any) => (
+                          <option key={currency.id} value={currency.id}>
+                            {currency.name}
+                          </option>
+                        ))}
+                    </FormRB.Select>
+                  </InputGroup>
+
                 </Col>
               </Row>
 
               <FieldArray name="products_list">
                 {({ remove, push }) => (
                   <>
-                    <Row className="my-3">
-                      <h2 className="fs-6 mt-0 mb-0">Detalle de la compra</h2>
-                    </Row>
+                   <p className="mb-2 small fw-bold">Productos comprados</p>
 
                     {values.products_list.length > 0 ? (
-                      <Row className="small mb-1">
+                      <Row className="small mb-1 text-uppercase">
                         <Col xs={1}>
-                          <span>Eliminar</span>
+                          <small>Eliminar ítem</small>
                         </Col>
                         <Col xs={1}>
-                          <span>Cantidad *</span>
+                          <small>Cantidad *</small>
                         </Col>
                         <Col xs={6}>
-                          <span>Producto *</span>
+                          <small>Producto *</small>
                         </Col>
                         <Col xs={2}>
-                          <span>Precio *</span>
+                          <small>Precio *</small>
                         </Col>
                         <Col xs={2}>
-                          <span>Subtotal producto *</span>
+                          <small>Subtotal producto *</small>
                         </Col>
                       </Row>
                     ) : (
