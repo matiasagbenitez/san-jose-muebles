@@ -1,46 +1,90 @@
-import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Form, InputGroup } from "react-bootstrap";
+import React, { useState, useEffect, useReducer } from "react";
+import {
+  Button,
+  Modal,
+  Form,
+  InputGroup,
+  Row,
+  Col,
+  Badge,
+} from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { DayJsAdapter, toMoney } from "../../../helpers";
+import { DayJsAdapter, convertToMoney } from "../../../helpers";
 
 import { NumericFormat } from "react-number-format";
 import { SweetAlert2 } from "../../utils";
 
+import { TableColumn } from "react-data-table-component";
+import {
+  Datatable,
+  initialState,
+  paginationReducer,
+  fetchData,
+} from "../../shared";
+
 interface AccountInterface {
   id: number;
-  id_supplier: number;
-  supplier: {
-    name: string;
-  };
+  supplier: string;
+  currency: string;
+  symbol: string;
+  is_monetary: boolean;
   balance: number;
-  id_currency: number;
-  currency: {
-    name: string;
-    symbol: string;
-    is_monetary: boolean;
-  };
 }
 
-interface TransactionInterface {
-  id: number;
-  createdAt: Date;
-  user: { name: string };
-  description: string;
-  purchase_transaction: { id_purchase: number };
-  type:
-    | "NEW_PURCHASE"
-    | "DEL_PURCHASE"
-    | "NEW_PAYMENT"
-    | "POS_ADJ"
-    | "NEG_ADJ"
-    | "NEW_CLIENT_PAYMENT"
-    | "DEL_CLIENT_PAYMENT";
-  prev_balance: number;
-  amount: number;
-  post_balance: number;
+enum MovementType {
+  NEW_PURCHASE = "NEW_PURCHASE",
+  DEL_PURCHASE = "DEL_PURCHASE",
+  NEW_PAYMENT = "NEW_PAYMENT",
+  POS_ADJ = "POS_ADJ",
+  NEG_ADJ = "NEG_ADJ",
 }
+
+const types: Record<
+  MovementType,
+  { label: string; icon: string; title: string }
+> = {
+  [MovementType.NEW_PURCHASE]: {
+    label: "NUEVA COMPRA",
+    icon: "bi bi-arrow-down-circle-fill fs-6 text-danger",
+    title: "Aumenta la deuda con el proveedor",
+  },
+  [MovementType.DEL_PURCHASE]: {
+    label: "COMPRA ANULADA",
+    icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+    title: "Disminuye la deuda con el proveedor",
+  },
+  [MovementType.NEW_PAYMENT]: {
+    label: "PAGO A PROVEEDOR",
+    icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+    title: "Disminuye la deuda con el proveedor",
+  },
+  [MovementType.POS_ADJ]: {
+    label: "AJUSTE A FAVOR",
+    icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+    title: "Disminuye la deuda con el proveedor",
+  },
+  [MovementType.NEG_ADJ]: {
+    label: "AJUSTE EN CONTRA",
+    icon: "bi bi-arrow-down-circle-fill fs-6 text-danger",
+    title: "Aumenta la deuda con el proveedor",
+  },
+};
+
+const enum Flags {
+  ARS = "🇦🇷",
+  USD = "🇺🇸",
+  BRL = "🇧🇷",
+  EUR = "🇪🇺",
+}
+
+const flags: Record<string, string> = {
+  ARS: Flags.ARS,
+  USD: Flags.USD,
+  BRL: Flags.BRL,
+  EUR: Flags.EUR,
+};
 
 const initialForm = {
   type: "",
@@ -48,37 +92,142 @@ const initialForm = {
   amount: 0,
 };
 
+interface DataRow {
+  id: number;
+  createdAt: Date;
+  user: string;
+  description: string;
+  type: string;
+  prev_balance: number;
+  amount: number;
+  post_balance: number;
+  id_purchase?: number;
+  id_project?: number;
+}
+
 export const SupplierAccount = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [state, dispatch] = useReducer(paginationReducer, initialState);
+  const endpoint = `/supplier_account_transactions/${id}`;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<AccountInterface | null>(null);
-  const [transactions, setTransactions] = useState<
-    TransactionInterface[] | null
-  >();
 
   const [formData, setFormData] = useState(initialForm);
 
   const fetch = async () => {
-    try {
-      setLoading(true);
-      const { data } = await apiSJM.get(
-        `/supplier_accounts/${id}/transactions`
-      );
-      setAccount(data.account);
-      setTransactions(data.transactions);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      navigate(`/proveedores/${id}`);
-    }
+    const [_, res2] = await Promise.all([
+      fetchData(endpoint, 1, state, dispatch),
+      apiSJM.get(`/supplier_accounts/${id}`),
+    ]);
+    setAccount(res2.data.account);
   };
 
   useEffect(() => {
     fetch();
   }, []);
+
+  const handlePageChange = async (page: number) => {
+    dispatch({ type: "PAGE_CHANGE", page });
+    fetchData(endpoint, page, state, dispatch);
+  };
+
+  const handleRowsPerPageChange = async (newPerPage: number, page: number) => {
+    dispatch({ type: "ROWS_PER_PAGE_CHANGE", newPerPage, page });
+    fetchData(endpoint, page, { ...state, perPage: newPerPage }, dispatch);
+  };
+
+  useEffect(() => {
+    if (state.error) {
+      navigate("/");
+    }
+  }, [state.error]);
+
+  const columns: TableColumn<DataRow>[] = [
+    {
+      name: "ID",
+      selector: (row: DataRow) => row.id,
+      width: "80px",
+      center: true,
+    },
+    {
+      name: "FECHA REGISTRO",
+      selector: (row: DataRow) =>
+        DayJsAdapter.toDayMonthYearHour(row.createdAt),
+      maxWidth: "140px",
+      center: true,
+    },
+    {
+      name: "RESPONSABLE",
+      selector: (row: DataRow) => row.user,
+      maxWidth: "140px",
+      center: true,
+    },
+    {
+      name: "DESCRIPCIÓN",
+      selector: (row: DataRow) => row.description,
+      cell: (row: DataRow) => {
+        return (
+          <>
+            {row.description}
+            {row.id_purchase && (
+              <Button
+                size="sm"
+                variant="link"
+                onClick={() => handleRedirectPurchase(row.id_purchase!)}
+              >
+                <small>Ver compra</small>
+              </Button>
+            )}
+          </>
+        );
+      },
+    },
+    {
+      name: "TIPO MOVIMIENTO",
+      selector: (row: DataRow) => row.type,
+      cell: (row: DataRow) => {
+        if (!(row.type in MovementType)) {
+          throw new Error(`Invalid type: ${row.type}`);
+        }
+
+        return (
+          <div className="d-flex align-items-center">
+            <i
+              className={types[row.type as MovementType].icon}
+              title={types[row.type as MovementType].title}
+            ></i>
+            <span className="ms-2">
+              {types[row.type as MovementType].label}
+            </span>
+          </div>
+        );
+      },
+      maxWidth: "250px",
+    },
+    {
+      name: "SALDO ANTERIOR",
+      selector: (row: DataRow) => convertToMoney(row.prev_balance),
+      maxWidth: "160px",
+      right: true,
+    },
+    {
+      name: "MONTO MOVIMIENTO",
+      maxWidth: "160px",
+      selector: (row: DataRow) => convertToMoney(row.amount),
+      right: true,
+      style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1.1em" },
+    },
+    {
+      name: "SALDO POSTERIOR",
+      maxWidth: "160px",
+      selector: (row: DataRow) => convertToMoney(row.post_balance),
+      right: true,
+    },
+  ];
 
   const handleCreate = () => {
     setIsModalOpen(true);
@@ -102,13 +251,12 @@ export const SupplierAccount = () => {
       );
       if (!confirmation.isConfirmed) return;
       setLoading(true);
-      const { data } = await apiSJM.post(
-        "/supplier_account_transactions/new-movement",
-        { ...formData, id_supplier_account: id }
-      );
-      console.log(data);
+      await apiSJM.post("/supplier_account_transactions/new-movement", {
+        ...formData,
+        id_supplier_account: id,
+      });
       fetch();
-      setIsModalOpen(false);
+      handleClose();
       setLoading(false);
     } catch (error: any) {
       console.error(error);
@@ -119,7 +267,7 @@ export const SupplierAccount = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && transactions && account && (
+      {!loading && account && (
         <>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="d-flex gap-3 align-items-center">
@@ -132,9 +280,7 @@ export const SupplierAccount = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">
-                Cuenta corriente {account.supplier.name}
-              </h1>
+              <h1 className="fs-5 my-0">Cuenta corriente {account.supplier}</h1>
             </div>
             <Button size="sm" variant="success" onClick={handleCreate}>
               Nuevo movimiento
@@ -143,110 +289,44 @@ export const SupplierAccount = () => {
 
           <hr />
 
-          <span>
-            <b>Moneda:</b> {account.currency.name} ({account.currency.symbol})
-          </span>
+          <Row>
+            <Col md={4}>
+              <p>
+                <strong>Proveedor:</strong> {account.supplier}
+              </p>
+            </Col>
+            <Col md={4}>
+              <p className="text-center">
+                {account.balance < 0 && (
+                  <Badge className="fs-6" bg="danger">
+                    Saldo: {convertToMoney(account.balance)}
+                  </Badge>
+                )}
+                {account.balance == 0 && (
+                  <Badge className="fs-6" bg="secondary">
+                    Saldo: {convertToMoney(account.balance)}
+                  </Badge>
+                )}
+                {account.balance > 0 && (
+                  <Badge className="fs-6" bg="success">
+                    Saldo: {convertToMoney(account.balance)}
+                  </Badge>
+                )}
+              </p>
+            </Col>
+          </Row>
 
-          {account.balance < 0 && (
-            <span className="text-danger ms-4">
-              <b>Deuda con el proveedor:</b>{" "}
-              {account.currency.is_monetary && "$"}
-              {toMoney(account.balance * -1)}
-            </span>
-          )}
-
-          {account.balance == 0 && (
-            <span className="text-muted ms-4">
-              <b>La cuenta está al día (no registra deudas ni saldo a favor)</b>
-            </span>
-          )}
-
-          {account.balance > 0 && (
-            <span className="text-success ms-4">
-              <b>Saldo a favor con el proveedor:</b>{" "}
-              {account.currency.is_monetary && "$ "}
-              {toMoney(account.balance)}
-            </span>
-          )}
-
-          <Table
-            striped
-            bordered
-            hover
-            responsive
-            size="sm"
-            className="small mt-3"
-          >
-            <thead>
-              <tr className="text-center text-uppercase align-middle">
-                <th className="px-3">ID</th>
-                <th className="col-1">Registrado el</th>
-                <th className="col-1">Registrado por</th>
-                <th className="col-7">Descripción del movimiento</th>
-                <th className="col-1">Saldo anterior</th>
-                <th className="col-1">Monto</th>
-                <th className="col-1">Saldo posterior</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.length > 0 ? (
-                <>
-                  {transactions.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td className="text-center">{transaction.id}</td>
-                      <td className="text-center">
-                        {DayJsAdapter.toDayMonthYearHour(transaction.createdAt)}
-                      </td>
-
-                      <td className="text-center">{transaction.user.name}</td>
-
-                      <td>
-                        {transaction.description}
-                        {transaction.purchase_transaction && (
-                          <Button
-                            className="ms-2 p-0"
-                            variant="link"
-                            size="sm"
-                            onClick={() =>
-                              handleRedirectPurchase(
-                                transaction.purchase_transaction.id_purchase
-                              )
-                            }
-                          >
-                            <small>Ver compra</small>
-                          </Button>
-                        )}
-                      </td>
-                      <td className="text-end">
-                        <>
-                          {account.currency.is_monetary && "$ "}
-                          {toMoney(transaction.prev_balance)}
-                        </>
-                      </td>
-                      <td className="text-end">
-                        <>
-                          {account.currency.is_monetary && "$ "}
-                          {toMoney(transaction.amount)}
-                        </>
-                      </td>
-                      <td className="text-end">
-                        <>
-                          {account.currency.is_monetary && "$ "}
-                          {toMoney(transaction.post_balance)}
-                        </>
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                <tr>
-                  <td colSpan={7} className="text-center">
-                    No hay movimientos registrados
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+          <Datatable
+            title={`Listado de movimientos de cuenta corriente en ${
+              account.currency
+            } ${flags[account.symbol] || ""}`}
+            columns={columns as TableColumn<DataRow>[]}
+            data={state.data}
+            loading={state.loading}
+            totalRows={state.totalRows}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+            handlePageChange={handlePageChange}
+          />
 
           <Modal show={isModalOpen} onHide={() => handleClose()}>
             <div className="p-3">

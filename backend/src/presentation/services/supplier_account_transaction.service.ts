@@ -1,4 +1,4 @@
-import { CustomError, DelInDto, TransactionDto } from "../../domain";
+import { CustomError, PaginationDto, SupplierAccountTransactionEntity, TransactionDto } from "../../domain";
 import { SupplierAccountTransaction } from "../../database/mysql/models";
 import { SupplierAccountService } from "./supplier_account.service";
 
@@ -25,14 +25,32 @@ interface DataInterface {
     id_user: number;
 }
 
-interface MovementInterface {
-    id_supplier_account: number;
-    type: string;
-    description: string;
-    amount: number;
-}
-
 export class SupplierAccountTransactionService {
+
+    // * GET TRANSACTIONS BY ACCOUNT (PAGINATED) *
+    // Obtiene las transacciones de una cuenta corriente paginadas
+    public async getTransactionsByAccountPaginated(paginationDto: PaginationDto, id: number) {
+        try {
+            const { page, limit } = paginationDto;
+
+            const transactions = await SupplierAccountTransaction.findAndCountAll({
+                where: { id_supplier_account: id },
+                include: [
+                    { association: 'user', attributes: ['name'] },
+                    { association: 'purchase_transaction' }
+                ],
+                order: [['createdAt', 'DESC']],
+                offset: (page - 1) * limit,
+                limit: limit,
+            });
+
+            const items = transactions.rows.map(item => SupplierAccountTransactionEntity.fromObject(item));
+
+            return { items: items, total_items: transactions.count };
+        } catch (error: any) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
 
     // * NEW_PURCHASE *
     // El monto de la compra incrementa la deuda con el proveedor (númerico negativo)
@@ -63,7 +81,7 @@ export class SupplierAccountTransactionService {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
                 type: 'DEL_PURCHASE',
-                description: 'COMPRA N° ' + data.id_purchase + ' ANULADA',
+                description: 'ANULACIÓN DE COMPRA N° ' + data.id_purchase,
                 prev_balance: data.prev_balance,
                 amount: data.amount,
                 post_balance: data.post_balance,

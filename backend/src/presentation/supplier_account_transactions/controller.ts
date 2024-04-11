@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, NewInDto, DelInDto, LoggedUserIdDto, TransactionDto } from "../../domain";
+import { CustomError, NewInDto, DelInDto, LoggedUserIdDto, TransactionDto, PaginationDto } from "../../domain";
 import { SupplierAccountTransactionService } from '../services/supplier_account_transaction.service';
 
 export class SupplierAccountTransactionController {
@@ -15,6 +15,23 @@ export class SupplierAccountTransactionController {
     }
  
     // Métodos de la clase
+    getTransactionsByAccountPaginated = async (req: Request, res: Response) => {
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        const id_supplier_account = parseInt(req.params.id_supplier_account);
+        if (!id_supplier_account) return res.status(400).json({ message: 'Missing id_supplier_account' });
+
+        this.service.getTransactionsByAccountPaginated(paginationDto!, id_supplier_account)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     addNewMovement = async (req: Request, res: Response) => {
         try {
             for (let key in req.body) {

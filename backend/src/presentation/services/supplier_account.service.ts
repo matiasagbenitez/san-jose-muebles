@@ -1,7 +1,6 @@
-import { SupplierAccount, SupplierAccountTransaction } from "../../database/mysql/models";
-import { CustomError, SupplierAccountDto, SupplierAccountEntity } from "../../domain";
+import { SupplierAccount } from "../../database/mysql/models";
+import { CustomError, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountEntity } from "../../domain";
 import { SupplierService } from "./supplier.service";
-import { SupplierAccountTransactionService } from "./supplier_account_transaction.service";
 
 export class SupplierAccountService {
 
@@ -19,7 +18,7 @@ export class SupplierAccountService {
         try {
             const account = await this.getSupplierAccountById(id);
             if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
-            
+
             const updated = await account.update({ balance: balance });
             if (!updated) throw CustomError.internalServerError('¡Error al actualizar el saldo de la cuenta corriente!');
 
@@ -29,54 +28,19 @@ export class SupplierAccountService {
         }
     }
 
-    public async getAccountTransactionsById(id: number) {
+    public async getAccountDataById(id: number) {
         try {
             const account = await SupplierAccount.findByPk(id, {
                 include: [
                     { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
                     { association: 'supplier', attributes: ['name'] }
-                ],
-                attributes: { exclude: ['id_currency', 'createdAt', 'updatedAt'] }
+                ]
             });
             if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
 
-            // const transactions = await SupplierAccount.findByPk(id, {
-            //     include: [
-            //         {
-            //             association: 'transactions',
-            //             include: [
-            //                 {
-            //                     association: 'user',
-            //                     attributes: ['name'],
-            //                 },
-            //                 {
-            //                     association: 'purchase_transaction',
-            //                     attributes: ['id_purchase'],
-            //                 },  
-            //             ],
-            //             order: [['createdAt', 'ASC']],
-            //         }
-            //     ],
-            // });
+            const item = SupplierAccountDataEntity.fromObject(account);
+            return { account: item };
 
-            const transactions = await SupplierAccountTransaction.findAll({
-                where: { id_supplier_account: id },
-                include: [
-                    {
-                        association: 'user',
-                        attributes: ['name'],
-                    },
-                    {
-                        association: 'purchase_transaction',
-                        attributes: ['id_purchase'],
-                    },
-                ],
-                order: [['createdAt', 'DESC']],
-            });
-
-            // console.log(transactions);
-
-            return { account, transactions };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

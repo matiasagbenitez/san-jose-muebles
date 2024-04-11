@@ -42,4 +42,4 @@ export * from './entities/supplier_account';
 
 // SUPPLIER ACCOUNT TRANSACTIONS
 export * from './dtos/supplier_account_transaction';
-// export * from './entities/supplier_account_transaction';
+export * from './entities/supplier_account_transactions';
