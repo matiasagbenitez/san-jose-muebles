@@ -10,6 +10,7 @@ export class SupplierAccountRoutes {
 
         const controller = new SupplierAccountController();
 
+        router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/supplier/:id_supplier', [AuthMiddleware.validateJWT], controller.getBySupplier);
         router.get('/:id_supplier_account', [AuthMiddleware.validateJWT], controller.getDataById);
 

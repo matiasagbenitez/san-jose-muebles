@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, SupplierAccountDto } from "../../domain";
+import { CustomError, PaginationDto, SupplierAccountDto } from "../../domain";
 import { SupplierAccountService } from '../services/supplier_account.service';
 
 export class SupplierAccountController {
@@ -15,6 +15,26 @@ export class SupplierAccountController {
     }
 
     // Métodos de la clase
+    getAllPaginated = async (req: Request, res: Response) => {
+
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        let filters = {};
+        if (req.query.balance) filters = { ...filters, balance: req.query.balance };
+        if (req.query.id_currency) filters = { ...filters, id_currency: req.query.id_currency };
+        if (req.query.id_supplier) filters = { ...filters, id_supplier: req.query.id_supplier };
+
+        this.service.getSuppliersAccountsPaginated(paginationDto!, filters)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getBySupplier = async (req: Request, res: Response) => {
         const id_supplier = parseInt(req.params.id_supplier);
         if (!id_supplier) return res.status(400).json({ message: 'Missing id_supplier' });

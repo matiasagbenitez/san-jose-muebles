@@ -18,7 +18,7 @@ export const SupplierOptions = ({
   };
 
   const redirectAccounts = () => {
-    navigate(`/proveedores/${id}/cuentas-corrientes`);
+    navigate(`/proveedores/${id}/cuentas-proveedores`);
   };
 
   return (

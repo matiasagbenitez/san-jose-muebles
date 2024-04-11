@@ -20,14 +20,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem component={<Link to="/" />} title="Inicio">
           Inicio
         </MenuItem>
-        <MenuItem
-          component={<Link to="/proveedores" />}
-          title="Proveedores"
-          style={{ height: "45px" }}
-        >
-          <i className="bi bi-truck me-3 fs-6"></i>
-          Proveedores
-        </MenuItem>
+
         <MenuItem
           component={<Link to="/productos" />}
           title="Productos"
@@ -36,7 +29,30 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <i className="bi bi-box-seam me-3 fs-6"></i>
           Productos
         </MenuItem>
-      
+
+        <SubMenu
+          prefix={
+            <>
+              <i className="bi bi-truck me-3 fs-6"></i>Proveedores
+            </>
+          }
+          style={{ height: "45px" }}
+        >
+          <MenuItem
+            component={<Link to="/proveedores" />}
+            title="Listado de proveedores"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Listado de proveedores</small>
+          </MenuItem>
+          <MenuItem
+            component={<Link to="/cuentas-proveedores" />}
+            title="Listado de cuentas corrientes"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Cuentas corrientes</small>
+          </MenuItem>
+        </SubMenu>
 
         <SubMenu
           prefix={
@@ -60,9 +76,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           >
             <small>Registrar nueva compra</small>
           </MenuItem>
-        
         </SubMenu>
-
 
         <MenuItem
           component={<Link to="/parametros" />}
@@ -72,7 +86,6 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <i className="bi bi-gear-wide-connected me-3 fs-6"></i>
           Parámetros
         </MenuItem>
-
       </Menu>
     </Sidebar>
   );

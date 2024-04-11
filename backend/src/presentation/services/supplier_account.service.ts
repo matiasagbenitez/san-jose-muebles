@@ -1,8 +1,41 @@
+import { Op } from "sequelize";
 import { SupplierAccount } from "../../database/mysql/models";
-import { CustomError, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountEntity } from "../../domain";
+import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountEntity, SupplierAccountListEntity } from "../../domain";
 import { SupplierService } from "./supplier.service";
 
 export class SupplierAccountService {
+
+    public async getSuppliersAccountsPaginated(paginationDto: PaginationDto, filters: any) {
+        const { page, limit } = paginationDto;
+
+        // FILTERS
+        let where = {};
+        if (filters.balance) {
+            if (filters.balance === 'positive') where = { ...where, balance: { [Op.gt]: 0 } };
+            if (filters.balance === 'negative') where = { ...where, balance: { [Op.lt]: 0 } };
+            if (filters.balance === 'zero') where = { ...where, balance: 0 };
+        }
+        if (filters.id_currency) where = { ...where, id_currency: filters.id_currency };
+        if (filters.id_supplier) where = { ...where, id_supplier: filters.id_supplier };
+
+        const [suppliersAccounts, total] = await Promise.all([
+            SupplierAccount.findAll({
+                where,
+                include: [
+                    { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
+                    { association: 'supplier', attributes: ['name'] }
+                ],
+                order: [['updatedAt', 'DESC']],
+                limit,
+                offset: (page - 1) * limit,
+            }),
+            SupplierAccount.count({ where })
+        ]);
+
+        const items = suppliersAccounts.map(item => SupplierAccountListEntity.fromObject(item));
+        return { items, total_items: total};
+    }
+
 
     public async getSupplierAccountById(id: number) {
         try {
