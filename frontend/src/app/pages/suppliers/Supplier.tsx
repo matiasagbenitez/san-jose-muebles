@@ -84,7 +84,8 @@ export const Supplier = () => {
                   <i className="bi bi-arrow-left me-2"></i>
                   Atrás
                 </Button>
-                <h1 className="fs-5 my-0">Proveedor #{supplier.id}: {supplier.name}</h1>
+                {/* <h1 className="fs-5 my-0">Proveedor #{supplier.id}: {supplier.name}</h1> */}
+                <h1 className="fs-5 my-0">{supplier.name}</h1>
               </div>
               <SupplierInfo supplier={supplier} />
             </Col>

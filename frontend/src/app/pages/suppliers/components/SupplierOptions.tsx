@@ -21,6 +21,10 @@ export const SupplierOptions = ({
     navigate(`/proveedores/${id}/cuentas-proveedores`);
   };
 
+  const redirectPurchases = () => {
+    navigate(`/proveedores/${id}/compras`);
+  };
+
   return (
     <div>
       <h2 className="fs-6 mt-3">Menú de opciones</h2>
@@ -40,6 +44,14 @@ export const SupplierOptions = ({
         >
           <i className="bi bi-wallet2 me-2 fs-6"></i>
           Gestionar cuentas corrientes
+        </button>
+        <button
+          className="list-group-item list-group-item-action py-1"
+          title="Ver compras realizadas al proveedor"
+          onClick={redirectPurchases}
+        >
+          <i className="bi bi-cart me-2 fs-6"></i>
+          Ver compras realizadas al proveedor
         </button>
         <button
           className="list-group-item list-group-item-action py-1"

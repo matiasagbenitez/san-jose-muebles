@@ -61,6 +61,24 @@ export class PurchaseController {
             });
     }
 
+    getPurchasesBySupplierId = async (req: Request, res: Response) => {
+        const id_supplier = req.params.id_supplier;
+        if (!id_supplier) return res.status(400).json({ message: 'Missing id_supplier' });
+
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        this.purchaseService.getPurchasesBySupplierId(paginationDto!, parseInt(id_supplier))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+
+    }
+
     create = async (req: Request, res: Response) => {
 
         const [error, createDto] = NewPurchaseDto.create(req.body);

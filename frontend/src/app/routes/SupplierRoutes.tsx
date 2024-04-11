@@ -7,6 +7,7 @@ import {
   Suppliers,
   SupplierBankAccounts,
   SupplierAccounts,
+  SupplierPurchases,
 } from "../pages/suppliers";
 
 const SuppliersRoutes = () => {
@@ -20,6 +21,7 @@ const SuppliersRoutes = () => {
           <Route path="/:id" element={<Supplier />} />
           <Route path="/:id/cuentas-bancarias" element={<SupplierBankAccounts />} />
           <Route path="/:id/cuentas-proveedores" element={<SupplierAccounts />} />
+          <Route path="/:id/compras" element={<SupplierPurchases />} />
         </>
       )}
 

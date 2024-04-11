@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Purchase, SupplierAccountTransaction, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto } from "../../domain";
+import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto, PurchasesBySupplierEntity } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
@@ -113,6 +113,21 @@ export class PurchaseService {
         if (!purchase) throw CustomError.notFound('Compra no encontrada');
         const { ...entity } = DetailPurchaseEntity.fromObject(purchase);
         return { purchase: entity };
+    }
+
+    public async getPurchasesBySupplierId(paginationDto: PaginationDto, id_supplier: number) {
+        const { page, limit } = paginationDto;
+
+        const purchases = await Purchase.findAndCountAll({
+            where: { id_supplier },
+            include: ['supplier', 'currency', 'creator'],
+            offset: (page - 1) * limit,
+            limit,
+            order: [['date', 'DESC'], ['createdAt', 'DESC']],
+        });
+
+        const items = purchases.rows.map(item => PurchasesBySupplierEntity.fromObject(item));
+        return { items, total_items: purchases.count }
     }
 
     public async createPurchase(form: NewPurchaseDto, id_user: number) {

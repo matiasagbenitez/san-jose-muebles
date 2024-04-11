@@ -18,31 +18,31 @@ export const SupplierInfo = ({ supplier }: Props) => {
       <Table size="sm" className="small" striped bordered responsive>
         <tbody>
           <tr>
-            <th scope="row">Proveedor</th>
+            <th scope="row" className="px-2">Proveedor</th>
             <td>{supplier.name}</td>
           </tr>
           <tr>
-            <th scope="row">DNI/CUIT</th>
+            <th scope="row" className="px-2">DNI/CUIT</th>
             <td>{supplier.dni_cuit}</td>
           </tr>
           <tr>
-            <th scope="row">Teléfono</th>
+            <th scope="row" className="px-2">Teléfono</th>
             <td>{supplier.phone}</td>
           </tr>
           <tr>
-            <th scope="row">Email</th>
+            <th scope="row" className="px-2">Email</th>
             <td>{supplier.email}</td>
           </tr>
           <tr>
-            <th scope="row">Dirección</th>
+            <th scope="row" className="px-2">Dirección</th>
             <td>{supplier.address}</td>
           </tr>
           <tr>
-            <th scope="row">Localidad</th>
+            <th scope="row" className="px-2">Localidad</th>
             <td>{supplier.locality}</td>
           </tr>
           <tr>
-            <th scope="row">Anotaciones</th>
+            <th scope="row" className="px-2">Anotaciones</th>
             <td>
               <div className="text-break">
                 <small>{supplier.annotations}</small>

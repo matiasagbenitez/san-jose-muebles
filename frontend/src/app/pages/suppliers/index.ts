@@ -3,3 +3,4 @@ export * from './Supplier';
 export * from './components';
 export * from './SupplierBankAccounts';
 export * from './SupplierAccounts';
+export * from './SupplierPurchases';
