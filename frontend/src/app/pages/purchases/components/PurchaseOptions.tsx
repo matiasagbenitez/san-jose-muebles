@@ -6,18 +6,24 @@ export const PurchaseOptions = ({
   nullifyPurchase,
   isNullified,
   updatePurchaseFullStock,
+  accountId,
 }: {
   id: number;
   isFullyStocked: boolean;
   nullifyPurchase: () => void;
   isNullified: boolean;
   updatePurchaseFullStock: () => void;
+  accountId: number;
 }) => {
   const navigate = useNavigate();
 
   const handleRedirectReceptions = () => {
     navigate(`/compras/${id}/recepciones`);
   };
+
+  const handleRedirectAccount = () => {
+    navigate(`/cuentas-proveedores/${accountId}`);
+  }
 
   return (
     <div className="mb-4">
@@ -39,6 +45,14 @@ export const PurchaseOptions = ({
         >
           <i className="bi bi-search me-2 fs-56"></i>
           Ver registros de recepción de productos
+        </button>
+        <button
+          className="list-group-item list-group-item-action py-1"
+          title="Ver cuenta corriente del proveedor"
+          onClick={handleRedirectAccount}
+        >
+          <i className="bi bi-wallet2 me-2 fs-56"></i>
+          Ir a cuenta corriente del proveedor
         </button>
         <button
           className="list-group-item list-group-item-action py-1"

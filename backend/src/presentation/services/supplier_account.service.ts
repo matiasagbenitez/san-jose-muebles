@@ -124,4 +124,9 @@ export class SupplierAccountService {
         return account[0];
     }
 
+    public async findAccount(id_supplier: number, id_currency: number) {
+        const account = await SupplierAccount.findOne({ where: { id_supplier, id_currency } });
+        return account;
+    }
+
 }

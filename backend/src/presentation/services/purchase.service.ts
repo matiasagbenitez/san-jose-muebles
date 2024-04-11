@@ -69,9 +69,6 @@ export class PurchaseService {
 
     public async getPurchase(id: number) {
         const purchase = await Purchase.findByPk(id, {
-            attributes: {
-                exclude: ['id_supplier', 'id_currency', 'created_by', 'nullified_by'],
-            },
             include: [{
                 association: 'items',
                 attributes: ['id', 'quantity', 'price', 'subtotal', 'actual_stocked', 'fully_stocked'],
@@ -107,12 +104,15 @@ export class PurchaseService {
                 association: 'nullifier',
                 attributes: ['name']
             }],
-
         });
-
         if (!purchase) throw CustomError.notFound('Compra no encontrada');
+
+        const supplierAccountService = new SupplierAccountService();
+        const supplierAccount = await supplierAccountService.findAccount(purchase.id_supplier, purchase.id_currency);
+        if (!supplierAccount) throw CustomError.notFound('Cuenta corriente no encontrada');
+
         const { ...entity } = DetailPurchaseEntity.fromObject(purchase);
-        return { purchase: entity };
+        return { purchase: entity, account: supplierAccount.id };
     }
 
     public async getPurchasesBySupplierId(paginationDto: PaginationDto, id_supplier: number) {

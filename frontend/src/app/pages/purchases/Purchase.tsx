@@ -26,6 +26,7 @@ export const Purchase = () => {
   const [items, setItems] = useState<ItemInterface[]>();
   const [totals, setTotals] = useState();
   const [nullifiedData, setNullifiedData] = useState();
+  const [accountId, setAccountId] = useState<number>();
   const [showModal, setShowModal] = useState(false);
 
   const fetch = async () => {
@@ -39,6 +40,7 @@ export const Purchase = () => {
       setItems(data.purchase.items);
       setTotals(data.purchase.totals);
       setNullifiedData(data.purchase.nullifiedData);
+      setAccountId(data.account);
       setLoading(false);
     } catch (error) {
       return navigate("/compras");
@@ -130,7 +132,7 @@ export const Purchase = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {purchaseId && data && items && totals && nullifiedData && !loading && (
+      {purchaseId && data && items && totals && nullifiedData && !loading && accountId && (
         <>
           <Row>
             {isNullified && (
@@ -153,6 +155,7 @@ export const Purchase = () => {
                 isNullified={isNullified}
                 nullifyPurchase={nullifyPurchase}
                 updatePurchaseFullStock={updatePurchaseFullStock}
+                accountId={accountId}
               />
             </Col>
             <Col xs={12}>

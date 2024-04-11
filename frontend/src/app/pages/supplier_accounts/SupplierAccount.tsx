@@ -274,7 +274,7 @@ export const SupplierAccount = () => {
               <Button
                 variant="light border text-muted"
                 size="sm"
-                onClick={() => navigate(`/proveedores/${id}`)}
+                onClick={() => navigate(-1)}
                 title="Volver al detalle del proveedor"
               >
                 <i className="bi bi-arrow-left me-2"></i>
