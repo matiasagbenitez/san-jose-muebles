@@ -136,22 +136,24 @@ export class PurchaseService {
             const purchaseItemService = new PurchaseItemService();
             purchaseItemService.createItems(purchase.id, id_currency, products_list);
 
-            // CALCULAR BALANCE ACTUAL DE LA CUENTA CORRIENTE
-            const balance: number = Number(supplierAccount.balance) - Number(purchase.total);
+            // CALCULAR BALANCES
+            const prev_balance = Number(supplierAccount.balance);
+            const post_balance: number = Number(supplierAccount.balance) - Number(purchase.total);
 
             // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
             const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            const { transaction } = await supplierAccountTransactionService.createInTransactionFromPurchase({
+            const { transaction } = await supplierAccountTransactionService.createTransactionNewPurchase({
                 id_supplier_account: supplierAccount.id,
                 id_purchase: purchase.id,
+                prev_balance,
                 amount: purchase.total,
-                balance: balance,
+                post_balance,
                 id_user,
             });
 
             // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
             await supplierAccount.update({
-                balance: balance
+                balance: post_balance
             });
 
             // CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
@@ -271,22 +273,24 @@ export class PurchaseService {
             const supplierAccountService = new SupplierAccountService();
             const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
 
-            //  CALCULAR BALANCE ACTUAL DE LA CUENTA CORRIENTE
-            const balance: number = Number(supplierAccount.balance) + Number(purchase.total);
+            //  CALCULAR BALANCES
+            const prev_balance = Number(supplierAccount.balance);
+            const post_balance: number = Number(supplierAccount.balance) + Number(purchase.total);
 
             // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
             const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            const { transaction } = await supplierAccountTransactionService.createOutTransactionFromPurchase({
+            const { transaction } = await supplierAccountTransactionService.createTransactionDelPurchase({
                 id_supplier_account: supplierAccount.id,
                 id_purchase: purchase.id,
+                prev_balance,
                 amount: purchase.total,
-                balance: balance,
+                post_balance,
                 id_user,
             });
 
             // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
             await supplierAccount.update({
-                balance: balance
+                balance: post_balance
             });
 
             // CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE

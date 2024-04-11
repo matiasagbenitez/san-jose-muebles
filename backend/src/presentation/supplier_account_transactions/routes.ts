@@ -10,7 +10,7 @@ export class SupplierAccountTransactionRoutes {
 
         const controller = new SupplierAccountTransactionController();
 
-        router.get('/:id_supplier_account', [AuthMiddleware.validateJWT], controller.getByAccount);
+        router.post('/new-movement', [AuthMiddleware.validateJWT], controller.addNewMovement);
 
         return router;
     }

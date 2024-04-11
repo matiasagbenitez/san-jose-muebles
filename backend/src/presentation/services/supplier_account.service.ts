@@ -5,6 +5,30 @@ import { SupplierAccountTransactionService } from "./supplier_account_transactio
 
 export class SupplierAccountService {
 
+    public async getSupplierAccountById(id: number) {
+        try {
+            const account = await SupplierAccount.findByPk(id);
+            if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
+            return account;
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateSupplierAccountBalance(id: number, balance: number) {
+        try {
+            const account = await this.getSupplierAccountById(id);
+            if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
+            
+            const updated = await account.update({ balance: balance });
+            if (!updated) throw CustomError.internalServerError('¡Error al actualizar el saldo de la cuenta corriente!');
+
+            return { account: updated, message: '¡Saldo actualizado correctamente!' };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
     public async getAccountTransactionsById(id: number) {
         try {
             const account = await SupplierAccount.findByPk(id, {

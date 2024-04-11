@@ -3,11 +3,11 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class SupplierAccountTransaction extends Model {
     public id!: number;
     public id_supplier_account!: number;
-    public type!: 'NEW_PURCHASE' | 'X_PURCHASE' | 'NEW_IN' | 'NEW_CLIENT_PAYMENT' | 'X_CLIENT_PAYMENT' | 'NEW_OUT';
+    public type!: 'NEW_PURCHASE' | 'DEL_PURCHASE' | 'NEW_PAYMENT' | 'POS_ADJ' | 'NEG_ADJ' | 'NEW_CLIENT_PAYMENT' | 'DEL_CLIENT_PAYMENT';
     public description!: string;
-    public amount_in!: number;
-    public amount_out!: number;
-    public balance!: number;
+    public prev_balance!: number;
+    public amount!: number;
+    public post_balance!: number;
     public id_user!: number;
 
     public readonly createdAt!: Date;
@@ -27,23 +27,23 @@ export const initSupplierAccountTransactionModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             type: {
-                type: DataTypes.ENUM('NEW_PURCHASE', 'X_PURCHASE', 'NEW_IN', 'X_IN', 'NEW_CLIENT_PAYMENT', 'X_CLIENT_PAYMENT', 'NEW_OUT', 'X_OUT'),
+                type: DataTypes.ENUM('NEW_PURCHASE', 'DEL_PURCHASE', 'NEW_PAYMENT', 'POS_ADJ', 'NEG_ADJ', 'NEW_CLIENT_PAYMENT', 'DEL_CLIENT_PAYMENT'),
                 allowNull: false,
             },
             description: {
                 type: DataTypes.STRING(200),
             },
-            amount_in: {
+            prev_balance: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
-            amount_out: {
+            amount: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,
             },
-            balance: {
+            post_balance: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
                 defaultValue: 0,

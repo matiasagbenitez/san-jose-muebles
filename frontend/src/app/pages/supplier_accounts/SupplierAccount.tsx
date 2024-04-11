@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
-import { Button, Table } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Button, Table, Modal, Form, InputGroup } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
 import { DayJsAdapter, toMoney } from "../../../helpers";
+
+import { NumericFormat } from "react-number-format";
+import { SweetAlert2 } from "../../utils";
 
 interface AccountInterface {
   id: number;
@@ -21,38 +24,42 @@ interface AccountInterface {
 }
 
 interface TransactionInterface {
-  amount_in: number;
-  amount_out: number;
+  id: number;
+  createdAt: Date;
+  user: { name: string };
+  description: string;
+  purchase_transaction: { id_purchase: number };
   type:
     | "NEW_PURCHASE"
-    | "X_PURCHASE"
-    | "NEW_IN"
-    | "X_IN"
+    | "DEL_PURCHASE"
+    | "NEW_PAYMENT"
+    | "POS_ADJ"
+    | "NEG_ADJ"
     | "NEW_CLIENT_PAYMENT"
-    | "X_CLIENT_PAYMENT"
-    | "NEW_OUT"
-    | "X_OUT";
-  balance: number;
-  createdAt: Date;
-  description: string;
-  id: number;
-  purchase_transaction: {
-    id_purchase: number;
-  };
-  user: {
-    name: string;
-  };
+    | "DEL_CLIENT_PAYMENT";
+  prev_balance: number;
+  amount: number;
+  post_balance: number;
 }
+
+const initialForm = {
+  type: "",
+  description: "",
+  amount: 0,
+};
 
 export const SupplierAccount = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<AccountInterface | null>(null);
   const [transactions, setTransactions] = useState<
     TransactionInterface[] | null
   >();
+
+  const [formData, setFormData] = useState(initialForm);
 
   const fetch = async () => {
     try {
@@ -74,11 +81,39 @@ export const SupplierAccount = () => {
   }, []);
 
   const handleCreate = () => {
-    navigate(`/proveedores/${id}/cuenta-corriente/nuevo`);
+    setIsModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+    setFormData(initialForm);
   };
 
   const handleRedirectPurchase = (id_purchase: number) => {
     navigate(`/compras/${id_purchase}`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const confirmation = await SweetAlert2.confirm(
+        "¿Está seguro de registrar el movimiento?"
+      );
+      if (!confirmation.isConfirmed) return;
+      setLoading(true);
+      const { data } = await apiSJM.post(
+        "/supplier_account_transactions/new-movement",
+        { ...formData, id_supplier_account: id }
+      );
+      console.log(data);
+      fetch();
+      setIsModalOpen(false);
+      setLoading(false);
+    } catch (error: any) {
+      console.error(error);
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
   };
 
   return (
@@ -108,20 +143,49 @@ export const SupplierAccount = () => {
 
           <hr />
 
-          <div>
-            Moneda: {account.currency.name} ({account.currency.symbol})
-          </div>
+          <span>
+            <b>Moneda:</b> {account.currency.name} ({account.currency.symbol})
+          </span>
 
-          <Table striped bordered hover size="sm" className="small mt-3">
+          {account.balance < 0 && (
+            <span className="text-danger ms-4">
+              <b>Deuda con el proveedor:</b>{" "}
+              {account.currency.is_monetary && "$"}
+              {toMoney(account.balance * -1)}
+            </span>
+          )}
+
+          {account.balance == 0 && (
+            <span className="text-muted ms-4">
+              <b>La cuenta está al día (no registra deudas ni saldo a favor)</b>
+            </span>
+          )}
+
+          {account.balance > 0 && (
+            <span className="text-success ms-4">
+              <b>Saldo a favor con el proveedor:</b>{" "}
+              {account.currency.is_monetary && "$ "}
+              {toMoney(account.balance)}
+            </span>
+          )}
+
+          <Table
+            striped
+            bordered
+            hover
+            responsive
+            size="sm"
+            className="small mt-3"
+          >
             <thead>
               <tr className="text-center text-uppercase align-middle">
                 <th className="px-3">ID</th>
                 <th className="col-1">Registrado el</th>
                 <th className="col-1">Registrado por</th>
-                <th className="col-7">Descripción de la transacción</th>
-                <th className="col-1">A cuenta</th>
-                <th className="col-1">Pago</th>
-                <th className="col-1">Saldo</th>
+                <th className="col-7">Descripción del movimiento</th>
+                <th className="col-1">Saldo anterior</th>
+                <th className="col-1">Monto</th>
+                <th className="col-1">Saldo posterior</th>
               </tr>
             </thead>
             <tbody>
@@ -154,26 +218,22 @@ export const SupplierAccount = () => {
                         )}
                       </td>
                       <td className="text-end">
-                        {(transaction.amount_in > 0 ||
-                          transaction.type === "X_PURCHASE") && (
-                          <>
-                            {account.currency.is_monetary && "$ "}
-                            {toMoney(transaction.amount_in)}
-                          </>
-                        )}
+                        <>
+                          {account.currency.is_monetary && "$ "}
+                          {toMoney(transaction.prev_balance)}
+                        </>
                       </td>
                       <td className="text-end">
-                        {(transaction.amount_out > 0 ||
-                          transaction.type === "X_CLIENT_PAYMENT") && (
-                          <>
-                            {account.currency.is_monetary && "$ "}
-                            {toMoney(transaction.amount_out)}
-                          </>
-                        )}
+                        <>
+                          {account.currency.is_monetary && "$ "}
+                          {toMoney(transaction.amount)}
+                        </>
                       </td>
-                      <td className="text-end fw-bold">
-                        {account.currency.is_monetary && "$ "}
-                        {toMoney(transaction.balance)}
+                      <td className="text-end">
+                        <>
+                          {account.currency.is_monetary && "$ "}
+                          {toMoney(transaction.post_balance)}
+                        </>
                       </td>
                     </tr>
                   ))}
@@ -187,6 +247,84 @@ export const SupplierAccount = () => {
               )}
             </tbody>
           </Table>
+
+          <Modal show={isModalOpen} onHide={() => handleClose()}>
+            <div className="p-3">
+              <h5>Nuevo movimiento</h5>
+              <hr />
+
+              <Form onSubmit={handleSubmit}>
+                {/* TIPO DE MOVIMIENTO */}
+                <InputGroup className="mb-3" size="sm">
+                  <InputGroup.Text>Tipo de movimiento</InputGroup.Text>
+                  <Form.Select
+                    required
+                    name="type"
+                    onChange={(e: any) =>
+                      setFormData({ ...formData, type: e.target.value })
+                    }
+                  >
+                    <option value="">Seleccione una opción</option>
+                    <option value="NEW_PAYMENT">Pago a proveedor</option>
+                    <option value="POS_ADJ">
+                      Ajuste a favor (disminuye deuda c/ proveedor)
+                    </option>
+                    <option value="NEG_ADJ">
+                      Ajuste en contra (aumenta deuda c/ proveedor)
+                    </option>
+                  </Form.Select>
+                </InputGroup>
+
+                {/* DESCRIPCIÓN */}
+                <InputGroup className="mb-3" size="sm">
+                  <InputGroup.Text>Descripción</InputGroup.Text>
+                  <Form.Control
+                    as="textarea"
+                    rows={1}
+                    required
+                    onChange={(e: any) =>
+                      setFormData({
+                        ...formData,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </InputGroup>
+
+                {/* MONTO */}
+                <InputGroup className="mb-3" size="sm">
+                  <InputGroup.Text>Monto movimiento</InputGroup.Text>
+                  <NumericFormat
+                    prefix="$"
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    decimalScale={2}
+                    fixedDecimalScale
+                    className="text-end form-control"
+                    value={formData.amount}
+                    required
+                    onValueChange={(values) => {
+                      const { floatValue } = values;
+                      setFormData({ ...formData, amount: floatValue || 0 });
+                    }}
+                  />
+                </InputGroup>
+
+                <div className="d-flex gap-2 justify-content-end">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Cerrar
+                  </Button>
+                  <Button size="sm" variant="primary" type="submit">
+                    Registrar movimiento
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          </Modal>
         </>
       )}
     </>
