@@ -86,15 +86,15 @@ export const SuppliersAccounts = () => {
       center: true,
     },
     {
-      name: "PROVEEDOR",
-      selector: (row: DataRow) => row.supplier,
+      name: "CUENTA CORRIENTE",
+      selector: (row: DataRow) => row.supplier + " - CUENTA CORRIENTE EN " + row.currency,
       wrap: true,
     },
-    {
-      name: "MONEDA",
-      selector: (row: DataRow) => row.currency,
-      wrap: true,
-    },
+    // {
+    //   name: "MONEDA",
+    //   selector: (row: DataRow) => row.currency,
+    //   wrap: true,
+    // },
     {
       name: "SALDO ACTUAL",
       selector: (row: DataRow) => row.balance,

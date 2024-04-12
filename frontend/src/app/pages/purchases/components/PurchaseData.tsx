@@ -21,11 +21,11 @@ export const PurchaseData = ({ data }: { data: ResumeInterface }) => {
             <th colSpan={2}>Resumen de la compra</th>
           </tr>
           <tr>
-            <th scope="row">Fecha compra</th>
+            <th scope="row" className="text-uppercase">Fecha compra</th>
             <td className="text-end">{DayJsAdapter.toDayMonthYear(date)}</td>
           </tr>
           <tr>
-            <th scope="row">Proveedor</th>
+            <th scope="row" className="text-uppercase">Proveedor</th>
             <td className="text-end">
               <a href={`/proveedores/${supplier.id}`} target="_blank" title="Ver proveedor">
                 <i className="bi bi-box-arrow-up-right me-2"></i>
@@ -34,11 +34,11 @@ export const PurchaseData = ({ data }: { data: ResumeInterface }) => {
             </td>
           </tr>
           <tr>
-            <th scope="row">Moneda compra</th>
+            <th scope="row" className="text-uppercase">Moneda compra</th>
             <td className="text-end">{currency}</td>
           </tr>
           <tr>
-            <th scope="row">Importe compra</th>
+            <th scope="row" className="text-uppercase">Importe compra</th>
             <td className="text-end">
               {is_monetary && "$"}
               {toMoney(total)}

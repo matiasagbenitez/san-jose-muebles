@@ -63,7 +63,7 @@ export const Product = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">Producto #{productId} - {product.name}</h1>
+              <h1 className="fs-5 my-0">Producto: {product.name}</h1>
             </div>
             <Col lg={8}>
               <ProductInfo product={product} />

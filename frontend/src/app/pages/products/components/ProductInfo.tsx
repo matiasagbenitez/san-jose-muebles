@@ -1,127 +1,170 @@
-import { Table } from "react-bootstrap";
+import { Tab, Table } from "react-bootstrap";
 import { toMoney } from "../../../../helpers";
 
 export const ProductInfo = ({ product }: any) => {
-  const low_stock = product.actual_stock <= product.min_stock;
+  const low_stock =
+    product.actual_stock + product.inc_stock <= product.min_stock;
   const bg_color = "rgba(255, 0, 0, 0.2)";
+
   return (
     <>
       <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
+        <tbody className="text-uppercase">
           <tr className="text-center fw-bold text-uppercase">
             <td colSpan={2}>Información del producto</td>
           </tr>
           <tr>
-            <th scope="row">Categoría</th>
+            <th scope="row" className="px-2 col-2">
+              Categoría
+            </th>
             <td>{product.category}</td>
           </tr>
           <tr>
-            <th scope="row">Marca</th>
+            <th scope="row" className="px-2">
+              Marca
+            </th>
             <td>{product.brand}</td>
           </tr>
           <tr>
-            <th scope="row" className="col-3">
+            <th scope="row" className="px-2">
               Nombre
             </th>
             <td>{product.name}</td>
           </tr>
           <tr>
-            <th scope="row">Código</th>
+            <th scope="row" className="px-2">
+              Código
+            </th>
             <td>{product.code}</td>
           </tr>
           <tr>
-            <th scope="row">Descripción</th>
+            <th scope="row" className="px-2">
+              Descripción
+            </th>
             <td>
               <div className="text-break">
                 <small>{product.description}</small>
               </div>
             </td>
           </tr>
+        </tbody>
+      </Table>
+
+      {/* INFORMACIÓN DE STOCK */}
+      <Table size="sm" className="small" striped bordered responsive>
+        <tbody>
           <tr className="text-center fw-bold text-uppercase">
-            <td colSpan={2}>Información de stock</td>
+            <td colSpan={12}>Información de stock</td>
           </tr>
-          <tr>
-            <th scope="row">Unidad</th>
-            <td>{product.unit}</td>
-          </tr>
-          <tr
-            title={
-              low_stock
-                ? `Nivel de stock por debajo del mínimo (${product.min_stock})`
-                : ""
-            }
-          >
-            <th
-              scope="row"
-              style={{
-                backgroundColor: low_stock ? bg_color : "transparent",
-                // color: low_stock ? "red" : "black",
-              }}
-            >
+
+          <tr className="text-center text-uppercase">
+            <th className="px-2 col-2">Unidad de medida</th>
+            <th className="px-2 col-2">
               Stock actual
+              <i
+                className="bi bi-info-circle text-muted ms-2"
+                title="Stock existente en la empresa"
+              ></i>
             </th>
-            <td
-              style={{
-                backgroundColor: low_stock ? bg_color : "transparent",
-                color: low_stock ? "red" : "black",
-                fontWeight: "bold",
-              }}
-            >
-              {product.actual_stock} {product.unit_symbol}
-              {low_stock ? (
-                <i className="bi bi-exclamation-triangle ms-2"></i>
-              ) : (
-                ""
-              )}
-            </td>
+            <th className="px-2 col-2">
+              Stock a recibir
+              <i
+                className="bi bi-info-circle text-muted ms-2"
+                title="Stock comprado pero aún no recibido"
+              ></i>
+            </th>
+            <th className="px-2 col-2">
+              Stock total
+              <i
+                className="bi bi-info-circle text-muted ms-2"
+                title="Stock actual más stock a recibir"
+              ></i>
+            </th>
+            <th className="px-2 col-2">
+              Stock mínimo
+              <i
+                className="bi bi-info-circle text-muted ms-2"
+                title="Stock mínimo deseado para el producto"
+              ></i>
+            </th>
+            <th className="px-2 col-2">
+              Stock ideal
+              <i
+                className="bi bi-info-circle text-muted ms-2"
+                title="Stock ideal deseado para el producto"
+              ></i>
+            </th>
           </tr>
-          <tr>
-            <th scope="row">Stock a recibir</th>
+          <tr className="text-center">
+            <td>
+              {product.unit} ({product.unit_symbol})
+            </td>
+            <td>
+              {product.actual_stock} {product.unit_symbol}
+            </td>
             <td>
               {product.inc_stock} {product.unit_symbol}
             </td>
-          </tr>
-          <tr>
-            <th scope="row">Stock total</th>
-            <td>
+            <td
+              className="fw-bold"
+              style={{ backgroundColor: low_stock ? bg_color : "" }}
+            >
               {product.actual_stock + product.inc_stock} {product.unit_symbol}
+              {low_stock && (
+                <i
+                  className="bi bi-exclamation-triangle-fill text-danger ms-2"
+                  title="Stock bajo (por debajo del mínimo)"
+                ></i>
+              )}
             </td>
-          </tr>
-          <tr>
-            <th scope="row">Stock mínimo</th>
             <td>
               {product.min_stock} {product.unit_symbol}
             </td>
-          </tr>
-          <tr>
-            <th scope="row">Stock ideal</th>
             <td>
               {product.ideal_stock} {product.unit_symbol}
             </td>
           </tr>
+        </tbody>
+      </Table>
+
+      {/* INFORMACIÓN DE COMPRA */}
+      <Table size="sm" className="small" striped bordered responsive>
+        <tbody>
           <tr className="text-center fw-bold text-uppercase">
-            <td colSpan={2}>Información de compra</td>
+            <td colSpan={8}>Información de compra</td>
           </tr>
-          <tr>
-            <th scope="row">Moneda de compra</th>
-            <td>
-              {product.currency_symbol} ({product.currency})
+
+          <tr className="text-center text-uppercase">
+            <th className="px-2 col-2" colSpan={1}>
+              Moneda compra
+            </th>
+            <th className="px-2 col-2" colSpan={1}>
+              Último precio
+            </th>
+            <th className="px-2 col-2" colSpan={1}>
+              Capital actual
+            </th>
+            <th className="px-2 col-2" colSpan={1}>
+              Capital total
+            </th>
+          </tr>
+          <tr className="text-center">
+            <td colSpan={1}>
+              {product.currency} ({product.currency_symbol})
             </td>
-          </tr>
-          <tr>
-            <th scope="row">Último precio pagado</th>
-            <td>
-              {product.currency_symbol}
-              {product.price_monetary && " $ "}
+            <td colSpan={1}>
+              {product.currency_symbol} {product.price_monetary && " $"}
               {toMoney(product.last_price)} x {product.unit}
             </td>
-          </tr>
-          <tr>
-            <th scope="row">Capital actual en fábrica</th>
-            <td>
-              {product.currency_symbol}
-              {product.price_monetary && " $ "}
+            <td colSpan={1}>
+              {product.currency_symbol} {product.price_monetary && " $"}
               {toMoney(product.stock_value)}
+            </td>
+            <td className="fw-bold" colSpan={1}>
+              {product.currency_symbol} {product.price_monetary && " $"}
+              {toMoney(
+                (product.actual_stock + product.inc_stock) * product.last_price
+              )}
             </td>
           </tr>
         </tbody>

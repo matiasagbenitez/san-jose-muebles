@@ -127,7 +127,7 @@ export const Suppliers = () => {
       />
 
       <Datatable
-        title="Proveedores"
+        title="Listado de proveedores"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}
         loading={state.loading}
