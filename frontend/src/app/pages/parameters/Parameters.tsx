@@ -1,57 +1,127 @@
 import { Col, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import './styles.css';
+import { useNavigate } from "react-router-dom";
+import "./styles.css";
 
 export const Parameters = () => {
+  const navigate = useNavigate();
   return (
     <div>
-        <h1 className="fs-5 fw-normal">Parámetros de la aplicación</h1>
-        <hr />
-        <Row className="m-0">
-            <Col xs={12} md={6} xl={4} className="px-0 mb-4">
-                <span className="fw-bold">
-                    <i className="bi bi-box-seam me-2"></i>
-                    Parámetros de productos
-                </span>
-                <ul className="mt-2">
-                    <li><Link to="/parametros/marcas" className="text-link">Marcas</Link></li>
-                    <li><Link to="/parametros/categorias" className="text-link">Categorias</Link></li>
-                    <li><Link to="/parametros/unidades-medida" className="text-link">Unidades de medida</Link></li>
-                </ul>
-            </Col>
-            <Col xs={12} md={6} xl={4} className="px-0 mb-4">
-                <span className="fw-bold">
-                    <i className="bi bi-kanban me-2"></i>
-                    Parámetros de proyectos
-                </span>
-                <ul className="mt-2">
-                    <li><Link to="/parametros/prioridades" className="text-link">Prioridades</Link></li>
-                    <li><Link to="/parametros/tipos-proyectos" className="text-link">Tipos de proyectos</Link></li>
-                </ul>
-            </Col>
-            <Col xs={12} md={6} xl={4} className="px-0 mb-4">
-                <span className="fw-bold">
-                    <i className="bi bi-globe-americas me-2"></i>
-                    Parámetros geográficos
-                </span>
-                <ul className="mt-2">
-                    <li><Link to="/parametros/paises" className="text-link">Países</Link></li>
-                    <li><Link to="/parametros/provincias" className="text-link">Provincias</Link></li>
-                    <li><Link to="/parametros/localidades" className="text-link">Localidades</Link></li>
-                </ul>
-            </Col>
-            <Col xs={12} md={6} xl={4} className="px-0 mb-4">
-                <span className="fw-bold">
-                    <i className="bi bi-cash-coin me-2"></i>
-                    Parámetros de finanzas
-                </span>
-                <ul className="mt-2">
-                    <li><Link to="/parametros/monedas" className="text-link">Monedas</Link></li>
-                    <li><Link to="/parametros/metodos-pago" className="text-link">Métodos de pago</Link></li>
-                    <li><Link to="/parametros/bancos" className="text-link">Bancos</Link></li>
-                </ul>
-            </Col>
-        </Row>
+      <h1 className="fs-5 fw-normal">Parámetros de la aplicación</h1>
+      <hr />
+
+      <Row className="m-0">
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Parámetros de productos</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar marcas"
+                onClick={() => navigate("/parametros/marcas")}
+            >
+              <i className="bi bi-tags me-2 fs-6"></i>
+              Gestionar marcas
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar categorías"
+                onClick={() => navigate("/parametros/categorias")}
+            >
+              <i className="bi bi-list me-2 fs-6"></i>
+              Gestionar categorías
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar unidades de medida"
+                onClick={() => navigate("/parametros/unidades-medida")}
+            >
+              <i className="bi bi-rulers me-2 fs-6"></i>
+              Gestionar unidades de medida
+            </button>
+          </div>
+        </Col>
+
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Parámetros de proyectos</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar prioridades"
+              onClick={() => navigate("/parametros/prioridades")}
+            >
+              <i className="bi bi-flag me-2 fs-6"></i>
+              Gestionar prioridades
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar tipos de proyectos"
+              onClick={() => navigate("/parametros/tipos-proyectos")}
+            >
+              <i className="bi bi-kanban me-2 fs-6"></i>
+              Gestionar tipos de proyectos
+            </button>
+          </div>
+        </Col>
+
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Parámetros geográficos</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar países"
+              onClick={() => navigate("/parametros/paises")}
+            >
+              <i className="bi bi-globe me-2 fs-6"></i>
+              Gestionar países
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar provincias"
+              onClick={() => navigate("/parametros/provincias")}
+            >
+              <i className="bi bi-map me-2 fs-6"></i>
+              Gestionar provincias
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar localidades"
+              onClick={() => navigate("/parametros/localidades")}
+            >
+              <i className="bi bi-geo-alt me-2 fs-6"></i>
+              Gestionar localidades
+            </button>
+          </div>
+        </Col>
+
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Parámetros de finanzas</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar monedas"
+              onClick={() => navigate("/parametros/monedas")}
+            >
+              <i className="bi bi-currency-dollar me-2 fs-6"></i>
+              Gestionar monedas
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar métodos de pago"
+              onClick={() => navigate("/parametros/metodos-pago")}
+            >
+              <i className="bi bi-credit-card me-2 fs-6"></i>
+              Gestionar métodos de pago
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar bancos"
+              onClick={() => navigate("/parametros/bancos")}
+            >
+              <i className="bi bi-bank me-2 fs-6"></i>
+              Gestionar bancos
+            </button>
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 };
