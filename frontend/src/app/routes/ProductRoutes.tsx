@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
-import { Products, Product, ProductCreate, ProductEdit } from "../pages/products";
+import { Products, Product, ProductCreate, ProductEdit, StockAdjust } from "../pages/products";
 
 const ProductRoutes = () => {
   const { roles } = useSelector((state: RootState) => state.auth);
@@ -15,7 +15,7 @@ const ProductRoutes = () => {
           <Route path="/:id" element={<Product />} />
           <Route path="/nuevo" element={<ProductCreate />} />
           <Route path="/:id/editar" element={<ProductEdit />} />
-
+          <Route path="/:id/ajuste-stock" element={<StockAdjust />} />
         </>
       )}
 

@@ -1,7 +1,8 @@
 import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity, AdjustProductStockDto, StockAdjustDto } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
+import { StockAdjustService } from "./stock_adjust.service";
 
 export interface ProductFilters {
     text: string | undefined;
@@ -93,6 +94,39 @@ export class ProductService {
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
+    }
+
+    public async adjustProductStock(id_product: number, dto: AdjustProductStockDto, id_user: number) {
+        const { op, quantity, comment } = dto;
+        const product = await Product.findByPk(id_product);
+        if (!product) throw CustomError.notFound('Producto no encontrado');
+
+        const actual_stock = Number(product.actual_stock);
+
+        if (op === 'sub' && actual_stock < quantity) {
+            throw CustomError.badRequest('No hay suficiente stock para realizar la operación');
+        }
+
+        const stockAdjustService = new StockAdjustService();
+        const [error, adjustDto] = StockAdjustDto.create({ 
+            id_product, 
+            actual_stock,
+            op,
+            quantity,
+            id_user, 
+            comment 
+        });
+        if (error) throw CustomError.badRequest(error);
+
+        if (op === 'add' && adjustDto) {
+            await product.increment('actual_stock', { by: quantity });
+            await stockAdjustService.createStockAdjust(adjustDto);
+        } else if (op === 'sub' && adjustDto) {
+            await product.decrement('actual_stock', { by: quantity });
+            await stockAdjustService.createStockAdjust(adjustDto);
+        }
+
+        return { message: '¡Stock ajustado correctamente!' };
     }
 
     public async createProduct(createProductDto: ProductDto) {

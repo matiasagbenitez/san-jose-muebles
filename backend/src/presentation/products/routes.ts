@@ -15,6 +15,7 @@ export class ProductRoutes {
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.get('/:id/editable', [AuthMiddleware.validateJWT], controller.getByIdEditable);
         router.get('/:id/pending-receptions', [AuthMiddleware.validateJWT], controller.getPendingReceptions);
+        router.put('/:id/adjust-stock', [AuthMiddleware.validateJWT], controller.adjustProductStock);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
         router.put('/:id', [AuthMiddleware.validateJWT], controller.update);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);

@@ -43,3 +43,7 @@ export * from './entities/supplier_account';
 // SUPPLIER ACCOUNT TRANSACTIONS
 export * from './dtos/supplier_account_transaction';
 export * from './entities/supplier_account_transactions';
+
+// STOCK_ADJUST
+export * from './dtos/stock_adjust';
+export * from './entities/stock_adjust';
