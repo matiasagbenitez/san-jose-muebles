@@ -1,4 +1,4 @@
-import { Tab, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { toMoney } from "../../../../helpers";
 
 export const ProductInfo = ({ product }: any) => {
@@ -53,9 +53,9 @@ export const ProductInfo = ({ product }: any) => {
       {/* INFORMACIÓN DE STOCK */}
       <Table size="sm" className="small" striped bordered responsive>
         <tbody>
-          <tr className="text-center fw-bold text-uppercase">
+          {/* <tr className="text-center fw-bold text-uppercase">
             <td colSpan={12}>Información de stock</td>
-          </tr>
+          </tr> */}
 
           <tr className="text-center text-uppercase">
             <th className="px-2 col-2">Unidad de medida</th>

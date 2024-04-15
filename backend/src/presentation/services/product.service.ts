@@ -1,6 +1,7 @@
 import { Op, Sequelize } from "sequelize";
 import { Product } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity } from "../../domain";
+import { PurchaseItemService } from "./purchase_item.service";
 
 export interface ProductFilters {
     text: string | undefined;
@@ -81,6 +82,17 @@ export class ProductService {
         if (!product) throw CustomError.notFound('Producto no encontrado');
         const { ...productEntity } = ProductEditableEntity.fromObject(product);
         return { product: productEntity };
+    }
+
+    public async getProductPendingReceptions(id: number) {
+        try {
+            const purchaseItemService = new PurchaseItemService();
+            const items = await purchaseItemService.getPendingReceptionsByProductId(id);
+            const pendingReceptions = items.map((item: any) => ProductPendingReceptionEntity.fromObject(item));
+            return { items: pendingReceptions };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
     }
 
     public async createProduct(createProductDto: ProductDto) {

@@ -4,14 +4,19 @@ import { Row, Col, Button } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { ProductInfo, ProductImage, ProductOptions } from ".";
+import { ProductInfo, ProductImage, ProductOptions, ProductPending } from ".";
 import { SweetAlert2 } from "../../utils";
+import { ProductPendingReception } from "./interfaces";
 
 export const Product = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [productId, setProductId] = useState<number>();
   const [loading, setLoading] = useState(true);
+  const [pendingReceptions, setPendingReceptions] = useState<
+    ProductPendingReception[]
+  >([]);
+  const [showPending, setShowPending] = useState(false);
   const [product, setProduct] = useState<any>();
 
   const fetch = async () => {
@@ -47,6 +52,19 @@ export const Product = () => {
     }
   };
 
+  const handlePendingReceptions = async () => {
+    try {
+      setShowPending(false);
+      const { data } = await apiSJM.get(
+        `/products/${productId}/pending-receptions`
+      );
+      setPendingReceptions(data.items);
+      setShowPending(true);
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -67,6 +85,22 @@ export const Product = () => {
             </div>
             <Col lg={8}>
               <ProductInfo product={product} />
+              {product.inc_stock > 0 && (
+                <>
+                  <Button
+                    variant="light border text-muted"
+                    size="sm"
+                    onClick={handlePendingReceptions}
+                    title="Ver detalle de stock pendiente"
+                  >
+                    <i className="bi bi-box-arrow-in-down me-2"></i>
+                    Ver detalle de stock pendiente ({product.inc_stock})
+                  </Button>
+                  {showPending && (
+                    <ProductPending pendingReceptions={pendingReceptions} />
+                  )}
+                </>
+              )}
             </Col>
             <Col lg={4}>
               <Row>

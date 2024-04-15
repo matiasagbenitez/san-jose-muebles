@@ -66,7 +66,7 @@ module.exports = {
         "code": "W954 ST14",
         "name": "Melamina EGGER Blanco",
         "description": "Melamina base aglomerado. Marca EGGER. Espesor 18mm. Ancho 183cm. Largo 260cm. Diseño direccional. Resistente a la humedad. Rendimiento 4.76 m2.",
-        "actual_stock": 22, "inc_stock": 20, "min_stock": 30, "ideal_stock": 40,
+        "actual_stock": 22, "inc_stock": 0, "min_stock": 30, "ideal_stock": 40,
         "last_price": 52000, "id_currency": 1
 
       },
@@ -75,7 +75,7 @@ module.exports = {
         "code": "U727 ST9",
         "name": "Melamina EGGER Gris arcilla",
         "description": "Melamina base aglomerado. Marca EGGER. Espesor 18mm. Ancho 183cm. Largo 260cm. Diseño direccional. Resistente a la humedad. Rendimiento 4.76 m2.",
-        "actual_stock": 18, "inc_stock": 15, "min_stock": 20, "ideal_stock": 30,
+        "actual_stock": 18, "inc_stock": 0, "min_stock": 20, "ideal_stock": 30,
         "last_price": 55400, "id_currency": 1
 
       },
@@ -84,7 +84,7 @@ module.exports = {
         "code": "U732 ST9",
         "name": "Melamina EGGER Gris macadán",
         "description": "Melamina base aglomerado. Marca EGGER. Espesor 18mm. Ancho 183cm. Largo 260cm. Diseño direccional. Resistente a la humedad. Rendimiento 4.76 m2.",
-        "actual_stock": 15, "inc_stock": 15, "min_stock": 20, "ideal_stock": 30,
+        "actual_stock": 15, "inc_stock": 0, "min_stock": 20, "ideal_stock": 30,
         "last_price": 55400, "id_currency": 1
 
       },

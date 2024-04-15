@@ -12,6 +12,10 @@ export const ProductOptions = ({ id, handleDelete }: Props) => {
     navigate(`/productos/${id}/editar`);
   };
 
+  const redirectUpdateStock = () => {
+    navigate(`/productos/${id}/actualizar-stock`);
+  }
+
   return (
     <div>
       <h2 className="fs-6">Menú de opciones</h2>
@@ -23,6 +27,14 @@ export const ProductOptions = ({ id, handleDelete }: Props) => {
         >
           <i className="bi bi-pencil me-2 fs-6"></i>
           Modificar información del producto
+        </button>
+        <button
+          className="list-group-item list-group-item-action py-1"
+          title="Actualizar stock"
+          onClick={redirectUpdateStock}
+        >
+          <i className="bi bi-box-arrow-in-down me-2 fs-6"></i>
+          Actualizar stock
         </button>
         <button
           className="list-group-item list-group-item-action py-1 text-danger"

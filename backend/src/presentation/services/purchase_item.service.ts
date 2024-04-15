@@ -6,7 +6,7 @@ export class PurchaseItemService {
 
     public async createItems(id_purchase: number, id_currency: number, items: any[]) {
         try {
-            
+
             const productService = new ProductService();
             const itemsToCreate = items.map((item) => ({
                 id_purchase,
@@ -122,6 +122,31 @@ export class PurchaseItemService {
 
             // Actualizar el stock de cada producto en una sola operación
             await productService.decreaseIncomingStockInBulk(updates);
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async getPendingReceptionsByProductId(id_product: number): Promise<any> {
+        try {
+            const items = await PurchaseItem.findAll({
+                where: { id_product, fully_stocked: false },
+                include: [
+                    {
+                        association: 'purchase',
+                        attributes: ['id', 'date', 'nullified'],
+                        where: { nullified: false },
+                        include: [
+                            {
+                                association: 'supplier',
+                                attributes: ['id', 'name']
+                            },
+                        ]
+                    }
+                ]
+            });
+
+            return items;
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
