@@ -17,7 +17,7 @@ export class StockAdjustEntity {
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!updatedAt) throw CustomError.badRequest('Falta la fecha de actualización');
         if (!user) throw CustomError.badRequest('Falta el usuario');
-        if (!comment) throw CustomError.badRequest('Falta el comentario');
+        // if (!comment) throw CustomError.badRequest('Falta el comentario');
         if (!prev_stock) throw CustomError.badRequest('Falta el stock previo');
         if (!quantity) throw CustomError.badRequest('Falta la cantidad');
         if (!post_stock) throw CustomError.badRequest('Falta el stock posterior');
@@ -25,7 +25,7 @@ export class StockAdjustEntity {
         return new StockAdjustEntity(
             id,
             new Date(updatedAt),
-            user,
+            user.name,
             comment,
             prev_stock,
             quantity,

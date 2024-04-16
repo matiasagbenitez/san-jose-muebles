@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, StockAdjustDto } from "../../domain";
+import { CustomError, PaginationDto, StockAdjustDto } from "../../domain";
 import { StockAdjustService } from "../services/stock_adjust.service";
 
 export class StockAdjustController {
@@ -19,7 +19,14 @@ export class StockAdjustController {
         const id_product = req.params.id_product;
         if (!id_product) return res.status(400).json({ message: 'Missing id_product' });
 
-        this.service.getStockAdjustsByProductId(parseInt(id_product))
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        let filters = {};
+        if (req.query.name) filters = { ...filters, name: req.query.name };
+
+        this.service.getStockAdjustsByProductId(parseInt(id_product), paginationDto!, filters)
             .then((data) => {
                 res.json(data);
             })

@@ -19,6 +19,8 @@ import {
     SupplierAccountTransaction,
     PurchaseTransaction,
 
+    StockAdjust,
+
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -96,4 +98,9 @@ export const initializeAssociations = () => {
     SupplierAccountTransaction.hasOne(PurchaseTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'purchase_transaction', onDelete: 'RESTRICT' });
     PurchaseTransaction.belongsTo(SupplierAccountTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'supplier_account_transaction' });
     PurchaseTransaction.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
+
+    // STOCK ADJUST
+    Product.hasMany(StockAdjust, { foreignKey: 'id_product', as: 'adjustments', onDelete: 'RESTRICT' });
+    StockAdjust.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
+    StockAdjust.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 };

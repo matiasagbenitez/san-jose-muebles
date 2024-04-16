@@ -10,7 +10,7 @@ export class StockAdjustRoutes {
 
         const controller = new StockAdjustController();
 
-        router.get('/by-product/:id_product', [AuthMiddleware.validateJWT], controller.getAllByIdProduct);
+        router.get('/by-product/:id_product/paginated', [AuthMiddleware.validateJWT], controller.getAllByIdProduct);
 
         return router;
     }

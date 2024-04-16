@@ -118,15 +118,18 @@ export class ProductService {
         });
         if (error) throw CustomError.badRequest(error);
 
+        let new_stock = 0;
         if (op === 'add' && adjustDto) {
+            new_stock = actual_stock + quantity;
             await product.increment('actual_stock', { by: quantity });
             await stockAdjustService.createStockAdjust(adjustDto);
         } else if (op === 'sub' && adjustDto) {
+            new_stock = actual_stock - quantity;
             await product.decrement('actual_stock', { by: quantity });
             await stockAdjustService.createStockAdjust(adjustDto);
         }
 
-        return { message: '¡Stock ajustado correctamente!' };
+        return { new_stock, message: '¡Stock ajustado correctamente!' };
     }
 
     public async createProduct(createProductDto: ProductDto) {
