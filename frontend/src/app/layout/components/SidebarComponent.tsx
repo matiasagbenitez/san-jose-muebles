@@ -79,6 +79,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         </SubMenu>
 
         <MenuItem
+          component={<Link to="/inventario" />}
+          title="Inventario de herramientas"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-tools me-3 fs-6"></i>
+          Inventario
+        </MenuItem>
+
+        <MenuItem
           component={<Link to="/parametros" />}
           title="Parámetros"
           style={{ height: "45px" }}
@@ -86,6 +95,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <i className="bi bi-gear-wide-connected me-3 fs-6"></i>
           Parámetros
         </MenuItem>
+
       </Menu>
     </Sidebar>
   );

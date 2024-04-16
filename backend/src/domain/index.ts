@@ -47,3 +47,7 @@ export * from './entities/supplier_account_transactions';
 // STOCK_ADJUST
 export * from './dtos/stock_adjust';
 export * from './entities/stock_adjust';
+
+// INVENTORY ITEMS
+export * from './dtos/inventory_item';
+export * from './entities/inventory_item';

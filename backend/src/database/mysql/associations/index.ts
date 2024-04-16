@@ -20,6 +20,10 @@ import {
     PurchaseTransaction,
 
     StockAdjust,
+    InventoryBrand,
+    InventoryCategory,
+    InventoryItem,
+    InventoryItemRetired,
 
 } from '../models';
 
@@ -103,4 +107,17 @@ export const initializeAssociations = () => {
     Product.hasMany(StockAdjust, { foreignKey: 'id_product', as: 'adjustments', onDelete: 'RESTRICT' });
     StockAdjust.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
     StockAdjust.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    // INVENTORY
+    InventoryBrand.hasMany(InventoryItem, { foreignKey: 'id_inventory_brand', as: 'items', onDelete: 'RESTRICT' });
+    InventoryItem.belongsTo(InventoryBrand, { foreignKey: 'id_inventory_brand', as: 'brand' });
+
+    InventoryCategory.hasMany(InventoryItem, { foreignKey: 'id_inventory_categ', as: 'items', onDelete: 'RESTRICT' });
+    InventoryItem.belongsTo(InventoryCategory, { foreignKey: 'id_inventory_categ', as: 'category' });
+
+    InventoryItem.hasOne(InventoryItemRetired, { foreignKey: 'id_inventory_item', as: 'retirement', onDelete: 'RESTRICT' });
+    InventoryItemRetired.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
+    InventoryItem.belongsTo(User, { foreignKey: 'last_check_by', as: 'checker' });
+    InventoryItemRetired.belongsTo(User, { foreignKey: 'retired_by', as: 'retirer' });
+
 };

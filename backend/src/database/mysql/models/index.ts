@@ -29,6 +29,8 @@ import { PurchaseTransaction, initPurchaseTransactionModel } from './PurchaseTra
 import { StockAdjust, initStockAdjustModel } from './StockAdjust.model';
 import { InventoryBrand, initInventoryBrandModel } from './InventoryBrand.model';
 import { InventoryCategory, initInventoryCategoryModel } from './InventoryCategory.model';
+import { InventoryItem, initInventoryItemModel } from './InventoryItem.model';
+import { InventoryItemRetired, initInventoryItemRetiredModel } from './InventoryItemRetired.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -62,6 +64,8 @@ export const initializeModels = (sequelize: Sequelize) => {
   initStockAdjustModel(sequelize);
   initInventoryBrandModel(sequelize);
   initInventoryCategoryModel(sequelize);
+  initInventoryItemModel(sequelize);
+  initInventoryItemRetiredModel(sequelize);
 
 };
 
@@ -97,4 +101,6 @@ export {
 
   InventoryBrand,
   InventoryCategory,
+  InventoryItem,
+  InventoryItemRetired,
 };
