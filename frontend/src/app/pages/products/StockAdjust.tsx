@@ -235,9 +235,8 @@ export const StockAdjust = () => {
                           setForm({ ...form, op: e.target.value })
                         }
                       >
-                        <option value="">Seleccionar...</option>
-                        <option value="add">Incrementar stock</option>
                         <option value="sub">Decrementar stock</option>
+                        <option value="add">Incrementar stock</option>
                       </Form.Select>
                     </InputGroup>
                   </Col>
