@@ -16,3 +16,6 @@ export * from './priorities/Priorities';
 export * from './types_of_projects';
 
 export * from './banks/Banks';
+
+export * from './inventory_brands/InventoryBrands';
+export * from './inventory_categories/InventoryCategories';

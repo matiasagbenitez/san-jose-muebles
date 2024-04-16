@@ -16,6 +16,8 @@ import {
   Priorities,
   TypesOfProjects,
   Banks,
+  InventoryBrands,
+  InventoryCategories,
 } from "../pages/parameters";
 
 const ParametersRoutes = () => {
@@ -38,6 +40,9 @@ const ParametersRoutes = () => {
           <Route path="/prioridades" element={<Priorities />} />
           <Route path="/tipos-proyectos" element={<TypesOfProjects />} />
           <Route path="/bancos" element={<Banks />} />
+          <Route path="/marcas-herramientas" element={<InventoryBrands />} />
+          <Route path="/categorias-herramientas" element={<InventoryCategories />} />
+
         </>
       )}
 

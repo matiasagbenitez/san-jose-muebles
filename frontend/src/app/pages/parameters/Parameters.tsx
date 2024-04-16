@@ -11,58 +11,6 @@ export const Parameters = () => {
 
       <Row className="m-0">
         <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Parámetros de productos</h2>
-          <div className="list-group small">
-            <button
-              className="list-group-item list-group-item-action py-1"
-              title="Gestionar marcas"
-                onClick={() => navigate("/parametros/marcas")}
-            >
-              <i className="bi bi-tags me-2 fs-6"></i>
-              Gestionar marcas
-            </button>
-            <button
-              className="list-group-item list-group-item-action py-1"
-              title="Gestionar categorías"
-                onClick={() => navigate("/parametros/categorias")}
-            >
-              <i className="bi bi-list me-2 fs-6"></i>
-              Gestionar categorías
-            </button>
-            <button
-              className="list-group-item list-group-item-action py-1"
-              title="Gestionar unidades de medida"
-                onClick={() => navigate("/parametros/unidades-medida")}
-            >
-              <i className="bi bi-rulers me-2 fs-6"></i>
-              Gestionar unidades de medida
-            </button>
-          </div>
-        </Col>
-
-        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Parámetros de proyectos</h2>
-          <div className="list-group small">
-            <button
-              className="list-group-item list-group-item-action py-1"
-              title="Gestionar prioridades"
-              onClick={() => navigate("/parametros/prioridades")}
-            >
-              <i className="bi bi-flag me-2 fs-6"></i>
-              Gestionar prioridades
-            </button>
-            <button
-              className="list-group-item list-group-item-action py-1"
-              title="Gestionar tipos de proyectos"
-              onClick={() => navigate("/parametros/tipos-proyectos")}
-            >
-              <i className="bi bi-kanban me-2 fs-6"></i>
-              Gestionar tipos de proyectos
-            </button>
-          </div>
-        </Col>
-
-        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
           <h2 className="fs-6 my-2">Parámetros geográficos</h2>
           <div className="list-group small">
             <button
@@ -88,6 +36,58 @@ export const Parameters = () => {
             >
               <i className="bi bi-geo-alt me-2 fs-6"></i>
               Gestionar localidades
+            </button>
+          </div>
+        </Col>
+
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Parámetros de productos</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar marcas de productos"
+              onClick={() => navigate("/parametros/marcas")}
+            >
+              <i className="bi bi-tags me-2 fs-6"></i>
+              Gestionar marcas de productos
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar categorías de productos"
+              onClick={() => navigate("/parametros/categorias")}
+            >
+              <i className="bi bi-list me-2 fs-6"></i>
+              Gestionar categorías de productos
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar unidades de medida"
+              onClick={() => navigate("/parametros/unidades-medida")}
+            >
+              <i className="bi bi-rulers me-2 fs-6"></i>
+              Gestionar unidades de medida
+            </button>
+          </div>
+        </Col>
+
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Parámetros de inventario de herramientas</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar marcas de herramientas"
+              onClick={() => navigate("/parametros/marcas-herramientas")}
+            >
+              <i className="bi bi-tags me-2 fs-6"></i>
+              Gestionar marcas de herramientas
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar categorías de herramientas"
+              onClick={() => navigate("/parametros/categorias-herramientas")}
+            >
+              <i className="bi bi-list me-2 fs-6"></i>
+              Gestionar categorías de herramientas
             </button>
           </div>
         </Col>
