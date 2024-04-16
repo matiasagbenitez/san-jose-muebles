@@ -1,12 +1,12 @@
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { StockAdjust } from "../../database/mysql/models";
 import { CustomError, PaginationDto, StockAdjustDto, StockAdjustEntity } from "../../domain";
 
 export class StockAdjustService {
 
-    public async createStockAdjust(createStockAdjustDto: StockAdjustDto) {
+    public async createStockAdjust(createStockAdjustDto: StockAdjustDto, t: Transaction) {
         try {
-            const adjustment = await StockAdjust.create({ ...createStockAdjustDto });
+            const adjustment = await StockAdjust.create({ ...createStockAdjustDto }, { transaction: t });
             return { adjustment };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);

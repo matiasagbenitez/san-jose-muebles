@@ -20,7 +20,7 @@ export const initStockAdjustModel = (sequelize: Sequelize) => {
                 primaryKey: true,
             },
             id_product: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
             prev_stock: {
