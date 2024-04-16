@@ -5,6 +5,7 @@ export class InventoryItemEntity {
         public id: number,
         public category: string,
         public brand: string,
+        public quantity: number,
         public code: string,
         public name: string,
         public last_check: Date,

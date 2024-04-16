@@ -4,12 +4,14 @@ export class InventoryItem extends Model {
     public id!: number;
     public id_inventory_categ!: number;
     public id_inventory_brand!: number;
+    public quantity!: number;
     public code!: string;
     public name!: string;
-    public comment!: string;
+
+    public last_check_at!: Date;
+    public last_check_by!: number;
+
     public is_retired!: boolean;
-    public last_check!: Date;
-    public last_check_by!: string;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -31,27 +33,30 @@ export const initInventoryItemModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
+            quantity: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
             code: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                unique: true,
             },
             name: {
                 type: DataTypes.STRING,
+                allowNull: false,
+            },
+            last_check_at: {
+                type: DataTypes.DATE,
+                allowNull: false,
+            },
+            last_check_by: {
+                type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
             is_retired: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false,
-            },
-            last_check: {
-                type: DataTypes.DATE,
-                allowNull: true,
-            },
-            last_check_by: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: true,
             },
         },
         {

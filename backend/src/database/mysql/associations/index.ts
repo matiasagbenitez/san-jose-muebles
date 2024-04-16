@@ -24,6 +24,7 @@ import {
     InventoryCategory,
     InventoryItem,
     InventoryItemRetired,
+    InventoryItemUpdated,
 
 } from '../models';
 
@@ -115,9 +116,12 @@ export const initializeAssociations = () => {
     InventoryCategory.hasMany(InventoryItem, { foreignKey: 'id_inventory_categ', as: 'items', onDelete: 'RESTRICT' });
     InventoryItem.belongsTo(InventoryCategory, { foreignKey: 'id_inventory_categ', as: 'category' });
 
+    InventoryItem.hasMany(InventoryItemUpdated, { foreignKey: 'id_inventory_item', as: 'updates', onDelete: 'RESTRICT' });
+    InventoryItemUpdated.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
+    InventoryItemUpdated.belongsTo(User, { foreignKey: 'updated_by', as: 'user' });
+
     InventoryItem.hasOne(InventoryItemRetired, { foreignKey: 'id_inventory_item', as: 'retirement', onDelete: 'RESTRICT' });
     InventoryItemRetired.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
-    InventoryItem.belongsTo(User, { foreignKey: 'last_check_by', as: 'checker' });
-    InventoryItemRetired.belongsTo(User, { foreignKey: 'retired_by', as: 'retirer' });
+    InventoryItemRetired.belongsTo(User, { foreignKey: 'retired_by', as: 'user' });
 
 };

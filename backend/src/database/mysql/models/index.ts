@@ -31,6 +31,7 @@ import { InventoryBrand, initInventoryBrandModel } from './InventoryBrand.model'
 import { InventoryCategory, initInventoryCategoryModel } from './InventoryCategory.model';
 import { InventoryItem, initInventoryItemModel } from './InventoryItem.model';
 import { InventoryItemRetired, initInventoryItemRetiredModel } from './InventoryItemRetired.model';
+import { InventoryItemUpdated, initInventoryItemUpdatedModel } from './InventoryItemUpdated.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -66,6 +67,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initInventoryCategoryModel(sequelize);
   initInventoryItemModel(sequelize);
   initInventoryItemRetiredModel(sequelize);
+  initInventoryItemUpdatedModel(sequelize);
 
 };
 
@@ -103,4 +105,5 @@ export {
   InventoryCategory,
   InventoryItem,
   InventoryItemRetired,
+  InventoryItemUpdated,
 };
