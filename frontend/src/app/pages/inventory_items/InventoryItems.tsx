@@ -12,7 +12,7 @@ import {
 import { Filters, InventoryItemsForm } from "./components";
 import apiSJM from "../../../api/apiSJM";
 import { DayJsAdapter } from "../../../helpers";
-import { Badge } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import { SweetAlert2 } from "../../utils";
 
 interface ParamsInterface {
@@ -96,27 +96,27 @@ export const InventoryItems = () => {
       center: true,
     },
     {
-      name: "MARCA",
-      selector: (row: DataRow) => row.brand,
-      maxWidth: "150px",
-      wrap: true,
-    },
-    {
       name: "CATEGORÍA",
       selector: (row: DataRow) => row.category,
-      maxWidth: "250px",
+      maxWidth: "220px",
       wrap: true,
     },
     {
-      name: "CÓDIGO INTERNO",
-      maxWidth: "150px",
-      selector: (row: DataRow) => row.code,
-      center: true,
+      name: "MARCA",
+      selector: (row: DataRow) => row.brand,
+      maxWidth: "145px",
+      wrap: true,
     },
     {
       name: "ARTÍCULO",
       selector: (row: DataRow) => row.name,
       wrap: true,
+    },
+    {
+      name: "CÓDIGO INTERNO",
+      maxWidth: "140px",
+      selector: (row: DataRow) => row.code,
+      center: true,
     },
     {
       name: "CANTIDAD",
@@ -139,7 +139,7 @@ export const InventoryItems = () => {
     {
       name: "RESPONSABLE",
       selector: (row: DataRow) => row.last_check_by,
-      maxWidth: "150px",
+      maxWidth: "140px",
       center: true,
       wrap: true,
     },
@@ -153,6 +153,47 @@ export const InventoryItems = () => {
       ),
       maxWidth: "100px",
       center: true,
+    },
+    {
+      name: "ACCIONES",
+      cell: (row: DataRow) => (
+        <>
+          <Button
+            className="p-0"
+            size="sm"
+            variant="transparent"
+            title="Validar existencia"
+            onClick={() => handleValidate(row)}
+          >
+            <i className="bi bi-check-circle-fill text-success fs-6"></i>
+          </Button>
+          {!row.is_retired && (
+            <>
+              <Button
+                className="py-0 px-1"
+                size="sm"
+                variant="transparent"
+                title="Retirar artículos"
+                onClick={() => handleRetire(row)}
+              >
+                <i className="bi bi-x-circle-fill text-danger fs-6"></i>
+              </Button>
+              <Button
+                className="p-0"
+                size="sm"
+                variant="transparent"
+                title="Actualizar cantidad"
+                onClick={() => handleUpdateQuantity(row)}
+              >
+                <i className="bi bi-wrench-adjustable-circle-fill text-secondary fs-6"></i>
+              </Button>
+            </>
+          )}
+        </>
+      ),
+      maxWidth: "125px",
+      center: true,
+      button: true,
     },
   ];
 
@@ -179,6 +220,93 @@ export const InventoryItems = () => {
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);
       handleHide();
+      fetchInventoryItems();
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
+  const handleValidate = async (row: DataRow) => {
+    const confirm = await SweetAlert2.confirm(
+      "¿Confrima la existencia de " +
+        row.quantity +
+        " artículo/s de " +
+        row.name +
+        " marca " +
+        row.brand +
+        "?"
+    );
+    if (!confirm.isConfirmed) return;
+    try {
+      const { data } = await apiSJM.put(`${endpoint}/${row.id}/validate`);
+      SweetAlert2.successToast(data.message);
+      fetchInventoryItems();
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
+  const handleRetire = async (row: DataRow) => {
+    const message =
+      row.quantity + " artículo/s de " + row.name + " marca " + row.brand;
+
+    const reason = await SweetAlert2.inputDialog(
+      "Motivo de la baja de " + message,
+      "warning"
+    );
+    if (!reason.isConfirmed) return;
+    const confirm = await SweetAlert2.confirm(
+      "¿Desea retirar " +
+        row.quantity +
+        " artículo/s de " +
+        row.name +
+        " marca " +
+        row.brand +
+        " del inventario?"
+    );
+    if (!confirm.isConfirmed) return;
+    try {
+      const { data } = await apiSJM.put(`${endpoint}/${row.id}/retire`, {
+        reason: reason.value,
+      });
+      SweetAlert2.successToast(data.message);
+      fetchInventoryItems();
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
+  const handleUpdateQuantity = async (row: DataRow) => {
+    const message = row.name + " marca " + row.brand;
+
+    const reason = await SweetAlert2.inputDialog(
+      "Actualizar cantidad de " + message,
+      "warning"
+    );
+    if (!reason.isConfirmed) return;
+    if (isNaN(reason.value) || !reason.value || reason.value <= 0) {
+      SweetAlert2.errorAlert("La cantidad debe ser un número mayor a 0");
+      return;
+    }
+    const confirm = await SweetAlert2.confirm(
+      "¿Actualizar a " +
+        reason.value +
+        " la cantidad de " +
+        row.name +
+        " marca " +
+        row.brand +
+        "?"
+    );
+    if (!confirm.isConfirmed) return;
+    try {
+      const { data } = await apiSJM.put(
+        `${endpoint}/${row.id}/update-quantity`,
+        {
+          prev_quantity: row.quantity,
+          new_quantity: reason.value,
+        }
+      );
+      SweetAlert2.successToast(data.message);
       fetchInventoryItems();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);

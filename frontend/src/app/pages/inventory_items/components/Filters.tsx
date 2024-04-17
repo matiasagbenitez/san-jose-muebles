@@ -32,28 +32,6 @@ export const Filters = ({
           <Row>
             <Col xl={3}>
               <Form.Select
-                name="brand"
-                size="sm"
-                value={state.filters.id_brand || ""}
-                onChange={(e) =>
-                  dispatch({
-                    type: "FILTERS_CHANGE",
-                    newFilters: { ...state.filters, id_brand: e.target.value },
-                  })
-                }
-                className="mb-3"
-              >
-                <option value="">Todas las marcas</option>
-                {brands.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Col>
-
-            <Col xl={3}>
-              <Form.Select
                 name="category"
                 size="sm"
                 value={state.filters.id_category || ""}
@@ -70,6 +48,28 @@ export const Filters = ({
               >
                 <option value="">Todas las categorías</option>
                 {categories.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+
+            <Col xl={3}>
+              <Form.Select
+                name="brand"
+                size="sm"
+                value={state.filters.id_brand || ""}
+                onChange={(e) =>
+                  dispatch({
+                    type: "FILTERS_CHANGE",
+                    newFilters: { ...state.filters, id_brand: e.target.value },
+                  })
+                }
+                className="mb-3"
+              >
+                <option value="">Todas las marcas</option>
+                {brands.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                   </option>
@@ -108,9 +108,11 @@ export const Filters = ({
                   })
                 }
               >
-                <option value="">Todos los artículos</option>
-                <option value="true">Artículos retirados (dados de baja)</option>
-                <option value="false">Artículos activos (vigentes)</option>
+                <option value="false">Mostrar solo inventario activo</option>
+                <option value="true">Mostrar inventario retirado</option>
+                <option value="all">
+                  Mostrar todo el inventario (activo y retirado)
+                </option>
               </Form.Select>
             </Col>
           </Row>

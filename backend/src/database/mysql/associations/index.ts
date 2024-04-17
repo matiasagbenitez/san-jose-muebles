@@ -122,7 +122,7 @@ export const initializeAssociations = () => {
     InventoryItemUpdated.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
     InventoryItemUpdated.belongsTo(User, { foreignKey: 'updated_by', as: 'user_update' });
 
-    InventoryItem.hasOne(InventoryItemRetired, { foreignKey: 'id_inventory_item', as: 'retirement', onDelete: 'RESTRICT' });
+    InventoryItem.hasMany(InventoryItemRetired, { foreignKey: 'id_inventory_item', as: 'retirements', onDelete: 'RESTRICT' });
     InventoryItemRetired.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
     InventoryItemRetired.belongsTo(User, { foreignKey: 'retired_by', as: 'user_retired' });
 

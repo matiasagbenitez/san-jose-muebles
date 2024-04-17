@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
 import { InventoryItem } from "../../database/mysql/models";
-import { CustomError, CreateInventoryItemDTO, InventoryItemEntity, PaginationDto, ListableInventoryItemEntity } from "../../domain";
+import { CustomError, CreateInventoryItemDTO, RetireInventoryItemDTO, InventoryItemEntity, PaginationDto, ListableInventoryItemEntity, UpdateInventoryItemDTO } from "../../domain";
+import { InventoryItemRetiredService } from "./inventory_item_retired.service";
+import { InventoryItemUpdatedService } from "./inventory_item_updated.service";
 
 export interface InventoryItemFilters {
     text: string;
@@ -99,6 +101,76 @@ export class InventoryItemService {
             await item.destroy();
             return { message: 'Ítem eliminado correctamente' };
         } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async validateInventoryItem(id: number, id_user: number) {
+        const item = await InventoryItem.findByPk(id);
+        if (!item) throw CustomError.notFound('Ítem no encontrado');
+
+        try {
+            await item.update({
+                is_retired: false,
+                last_check_by: id_user,
+                last_check_at: new Date()
+            });
+            return { message: 'Ítem validado correctamente' };
+        } catch (error: any) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async retireInventoryItem(retirementDto: RetireInventoryItemDTO) {
+        const { id_inventory_item: id } = retirementDto;
+
+        const item = await InventoryItem.findByPk(id);
+        if (!item) throw CustomError.notFound('Ítem no encontrado');
+
+        const t = await InventoryItem.sequelize!.transaction();
+        try {
+            await InventoryItem.update({
+                is_retired: true,
+            }, {
+                where: { id },
+                transaction: t
+            });
+            const retirementService = new InventoryItemRetiredService();
+            await retirementService.createRetirementRecord(retirementDto!, t);
+
+            await t.commit();
+
+            return { message: 'Ítem retirado correctamente' };
+        } catch (error: any) {
+
+            await t.rollback();
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateQuantityInventoryItem(updatementDto: UpdateInventoryItemDTO) {
+        const { id_inventory_item: id } = updatementDto;
+
+        const item = await InventoryItem.findByPk(id);
+        if (!item) throw CustomError.notFound('Ítem no encontrado');
+
+        const t = await InventoryItem.sequelize!.transaction();
+        try {
+            await InventoryItem.update({
+                quantity: updatementDto.new_quantity,
+            }, {
+                where: { id },
+                transaction: t
+            });
+            const updatementService = new InventoryItemUpdatedService();
+            await updatementService.createRetirementRecord(updatementDto!, t);
+
+            await t.commit();
+
+            return { message: 'Ítem actualizado correctamente' };
+        } catch (error: any) {
+
+            await t.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }

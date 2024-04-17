@@ -5,7 +5,6 @@ export class InventoryItemUpdated extends Model {
     public id_inventory_item!: number;
     public prev_quantity!: number;
     public new_quantity!: number;
-    public comment!: string;
     public updated_by!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -29,10 +28,6 @@ export const initInventoryItemUpdatedModel = (sequelize: Sequelize) => {
             },
             new_quantity: {
                 type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            comment: {
-                type: DataTypes.STRING,
                 allowNull: false,
             },
             updated_by: {
