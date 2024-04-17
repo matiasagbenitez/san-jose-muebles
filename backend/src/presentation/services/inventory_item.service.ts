@@ -1,9 +1,12 @@
 import { Op } from "sequelize";
 import { InventoryItem } from "../../database/mysql/models";
-import { CustomError, CreateInventoryItemDTO, InventoryItemEntity, PaginationDto } from "../../domain";
+import { CustomError, CreateInventoryItemDTO, InventoryItemEntity, PaginationDto, ListableInventoryItemEntity } from "../../domain";
 
 export interface InventoryItemFilters {
-    name: string;
+    text: string;
+    id_inventory_brand: number;
+    id_inventory_categ: number;
+    is_retired: string;
 }
 export class InventoryItemService {
 
@@ -18,13 +21,39 @@ export class InventoryItemService {
 
         // FILTERS
         let where = {};
-        if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
+        if (filters.text) where = {
+            [Op.or]: [
+                { name: { [Op.like]: `%${filters.text}%` } },
+                { code: { [Op.like]: `%${filters.text}%` } },
+            ]
+        };
+        if (filters.id_inventory_brand) where = { ...where, id_inventory_brand: filters.id_inventory_brand };
+        if (filters.id_inventory_categ) where = { ...where, id_inventory_categ: filters.id_inventory_categ };
+        if (filters.is_retired === 'true') {
+            where = { ...where, is_retired: true };
+        } else if (filters.is_retired === 'false') {
+            where = { ...where, is_retired: false };
+        }
 
         const [rows, total] = await Promise.all([
-            InventoryItem.findAll({ where, offset: (page - 1) * limit, limit }),
+            InventoryItem.findAll({
+                where,
+                include: [{
+                    association: 'category',
+                    attributes: ['name']
+                }, {
+                    association: 'brand',
+                    attributes: ['name']
+                }, {
+                    association: 'user_check',
+                    attributes: ['name']
+                }],
+                offset: (page - 1) * limit,
+                limit
+            }),
             InventoryItem.count({ where })
         ]);
-        const entities = rows.map(row => InventoryItemEntity.fromObject(row));
+        const entities = rows.map(row => ListableInventoryItemEntity.fromObject(row));
         return { items: entities, total_items: total };
     }
 
@@ -37,7 +66,7 @@ export class InventoryItemService {
 
     public async createInventoryItem(dto: CreateInventoryItemDTO, id_user: number) {
         try {
-            await InventoryItem.create({ ...dto, last_check_by: id_user, last_check: new Date() });
+            await InventoryItem.create({ ...dto, code: Date.now(), last_check_by: id_user });
             return { message: 'Ítem creado correctamente' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {

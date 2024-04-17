@@ -23,7 +23,7 @@ import { SupplierAccountTransactionRoutes } from './supplier_account_transaction
 import { StockAdjustRoutes } from './stock_adjust/routes';
 import { InventoryBrandRoutes } from './inventory_brands/routes';
 import { InventoryCategoryRoutes } from './inventory_categories/routes';
-
+import { InventoryItemRoutes } from './inventory_items/routes';
 export class AppRoutes {
 
     static get routes(): Router {
@@ -63,8 +63,7 @@ export class AppRoutes {
 
         router.use('/api/inventory_brands', InventoryBrandRoutes.routes);
         router.use('/api/inventory_categories', InventoryCategoryRoutes.routes);
-
-
+        router.use('/api/inventory_items', InventoryItemRoutes.routes);
 
         return router;
     }

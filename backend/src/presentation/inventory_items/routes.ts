@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { InventoryItemController } from './controller';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 
-export class BrandRoutes {
+export class InventoryItemRoutes {
 
     static get routes(): Router {
 
