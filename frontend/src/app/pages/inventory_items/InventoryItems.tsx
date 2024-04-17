@@ -9,10 +9,11 @@ import {
   fetchData,
 } from "../../shared";
 
-import { Filters } from "./components";
+import { Filters, InventoryItemsForm } from "./components";
 import apiSJM from "../../../api/apiSJM";
 import { DayJsAdapter } from "../../../helpers";
 import { Badge } from "react-bootstrap";
+import { SweetAlert2 } from "../../utils";
 
 interface ParamsInterface {
   id: string;
@@ -35,6 +36,7 @@ export const InventoryItems = () => {
   const [state, dispatch] = useReducer(paginationReducer, initialState);
   const [brands, setBrands] = useState<ParamsInterface[]>([]);
   const [categories, setCategories] = useState<ParamsInterface[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const endpoint = "/inventory_items";
 
@@ -47,6 +49,10 @@ export const InventoryItems = () => {
     ]);
     setBrands(res2.data.items);
     setCategories(res3.data.items);
+  };
+
+  const fetchInventoryItems = async () => {
+    fetchData(endpoint, 1, state, dispatch);
   };
 
   useEffect(() => {
@@ -92,7 +98,7 @@ export const InventoryItems = () => {
     {
       name: "MARCA",
       selector: (row: DataRow) => row.brand,
-      maxWidth: "200px",
+      maxWidth: "150px",
       wrap: true,
     },
     {
@@ -155,7 +161,28 @@ export const InventoryItems = () => {
   };
 
   const handleCreate = () => {
-    navigate("/productos/nuevo");
+    setIsModalOpen(true);
+  };
+
+  const handleHide = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = async (formData: any) => {
+    try {
+      const quantity = formData.quantity as number;
+      const name = (formData.name as string).toUpperCase();
+      const confirm = await SweetAlert2.confirm(
+        "¿Desea crear " + quantity + " artículo/s " + name + "?"
+      );
+      if (!confirm.isConfirmed) return;
+      const { data } = await apiSJM.post(endpoint, formData);
+      SweetAlert2.successToast(data.message);
+      handleHide();
+      fetchInventoryItems();
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
   };
 
   return (
@@ -180,6 +207,14 @@ export const InventoryItems = () => {
         handlePageChange={handlePageChange}
         clickableRows
         onRowClicked={handleClick}
+      />
+
+      <InventoryItemsForm
+        show={isModalOpen}
+        onHide={handleHide}
+        onSubmit={handleSubmit}
+        brands={brands}
+        categories={categories}
       />
     </div>
   );
