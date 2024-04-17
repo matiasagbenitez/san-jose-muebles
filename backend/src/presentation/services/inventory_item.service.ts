@@ -60,7 +60,41 @@ export class InventoryItemService {
     }
 
     public async getInventoryItem(id: number) {
-        const row = await InventoryItem.findByPk(id);
+        const row = await InventoryItem.findByPk(id, {
+            include: [
+                {
+                    association: 'category',
+                    attributes: ['name']
+                }, {
+                    association: 'brand',
+                    attributes: ['name']
+                }, {
+                    association: 'user_check',
+                    attributes: ['name']
+                }, {
+                    association: 'updates',
+                    include: [
+                        {
+                            association: 'user_update',
+                            attributes: ['name']
+                        }
+                    ]
+                }, {
+                    association: 'retirements',
+                    include: [
+                        {
+                            association: 'user_retired',
+                            attributes: ['name']
+                        }
+                    ]
+                },
+            ],
+            order: [
+                ['updates', 'createdAt', 'DESC'],
+                ['retirements', 'createdAt', 'DESC']
+            ]
+        });
+
         if (!row) throw CustomError.notFound('Ítem no encontrado');
         const { ...rowEntity } = InventoryItemEntity.fromObject(row);
         return { item: rowEntity };

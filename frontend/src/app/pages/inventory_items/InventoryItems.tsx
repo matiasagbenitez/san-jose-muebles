@@ -198,7 +198,7 @@ export const InventoryItems = () => {
   ];
 
   const handleClick = (row: DataRow) => {
-    navigate(`/productos/${row.id}`);
+    navigate(`/inventario/${row.id}`);
   };
 
   const handleCreate = () => {

@@ -4,6 +4,7 @@ import { RootState } from "../../store/store";
 
 import {
     InventoryItems,
+    InventoryItem,
 } from "../pages/inventory_items";
 
 const InventoryItemsRoutes = () => {
@@ -14,6 +15,7 @@ const InventoryItemsRoutes = () => {
       {roles.includes("ADMIN") && (
         <>
           <Route path="/" element={<InventoryItems />} />
+          <Route path=":id" element={<InventoryItem />} />
         </>
       )}
 
