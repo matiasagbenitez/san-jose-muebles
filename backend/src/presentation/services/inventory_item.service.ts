@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { InventoryItem } from "../../database/mysql/models";
-import { CustomError, CreateInventoryItemDTO, RetireInventoryItemDTO, InventoryItemEntity, PaginationDto, ListableInventoryItemEntity, UpdateInventoryItemDTO } from "../../domain";
+import { CustomError, CreateInventoryItemDTO, RetireInventoryItemDTO, InventoryItemEntity, PaginationDto, ListableInventoryItemEntity, UpdateInventoryItemDTO, UpdatedInventoryItemDTO } from "../../domain";
 import { InventoryItemRetiredService } from "./inventory_item_retired.service";
 import { InventoryItemUpdatedService } from "./inventory_item_updated.service";
 
@@ -112,7 +112,7 @@ export class InventoryItemService {
         }
     }
 
-    public async updateInventoryItem(id: number, dto: CreateInventoryItemDTO) {
+    public async updateInventoryItem(id: number, dto: UpdatedInventoryItemDTO) {
         const item = await InventoryItem.findByPk(id);
         if (!item) throw CustomError.notFound('Ítem no encontrado');
 

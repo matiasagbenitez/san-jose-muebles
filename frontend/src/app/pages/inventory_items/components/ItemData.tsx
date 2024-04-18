@@ -54,7 +54,7 @@ export const ItemData = ({ item }: Props) => {
           </td>
         </tr>
         <tr>
-          <td colSpan={2} className="text-muted fst-italic">
+          <td colSpan={2} className="text-muted fst-italic small">
             Última actualización el {DayJsAdapter.toDayMonthYearHour(item.last_check)}{" "}
             por {item.last_check_by}
           </td>

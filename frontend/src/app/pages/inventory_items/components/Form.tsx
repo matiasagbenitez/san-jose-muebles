@@ -115,13 +115,15 @@ export const InventoryItemsForm = ({
                 isInvalid={!!errors.name && touched.name}
               />
 
-              <MyNumberInput
-                label="Cantidad"
-                name="quantity"
-                type="number"
-                placeholder="Ingrese la cantidad"
-                isInvalid={!!errors.quantity && touched.quantity}
-              />
+              {!editMode && (
+                <MyNumberInput
+                  label="Cantidad"
+                  name="quantity"
+                  type="number"
+                  placeholder="Ingrese la cantidad"
+                  isInvalid={!!errors.quantity && touched.quantity}
+                />
+              )}
 
               <Button
                 type="submit"

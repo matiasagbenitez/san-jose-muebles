@@ -1,5 +1,11 @@
 import { CustomError } from '../../errors/custom.error';
 
+interface EditableItem {
+    id_inventory_categ: number;
+    id_inventory_brand: number;
+    quantity: number;
+    name: string;
+}
 interface DataItem {
     id: number;
     category: string;
@@ -27,13 +33,14 @@ interface UpdatedItem {
 }
 export class InventoryItemEntity {
     constructor(
+        public editable_fields: EditableItem,
         public data: DataItem,
         public updates?: UpdatedItem[],
         public retirements?: RetiredItem[],
     ) { }
 
     static fromObject(object: { [key: string]: any }): InventoryItemEntity {
-        const { id, category, brand, quantity, code, name, last_check_at, user_check, is_retired, updates, retirements } = object;
+        const { id, id_inventory_categ, id_inventory_brand, category, brand, quantity, code, name, last_check_at, user_check, is_retired, updates, retirements } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!category) throw CustomError.badRequest('Falta la categoría');
@@ -44,6 +51,13 @@ export class InventoryItemEntity {
         if (!last_check_at) throw CustomError.badRequest('Falta la última revisión');
         if (!user_check) throw CustomError.badRequest('Falta el revisor');
         if (is_retired === null) throw CustomError.badRequest('Falta el estado de retiro');
+
+        const editable: EditableItem = {
+            id_inventory_categ,
+            id_inventory_brand,
+            quantity,
+            name,
+        };
 
         const data: DataItem = {
             id,
@@ -80,6 +94,7 @@ export class InventoryItemEntity {
 
 
         return new InventoryItemEntity(
+            editable,
             data,
             updatesArray,
             retirementsArray,

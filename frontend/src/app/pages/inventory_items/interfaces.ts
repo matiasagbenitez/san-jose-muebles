@@ -1,3 +1,10 @@
+export interface EditableItem {
+    id_inventory_categ: number;
+    id_inventory_brand: number;
+    quantity: number;
+    name: string;
+}
+
 export interface ItemData {
     id: number;
     category: string;

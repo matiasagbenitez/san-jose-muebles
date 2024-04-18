@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateInventoryItemDTO, CustomError, LoggedUserIdDto, NameDto, PaginationDto, RetireInventoryItemDTO, UpdateInventoryItemDTO } from "../../domain";
+import { CreateInventoryItemDTO, CustomError, LoggedUserIdDto, NameDto, PaginationDto, RetireInventoryItemDTO, UpdateInventoryItemDTO, UpdatedInventoryItemDTO } from "../../domain";
 import { InventoryItemService, InventoryItemFilters } from '../services/inventory_item.service';
 
 export class InventoryItemController {
@@ -82,19 +82,19 @@ export class InventoryItemController {
 
     update = async (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
-        if (!id) return res.status(400).json({ message: 'Missing id' });
+        if (!id) return res.status(400).json({ message: 'Missing ID' });
 
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = CreateInventoryItemDTO.create(req.body);
+        const [error, updateDto] = UpdatedInventoryItemDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         this.service.updateInventoryItem(id, updateDto!)
             .then((data) => {
-                res.json(data);
+                res.status(200).json(data);
             })
             .catch((error) => {
                 this.handleError(error, res);

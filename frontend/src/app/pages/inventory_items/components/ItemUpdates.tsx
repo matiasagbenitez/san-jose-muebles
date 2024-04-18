@@ -10,7 +10,7 @@ export const ItemUpdates = ({ updates }: Props) => {
   return (
     <>
       
-      <p className="mb-2 text-muted">Historial de actualizaciones de cantidad del artículo</p>
+      <p className="mb-2 text-muted small fw-bold">Historial de actualizaciones de cantidad del artículo</p>
       {updates.length > 0 ? (
         <Table responsive bordered size="sm" className="small">
           <thead>

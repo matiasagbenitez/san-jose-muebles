@@ -9,7 +9,7 @@ interface Props {
 export const ItemRetirements = ({ retirements }: Props) => {
   return (
     <>
-      <p className="mb-2 text-muted">Historial de bajas del artículo</p>
+      <p className="my-2 text-muted small fw-bold">Historial de bajas del artículo</p>
       {retirements.length > 0 ? (
         <Table responsive bordered size="sm" className="small">
           <thead>
