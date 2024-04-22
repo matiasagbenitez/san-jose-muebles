@@ -25,6 +25,16 @@ export class VisitReasonController {
             });
     }
 
+    getList = async (req: Request, res: Response) => {
+        this.visitReasonService.getVisitReasonsList()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getAllPaginated = async (req: Request, res: Response) => {
         const { page = 1, limit = 10 } = req.query;
         const [error, paginationDto] = PaginationDto.create(+page, +limit);

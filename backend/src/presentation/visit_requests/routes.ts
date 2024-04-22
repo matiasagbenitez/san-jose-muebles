@@ -1,17 +1,16 @@
 import { Router } from 'express';
-import { LocalityController } from './controller';
+import { VisitRequestController } from './controller';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 
-export class LocalityRoutes {
+export class VisitRequestRoutes {
 
     static get routes(): Router {
 
         const router = Router();
 
-        const controller = new LocalityController();
+        const controller = new VisitRequestController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
-        router.get('/list', [AuthMiddleware.validateJWT], controller.getList);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);

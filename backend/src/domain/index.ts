@@ -56,3 +56,9 @@ export * from './entities/inventory_item';
 export * from './dtos/clients';
 export * from './entities/clients';
 
+// VISIT REQUESTS
+export * from './dtos/visit_requests';
+export * from './entities/visit_requests';
+
+// SELECT2
+export * from './entities/select2';

@@ -26,8 +26,10 @@ import {
     InventoryItemRetired,
     InventoryItemUpdated,
     Client,
+    VisitReason,
 
 } from '../models';
+import { VisitRequest } from '../models/VisitRequest';
 
 export const initializeAssociations = () => {
 
@@ -130,5 +132,17 @@ export const initializeAssociations = () => {
     // CLIENT
     Locality.hasMany(Client, { foreignKey: 'id_locality', as: 'clients', onDelete: 'RESTRICT' });
     Client.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
+
+    // VISIT REQUEST
+    Client.hasMany(VisitRequest, { foreignKey: 'id_client', as: 'visit_requests', onDelete: 'RESTRICT' });
+    VisitRequest.belongsTo(Client, { foreignKey: 'id_client', as: 'client' });
+    
+    Locality.hasMany(VisitRequest, { foreignKey: 'id_locality', as: 'visit_requests', onDelete: 'RESTRICT' });
+    VisitRequest.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
+     
+    VisitRequest.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    VisitReason.hasMany(VisitRequest, { foreignKey: 'id_visit_reason', as: 'visit_requests', onDelete: 'RESTRICT' });
+    VisitRequest.belongsTo(VisitReason, { foreignKey: 'id_visit_reason', as: 'reason' });
 
 };

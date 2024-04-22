@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Province, Locality, Country } from "../../database/mysql/models";
-import { LocalityDto, LocalityEntity, CustomError, PaginationDto } from "../../domain";
+import { LocalityDto, LocalityEntity, CustomError, PaginationDto, Select2ItemEntity } from "../../domain";
 
 export interface LocalityFilters {
     name: string;
@@ -8,8 +8,14 @@ export interface LocalityFilters {
 export class LocalityService {
 
     public async getLocalities() {
-        const localities = await Locality.findAll();
+        const localities = await Locality.findAll({ order: [['name', 'ASC']] });
         const localitiesEntities = localities.map(locality => LocalityEntity.fromObject(locality));
+        return { localities: localitiesEntities };
+    }
+
+    public async getLocalitiesList() {
+        const localities = await Locality.findAll({ order: [['name', 'ASC']] });
+        const localitiesEntities = localities.map(locality => Select2ItemEntity.fromObject(locality));
         return { localities: localitiesEntities };
     }
 

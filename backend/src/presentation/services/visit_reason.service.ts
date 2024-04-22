@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { VisitReason } from "../../database/mysql/models";
-import { CustomError, VisitReasonDTO, VisitReasonEntity, PaginationDto } from "../../domain";
+import { CustomError, VisitReasonDTO, VisitReasonEntity, PaginationDto, Select2ItemEntity } from "../../domain";
 
 export interface VisitReasonFilters {
     name: string;
@@ -11,6 +11,12 @@ export class VisitReasonService {
         const priorities = await VisitReason.findAll();
         const prioritiesEntities = priorities.map(priority => VisitReasonEntity.fromObject(priority));
         return { items: prioritiesEntities };
+    }
+
+    public async getVisitReasonsList() {
+        const rows = await VisitReason.findAll({ order: [['name', 'ASC']] });
+        const entities = rows.map(row => Select2ItemEntity.fromObject(row));
+        return { visit_reasons: entities };
     }
 
     public async getVisitReasonsPaginated(paginationDto: PaginationDto, filters: VisitReasonFilters) {

@@ -8,6 +8,7 @@ import PurchaseRoutes from "./PurchaseRoutes";
 import SupplierAccountRoutes from "./SupplierAccountRoutes";
 import InventoryItemsRoutes from "./InventoryItemsRoutes";
 import ClientRoutes from "./ClientRoutes";
+import AgendaRoutes from "./AgendaRoutes";
 
 const AppRoutes = () => {
   return (
@@ -21,6 +22,7 @@ const AppRoutes = () => {
         <Route path="/cuentas-proveedores/*" element={<SupplierAccountRoutes />} />
         <Route path="/inventario/*" element={<InventoryItemsRoutes />} />
         <Route path="/clientes/*" element={<ClientRoutes />} />
+        <Route path="/agenda/*" element={<AgendaRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />

@@ -25,6 +25,16 @@ export class ClientController {
             });
     }
 
+    getList = async (req: Request, res: Response) => {
+        this.service.getClientsList()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getAllSelect = async (req: Request, res: Response) => {
         this.service.getClientsSelect()
             .then((data) => {

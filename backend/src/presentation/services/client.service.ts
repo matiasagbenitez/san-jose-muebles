@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Client } from "../../database/mysql/models";
-import { CustomError, ClientCreateUpdateDto, ClientDetailEntity, ClientListEntity, PaginationDto } from "../../domain";
+import { CustomError, ClientCreateUpdateDto, ClientDetailEntity, ClientListEntity, PaginationDto, Select2ItemEntity } from "../../domain";
 
 export interface ClientFilters {
     name: string;
@@ -13,6 +13,12 @@ export class ClientService {
         const clients = await Client.findAll();
         const clientsEntities = clients.map(client => ClientListEntity.fromObject(client));
         return { items: clientsEntities };
+    }
+
+    public async getClientsList() {
+        const rows = await Client.findAll({ order: [['name', 'ASC']] });
+        const entities = rows.map(row => Select2ItemEntity.fromObject(row));
+        return { clients: entities };
     }
 
     public async getClientsSelect() {

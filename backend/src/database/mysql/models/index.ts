@@ -33,6 +33,7 @@ import { InventoryItem, initInventoryItemModel } from './InventoryItem.model';
 import { InventoryItemRetired, initInventoryItemRetiredModel } from './InventoryItemRetired.model';
 import { InventoryItemUpdated, initInventoryItemUpdatedModel } from './InventoryItemUpdated.model';
 import { Client, initClientModel } from './Client.model';
+import { VisitRequest, initVisitRequestModel } from './VisitRequest';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -71,6 +72,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initInventoryItemUpdatedModel(sequelize);
 
   initClientModel(sequelize);
+  initVisitRequestModel(sequelize);
 };
 
 export {
@@ -110,4 +112,6 @@ export {
   
   Client,
   VisitReason,
+  VisitRequest,
+  
 };

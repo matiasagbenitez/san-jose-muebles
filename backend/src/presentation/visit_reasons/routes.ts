@@ -11,6 +11,7 @@ export class VisitReasonRoutes {
         const controller = new VisitReasonController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
+        router.get('/list', [AuthMiddleware.validateJWT], controller.getList);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);

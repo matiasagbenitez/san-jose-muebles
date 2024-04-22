@@ -39,6 +39,32 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           Clientes
         </MenuItem>
 
+
+
+        <SubMenu
+          prefix={
+            <>
+              <i className="bi bi-calendar3 me-3 fs-6"></i>Agenda
+            </>
+          }
+          style={{ height: "45px" }}
+        >
+          <MenuItem
+            component={<Link to="/agenda" />}
+            title="Ir a la agenda"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Agenda de visitas</small>
+          </MenuItem>
+          <MenuItem
+            component={<Link to="/calendario" />}
+            title="Ver calendario"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Ver calendario</small>
+          </MenuItem>
+        </SubMenu>
+
         <SubMenu
           prefix={
             <>

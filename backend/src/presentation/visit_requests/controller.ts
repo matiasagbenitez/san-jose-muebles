@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, LocalityDto } from "../../domain";
-import { LocalityService, LocalityFilters } from "../services/locality.service";
+import { CustomError, VisitRequestDTO, PaginationDto, LoggedUserIdDto } from "../../domain";
+import { VisitRequestService, VisitRequestFilters } from '../services/visit_request.service';
 
-export class LocalityController {
+export class VisitRequestController {
 
-    protected localityService: LocalityService = new LocalityService();
+    protected service: VisitRequestService = new VisitRequestService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,17 +16,7 @@ export class LocalityController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.localityService.getLocalities()
-            .then((data) => {
-                res.json(data);
-            })
-            .catch((error) => {
-                this.handleError(error, res);
-            });
-    }
-
-    getList = async (req: Request, res: Response) => {
-        this.localityService.getLocalitiesList()
+        this.service.getVisitRequests()
             .then((data) => {
                 res.json(data);
             })
@@ -43,7 +33,7 @@ export class LocalityController {
         let filters = {};
         if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.localityService.getLocalitiesPaginated(paginationDto!, filters as LocalityFilters)
+        this.service.getVisitRequestsPaginated(paginationDto!, filters as VisitRequestFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -56,7 +46,7 @@ export class LocalityController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.localityService.getLocality(parseInt(id))
+        this.service.getVisitRequest(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -72,10 +62,13 @@ export class LocalityController {
             }
         }
 
-        const [error, createDto] = LocalityDto.create(req.body);
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+        const [error, createDto] = VisitRequestDTO.create({ ...req.body, id_user: loggedUserIdDto!.id_user });
         if (error) return res.status(400).json({ message: error });
 
-        this.localityService.createLocality(createDto!)
+        this.service.createVisitRequest(createDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -93,10 +86,10 @@ export class LocalityController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = LocalityDto.create(req.body);
+        const [error, updateDto] = VisitRequestDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.localityService.updateLocality(id, updateDto!)
+        this.service.updateVisitRequest(id, updateDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -107,9 +100,9 @@ export class LocalityController {
 
     delete = async (req: Request, res: Response) => {
         const id = req.params.id;
-        if (!id) return res.status(400).json({ message: 'Missing id' });
+        if (!id) return res.status(400).json({ message: 'Falta el ID' });
 
-        this.localityService.deleteLocality(parseInt(id))
+        this.service.deleteVisitRequest(parseInt(id))
             .then((data) => {
                 res.json(data);
             })

@@ -11,6 +11,7 @@ export class ClientRoutes {
         const controller = new ClientController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
+        router.get('/list', [AuthMiddleware.validateJWT], controller.getList);
         router.get('/select', [AuthMiddleware.validateJWT], controller.getAllSelect);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
