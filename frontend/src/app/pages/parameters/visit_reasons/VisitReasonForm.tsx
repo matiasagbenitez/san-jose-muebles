@@ -16,7 +16,7 @@ interface FormProps {
   onSubmit: (values: any) => void;
 }
 
-export const PrioritiesForm = ({
+export const VisitReasonForm = ({
   show,
   onHide,
   form,
@@ -26,7 +26,7 @@ export const PrioritiesForm = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
-        <h1 className="fs-5">{editingId ? "Modificar prioridad" : "Crear prioridad"}</h1>
+        <h1 className="fs-5">{editingId ? "Modificar motivo de visita" : "Crear motivo de visita"}</h1>
         <hr className="my-2" />
 
         <Formik
@@ -42,10 +42,10 @@ export const PrioritiesForm = ({
           {({ errors, touched }) => (
             <Form id="form">
               <MyTextInput
-                label="Nombre de la prioridad"
+                label="Nombre del motivo de visita"
                 name="name"
                 type="text"
-                placeholder="Ingrese el nombre de la prioridad"
+                placeholder="Ingrese el nombre del motivo de visita"
                 isInvalid={!!errors.name && touched.name}
               />
 

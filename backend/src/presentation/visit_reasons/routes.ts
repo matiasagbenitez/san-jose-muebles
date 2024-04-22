@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { PriorityController } from './controller';
+import { VisitReasonController } from './controller';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 
-export class PriorityRoutes {
+export class VisitReasonRoutes {
 
     static get routes(): Router {
 
         const router = Router();
 
-        const controller = new PriorityController();
+        const controller = new VisitReasonController();
 
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);

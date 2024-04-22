@@ -12,7 +12,7 @@ import {
   FilterByName,
 } from "../shared";
 import { SweetAlert2 } from "../../../utils";
-import { PrioritiesForm } from ".";
+import { VisitReasonForm } from ".";
 
 interface DataRow {
   id: number;
@@ -30,13 +30,13 @@ const initialForm: PriorityFormInterface = {
   color: "#000000",
 };
 
-export const Priorities = () => {
+export const VisitReasons = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(initialForm);
   const [state, dispatch] = useReducer(paramsReducer, initialState);
-  const endpoint = "/priorities";
+  const endpoint = "/visit_reasons";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
@@ -105,7 +105,7 @@ export const Priorities = () => {
 
   const handleDelete = async (row: DataRow) => {
     const confirmation = await SweetAlert2.confirm(
-      "¿Eliminar la prioridad " + row.name + "?"
+      "¿Eliminar el motivo de visita " + row.name + "?"
     );
     try {
       if (confirmation.isConfirmed) {
@@ -171,14 +171,14 @@ export const Priorities = () => {
       <FilterByName
         state={state}
         dispatch={dispatch}
-        placeholder="Buscar por nombre de prioridad"
+        placeholder="Buscar por nombre de motivo de visita"
         handleFiltersChange={handleFiltersChange}
         handleResetFilters={handleResetFilters}
         handleCreate={handleCreate}
       />
 
       <DatatableParams
-        title="Prioridades"
+        title="Motivos de visita"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}
         loading={state.loading}
@@ -187,7 +187,7 @@ export const Priorities = () => {
         handlePageChange={handlePageChange}
       />
 
-      <PrioritiesForm
+      <VisitReasonForm
         show={isModalOpen}
         onHide={handleHide}
         form={form}

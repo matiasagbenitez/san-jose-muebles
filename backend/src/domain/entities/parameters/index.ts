@@ -5,7 +5,7 @@ export * from './country.entity';
 export * from './currency.entity';
 export * from './locality.entity';
 export * from './payment_method.entity';
-export * from './priority.entity';
+export * from './visit_reason.entity';
 export * from './province.entity';
 export * from './type_of_environment.entity';
 export * from './type_of_project.entity';

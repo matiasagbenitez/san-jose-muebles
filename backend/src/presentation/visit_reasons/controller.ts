@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { CustomError, PriorityDto, PaginationDto } from "../../domain";
-import { PriorityService, PriorityFilters } from '../services/priority.service';
+import { CustomError, VisitReasonDTO, PaginationDto } from "../../domain";
+import { VisitReasonService, VisitReasonFilters } from '../services/visit_reason.service';
 
-export class PriorityController {
+export class VisitReasonController {
 
-    protected priorityService: PriorityService = new PriorityService();
+    protected visitReasonService: VisitReasonService = new VisitReasonService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,7 +16,7 @@ export class PriorityController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.priorityService.getPriorities()
+        this.visitReasonService.getVisitReasons()
             .then((data) => {
                 res.json(data);
             })
@@ -33,7 +33,7 @@ export class PriorityController {
         let filters = {};
         if (req.query.name) filters = { ...filters, name: req.query.name };
 
-        this.priorityService.getPrioritiesPaginated(paginationDto!, filters as PriorityFilters)
+        this.visitReasonService.getVisitReasonsPaginated(paginationDto!, filters as VisitReasonFilters)
             .then((data) => {
                 res.json(data);
             })
@@ -46,7 +46,7 @@ export class PriorityController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.priorityService.getPriority(parseInt(id))
+        this.visitReasonService.getVisitReason(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -61,10 +61,10 @@ export class PriorityController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, createDto] = PriorityDto.create(req.body);
+        const [error, createDto] = VisitReasonDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.priorityService.createPriority(createDto!)
+        this.visitReasonService.createVisitReason(createDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -82,10 +82,10 @@ export class PriorityController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, updateDto] = PriorityDto.create(req.body);
+        const [error, updateDto] = VisitReasonDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.priorityService.updatePriority(id, updateDto!)
+        this.visitReasonService.updateVisitReason(id, updateDto!)
             .then((data) => {
                 res.json(data);
             })
@@ -98,7 +98,7 @@ export class PriorityController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        this.priorityService.deletePriority(parseInt(id))
+        this.visitReasonService.deleteVisitReason(parseInt(id))
             .then((data) => {
                 res.json(data);
             })

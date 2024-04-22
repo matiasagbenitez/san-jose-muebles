@@ -11,7 +11,7 @@ import { TypeOfEnvironment, initTypeOfEnvironmentModel } from './TypeOfEnvironme
 import { Brand, initBrandModel } from './Brand.model';
 import { Category, initCategoryModel } from './Category.model';
 import { UnitOfMeasure, initUnitOfMeasureModel } from './UnitOfMeasure.model';
-import { Priority, initPriorityModel } from './Priority.model';
+import { VisitReason, initVisitReasonModel } from './VisitReason.model';
 import { TypeOfProject, initTypeOfProjectModel } from './TypeOfProject';
 import { Bank, initBankModel } from './Bank.model';
 import { Supplier, initSupplierModel } from './Supplier.model';
@@ -47,7 +47,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initBrandModel(sequelize);
   initCategoryModel(sequelize);
   initUnitOfMeasureModel(sequelize);
-  initPriorityModel(sequelize);
+  initVisitReasonModel(sequelize);
   initTypeOfProjectModel(sequelize);
   initBankModel(sequelize);
   initSupplierModel(sequelize);
@@ -86,7 +86,6 @@ export {
   Brand,
   Category,
   UnitOfMeasure,
-  Priority,
   TypeOfProject,
   Bank,
   Supplier,
@@ -96,18 +95,19 @@ export {
   PurchaseItem,
   ReceptionPartial,
   ReceptionTotal,
-
+  
   SupplierAccount,
   SupplierAccountTransaction,
   PurchaseTransaction,
 
   StockAdjust,
-
+  
   InventoryBrand,
   InventoryCategory,
   InventoryItem,
   InventoryItemRetired,
   InventoryItemUpdated,
-
+  
   Client,
+  VisitReason,
 };

@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export class Priority extends Model {
+export class VisitReason extends Model {
     public id!: number;
     public name!: string;
     public color!: string;
@@ -9,8 +9,8 @@ export class Priority extends Model {
     public readonly updatedAt!: Date;
 }
 
-export const initPriorityModel = (sequelize: Sequelize) => {
-    Priority.init(
+export const initVisitReasonModel = (sequelize: Sequelize) => {
+    VisitReason.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -30,8 +30,8 @@ export const initPriorityModel = (sequelize: Sequelize) => {
         },
         {
             sequelize,
-            modelName: 'Priority',
-            tableName: 'priorities',
+            modelName: 'VisitReason',
+            tableName: 'visit_reasons',
             timestamps: true,
         }
     );

@@ -13,7 +13,7 @@ import {
   Brands,
   Categories,
   UnitsOfMeasures,
-  Priorities,
+  VisitReasons,
   TypesOfProjects,
   Banks,
   InventoryBrands,
@@ -37,7 +37,7 @@ const ParametersRoutes = () => {
           <Route path="/marcas" element={<Brands />} />
           <Route path="/categorias" element={<Categories />} />
           <Route path="/unidades-medida" element={<UnitsOfMeasures />} />
-          <Route path="/prioridades" element={<Priorities />} />
+          <Route path="/motivos-visita" element={<VisitReasons />} />
           <Route path="/tipos-proyectos" element={<TypesOfProjects />} />
           <Route path="/bancos" element={<Banks />} />
           <Route path="/marcas-herramientas" element={<InventoryBrands />} />

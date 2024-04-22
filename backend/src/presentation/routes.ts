@@ -11,7 +11,7 @@ import { TypeOfEnvironmentRoutes } from './types_of_environments/routes';
 import { BrandRoutes } from './brands/routes';
 import { CategoryRoutes } from './categories/routes';
 import { UnitOfMeasureRoutes } from './units_of_measures/routes';
-import { PriorityRoutes } from './priorities/routes';
+import { VisitReasonRoutes } from './visit_reasons/routes';
 import { TypeOfProjectRoutes } from './types_of_projects/routes';
 import { BankRoutes } from './banks/routes';
 import { SupplierRoutes } from './suppliers/routes';
@@ -49,7 +49,7 @@ export class AppRoutes {
         router.use('/api/brands', BrandRoutes.routes);
         router.use('/api/categories', CategoryRoutes.routes);
         router.use('/api/units_of_measures', UnitOfMeasureRoutes.routes);
-        router.use('/api/priorities', PriorityRoutes.routes);
+        router.use('/api/visit_reasons', VisitReasonRoutes.routes);
         router.use('/api/types_of_projects', TypeOfProjectRoutes.routes);
         router.use('/api/banks', BankRoutes.routes);
         router.use('/api/suppliers', SupplierRoutes.routes);

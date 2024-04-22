@@ -71,7 +71,9 @@ export const Parameters = () => {
         </Col>
 
         <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Parámetros de inventario de herramientas</h2>
+          <h2 className="fs-6 my-2">
+            Parámetros de inventario de herramientas
+          </h2>
           <div className="list-group small">
             <button
               className="list-group-item list-group-item-action py-1"
@@ -118,6 +120,20 @@ export const Parameters = () => {
             >
               <i className="bi bi-bank me-2 fs-6"></i>
               Gestionar bancos
+            </button>
+          </div>
+        </Col>
+
+        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
+          <h2 className="fs-6 my-2">Otros parámetros</h2>
+          <div className="list-group small">
+            <button
+              className="list-group-item list-group-item-action py-1"
+              title="Gestionar motivos de visita"
+              onClick={() => navigate("/parametros/motivos-visita")}
+            >
+              <i className="bi bi-person-raised-hand me-2 fs-6"></i>
+              Gestionar motivos de visita
             </button>
           </div>
         </Col>
