@@ -12,10 +12,11 @@ export class VisitRequestListEntity {
         public title: string,
         public start: Date,
         public end: Date,
+        public createdAt: Date
     ) { }
 
     static fromObject(object: { [key: string]: any }): VisitRequestListEntity {
-        const { id, reason, status, priority, client, locality, title, start, end } = object;
+        const { id, reason, status, priority, client, locality, title, start, end, createdAt } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!reason) throw CustomError.badRequest('Falta el motivo');
@@ -26,6 +27,7 @@ export class VisitRequestListEntity {
         if (!title) throw CustomError.badRequest('Falta el título');
         if (!start) throw CustomError.badRequest('Falta la fecha de inicio');
         if (!end) throw CustomError.badRequest('Falta la fecha de fin');
+        if (!createdAt) throw CustomError.badRequest('Falta la fecha de creación');
 
         return new VisitRequestListEntity(
             id, 
@@ -37,7 +39,8 @@ export class VisitRequestListEntity {
             locality.name,
             title, 
             start, 
-            end
+            end,
+            createdAt
         );
     }
 }

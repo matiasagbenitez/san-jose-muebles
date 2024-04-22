@@ -1,9 +1,15 @@
-import { Op } from "sequelize";
 import { VisitRequest } from "../../database/mysql/models";
 import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto } from "../../domain";
+import { Op } from "sequelize";
 
 export interface VisitRequestFilters {
-    name: string;
+    id_client?: number;
+    id_locality?: number;
+    id_visit_reason?: number;
+    priority?: string;
+    status?: string;
+    start?: Date;
+    end?: Date;
 }
 export class VisitRequestService {
 
@@ -18,7 +24,35 @@ export class VisitRequestService {
 
         // FILTERS
         let where = {};
-        if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
+        if (filters.id_client) where = { ...where, id_client: filters.id_client };
+        if (filters.id_locality) where = { ...where, id_locality: filters.id_locality };
+        if (filters.id_visit_reason) where = { ...where, id_visit_reason: filters.id_visit_reason };
+        if (filters.priority) where = { ...where, priority: filters.priority };
+
+        switch (filters.status) {
+            case 'PENDIENTE':
+                where = { ...where, status: 'PENDIENTE' };
+                break;
+            case 'REALIZADA':
+                where = { ...where, status: 'REALIZADA' };
+                break;
+            case 'CANCELADA':
+                where = { ...where, status: 'CANCELADA' };
+                break;
+            case 'ALL':
+                break;
+            default:
+                where = { ...where, status: 'PENDIENTE' };
+                break;
+        }
+
+        if (filters.start && filters.end) {
+            where = { ...where, start: { [Op.between]: [filters.start, filters.end] } }
+        } else if (filters.start) {
+            where = { ...where, start: { [Op.gte]: filters.start } }
+        } else if (filters.end) {
+            where = { ...where, start: { [Op.lte]: filters.end } }
+        }
 
         const [rows, total] = await Promise.all([
             VisitRequest.findAll({

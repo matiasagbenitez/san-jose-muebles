@@ -8,11 +8,10 @@ import {
   initialState,
   paginationReducer,
   fetchData,
-  FilterByName,
 } from "../../shared";
-import { SweetAlert2 } from "../../utils";
 import { DayJsAdapter } from "../../../helpers";
-import { VisitForm } from "./components";
+import { Filters } from "./components";
+import { LoadingSpinner } from "../../components";
 
 interface DataRow {
   id: number;
@@ -25,28 +24,31 @@ interface DataRow {
   title: string;
   start: Date;
   end: Date;
+  createdAt: Date;
 }
 
 export const VisitRequests = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [state, dispatch] = useReducer(paginationReducer, initialState);
+  const [clients, setClients] = useState([]);
   const [localities, setLocalities] = useState([]);
   const [visitReasons, setVisitReasons] = useState([]);
-  const [clients, setClients] = useState([]);
   const endpoint = "/visit_requests";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
+    setLoading(true);
     const [_, res2, res3, res4] = await Promise.all([
       await fetchData(endpoint, 1, state, dispatch),
+      await apiSJM.get("/clients/list"),
       await apiSJM.get("/localities/list"),
       await apiSJM.get("/visit_reasons/list"),
-      await apiSJM.get("/clients/list"),
     ]);
-    setLocalities(res2.data.localities);
-    setVisitReasons(res3.data.visit_reasons);
-    setClients(res4.data.clients);
+    setClients(res2.data.clients);
+    setLocalities(res3.data.localities);
+    setVisitReasons(res4.data.visit_reasons);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -81,22 +83,7 @@ export const VisitRequests = () => {
   }, [state.error]);
 
   const handleCreate = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleSubmit = async (formData: any) => {
-    const confirmation = await SweetAlert2.confirm(
-      "¿Está seguro de crear la visita?"
-    );
-    if (!confirmation.isConfirmed) return;
-    try {
-      const { data } = await apiSJM.post(endpoint, formData);
-      SweetAlert2.successToast(data.message);
-      handleHide();
-      fetch();
-    } catch (error: any) {
-      SweetAlert2.errorAlert(error.response.data.message);
-    }
+    navigate("/agenda/crear");
   };
 
   // COLUMNAS Y RENDERIZADO
@@ -108,10 +95,17 @@ export const VisitRequests = () => {
       center: true,
     },
     {
-      name: "FECHA PROGRAMADA",
+      name: "FECHA REGISTRO",
+      selector: (row: DataRow) => DayJsAdapter.toDayMonthYearHour(row.createdAt),
+      center: true,
+      maxWidth: "160px",
+    },
+    {
+      name: "FECHA VISITA",
       selector: (row: DataRow) => DayJsAdapter.toDayMonthYear(row.start),
       center: true,
-      maxWidth: "175px",
+      maxWidth: "160px",
+      style: { fontWeight: "bold" },
     },
     {
       name: "CLIENTE A VISITAR",
@@ -146,7 +140,7 @@ export const VisitRequests = () => {
         </span>
       ),
       center: true,
-      maxWidth: "175px",
+      maxWidth: "160px",
     },
     {
       name: "ESTADO",
@@ -166,14 +160,9 @@ export const VisitRequests = () => {
         </span>
       ),
       center: true,
-      maxWidth: "175px",
+      maxWidth: "160px",
     },
   ];
-
-  // MODAL
-  const handleHide = () => {
-    setIsModalOpen(false);
-  };
 
   const handleClick = (row: DataRow) => {
     navigate(`/agenda/actividad/${row.id}`);
@@ -181,14 +170,20 @@ export const VisitRequests = () => {
 
   return (
     <div>
-      <FilterByName
-        state={state}
-        dispatch={dispatch}
-        placeholder="Buscar por nombre de cliente"
-        handleFiltersChange={handleFiltersChange}
-        handleResetFilters={handleResetFilters}
-        handleCreate={handleCreate}
-      />
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <Filters
+          state={state}
+          dispatch={dispatch}
+          handleFiltersChange={handleFiltersChange}
+          handleResetFilters={handleResetFilters}
+          handleCreate={handleCreate}
+          clients={clients}
+          localities={localities}
+          visitReasons={visitReasons}
+        />
+      )}
 
       <Datatable
         title="Agenda de visitas"
@@ -200,15 +195,6 @@ export const VisitRequests = () => {
         handlePageChange={handlePageChange}
         clickableRows
         onRowClicked={handleClick}
-      />
-
-      <VisitForm
-        show={isModalOpen}
-        onHide={handleHide}
-        onSubmit={handleSubmit}
-        localities={localities}
-        visitReasons={visitReasons}
-        clients={clients}
       />
     </div>
   );

@@ -31,7 +31,13 @@ export class VisitRequestController {
         if (error) return res.status(400).json({ message: error });
 
         let filters = {};
-        if (req.query.name) filters = { ...filters, name: req.query.name };
+        if (req.query.id_client) filters = { ...filters, id_client: req.query.id_client };
+        if (req.query.id_locality) filters = { ...filters, id_locality: req.query.id_locality };
+        if (req.query.id_visit_reason) filters = { ...filters, id_visit_reason: req.query.id_visit_reason };
+        if (req.query.priority) filters = { ...filters, priority: req.query.priority };
+        if (req.query.status) filters = { ...filters, status: req.query.status };
+        if (req.query.start) filters = { ...filters, start: req.query.start };
+        if (req.query.end) filters = { ...filters, end: req.query.end };
 
         this.service.getVisitRequestsPaginated(paginationDto!, filters as VisitRequestFilters)
             .then((data) => {
