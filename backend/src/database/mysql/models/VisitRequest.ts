@@ -86,6 +86,7 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
         },
         {
             sequelize,
+            paranoid: true,
             modelName: 'VisitRequest',
             tableName: 'visit_requests',
             timestamps: true,

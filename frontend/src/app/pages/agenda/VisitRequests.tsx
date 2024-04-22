@@ -166,7 +166,7 @@ export const VisitRequests = () => {
   ];
 
   const handleClick = (row: DataRow) => {
-    navigate(`/agenda/actividad/${row.id}`);
+    navigate(`/agenda/${row.id}`);
   };
 
   return (

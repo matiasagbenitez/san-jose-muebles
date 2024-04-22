@@ -1,5 +1,5 @@
 import { VisitRequest } from "../../database/mysql/models";
-import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto } from "../../domain";
+import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity } from "../../domain";
 import { Op, Order } from "sequelize";
 
 enum OrderCriteria {
@@ -102,7 +102,7 @@ export class VisitRequestService {
                 ],
                 offset: (page - 1) * limit,
                 limit,
-                order   
+                order
             }),
             VisitRequest.count({ where })
         ]);
@@ -111,7 +111,24 @@ export class VisitRequestService {
     }
 
     public async getVisitRequest(id: number) {
+        const row = await VisitRequest.findByPk(id, {
+            include: [
+                { association: 'reason', attributes: ['name', 'color'] },
+                { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
+                { association: 'locality', attributes: ['name'] },
+            ]
+        });
+        if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');
 
+        const entity = VisitRequestDetailEntity.fromObject(row);
+        return { item: entity };
+    }
+
+    public async getVisitRequestEditable(id: number) {
+        const row = await VisitRequest.findByPk(id);
+        if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');
+        const entity = VisitRequestEditableEntity.fromObject(row);
+        return { item: entity };
     }
 
     public async createVisitRequest(createDto: VisitRequestDTO) {
