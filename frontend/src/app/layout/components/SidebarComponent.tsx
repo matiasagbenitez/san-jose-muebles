@@ -30,6 +30,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           Productos
         </MenuItem>
 
+        <MenuItem
+          component={<Link to="/clientes" />}
+          title="Clientes"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-person-circle me-3 fs-6"></i>
+          Clientes
+        </MenuItem>
+
         <SubMenu
           prefix={
             <>

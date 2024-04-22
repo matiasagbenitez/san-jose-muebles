@@ -51,3 +51,8 @@ export * from './entities/stock_adjust';
 // INVENTORY ITEMS
 export * from './dtos/inventory_item';
 export * from './entities/inventory_item';
+
+// CLIENTS
+export * from './dtos/clients';
+export * from './entities/clients';
+

@@ -25,6 +25,7 @@ import {
     InventoryItem,
     InventoryItemRetired,
     InventoryItemUpdated,
+    Client,
 
 } from '../models';
 
@@ -125,5 +126,9 @@ export const initializeAssociations = () => {
     InventoryItem.hasMany(InventoryItemRetired, { foreignKey: 'id_inventory_item', as: 'retirements', onDelete: 'RESTRICT' });
     InventoryItemRetired.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
     InventoryItemRetired.belongsTo(User, { foreignKey: 'retired_by', as: 'user_retired' });
+
+    // CLIENT
+    Locality.hasMany(Client, { foreignKey: 'id_locality', as: 'clients', onDelete: 'RESTRICT' });
+    Client.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
 
 };

@@ -12,7 +12,7 @@ import { BrandRoutes } from './brands/routes';
 import { CategoryRoutes } from './categories/routes';
 import { UnitOfMeasureRoutes } from './units_of_measures/routes';
 import { PriorityRoutes } from './priorities/routes';
-import { TypeOfProjectRoutes } from './types_of_projects/routes';           
+import { TypeOfProjectRoutes } from './types_of_projects/routes';
 import { BankRoutes } from './banks/routes';
 import { SupplierRoutes } from './suppliers/routes';
 import { BankAccountRoutes } from './bank_accounts/routes';
@@ -24,6 +24,8 @@ import { StockAdjustRoutes } from './stock_adjust/routes';
 import { InventoryBrandRoutes } from './inventory_brands/routes';
 import { InventoryCategoryRoutes } from './inventory_categories/routes';
 import { InventoryItemRoutes } from './inventory_items/routes';
+import { ClientRoutes } from './clients/routes';
+
 export class AppRoutes {
 
     static get routes(): Router {
@@ -64,6 +66,9 @@ export class AppRoutes {
         router.use('/api/inventory_brands', InventoryBrandRoutes.routes);
         router.use('/api/inventory_categories', InventoryCategoryRoutes.routes);
         router.use('/api/inventory_items', InventoryItemRoutes.routes);
+
+        router.use('/api/clients', ClientRoutes.routes);
+
 
         return router;
     }
