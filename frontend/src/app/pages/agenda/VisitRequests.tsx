@@ -108,6 +108,26 @@ export const VisitRequests = () => {
       style: { fontWeight: "bold" },
     },
     {
+      name: "ESTADO",
+      selector: (row: DataRow) => row.status,
+      cell: (row: DataRow) => (
+        <span
+          style={{ fontSize: ".9em" }}
+          className={`badge ${
+            row.status === "PENDIENTE"
+              ? "bg-warning"
+              : row.status === "REALIZADA"
+              ? "bg-success"
+              : "bg-danger"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
+      center: true,
+      maxWidth: "160px",
+    },
+    {
       name: "CLIENTE A VISITAR",
       selector: (row: DataRow) => row.client,
     },
@@ -142,26 +162,7 @@ export const VisitRequests = () => {
       center: true,
       maxWidth: "160px",
     },
-    {
-      name: "ESTADO",
-      selector: (row: DataRow) => row.status,
-      cell: (row: DataRow) => (
-        <span
-          style={{ fontSize: ".9em" }}
-          className={`badge ${
-            row.status === "PENDIENTE"
-              ? "bg-warning"
-              : row.status === "REALIZADA"
-              ? "bg-success"
-              : "bg-danger"
-          }`}
-        >
-          {row.status}
-        </span>
-      ),
-      center: true,
-      maxWidth: "160px",
-    },
+
   ];
 
   const handleClick = (row: DataRow) => {

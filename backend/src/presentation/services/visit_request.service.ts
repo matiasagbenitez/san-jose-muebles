@@ -1,7 +1,16 @@
 import { VisitRequest } from "../../database/mysql/models";
 import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto } from "../../domain";
-import { Op } from "sequelize";
+import { Op, Order } from "sequelize";
 
+enum OrderCriteria {
+    DEFAULT = '',
+    DATE_CLOSE = 'date_close',
+    DATE_FAR = 'date_far',
+    CREATE_CLOSE = 'create_close',
+    CREATE_FAR = 'create_far',
+    LESS_URGENT = 'less_urgent',
+    MORE_URGENT = 'more_urgent'
+}
 export interface VisitRequestFilters {
     id_client?: number;
     id_locality?: number;
@@ -10,6 +19,7 @@ export interface VisitRequestFilters {
     status?: string;
     start?: Date;
     end?: Date;
+    order_criteria?: string;
 }
 export class VisitRequestService {
 
@@ -54,6 +64,34 @@ export class VisitRequestService {
             where = { ...where, start: { [Op.lte]: filters.end } }
         }
 
+
+        let order: Order = [['start', 'ASC']];
+        if (filters.order_criteria) {
+            switch (filters.order_criteria) {
+                case OrderCriteria.DATE_CLOSE:
+                    order = [['start', 'ASC']];
+                    break;
+                case OrderCriteria.DATE_FAR:
+                    order = [['start', 'DESC']];
+                    break;
+                case OrderCriteria.CREATE_CLOSE:
+                    order = [['createdAt', 'ASC']];
+                    break;
+                case OrderCriteria.CREATE_FAR:
+                    order = [['createdAt', 'DESC']];
+                    break;
+                case OrderCriteria.LESS_URGENT:
+                    order = [['priority', 'ASC']];
+                    break;
+                case OrderCriteria.MORE_URGENT:
+                    order = [['priority', 'DESC']];
+                    break;
+                default:
+                    order = [['start', 'ASC']];
+                    break;
+            }
+        }
+
         const [rows, total] = await Promise.all([
             VisitRequest.findAll({
                 where,
@@ -63,7 +101,8 @@ export class VisitRequestService {
                     { association: 'locality', attributes: ['name'] },
                 ],
                 offset: (page - 1) * limit,
-                limit
+                limit,
+                order   
             }),
             VisitRequest.count({ where })
         ]);

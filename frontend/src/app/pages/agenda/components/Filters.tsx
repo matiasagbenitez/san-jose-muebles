@@ -217,20 +217,26 @@ export const Filters = ({
           <InputGroup size="sm" className="mb-3">
             <InputGroup.Text id="from">Ordenar por</InputGroup.Text>
             <Form.Select
-              name="order"
+              name="order_criteria"
               size="sm"
-              value={state.filters.order || ""}
+              value={state.filters.order_criteria || ""}
               onChange={(e) =>
                 dispatch({
                   type: "FILTERS_CHANGE",
                   newFilters: {
                     ...state.filters,
-                    order: e.target.value,
+                    order_criteria: e.target.value,
                   },
                 })
               }
             >
               <option value="">Orden por defecto</option>
+              <option value="date_close">Por fecha de visita (más cercanas primero)</option>
+              <option value="date_far">Por fecha de visita (más lejanas primero)</option>
+              <option value="create_close">Por fecha de registro (más recientes primero)</option>
+              <option value="create_far">Por fecha de registro (más antiguas primero)</option>
+              <option value="less_urgent">Prioridad (de más a menos urgente)</option>
+              <option value="more_urgent">Prioridad (de menos a más urgente)</option>
             </Form.Select>
           </InputGroup>
         </Col>

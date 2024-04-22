@@ -38,6 +38,7 @@ export class VisitRequestController {
         if (req.query.status) filters = { ...filters, status: req.query.status };
         if (req.query.start) filters = { ...filters, start: req.query.start };
         if (req.query.end) filters = { ...filters, end: req.query.end };
+        if (req.query.order_criteria) filters = { ...filters, order_criteria: req.query.order_criteria };
 
         this.service.getVisitRequestsPaginated(paginationDto!, filters as VisitRequestFilters)
             .then((data) => {
