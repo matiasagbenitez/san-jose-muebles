@@ -49,6 +49,16 @@ export class VisitRequestController {
             });
     }
 
+    getAllCalendar = async (req: Request, res: Response) => {
+        this.service.getVisitRequestsCalendar()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getById = async (req: Request, res: Response) => {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });

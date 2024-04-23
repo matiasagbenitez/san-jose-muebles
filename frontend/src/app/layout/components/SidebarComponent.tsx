@@ -57,7 +57,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
             <small>Agenda de visitas</small>
           </MenuItem>
           <MenuItem
-            component={<Link to="/calendario" />}
+            component={<Link to="/agenda/calendario" />}
             title="Ver calendario"
             style={{ height: "45px", marginLeft: "10px" }}
           >

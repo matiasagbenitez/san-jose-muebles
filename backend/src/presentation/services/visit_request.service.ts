@@ -1,5 +1,5 @@
 import { VisitRequest } from "../../database/mysql/models";
-import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity } from "../../domain";
+import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity } from "../../domain";
 import { Op, Order } from "sequelize";
 
 enum OrderCriteria {
@@ -108,6 +108,18 @@ export class VisitRequestService {
         ]);
         const entities = rows.map(priority => VisitRequestListEntity.fromObject(priority));
         return { items: entities, total_items: total };
+    }
+
+    public async getVisitRequestsCalendar() {
+        const rows = await VisitRequest.findAll({
+            include: [
+                { association: 'reason', attributes: ['name', 'color'] },
+                { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
+                { association: 'locality', attributes: ['name'] },
+            ]
+        });
+        const entities = rows.map(priority => CalendarEventEntity.fromObject(priority));
+        return { items: entities };
     }
 
     public async getVisitRequest(id: number) {
