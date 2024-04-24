@@ -92,38 +92,30 @@ export const VisitRequests = () => {
       name: "FECHA PROGRAMADA",
       selector: (row: DataRow) =>
         row.schedule === "FULL_SCHEDULED"
-          ? DayJsAdapter.toDayMonthYearHour(row.start!)
+          ? DayJsAdapter.toDayMonthYearHour(row.start!) + " hs"
           : row.schedule === "PARTIAL_SCHEDULED"
           ? DayJsAdapter.toDayMonthYear(row.start!)
-          : "-",
-      center: true,
+          : "",
+      // center: true,
       maxWidth: "160px",
-      style: { fontWeight: "bold", backgroundColor: "#f0f0f0" },
+      style: { fontWeight: "bold" },
     },
     {
       name: "ESTADO",
       selector: (row: DataRow) => row.status,
       cell: (row: DataRow) => (
-        <>
-          <span
-            style={{ fontSize: ".9em", color: "black" }}
-            className={`badge ${
-              row.status === "PENDIENTE"
-                ? "bg-warning"
-                : row.status === "REALIZADA"
-                ? "bg-success"
-                : "bg-danger"
-            }`}
-          >
-            {row.status}
-          </span>
-          {row.overdue && (
-            <i
-              className="bi bi-exclamation-triangle-fill fs-6 text-danger ms-2"
-              title="¡La fecha programada ya pasó!"
-            ></i>
-          )}
-        </>
+        <span
+          style={{ fontSize: ".9em", color: "black" }}
+          className={`badge ${
+            row.status === "PENDIENTE"
+              ? "bg-warning"
+              : row.status === "REALIZADA"
+              ? "bg-success"
+              : "bg-danger"
+          }`}
+        >
+          {row.status}
+        </span>
       ),
       center: true,
       maxWidth: "160px",
@@ -161,6 +153,15 @@ export const VisitRequests = () => {
     },
   ];
 
+  const conditionalRowStyles = [
+    {
+      when: (row: DataRow) => row.overdue,
+      style: {
+        backgroundColor: "#f8d7da",
+      },
+    },
+  ];
+
   const handleClick = (row: DataRow) => {
     navigate(`/agenda/${row.id}`);
   };
@@ -183,6 +184,7 @@ export const VisitRequests = () => {
       )}
 
       <Datatable
+        conditionalRowStyles={conditionalRowStyles}
         title="Agenda de visitas"
         columns={columns as TableColumn<DataRow>[]}
         data={state.data}

@@ -154,6 +154,7 @@ export const Products = () => {
           },
         },
       ],
+      style: { fontWeight: "bold", backgroundColor: "#f0f0f0" },
       maxWidth: "150px",
       wrap: true,
       center: true,

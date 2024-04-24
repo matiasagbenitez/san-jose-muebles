@@ -118,6 +118,7 @@ export const SuppliersAccounts = () => {
       wrap: true,
       right: true,
       maxWidth: "200px",
+      style: { fontWeight: "bold", backgroundColor: "#f0f0f0" },
     },
     {
       name: "ÚLTIMO MOVIMIENTO",

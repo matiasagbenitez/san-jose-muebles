@@ -13,6 +13,7 @@ interface DatatableProps {
   handlePageChange: (page: number) => Promise<void>;
   clickableRows?: boolean;
   onRowClicked?: (row: any) => void;
+  conditionalRowStyles?: any[];
 }
 
 const NoDataComponent = () => {
@@ -45,6 +46,7 @@ export const Datatable = ({
   handlePageChange,
   clickableRows = false,
   onRowClicked,
+  conditionalRowStyles,
 }: DatatableProps) => {
   const memoizedDataTable = useMemo(
     () => (
@@ -70,6 +72,7 @@ export const Datatable = ({
         highlightOnHover={clickableRows}
         pointerOnHover={clickableRows}
         onRowDoubleClicked={ clickableRows ? onRowClicked : undefined}
+        conditionalRowStyles={conditionalRowStyles}
       />
     ),
     [
