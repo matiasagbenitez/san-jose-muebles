@@ -6,3 +6,4 @@ export * from './MyColorPicker';
 export * from './MyTextArea';
 export * from './MyInputDate';
 export * from './MyInputDatetime';
+export * from './MyDatepicker';

@@ -4,26 +4,28 @@ import * as Yup from "yup";
 import { Button, Col, Row } from "react-bootstrap";
 import apiSJM from "../../../../api/apiSJM";
 
-import {
-  MyInputDatetime,
-  MySelect,
-  MyTextArea,
-  MyTextInput,
-} from "../../../components/forms";
-import { VisitFormInterface } from "../interfaces";
+import { MySelect, MyTextInput } from "../../../components/forms";
+import { VisitRequestFormInterface } from "../interfaces";
 
-const visitForm: VisitFormInterface = {
-  id_visit_reason: "",
-  visible_for: "ALL",
+// import ReactDatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import es from "date-fns/locale/es";
+import { addHours } from "date-fns";
+registerLocale("es", es as any);
+
+const visitForm: VisitRequestFormInterface = {
+  id_visit_reason: "1",
   status: "PENDIENTE",
   priority: "MEDIA",
-  id_client: "",
-  id_locality: "",
+  id_client: "1",
+  id_locality: "1",
   address: "",
-  title: "",
-  description: "",
-  start: "" as any,
-  end: "" as any,
+
+  notes: "",
+  schedule: "NOT_SCHEDULED",
+  start: new Date(),
+  end: addHours(new Date(), 1),
 };
 
 interface ParamsInterface {
@@ -34,7 +36,7 @@ interface ParamsInterface {
 interface FormProps {
   editMode?: boolean;
   onSubmit: (values: any) => void;
-  initialForm?: VisitFormInterface;
+  initialForm?: VisitRequestFormInterface;
 }
 
 export const VisitForm = ({
@@ -62,7 +64,7 @@ export const VisitForm = ({
   }, []);
 
   return (
-    <div className="p-">
+    <>
       <h1 className="fs-5">
         {editMode ? "Modificar visita" : "Registrar nueva visita"}
       </h1>
@@ -71,24 +73,32 @@ export const VisitForm = ({
       <Formik
         initialValues={initialForm}
         onSubmit={(values) => {
+          if (values.schedule === "NOT_SCHEDULED") {
+            values.start = null;
+            values.end = null;
+          } else if (values.schedule === "PARTIAL_SCHEDULED") {
+            values.end = values.start;
+          }
           onSubmit(values);
         }}
         validationSchema={Yup.object({
-          id_client: Yup.string().required("El cliente es requerido"),
           id_visit_reason: Yup.string().required(
             "El motivo de visita es requerido"
           ),
+          priority: Yup.string().required("La prioridad es requerida"),
+          id_client: Yup.string().required("El cliente es requerido"),
           id_locality: Yup.string().required("La localidad es requerida"),
-          title: Yup.string().required("El título es requerido"),
-          start: Yup.date().required("La fecha de inicio es requerida"),
-          end: Yup.date().required("La fecha de fin es requerida"),
+
+          schedule: Yup.string().required("El horario de visita es requerido"),
         })}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, values, setFieldValue }) => (
           <Form id="form">
-            <b className="fs-6 text-muted">Información general</b>
+            <p className="fs-6 text-muted fw-bold mb-2">
+              Información de la visita
+            </p>
             <Row>
-              <Col md={6}>
+              <Col lg={4}>
                 <MySelect
                   label="Cliente a visitar"
                   name="id_client"
@@ -104,7 +114,7 @@ export const VisitForm = ({
                     ))}
                 </MySelect>
               </Col>
-              <Col md={6}>
+              <Col lg={4}>
                 <MySelect
                   label="Motivo de visita"
                   name="id_visit_reason"
@@ -123,7 +133,21 @@ export const VisitForm = ({
                 </MySelect>
               </Col>
 
-              <Col md={6}>
+              <Col lg={4}>
+                <MySelect
+                  label="Prioridad"
+                  name="priority"
+                  as="select"
+                  isInvalid={!!errors.priority && touched.priority}
+                >
+                  <option value="BAJA">BAJA</option>
+                  <option value="MEDIA">MEDIA</option>
+                  <option value="ALTA">ALTA</option>
+                  <option value="URGENTE">URGENTE</option>
+                </MySelect>
+              </Col>
+
+              <Col lg={4}>
                 <MySelect
                   label="Localidad a visitar"
                   name="id_locality"
@@ -140,7 +164,7 @@ export const VisitForm = ({
                 </MySelect>
               </Col>
 
-              <Col md={6}>
+              <Col lg={8}>
                 <MyTextInput
                   label="Dirección (opcional)"
                   name="address"
@@ -149,55 +173,108 @@ export const VisitForm = ({
                   isInvalid={!!errors.address && touched.address}
                 />
               </Col>
+              <Col>
+                <MyTextInput
+                  label="Notas adicionales (opcional)"
+                  name="notes"
+                  type="text"
+                  placeholder="Ingrese notas adicionales"
+                  isInvalid={!!errors.notes && touched.notes}
+                />
+              </Col>
             </Row>
+
             <br />
 
-            <b className="fs-6 text-muted">Información de la visita</b>
+            <p className="fs-6 text-muted fw-bold mb-2">Horario de visita</p>
             <Row>
-              <Col md={9}>
-                <MyTextInput
-                  label="Título de la visita (opcional)"
-                  name="title"
-                  type="text"
-                  placeholder="Ingrese un título"
-                  isInvalid={!!errors.title && touched.title}
-                />
-              </Col>
-              <Col md={3}>
+              <Col lg={4}>
                 <MySelect
-                  label="Prioridad"
-                  name="priority"
-                  as="select"
-                  isInvalid={!!errors.priority && touched.priority}
+                  name="schedule"
+                  isInvalid={!!errors.schedule && touched.schedule}
                 >
-                  <option value="BAJA">BAJA</option>
-                  <option value="MEDIA">MEDIA</option>
-                  <option value="ALTA">ALTA</option>
-                  <option value="URGENTE">URGENTE</option>
+                  <option value="NOT_SCHEDULED">
+                    No definir día ni hora de visita
+                  </option>
+                  <option value="PARTIAL_SCHEDULED">
+                    Definir únicamente día de visita
+                  </option>
+                  <option value="FULL_SCHEDULED">
+                    Definir día y horario de visita
+                  </option>
                 </MySelect>
-              </Col>
-              <Col xs={12}>
-                <MyTextArea
-                  label="Descripción (opcional)"
-                  name="description"
-                  placeholder="Ingrese anotaciones adicionales"
-                  rows={3}
-                  isInvalid={!!errors.description && touched.description}
-                />
-              </Col>
-              <Col md={6}>
-                <MyInputDatetime
-                  label="Fecha de inicio"
-                  name="start"
-                  isInvalid={!!errors.start && touched.start}
-                />
-              </Col>
-              <Col md={6}>
-                <MyInputDatetime
-                  label="Fecha de fin"
-                  name="end"
-                  isInvalid={!!errors.end && touched.end}
-                />
+
+                {values.schedule === "PARTIAL_SCHEDULED" && (
+                  <div className="py-3 d-flex flex-column">
+                    <label htmlFor="ps_start" className="small fw-bold">
+                      Día de visita
+                    </label>
+                    <DatePicker
+                      id="ps_start"
+                      name="start"
+                      className="form-control w-100"
+                      selected={values.start}
+                      onChange={(date: Date) => setFieldValue("start", date)}
+                      dateFormat="dd/MM/yyyy"
+                      locale="es"
+                      required
+                      autoComplete="off"
+                    />
+                  </div>
+                )}
+
+                {values.schedule === "FULL_SCHEDULED" && (
+                  <Row>
+                    <Col xs={12}>
+                      <div className="py-3 d-flex flex-column">
+                        <label htmlFor="fs_start" className="small fw-bold">
+                          Horario de inicio (desde)
+                        </label>
+                        <DatePicker
+                          id="fs_start"
+                          name="start"
+                          className="form-control"
+                          selected={values.start}
+                          onChange={(date: Date) => {
+                            setFieldValue("start", date);
+                            setFieldValue("end", addHours(date, 1));
+                          }}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={30}
+                          timeCaption="Hora"
+                          dateFormat="dd/MM/yyyy HH:mm"
+                          locale="es"
+                          autoComplete="off"
+                          required
+                        />
+                      </div>
+                    </Col>
+                    <Col xs={12}>
+                      <div className="pb-2 d-flex flex-column">
+                        <label htmlFor="fs_end" className="small fw-bold">
+                          Horario de fin (hasta)
+                        </label>
+                        <DatePicker
+                          id="fs_end"
+                          name="end"
+                          className="form-control"
+                          selected={values.end}
+                          onChange={(date: Date) => setFieldValue("end", date)}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={30}
+                          timeCaption="Hora"
+                          dateFormat="dd/MM/yyyy HH:mm"
+                          locale="es"
+                          minDate={values.start}
+                          autoComplete="off"
+                          required
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                )}
               </Col>
             </Row>
 
@@ -212,6 +289,6 @@ export const VisitForm = ({
           </Form>
         )}
       </Formik>
-    </div>
+    </>
   );
 };

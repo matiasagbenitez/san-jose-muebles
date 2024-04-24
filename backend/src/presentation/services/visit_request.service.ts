@@ -64,34 +64,6 @@ export class VisitRequestService {
             where = { ...where, start: { [Op.lte]: filters.end } }
         }
 
-
-        let order: Order = [['start', 'ASC']];
-        if (filters.order_criteria) {
-            switch (filters.order_criteria) {
-                case OrderCriteria.DATE_CLOSE:
-                    order = [['start', 'ASC']];
-                    break;
-                case OrderCriteria.DATE_FAR:
-                    order = [['start', 'DESC']];
-                    break;
-                case OrderCriteria.CREATE_CLOSE:
-                    order = [['createdAt', 'ASC']];
-                    break;
-                case OrderCriteria.CREATE_FAR:
-                    order = [['createdAt', 'DESC']];
-                    break;
-                case OrderCriteria.LESS_URGENT:
-                    order = [['priority', 'ASC']];
-                    break;
-                case OrderCriteria.MORE_URGENT:
-                    order = [['priority', 'DESC']];
-                    break;
-                default:
-                    order = [['start', 'ASC']];
-                    break;
-            }
-        }
-
         const [rows, total] = await Promise.all([
             VisitRequest.findAll({
                 where,
@@ -102,7 +74,6 @@ export class VisitRequestService {
                 ],
                 offset: (page - 1) * limit,
                 limit,
-                order
             }),
             VisitRequest.count({ where })
         ]);
@@ -112,6 +83,7 @@ export class VisitRequestService {
 
     public async getVisitRequestsCalendar() {
         const rows = await VisitRequest.findAll({
+            where: { status: 'PENDIENTE', start: { [Op.ne]: null } },
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },
                 { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
@@ -143,10 +115,10 @@ export class VisitRequestService {
         return { item: entity };
     }
 
-    public async createVisitRequest(createDto: VisitRequestDTO) {
+    public async createVisitRequest(createDto: VisitRequestDTO, id_user: number) {
 
         try {
-            await VisitRequest.create({ ...createDto });
+            await VisitRequest.create({ ...createDto, id_user });
             return { message: '¡Solitud de visita creada correctamente!' };
         } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);

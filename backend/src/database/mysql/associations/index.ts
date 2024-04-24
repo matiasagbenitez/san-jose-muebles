@@ -29,7 +29,7 @@ import {
     VisitReason,
 
 } from '../models';
-import { VisitRequest } from '../models/VisitRequest';
+import { VisitRequest } from '../models/VisitRequest.model';
 
 export const initializeAssociations = () => {
 

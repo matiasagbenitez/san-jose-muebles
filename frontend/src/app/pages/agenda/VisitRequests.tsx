@@ -12,19 +12,13 @@ import {
 import { DayJsAdapter } from "../../../helpers";
 import { Filters } from "./components";
 import { LoadingSpinner } from "../../components";
+import { VisitRequestListItemInterface as DataRow } from "./interfaces";
 
-interface DataRow {
-  id: number;
-  reason: string;
-  reason_color: string;
-  status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
-  priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
-  client: string;
-  locality: string;
-  title: string;
-  start: Date;
-  end: Date;
-  createdAt: Date;
+enum Priority {
+  BAJA = "#B5D6A7",
+  MEDIA = "#FFF47A",
+  ALTA = "#FD9800",
+  URGENTE = "#F55D1E",
 }
 
 export const VisitRequests = () => {
@@ -95,14 +89,11 @@ export const VisitRequests = () => {
       center: true,
     },
     {
-      name: "FECHA REGISTRO",
-      selector: (row: DataRow) => DayJsAdapter.toDayMonthYearHour(row.createdAt),
-      center: true,
-      maxWidth: "160px",
-    },
-    {
       name: "FECHA VISITA",
-      selector: (row: DataRow) => DayJsAdapter.toDayMonthYear(row.start),
+      selector: (row: DataRow) =>
+        row.start
+          ? DayJsAdapter.toDayMonthYear(row.start)
+          : "Sin fecha definida",
       center: true,
       maxWidth: "160px",
       style: { fontWeight: "bold" },
@@ -112,7 +103,7 @@ export const VisitRequests = () => {
       selector: (row: DataRow) => row.status,
       cell: (row: DataRow) => (
         <span
-          style={{ fontSize: ".9em" }}
+          style={{ fontSize: ".9em", color: "black" }}
           className={`badge ${
             row.status === "PENDIENTE"
               ? "bg-warning"
@@ -145,16 +136,12 @@ export const VisitRequests = () => {
       selector: (row: DataRow) => row.priority,
       cell: (row: DataRow) => (
         <span
-          style={{ fontSize: ".9em" }}
-          className={`badge ${
-            row.priority === "BAJA"
-              ? "bg-secondary"
-              : row.priority === "MEDIA"
-              ? "bg-primary"
-              : row.priority === "ALTA"
-              ? "bg-warning"
-              : "bg-danger"
-          }`}
+          style={{
+            fontSize: ".9em",
+            backgroundColor: Priority[row.priority],
+            color: "black",
+          }}
+          className={`badge`}
         >
           {row.priority}
         </span>
@@ -162,7 +149,6 @@ export const VisitRequests = () => {
       center: true,
       maxWidth: "160px",
     },
-
   ];
 
   const handleClick = (row: DataRow) => {

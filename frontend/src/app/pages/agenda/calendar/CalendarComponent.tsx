@@ -11,6 +11,7 @@ interface Props {
 }
 
 export const CalendarComponent = ({ events }: Props) => {
+  console.log("events", events);
 
   const myEventsList: Event[] = [
     {
@@ -49,22 +50,18 @@ export const CalendarComponent = ({ events }: Props) => {
     },
   ];
 
-  const eventStyleGetter = (
-    event: Event
-  ) => {
+  const eventStyleGetter = (event: Event) => {
     enum Priority {
-      BAJA = "bg-secondary",
-      MEDIA = "bg-primary",
-      ALTA = "bg-warning",
-      URGENTE = "bg-danger",
+      BAJA = "#B5D6A7",
+      MEDIA = "#FFF47A",
+      ALTA = "#FD9800",
+      URGENTE = "#F55D1E",
     }
-    const bg_priority =
-      Priority[event.resource.priority as keyof typeof Priority] ||
-      "bg-secondary";
+    const bg_priority = Priority[event.resource.priority as keyof typeof Priority] || "#fff";
 
     return {
-      className: bg_priority,
       style: {
+        backgroundColor: bg_priority,
         fontSize: ".8em",
         color: "black",
       },
@@ -88,8 +85,8 @@ export const CalendarComponent = ({ events }: Props) => {
         eventPropGetter={eventStyleGetter}
         popup
         selectable
-        timeslots={2}
-        step={15}
+        timeslots={1}
+        step={60}
         onDoubleClickEvent={handleDoubleClick}
       />
     </>

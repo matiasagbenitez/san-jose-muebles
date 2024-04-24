@@ -13,7 +13,7 @@ export class CalendarEventEntity {
             phone: string,
             locality: string,
             address: string,
-            description: string,
+            notes: string,
             status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA',
             reason: string,
             reason_color: string,
@@ -21,17 +21,17 @@ export class CalendarEventEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): CalendarEventEntity {
-        const { id, title, start, end, priority, client, locality, address, description, status, reason } = object;
+        const { id, reason, status, priority, client, locality, address, notes, schedule, start, end } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
-        if (!title) throw CustomError.badRequest('Falta el título');
-        if (!start) throw CustomError.badRequest('Falta la fecha de inicio');
-        if (!end) throw CustomError.badRequest('Falta la fecha de fin');
+        if (!reason) throw CustomError.badRequest('Falta el motivo');
+        if (!status) throw CustomError.badRequest('Falta el estado');
         if (!priority) throw CustomError.badRequest('Falta la prioridad');
         if (!client) throw CustomError.badRequest('Falta el cliente');
         if (!locality) throw CustomError.badRequest('Falta la localidad');
-        if (!status) throw CustomError.badRequest('Falta el estado');
-        if (!reason) throw CustomError.badRequest('Falta el motivo');
+
+        let allDay: boolean = false;
+        if (schedule === 'PARTIAL_SCHEDULED') allDay = true;
 
         const eventTitle = `${client.name} - ${reason.name}`;
 
@@ -41,7 +41,7 @@ export class CalendarEventEntity {
             phone: client.phone,
             locality: locality.name,
             address: address,
-            description: description,
+            notes: notes,
             status: status,
             reason: reason.name,
             reason_color: reason.color,
@@ -49,7 +49,7 @@ export class CalendarEventEntity {
 
         return new CalendarEventEntity(
             id,
-            false,
+            allDay,
             eventTitle,
             start,
             end,

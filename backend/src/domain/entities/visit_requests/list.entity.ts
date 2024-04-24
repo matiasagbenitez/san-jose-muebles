@@ -3,44 +3,33 @@ import { CustomError } from '../../errors/custom.error';
 export class VisitRequestListEntity {
     constructor(
         public id: number,
-        public reason: string,
-        public reason_color: string,
+        public start: Date | null,
         public status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA',
-        public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
         public client: string,
         public locality: string,
-        public title: string,
-        public start: Date,
-        public end: Date,
-        public createdAt: Date
+        public reason: string,
+        public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
     ) { }
 
     static fromObject(object: { [key: string]: any }): VisitRequestListEntity {
-        const { id, reason, status, priority, client, locality, title, start, end, createdAt } = object;
+
+        const { id, start, status, client, locality, reason, priority } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
-        if (!reason) throw CustomError.badRequest('Falta el motivo');
         if (!status) throw CustomError.badRequest('Falta el estado');
-        if (!priority) throw CustomError.badRequest('Falta la prioridad');
         if (!client) throw CustomError.badRequest('Falta el cliente');
         if (!locality) throw CustomError.badRequest('Falta la localidad');
-        if (!title) throw CustomError.badRequest('Falta el título');
-        if (!start) throw CustomError.badRequest('Falta la fecha de inicio');
-        if (!end) throw CustomError.badRequest('Falta la fecha de fin');
-        if (!createdAt) throw CustomError.badRequest('Falta la fecha de creación');
+        if (!reason) throw CustomError.badRequest('Falta el motivo');
+        if (!priority) throw CustomError.badRequest('Falta la prioridad');
 
         return new VisitRequestListEntity(
-            id, 
-            reason.name,
-            reason.color,
-            status, 
-            priority, 
+            id,
+            start,
+            status,
             client.name,
             locality.name,
-            title, 
-            start, 
-            end,
-            createdAt
+            reason.name,
+            priority
         );
     }
 }

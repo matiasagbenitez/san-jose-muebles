@@ -1,5 +1,5 @@
 import { VisitForm } from "./components";
-import { VisitFormInterface } from "./interfaces";
+import { VisitRequestFormInterface } from "./interfaces";
 import { SweetAlert2 } from "../../utils";
 import apiSJM from "../../../api/apiSJM";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,7 +9,7 @@ import { LoadingSpinner } from "../../components";
 export const EditVisitRequest = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const [visit, setVisit] = useState<VisitFormInterface>();
+  const [visit, setVisit] = useState<VisitRequestFormInterface>();
   const navigate = useNavigate();
 
   const fetch = async () => {
@@ -28,7 +28,7 @@ export const EditVisitRequest = () => {
     fetch();
   }, []);
 
-  const handleSubmit = async (formData: VisitFormInterface) => {
+  const handleSubmit = async (formData: VisitRequestFormInterface) => {
     const confirmation = await SweetAlert2.confirm(
       "¿Estás seguro de actualizar la visita?"
     );

@@ -1,5 +1,5 @@
 import { VisitForm } from "./components";
-import { VisitFormInterface } from "./interfaces";
+import { VisitRequestFormInterface } from "./interfaces";
 import { SweetAlert2 } from "../../utils";
 import apiSJM from "../../../api/apiSJM";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const CreateVisitRequest = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = async (formData: VisitFormInterface) => {
+  const handleSubmit = async (formData: VisitRequestFormInterface) => {
     const confirmation = await SweetAlert2.confirm(
       "¿Estás seguro de crear la visita?"
     );

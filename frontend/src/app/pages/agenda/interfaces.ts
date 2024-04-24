@@ -1,39 +1,25 @@
-export interface VisitFormInterface {
+export interface VisitRequestFormInterface {
     id_visit_reason: string;
-    visible_for: "ALL" | "ADMIN";
     status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
     priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
     id_client: string;
     id_locality: string;
     address: string;
-    title: string;
-    description: string;
-    start: Date;
-    end: Date;
-    createdAt: Date;
+    
+    notes: string;
+    schedule: "NOT_SCHEDULED" | "PARTIAL_SCHEDULED" | "FULL_SCHEDULED";
+    start: Date | null;
+    end: Date | null;
 }
 
-interface ClientData {
-    name: string;
-    phone: string;
-    locality: string;
-}
-
-export interface VisitRequestInterface {
+export interface VisitRequestListItemInterface {
     id: number;
-    reason: string;
-    reason_color: string;
-    status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA';
-    priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE';
-    overdue: boolean;
-    client: ClientData;
+    start: Date | null;
+    status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
+    client: string;
     locality: string;
-    address: string;
-    title: string;
-    description: string;
-    start: Date;
-    end: Date;
-    createdAt: Date;
+    reason: string;
+    priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
 }
 
 export interface EditableVisitRequest {

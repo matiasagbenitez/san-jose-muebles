@@ -95,10 +95,10 @@ export class VisitRequestController {
         const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
         if (id_error) return res.status(400).json({ message: id_error });
 
-        const [error, createDto] = VisitRequestDTO.create({ ...req.body, id_user: loggedUserIdDto!.id_user });
+        const [error, createDto] = VisitRequestDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.service.createVisitRequest(createDto!)
+        this.service.createVisitRequest(createDto!, loggedUserIdDto!.id_user)
             .then((data) => {
                 res.json(data);
             })
