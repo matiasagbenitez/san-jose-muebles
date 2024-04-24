@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
 import { Calendar, Event } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
 import { daysLocalizer as localizer } from "./getLocalizer";
 import { getMessagesES } from "./getMessagesES";
+import { useCallback, useEffect, useState } from "react";
 import { ModalVisit } from "./ModalVisit";
 
 interface Props {
@@ -31,31 +32,33 @@ type MonthsRange = {
 export const CalendarComponent = ({ events, refetchEvents }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [date, setDate] = useState<Date>(new Date());
+  const [month, setMonth] = useState<number>(
+    new Date().getMonth() === 0 ? 1 : new Date().getMonth() + 1
+  );
+  const [year, setYear] = useState<number>(new Date().getFullYear());
 
-  const [monthsRange, setMonthsRange] = useState<MonthsRange>(() => {
-    const currentMonth = date.getMonth() + 1;
-    const currentYear = date.getFullYear();
-    return {
-      min: {
-        month: currentMonth === 1 ? 12 : currentMonth - 1,
-        year: currentMonth === 1 ? currentYear - 1 : currentYear,
-      },
-      max: {
-        month: currentMonth === 12 ? 1 : currentMonth + 1,
-        year: currentMonth === 12 ? currentYear + 1 : currentYear,
-      },
-    };
-  });
-
-  const eventStyleGetter = (event: Event) => ({
-    style: {
-      backgroundColor: Priority[event.resource.priority as keyof typeof Priority] || "#fff",
-      fontSize: ".8em",
-      color: "black",
-      padding: "0.2rem",
+  const [monthsRange, setMonthsRange] = useState<MonthsRange>({
+    min: {
+      month: month - 1 < 1 ? 12 : month - 1,
+      year: month - 1 < 1 ? year - 1 : year,
+    },
+    max: {
+      month: month + 1 > 12 ? 1 : month + 1,
+      year: month + 1 > 12 ? year + 1 : year,
     },
   });
+
+  const eventStyleGetter = (event: Event) => {
+    return {
+      style: {
+        backgroundColor:
+          Priority[event.resource.priority as keyof typeof Priority] || "#fff",
+        fontSize: ".8em",
+        color: "black",
+        padding: "0.2rem",
+      },
+    };
+  };
 
   const handleDoubleClick = useCallback((event: Event) => {
     setSelectedEvent(event);
@@ -66,32 +69,37 @@ export const CalendarComponent = ({ events, refetchEvents }: Props) => {
     if (!showModal) setSelectedEvent(null);
   }, [showModal]);
 
-  const handleNavigate = (newDate: Date) => {
-    if (newDate.getMonth() !== date.getMonth() || newDate.getFullYear() !== date.getFullYear()) {
-      setDate(newDate);
-      const newMonth = newDate.getMonth() + 1;
-      const newYear = newDate.getFullYear();
+  const handleNavigate = (date: Date) => {
+    const newMonth = date.getMonth() + 1;
+    const newYear = date.getFullYear();
+
+    if (newMonth !== month || newYear !== year) {
+      setMonth(newMonth);
+      setYear(newYear);
       setMonthsRange({
         min: {
-          month: newMonth === 1 ? 12 : newMonth - 1,
-          year: newMonth === 1 ? newYear - 1 : newYear,
+          month: newMonth - 1 < 1 ? 12 : newMonth - 1,
+          year: newMonth - 1 < 1 ? newYear - 1 : newYear,
         },
         max: {
-          month: newMonth === 12 ? 1 : newMonth + 1,
-          year: newMonth === 12 ? newYear + 1 : newYear,
+          month: newMonth + 1 > 12 ? 1 : newMonth + 1,
+          year: newMonth + 1 > 12 ? newYear + 1 : newYear,
         },
       });
 
-      const mustRefetch = newMonth === monthsRange.min.month || newMonth === monthsRange.max.month;
-      if (refetchEvents && mustRefetch) {
+      const must_refetch =
+        newMonth === monthsRange.min.month ||
+        newMonth === monthsRange.max.month;
+
+      if (refetchEvents && must_refetch) {
         refetchEvents({
           min: {
-            month: newMonth === 1 ? 12 : newMonth - 1,
-            year: newMonth === 1 ? newYear - 1 : newYear,
+            month: newMonth - 1 < 1 ? 12 : newMonth - 1,
+            year: newMonth - 1 < 1 ? newYear - 1 : newYear,
           },
           max: {
-            month: newMonth === 12 ? 1 : newMonth + 1,
-            year: newMonth === 12 ? newYear + 1 : newYear,
+            month: newMonth + 1 > 12 ? 1 : newMonth + 1,
+            year: newMonth + 1 > 12 ? newYear + 1 : newYear,
           },
         });
       }
@@ -116,6 +124,7 @@ export const CalendarComponent = ({ events, refetchEvents }: Props) => {
         onDoubleClickEvent={handleDoubleClick}
         onNavigate={handleNavigate}
       />
+
       <ModalVisit
         event={selectedEvent}
         showModal={showModal}

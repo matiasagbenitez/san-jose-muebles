@@ -24,7 +24,17 @@ export const CalendarPage = () => {
     fetchEvents();
   }, []);
 
+  const refetchEvents = (limits: any) => {
+    console.log({ ...limits });
+  };
+
   return (
-    <>{loading ? <LoadingSpinner /> : <CalendarComponent events={events} />}</>
+    <>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <CalendarComponent events={events} refetchEvents={refetchEvents} />
+      )}
+    </>
   );
 };
