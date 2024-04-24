@@ -61,7 +61,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
             title="Ver calendario de visitas pendientes"
             style={{ height: "45px", marginLeft: "10px" }}
           >
-            <small>Calendario pendientes</small>
+            <small>Ver calendario</small>
           </MenuItem>
         </SubMenu>
 

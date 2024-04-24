@@ -8,15 +8,15 @@ export class CalendarEventEntity {
         public start: Date,
         public end: Date,
         public resource: {
+            id: number,
             priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
             client: string,
             phone: string,
             locality: string,
             address: string,
             notes: string,
-            status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA',
             reason: string,
-            reason_color: string,
+            schedule: 'FULL_SCHEDULED' | 'PARTIAL_SCHEDULED' | 'NOT_SCHEDULED'
         }
     ) { }
 
@@ -36,15 +36,15 @@ export class CalendarEventEntity {
         const eventTitle = `${client.name} - ${reason.name}`;
 
         const resource = {
+            id: id,
             priority: priority,
             client: client.name,
             phone: client.phone,
             locality: locality.name,
             address: address,
             notes: notes,
-            status: status,
             reason: reason.name,
-            reason_color: reason.color,
+            schedule: schedule,
         };
 
         return new CalendarEventEntity(
