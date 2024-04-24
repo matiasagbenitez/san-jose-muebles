@@ -208,7 +208,7 @@ export const VisitForm = ({
                       id="ps_start"
                       name="start"
                       className="form-control w-100"
-                      selected={values.start}
+                      selected={values.start || new Date()}
                       onChange={(date: Date) => setFieldValue("start", date)}
                       dateFormat="dd/MM/yyyy"
                       locale="es"
@@ -229,7 +229,11 @@ export const VisitForm = ({
                           id="fs_start"
                           name="start"
                           className="form-control"
-                          selected={values.start}
+                          selected={
+                            values.start === null
+                              ? new Date()
+                              : new Date(values.start)
+                          }
                           onChange={(date: Date) => {
                             setFieldValue("start", date);
                             setFieldValue("end", addHours(date, 1));
@@ -254,7 +258,11 @@ export const VisitForm = ({
                           id="fs_end"
                           name="end"
                           className="form-control"
-                          selected={values.end}
+                          selected={
+                            values.end === null
+                              ? addHours(new Date(), 1)
+                              : new Date(values.end)
+                          }
                           onChange={(date: Date) => setFieldValue("end", date)}
                           showTimeSelect
                           timeFormat="HH:mm"

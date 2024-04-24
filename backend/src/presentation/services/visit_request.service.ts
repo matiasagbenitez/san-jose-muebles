@@ -1,6 +1,6 @@
 import { VisitRequest } from "../../database/mysql/models";
 import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity } from "../../domain";
-import { Op, Order } from "sequelize";
+import { Op, Order, Sequelize } from "sequelize";
 
 export interface VisitRequestFilters {
     id_client?: number;
@@ -66,6 +66,9 @@ export class VisitRequestService {
                 ],
                 offset: (page - 1) * limit,
                 limit,
+                order: [
+                    Sequelize.literal('start IS NULL, start ASC'),
+                  ],
             }),
             VisitRequest.count({ where })
         ]);
@@ -80,7 +83,7 @@ export class VisitRequestService {
                 { association: 'reason', attributes: ['name', 'color'] },
                 { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
                 { association: 'locality', attributes: ['name'] },
-            ]
+            ],
         });
         const entities = rows.map(priority => CalendarEventEntity.fromObject(priority));
         return { items: entities };

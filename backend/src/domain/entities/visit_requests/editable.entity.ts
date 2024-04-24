@@ -42,14 +42,18 @@ export class VisitRequestEditableEntity {
                 break;
             case 'PARTIAL_SCHEDULED':
                 if (!start) throw CustomError.badRequest('Falta la fecha de inicio');
-                start_date = new Date(start);
-                end_date = new Date(start);
+                // start_date = new Date(start);
+                // end_date = new Date(start);
+                start_date = start;
+                end_date = start;
                 break;
             case 'FULL_SCHEDULED':
                 if (!start) throw CustomError.badRequest('Falta la fecha de inicio');
                 if (!end) throw CustomError.badRequest('Falta la fecha de fin');
-                start_date = new Date(start);
-                end_date = new Date(end);
+                // start_date = new Date(start);
+                // end_date = new Date(end);
+                start_date = start;
+                end_date = end;
                 break;
             default:
                 throw CustomError.badRequest('Tipo de horario inválido');
