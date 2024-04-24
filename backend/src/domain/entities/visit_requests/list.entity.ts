@@ -3,6 +3,7 @@ import { CustomError } from '../../errors/custom.error';
 export class VisitRequestListEntity {
     constructor(
         public id: number,
+        public schedule: 'NOT_SCHEDULED' | 'PARTIAL_SCHEDULED' | 'FULL_SCHEDULED',
         public start: Date | null,
         public status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA',
         public client: string,
@@ -13,7 +14,7 @@ export class VisitRequestListEntity {
 
     static fromObject(object: { [key: string]: any }): VisitRequestListEntity {
 
-        const { id, start, status, client, locality, reason, priority } = object;
+        const { id, schedule, start, status, client, locality, reason, priority } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!status) throw CustomError.badRequest('Falta el estado');
@@ -24,6 +25,7 @@ export class VisitRequestListEntity {
 
         return new VisitRequestListEntity(
             id,
+            schedule,
             start,
             status,
             client.name,

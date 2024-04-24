@@ -23,4 +23,28 @@ export class DayJsAdapter {
         return dayjs(date, 'DD-MMM').format('DD [de] MMMM');
     }
 
+    static toDateString(date: Date): string {
+        const new_date = new Date(date);
+        const formatted = new_date.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+        return formatted;
+    }
+
+    static toDatetimeString(date: Date): string {
+        const new_date = new Date(date);
+        const formatted = new_date.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+        });
+        return formatted;
+    }
+
 }

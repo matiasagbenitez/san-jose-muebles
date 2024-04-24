@@ -89,14 +89,16 @@ export const VisitRequests = () => {
       center: true,
     },
     {
-      name: "FECHA VISITA",
+      name: "FECHA PROGRAMADA",
       selector: (row: DataRow) =>
-        row.start
-          ? DayJsAdapter.toDayMonthYear(row.start)
-          : "Sin fecha definida",
+        row.schedule === "FULL_SCHEDULED"
+          ? DayJsAdapter.toDayMonthYearHour(row.start!)
+          : row.schedule === "PARTIAL_SCHEDULED"
+          ? DayJsAdapter.toDayMonthYear(row.start!) 
+          : "-",
       center: true,
       maxWidth: "160px",
-      style: { fontWeight: "bold" },
+      style: { fontWeight: "bold", backgroundColor: "#f0f0f0" },
     },
     {
       name: "ESTADO",

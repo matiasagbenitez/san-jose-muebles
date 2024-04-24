@@ -2,15 +2,6 @@ import { VisitRequest } from "../../database/mysql/models";
 import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity } from "../../domain";
 import { Op, Order } from "sequelize";
 
-enum OrderCriteria {
-    DEFAULT = '',
-    DATE_CLOSE = 'date_close',
-    DATE_FAR = 'date_far',
-    CREATE_CLOSE = 'create_close',
-    CREATE_FAR = 'create_far',
-    LESS_URGENT = 'less_urgent',
-    MORE_URGENT = 'more_urgent'
-}
 export interface VisitRequestFilters {
     id_client?: number;
     id_locality?: number;
@@ -19,7 +10,7 @@ export interface VisitRequestFilters {
     status?: string;
     start?: Date;
     end?: Date;
-    order_criteria?: string;
+    schedule?: string;
 }
 export class VisitRequestService {
 
@@ -38,6 +29,7 @@ export class VisitRequestService {
         if (filters.id_locality) where = { ...where, id_locality: filters.id_locality };
         if (filters.id_visit_reason) where = { ...where, id_visit_reason: filters.id_visit_reason };
         if (filters.priority) where = { ...where, priority: filters.priority };
+        if (filters.schedule) where = { ...where, schedule: filters.schedule };
 
         switch (filters.status) {
             case 'PENDIENTE':

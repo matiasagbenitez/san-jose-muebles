@@ -215,28 +215,25 @@ export const Filters = ({
 
         <Col xl={3}>
           <InputGroup size="sm" className="mb-3">
-            <InputGroup.Text id="from">Ordenar por</InputGroup.Text>
+            <InputGroup.Text id="from">Fecha programada</InputGroup.Text>
             <Form.Select
-              name="order_criteria"
+              name="schedule"
               size="sm"
-              value={state.filters.order_criteria || ""}
+              value={state.filters.schedule || ""}
               onChange={(e) =>
                 dispatch({
                   type: "FILTERS_CHANGE",
                   newFilters: {
                     ...state.filters,
-                    order_criteria: e.target.value,
+                    schedule: e.target.value,
                   },
                 })
               }
             >
-              <option value="">Orden por defecto</option>
-              <option value="date_close">Por fecha de visita (más cercanas primero)</option>
-              <option value="date_far">Por fecha de visita (más lejanas primero)</option>
-              <option value="create_close">Por fecha de registro (más recientes primero)</option>
-              <option value="create_far">Por fecha de registro (más antiguas primero)</option>
-              <option value="less_urgent">Prioridad (de más a menos urgente)</option>
-              <option value="more_urgent">Prioridad (de menos a más urgente)</option>
+              <option value="">Todas las opciones</option>
+              <option value="NOT_SCHEDULED">Sin fecha programada</option>
+              <option value="PARTIAL_SCHEDULED">Con fecha programada</option>
+              <option value="FULL_SCHEDULED">Con fecha y hora programada</option>
             </Form.Select>
           </InputGroup>
         </Col>

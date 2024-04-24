@@ -14,6 +14,7 @@ export interface VisitRequestFormInterface {
 
 export interface VisitRequestListItemInterface {
     id: number;
+    schedule: "NOT_SCHEDULED" | "PARTIAL_SCHEDULED" | "FULL_SCHEDULED";
     start: Date | null;
     status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
     client: string;
