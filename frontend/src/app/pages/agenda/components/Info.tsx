@@ -2,6 +2,13 @@ import { Badge, Table } from "react-bootstrap";
 import { VisitRequestInterface } from "../interfaces";
 import { DayJsAdapter } from "../../../../helpers";
 
+enum Priority {
+  BAJA = "#B5D6A7",
+  MEDIA = "#FFF47A",
+  ALTA = "#FD9800",
+  URGENTE = "#F55D1E",
+}
+
 interface Props {
   visit: VisitRequestInterface;
 }
@@ -27,7 +34,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
           </tr>
           <tr>
             <th scope="row" className="px-2 text-uppercase col-3">
-              Lugar visita
+              Lugar a visitar
             </th>
             <td>{visit.locality}</td>
           </tr>
@@ -47,7 +54,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             </th>
             <td>
               <span
-                style={{ fontSize: ".85em" }}
+                style={{ fontSize: ".85em", color: "black" }}
                 className={`badge ${
                   visit.status === "PENDIENTE"
                     ? "bg-warning"
@@ -66,16 +73,13 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             </th>
             <td>
               <span
-                style={{ fontSize: ".85em" }}
-                className={`badge ${
-                  visit.priority === "BAJA"
-                    ? "bg-secondary"
-                    : visit.priority === "MEDIA"
-                    ? "bg-primary"
-                    : visit.priority === "ALTA"
-                    ? "bg-warning"
-                    : "bg-danger"
-                }`}
+                style={{
+                  fontSize: ".85em",
+                  color: "black",
+                  backgroundColor:
+                    Priority[visit.priority as keyof typeof Priority],
+                }}
+                className="badge"
               >
                 {visit.priority}
               </span>
@@ -89,18 +93,10 @@ export const VisitRequestInfo = ({ visit }: Props) => {
           </tr>
           <tr>
             <th scope="row" className="px-2 text-uppercase col-3">
-              Título
-            </th>
-            <td>{visit.title}</td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Descripción
+              Notas adicionales
             </th>
             <td>
-              <div className="text-break">
-                {visit.description || "No especificada"}
-              </div>
+              <div className="text-break">{visit.notes || ""}</div>
             </td>
           </tr>
           <tr>
@@ -109,19 +105,33 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             </th>
             <td>
               <span>
-                {DayJsAdapter.toDayMonthYearHour(visit.start)} -{" "}
-                {DayJsAdapter.toDayMonthYearHour(visit.end)}
+                {visit.schedule === "NOT_SCHEDULED" && "No programada"}
+                {visit.schedule === "PARTIAL_SCHEDULED" && (
+                  <>{DayJsAdapter.toDateString(visit.start as Date)} </>
+                )}
+                {visit.schedule === "FULL_SCHEDULED" && (
+                  <>{DayJsAdapter.toDatetimeString(visit.start as Date)} </>
+                )}
               </span>
               {visit.overdue && (
                 <Badge
                   bg="danger"
-                  className="ms-2"
+                  className="float-end"
                   style={{ fontSize: ".85em" }}
                 >
                   <i className="bi bi-exclamation-triangle-fill me-1"></i>
                   La fecha programada ya pasó
                 </Badge>
               )}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2 text-uppercase col-3">
+              Creado por
+            </th>
+            <td className="text-muted fst-italic">
+              {visit.createdBy} (
+              {DayJsAdapter.toDayMonthYearHour(visit.createdAt)})
             </td>
           </tr>
         </tbody>

@@ -19,6 +19,7 @@ export const VisitRequest = () => {
       setLoading(true);
       const { data } = await apiSJM.get(`/visit_requests/${id}`);
       setVisit(data.item);
+      console.log(data.item);
       setLoading(false);
     } catch (error) {
       return navigate("/");

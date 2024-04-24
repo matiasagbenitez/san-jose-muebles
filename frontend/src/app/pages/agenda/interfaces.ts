@@ -5,7 +5,7 @@ export interface VisitRequestFormInterface {
     id_client: string;
     id_locality: string;
     address: string;
-    
+
     notes: string;
     schedule: "NOT_SCHEDULED" | "PARTIAL_SCHEDULED" | "FULL_SCHEDULED";
     start: Date | null;
@@ -21,6 +21,7 @@ export interface VisitRequestListItemInterface {
     locality: string;
     reason: string;
     priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
+    overdue: boolean;
 }
 
 export interface EditableVisitRequest {
@@ -40,4 +41,25 @@ export interface EditableVisitRequest {
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
+}
+
+export interface VisitRequestInterface {
+    id: number,
+    reason: string,
+    status: "PENDIENTE" | "REALIZADA" | "CANCELADA",
+    priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE",
+    overdue: boolean,
+    client: {
+        name: string,
+        phone: string,
+        locality: string,
+    },
+    locality: string,
+    address: string,
+    notes: string,
+    schedule: "NOT_SCHEDULED" | "PARTIAL_SCHEDULED" | "FULL_SCHEDULED",
+    start: Date | null,
+    end: Date | null,
+    createdAt: Date,
+    createdBy: string,
 }

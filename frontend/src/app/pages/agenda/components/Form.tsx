@@ -15,11 +15,11 @@ import { addHours } from "date-fns";
 registerLocale("es", es as any);
 
 const visitForm: VisitRequestFormInterface = {
-  id_visit_reason: "1",
+  id_visit_reason: "",
   status: "PENDIENTE",
   priority: "MEDIA",
-  id_client: "1",
-  id_locality: "1",
+  id_client: "",
+  id_locality: "",
   address: "",
 
   notes: "",
@@ -65,11 +65,6 @@ export const VisitForm = ({
 
   return (
     <>
-      <h1 className="fs-5">
-        {editMode ? "Modificar visita" : "Registrar nueva visita"}
-      </h1>
-      <hr className="my-2" />
-
       <Formik
         initialValues={initialForm}
         onSubmit={(values) => {

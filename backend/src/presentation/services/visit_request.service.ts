@@ -92,6 +92,7 @@ export class VisitRequestService {
                 { association: 'reason', attributes: ['name', 'color'] },
                 { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
                 { association: 'locality', attributes: ['name'] },
+                { association: 'user', attributes: ['name'] }
             ]
         });
         if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');

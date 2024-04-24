@@ -21,11 +21,12 @@ export class VisitRequestDetailEntity {
         public schedule: 'NOT_SCHEDULED' | 'PARTIAL_SCHEDULED' | 'FULL_SCHEDULED',
         public start: Date | null,
         public end: Date | null,
-        public createdAt: Date
+        public createdAt: Date,
+        public createdBy: string = 'Desconocido'
     ) { }
 
     static fromObject(object: { [key: string]: any }): VisitRequestDetailEntity {
-        const { id, reason, status, priority, client, locality, address, notes, schedule, start, end, createdAt } = object;
+        const { id, reason, status, priority, client, locality, address, notes, schedule, start, end, createdAt, user } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!reason) throw CustomError.badRequest('Falta el motivo');
@@ -54,7 +55,8 @@ export class VisitRequestDetailEntity {
             schedule,
             start,
             end,
-            createdAt
+            createdAt,
+            user.name
         );
     }
 }

@@ -94,7 +94,7 @@ export const VisitRequests = () => {
         row.schedule === "FULL_SCHEDULED"
           ? DayJsAdapter.toDayMonthYearHour(row.start!)
           : row.schedule === "PARTIAL_SCHEDULED"
-          ? DayJsAdapter.toDayMonthYear(row.start!) 
+          ? DayJsAdapter.toDayMonthYear(row.start!)
           : "-",
       center: true,
       maxWidth: "160px",
@@ -104,18 +104,26 @@ export const VisitRequests = () => {
       name: "ESTADO",
       selector: (row: DataRow) => row.status,
       cell: (row: DataRow) => (
-        <span
-          style={{ fontSize: ".9em", color: "black" }}
-          className={`badge ${
-            row.status === "PENDIENTE"
-              ? "bg-warning"
-              : row.status === "REALIZADA"
-              ? "bg-success"
-              : "bg-danger"
-          }`}
-        >
-          {row.status}
-        </span>
+        <>
+          <span
+            style={{ fontSize: ".9em", color: "black" }}
+            className={`badge ${
+              row.status === "PENDIENTE"
+                ? "bg-warning"
+                : row.status === "REALIZADA"
+                ? "bg-success"
+                : "bg-danger"
+            }`}
+          >
+            {row.status}
+          </span>
+          {row.overdue && (
+            <i
+              className="bi bi-exclamation-triangle-fill fs-6 text-danger ms-2"
+              title="¡La fecha programada ya pasó!"
+            ></i>
+          )}
+        </>
       ),
       center: true,
       maxWidth: "160px",

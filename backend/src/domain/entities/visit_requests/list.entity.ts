@@ -10,6 +10,7 @@ export class VisitRequestListEntity {
         public locality: string,
         public reason: string,
         public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
+        public overdue: boolean = false
     ) { }
 
     static fromObject(object: { [key: string]: any }): VisitRequestListEntity {
@@ -23,6 +24,15 @@ export class VisitRequestListEntity {
         if (!reason) throw CustomError.badRequest('Falta el motivo');
         if (!priority) throw CustomError.badRequest('Falta la prioridad');
 
+        let overdue = false;
+        if (schedule === 'FULL_SCHEDULED' || schedule === 'PARTIAL_SCHEDULED') {
+            if (start) {
+                const now = new Date();
+                const startDate = new Date(start);
+                overdue = startDate < now;
+            }
+        }
+
         return new VisitRequestListEntity(
             id,
             schedule,
@@ -31,7 +41,8 @@ export class VisitRequestListEntity {
             client.name,
             locality.name,
             reason.name,
-            priority
+            priority,
+            overdue
         );
     }
 }
