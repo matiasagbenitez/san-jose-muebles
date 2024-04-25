@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, VisitRequestDTO, PaginationDto, LoggedUserIdDto } from "../../domain";
+import { CustomError, VisitRequestDTO, PaginationDto, LoggedUserIdDto, CalendarIntervalDto } from "../../domain";
 import { VisitRequestService, VisitRequestFilters } from '../services/visit_request.service';
 
 export class VisitRequestController {
@@ -51,6 +51,20 @@ export class VisitRequestController {
 
     getAllCalendar = async (req: Request, res: Response) => {
         this.service.getVisitRequestsCalendar()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+    getAllCalendarPaginated = async (req: Request, res: Response) => {
+
+        const [error, dto] = CalendarIntervalDto.create(req.query);
+        if (error) return res.status(400).json({ message: error });
+
+        this.service.getVisitRequestsCalendarPaginated(dto!)
             .then((data) => {
                 res.json(data);
             })

@@ -1,5 +1,5 @@
 import { VisitRequest } from "../../database/mysql/models";
-import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity } from "../../domain";
+import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto } from "../../domain";
 import { Op, Order, Sequelize } from "sequelize";
 
 export interface VisitRequestFilters {
@@ -68,7 +68,7 @@ export class VisitRequestService {
                 limit,
                 order: [
                     Sequelize.literal('start IS NULL, start ASC'),
-                  ],
+                ],
             }),
             VisitRequest.count({ where })
         ]);
@@ -77,8 +77,34 @@ export class VisitRequestService {
     }
 
     public async getVisitRequestsCalendar() {
+
+        const date = new Date();
+        const from_date = new Date(date.getFullYear(), date.getMonth() - 1, 24);
+        const to_date = new Date(date.getFullYear(), date.getMonth() + 1, 5, 24, 59, 59);
+
         const rows = await VisitRequest.findAll({
-            where: { status: 'PENDIENTE', start: { [Op.ne]: null } },
+            where: {
+                status: 'PENDIENTE',
+                start: { [Op.between]: [from_date, to_date], [Op.ne]: null }
+            },
+            include: [
+                { association: 'reason', attributes: ['name', 'color'] },
+                { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
+                { association: 'locality', attributes: ['name'] },
+            ],
+        });
+        const entities = rows.map(priority => CalendarEventEntity.fromObject(priority));
+        return { items: entities };
+    }
+
+    public async getVisitRequestsCalendarPaginated(dto: CalendarIntervalDto) {
+        const { from_date, to_date } = dto;
+
+        const rows = await VisitRequest.findAll({
+            where: {
+                status: 'PENDIENTE',
+                start: { [Op.between]: [from_date, to_date], [Op.ne]: null }
+            },
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },
                 { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },

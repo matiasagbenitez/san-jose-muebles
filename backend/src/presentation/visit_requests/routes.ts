@@ -13,6 +13,7 @@ export class VisitRequestRoutes {
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/calendar', [AuthMiddleware.validateJWT], controller.getAllCalendar);
+        router.get('/calendar/paginated', [AuthMiddleware.validateJWT], controller.getAllCalendarPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.get('/:id/editable', [AuthMiddleware.validateJWT], controller.getByIdEditable);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
