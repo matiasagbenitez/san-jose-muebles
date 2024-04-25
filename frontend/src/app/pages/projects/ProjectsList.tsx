@@ -7,9 +7,8 @@ import { Datatable, initialState, paginationReducer, fetchData } from "../../sha
 import { LoadingSpinner } from "../../components";
 import { ProjectListable as DataRow, Priorities, ProjectFormInterface, Statuses } from "./interfaces";
 import { CreateProjectModal, Filters } from "./components";
-import { Badge } from "react-bootstrap";
 import { SweetAlert2 } from "../../utils";
-import { DayJsAdapter } from "../../../helpers";
+// import { DayJsAdapter } from "../../../helpers";
 
 export const ProjectsList = () => {
   const navigate = useNavigate();
@@ -83,12 +82,6 @@ export const ProjectsList = () => {
       center: true,
     },
     {
-      name: "REGISTRADO EL",
-      selector: (row: DataRow) => DayJsAdapter.toDayMonthYear(row.createdAt),
-      center: true,
-      maxWidth: "160px",
-    },
-    {
       name: "ESTADO",
       selector: (row: DataRow) => row.status,
       cell: (row: DataRow) => (
@@ -120,7 +113,6 @@ export const ProjectsList = () => {
       selector: (row: DataRow) => row.locality,
       maxWidth: "250px",
     },
-
     {
       name: "PRIORIDAD",
       selector: (row: DataRow) => row.priority,

@@ -132,12 +132,13 @@ export const Filters = ({
                 })
               }
             >
+              <option value="">Por defecto</option>
               <option value="PENDIENTE">PENDIENTE</option>
               <option value="PROCESO">EN PROCESO</option>
               <option value="PAUSADO">PAUSADO</option>
               <option value="FINALIZADO">FINALIZADO</option>
               <option value="CANCELADO">CANCELADO</option>
-              <option value="ALL">Todos los estados</option>
+              <option value="ALL">TODOS LOS ESTADOS</option>
             </Form.Select>
           </InputGroup>
         </Col>

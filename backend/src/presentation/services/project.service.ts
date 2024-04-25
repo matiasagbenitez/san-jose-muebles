@@ -1,9 +1,12 @@
-import { Op } from "sequelize";
+import { Op, Order } from "sequelize";
 import { Project } from "../../database/mysql/models";
 import { CustomError, CreateProjectDTO, PaginationDto, ProjectListableEntity } from "../../domain";
 
 export interface ProjectFilters {
-    name?: string;
+    id_client?: number;
+    id_locality?: number;
+    status?: string;
+    priority?: string;
 }
 
 export class ProjectService {
@@ -18,16 +21,42 @@ export class ProjectService {
 
         // FILTERS
         let where = {};
+        if (filters.id_client) where = { ...where, id_client: filters.id_client };
+        if (filters.id_locality) where = { ...where, id_locality: filters.id_locality };
+        if (filters.priority) where = { ...where, priority: filters.priority };
+        switch (filters.status) {
+            case 'PENDIENTE':
+                where = { ...where, status: 'PENDIENTE' };
+                break;
+            case 'PROCESO':
+                where = { ...where, status: 'PROCESO' };
+                break;
+            case 'PAUSADO':
+                where = { ...where, status: 'PAUSADO' };
+                break;
+            case 'FINALIZADO':
+                where = { ...where, status: 'FINALIZADO' };
+                break;
+            case 'CANCELADO':
+                where = { ...where, status: 'CANCELADO' };
+            case 'ALL':
+                break;
+            default:
+                where = { ...where, status: { [Op.or]: ['PENDIENTE', 'PROCESO', 'PAUSADO'] } };
+                break;
+        }
 
         const [rows, total] = await Promise.all([
             Project.findAll({
                 where,
                 include: [
-                    { association: 'client', attributes: ['name'] },
+                    { association: 'client', attributes: ['name'] }, 
                     { association: 'locality', attributes: ['name'] },
                 ],
                 offset: (page - 1) * limit,
-                limit
+                limit,
+                // ORDER = PROCESO, PENDIENTE, PAUSADO, FINALIZADO, CANCELADO
+                order: [['status', 'ASC']],
             }),
             Project.count({ where })
         ]);
