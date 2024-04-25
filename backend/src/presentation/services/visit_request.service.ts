@@ -1,5 +1,5 @@
 import { VisitRequest } from "../../database/mysql/models";
-import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto } from "../../domain";
+import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto, UpdateVisitRequestStatusDTO } from "../../domain";
 import { Op, Order, Sequelize } from "sequelize";
 
 export interface VisitRequestFilters {
@@ -158,6 +158,15 @@ export class VisitRequestService {
             if (error.name === 'SequelizeValidationError') {
                 throw CustomError.badRequest(`${error.errors[0].message}`);
             }
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateVisitRequestStatus(id: number, dto: UpdateVisitRequestStatusDTO) {
+        try {
+            await VisitRequest.update({ ...dto }, { where: { id } });
+            return { message: '¡Estado de la visita actualizado correctamente!' };
+        } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);
         }
     }

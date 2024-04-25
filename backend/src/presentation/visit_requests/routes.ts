@@ -18,6 +18,7 @@ export class VisitRequestRoutes {
         router.get('/:id/editable', [AuthMiddleware.validateJWT], controller.getByIdEditable);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
         router.put('/:id', [AuthMiddleware.validateJWT], controller.update);
+        router.put('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);
 
         return router;

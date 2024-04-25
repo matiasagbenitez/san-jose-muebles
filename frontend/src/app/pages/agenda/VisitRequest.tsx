@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { VisitRequestInterface } from "./interfaces";
@@ -14,12 +14,15 @@ export const VisitRequest = () => {
   const [loading, setLoading] = useState(true);
   const [visit, setVisit] = useState<VisitRequestInterface>();
 
+  const [formStatus, setFormStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
   const fetch = async () => {
     try {
       setLoading(true);
       const { data } = await apiSJM.get(`/visit_requests/${id}`);
       setVisit(data.item);
-      console.log(data.item);
+      setFormStatus(data.item.status);
       setLoading(false);
     } catch (error) {
       return navigate("/");
@@ -45,6 +48,40 @@ export const VisitRequest = () => {
     }
   };
 
+  const handleUpdateStatus = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const confirmation = await SweetAlert2.confirm(
+      "¿Estás seguro de que quieres actualizar el estado de la visita?"
+    );
+
+    if (formStatus === "" || formStatus === visit?.status) {
+      return SweetAlert2.errorAlert(
+        "Debes seleccionar un estado diferente al actual"
+      );
+    }
+
+    if (confirmation.isConfirmed) {
+      try {
+        const { data } = await apiSJM.put(`/visit_requests/${id}/status`, { status: formStatus });
+        fetch();
+        setShowModal(false);
+        SweetAlert2.successToast(data.message);
+        setFormStatus(visit?.status || "");
+      } catch (error: any) {
+        SweetAlert2.errorAlert(error.response.data.message);
+      }
+    }
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -67,9 +104,63 @@ export const VisitRequest = () => {
               <VisitRequestInfo visit={visit} />
             </Col>
             <Col lg={6}>
-              <VisitRequestOptions id={visit.id} handleDelete={handleDelete} />
+              <VisitRequestOptions
+                id={visit.id}
+                handleDelete={handleDelete}
+                handleUpdateStatus={handleUpdateStatus}
+              />
             </Col>
           </Row>
+
+          <Modal show={showModal} onHide={closeModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Actualizar estado de la visita</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group
+                  controlId="status"
+                  className="my-2 d-flex justify-content-between fw-bold"
+                >
+                  <Form.Check
+                    inline
+                    type="radio"
+                    name="status"
+                    label="PENDIENTE"
+                    value="PENDIENTE"
+                    checked={formStatus === "PENDIENTE"}
+                    onChange={(e) => setFormStatus(e.target.value)}
+                  />
+                  <Form.Check
+                    inline
+                    type="radio"
+                    name="status"
+                    label="REALIZADA"
+                    value="REALIZADA"
+                    checked={formStatus === "REALIZADA"}
+                    onChange={(e) => setFormStatus(e.target.value)}
+                  />
+                  <Form.Check
+                    inline
+                    type="radio"
+                    name="status"
+                    label="CANCELADA"
+                    value="CANCELADA"
+                    checked={formStatus === "CANCELADA"}
+                    onChange={(e) => setFormStatus(e.target.value)}
+                  />
+                </Form.Group>
+                <div className="d-flex mt-3 gap-2 justify-content-end">
+                  <Button size="sm" variant="secondary" onClick={closeModal}>
+                    Cancelar
+                  </Button>
+                  <Button size="sm" variant="primary" type="submit">
+                    Guardar cambios
+                  </Button>
+                </div>
+              </Form>
+            </Modal.Body>
+          </Modal>
         </>
       )}
     </>

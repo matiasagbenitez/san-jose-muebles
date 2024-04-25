@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, VisitRequestDTO, PaginationDto, LoggedUserIdDto, CalendarIntervalDto } from "../../domain";
+import { CustomError, VisitRequestDTO, PaginationDto, LoggedUserIdDto, CalendarIntervalDto, UpdateVisitRequestStatusDTO } from "../../domain";
 import { VisitRequestService, VisitRequestFilters } from '../services/visit_request.service';
 
 export class VisitRequestController {
@@ -85,7 +85,7 @@ export class VisitRequestController {
                 this.handleError(error, res);
             });
     }
-    
+
     getByIdEditable = async (req: Request, res: Response) => {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });
@@ -134,6 +134,22 @@ export class VisitRequestController {
         if (error) return res.status(400).json({ message: error });
 
         this.service.updateVisitRequest(id, updateDto!)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+    updateStatus = async (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+        if (!id) return res.status(400).json({ message: 'Missing id' });
+
+        const [error, status] = UpdateVisitRequestStatusDTO.create(req.body);
+        if (error) return res.status(400).json({ message: error });
+
+        this.service.updateVisitRequestStatus(id, status!)
             .then((data) => {
                 res.json(data);
             })
