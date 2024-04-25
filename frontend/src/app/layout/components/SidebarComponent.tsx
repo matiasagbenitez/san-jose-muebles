@@ -23,6 +23,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         </MenuItem>
 
         <MenuItem
+          component={<Link to="/proyectos" />}
+          title="Proyectos"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-gem me-3 fs-6"></i>
+          Proyectos
+        </MenuItem>
+
+        <MenuItem
           component={<Link to="/productos" />}
           title="Productos"
           style={{ height: "45px" }}

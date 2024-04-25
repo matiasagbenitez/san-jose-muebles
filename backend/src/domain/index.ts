@@ -62,3 +62,7 @@ export * from './entities/visit_requests';
 
 // SELECT2
 export * from './entities/select2';
+
+// PROJECTS
+export * from './dtos/projects';
+export * from './entities/projects';

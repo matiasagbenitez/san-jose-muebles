@@ -30,6 +30,8 @@ import {
     VisitRequest,
     VisitEvolution,
 
+    Project,
+
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -151,5 +153,13 @@ export const initializeAssociations = () => {
     VisitEvolution.belongsTo(VisitRequest, { foreignKey: 'id_visit_request', as: 'visit' });
 
     VisitEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+
+    // PROJECT
+    Locality.hasMany(Project, { foreignKey: 'id_locality', as: 'projects', onDelete: 'RESTRICT' });
+    Project.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
+
+    Client.hasMany(Project, { foreignKey: 'id_client', as: 'projects', onDelete: 'RESTRICT' });
+    Project.belongsTo(Client, { foreignKey: 'id_client', as: 'client' });
 
 };
