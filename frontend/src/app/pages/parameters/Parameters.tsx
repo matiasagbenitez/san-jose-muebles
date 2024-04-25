@@ -129,6 +129,14 @@ export const Parameters = () => {
           <div className="list-group small">
             <button
               className="list-group-item list-group-item-action py-1"
+              title="Gestionar tipos de ambientes"
+              onClick={() => navigate("/parametros/tipos-ambientes")}
+            >
+              <i className="bi bi-bar-chart-steps me-2 fs-6"></i>
+              Gestionar tipos de ambientes
+            </button>
+            <button
+              className="list-group-item list-group-item-action py-1"
               title="Gestionar motivos de visita"
               onClick={() => navigate("/parametros/motivos-visita")}
             >

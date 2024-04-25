@@ -74,7 +74,7 @@ export const Client = () => {
       {client && !loading && (
         <>
           <Row>
-            <Col lg={6}>
+            <Col lg={8}>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <Button
                   variant="light border text-muted"
@@ -90,7 +90,7 @@ export const Client = () => {
               </div>
               <ClientInfo client={client} />
             </Col>
-            <Col lg={6}>
+            <Col lg={4}>
               <ClientOptions
                 id={client.id}
                 setIsModalOpen={setIsModalOpen}

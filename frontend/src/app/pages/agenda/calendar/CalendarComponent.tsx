@@ -55,7 +55,10 @@ export const CalendarComponent = ({ events = [] }: Props) => {
     if (!isSameMonth(navigate, date) || !isSameYear(navigate, date)) {
       setDate(navigate);
       const interval: DateRange = getMonthsInterval(navigate);
-      if (interval && interval.from_date && interval.to_date) {
+
+      const refetch: boolean = false;
+
+      if (refetch && interval && interval.from_date && interval.to_date) {
         const { data } = await apiSJM.get("/visit_requests/calendar/paginated", { params: interval });
         setLocalEvents(parseDates(data.items));
       }

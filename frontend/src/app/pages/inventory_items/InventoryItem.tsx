@@ -112,17 +112,17 @@ export const InventoryItem = () => {
               </Button>
               <h1 className="fs-5 my-0">{item.data.name}</h1>
             </div>
-            <Col lg={6}>
+            <Col lg={8}>
               <ItemData item={item.data} />
             </Col>
-            <Col lg={6}>
+            <Col lg={4}>
               <Options handleOpen={handleOpen} handleDelete={handleDelete} />
             </Col>
-            <Col lg={6}>
+            <Col lg={8}>
               <ItemUpdates updates={item.updates} />
             </Col>
             <Col>{/* NOTHING */}</Col>
-            <Col lg={6}>
+            <Col lg={8}>
               <ItemRetirements retirements={item.retirements} />
             </Col>
           </Row>

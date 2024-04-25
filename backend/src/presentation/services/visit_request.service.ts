@@ -85,7 +85,10 @@ export class VisitRequestService {
         const rows = await VisitRequest.findAll({
             where: {
                 status: 'PENDIENTE',
-                start: { [Op.between]: [from_date, to_date], [Op.ne]: null }
+                start: {
+                    [Op.ne]: null,
+                    // [Op.between]: [from_date, to_date],
+                }
             },
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },
@@ -103,7 +106,10 @@ export class VisitRequestService {
         const rows = await VisitRequest.findAll({
             where: {
                 status: 'PENDIENTE',
-                start: { [Op.between]: [from_date, to_date], [Op.ne]: null }
+                start: {
+                    [Op.between]: [from_date, to_date],
+                    [Op.ne]: null,
+                }
             },
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },

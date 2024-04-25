@@ -18,6 +18,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
     >
       <Menu style={{ marginLeft: "5px", fontSize: "14px" }}>
         <MenuItem component={<Link to="/" />} title="Inicio">
+          <i className="bi bi-house me-3 fs-6"></i>
           Inicio
         </MenuItem>
 

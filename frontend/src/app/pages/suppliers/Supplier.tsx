@@ -73,7 +73,7 @@ export const Supplier = () => {
       {supplier && !loading && (
         <>
           <Row>
-            <Col lg={6}>
+            <Col lg={8}>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <Button
                   variant="light border text-muted"
@@ -89,7 +89,7 @@ export const Supplier = () => {
               </div>
               <SupplierInfo supplier={supplier} />
             </Col>
-            <Col lg={6}>
+            <Col lg={4}>
               <SupplierOptions
                 id={+id!}
                 setIsModalOpen={setIsModalOpen}
