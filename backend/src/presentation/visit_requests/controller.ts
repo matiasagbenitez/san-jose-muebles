@@ -149,7 +149,10 @@ export class VisitRequestController {
         const [error, status] = UpdateVisitRequestStatusDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.service.updateVisitRequestStatus(id, status!)
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+        this.service.updateVisitRequestStatus(id, status!, loggedUserIdDto!.id_user)
             .then((data) => {
                 res.json(data);
             })

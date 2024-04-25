@@ -136,6 +136,25 @@ export const VisitRequestInfo = ({ visit }: Props) => {
           </tr>
         </tbody>
       </Table>
+
+      <h6>Registro de cambios de estado</h6>
+      {visit.evolutions.length === 0 ? (
+        <p className="text-muted fst-italic small">
+          No se han registrado cambios de estado
+        </p>
+      ) : (
+        <ul className="small">
+          {visit.evolutions.map((evolution, index) => (
+            <li
+              key={evolution.id}
+              className={index === visit.evolutions.length - 1 ? "fw-bold" : ""}
+            >
+              {evolution.user} marcó la visita como {evolution.status} el día{" "}
+              {DayJsAdapter.toDayMonthYearHour(evolution.createdAt)}.
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 };

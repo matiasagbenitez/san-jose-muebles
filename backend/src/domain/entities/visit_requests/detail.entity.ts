@@ -6,6 +6,12 @@ interface ClientData {
     locality: string;
 }
 
+interface Evolution {
+    id: number;
+    status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA';
+    user: string;
+    createdAt: Date;
+}
 export class VisitRequestDetailEntity {
     constructor(
         public id: number,
@@ -22,11 +28,13 @@ export class VisitRequestDetailEntity {
         public start: Date | null,
         public end: Date | null,
         public createdAt: Date,
-        public createdBy: string = 'Desconocido'
+        public createdBy: string = 'Desconocido',
+
+        public evolutions: Evolution[] = [],
     ) { }
 
     static fromObject(object: { [key: string]: any }): VisitRequestDetailEntity {
-        const { id, reason, status, priority, client, locality, address, notes, schedule, start, end, createdAt, user } = object;
+        const { id, reason, status, priority, client, locality, address, notes, schedule, start, end, createdAt, user, evolutions } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!reason) throw CustomError.badRequest('Falta el motivo');
@@ -34,6 +42,15 @@ export class VisitRequestDetailEntity {
         if (!priority) throw CustomError.badRequest('Falta la prioridad');
         if (!client) throw CustomError.badRequest('Falta el cliente');
         if (!locality) throw CustomError.badRequest('Falta la localidad');
+
+        const evolutionsArray: Evolution[] = evolutions.map((evolution: any) => {
+            return {
+                id: evolution.id,
+                status: evolution.status,
+                user: evolution.user.name,
+                createdAt: evolution.createdAt,
+            }
+        });
 
         let overdue: boolean = false;
         if (start) overdue = new Date() > new Date(start);
@@ -56,7 +73,8 @@ export class VisitRequestDetailEntity {
             start,
             end,
             createdAt,
-            user.name
+            user.name,
+            evolutionsArray,
         );
     }
 }

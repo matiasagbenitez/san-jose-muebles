@@ -1,4 +1,4 @@
-import { VisitRequest } from "../../database/mysql/models";
+import { VisitEvolution, VisitRequest } from "../../database/mysql/models";
 import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto, UpdateVisitRequestStatusDTO } from "../../domain";
 import { Op, Order, Sequelize } from "sequelize";
 
@@ -121,7 +121,8 @@ export class VisitRequestService {
                 { association: 'reason', attributes: ['name', 'color'] },
                 { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
                 { association: 'locality', attributes: ['name'] },
-                { association: 'user', attributes: ['name'] }
+                { association: 'user', attributes: ['name'] },
+                { association: 'evolutions', include: [{ association: 'user', attributes: ['name'] }] }
             ]
         });
         if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');
@@ -162,11 +163,18 @@ export class VisitRequestService {
         }
     }
 
-    public async updateVisitRequestStatus(id: number, dto: UpdateVisitRequestStatusDTO) {
+    public async updateVisitRequestStatus(id: number, dto: UpdateVisitRequestStatusDTO, id_user: number) {
+        const t = await VisitRequest.sequelize!.transaction();
         try {
-            await VisitRequest.update({ ...dto }, { where: { id } });
+            await VisitRequest.update({ ...dto }, { where: { id }, transaction: t });
+            await VisitEvolution.create({ id_visit_request: id, status: dto.status, id_user: id_user }, { transaction: t });
+            await t.commit();
             return { message: '¡Estado de la visita actualizado correctamente!' };
         } catch (error: any) {
+            await t.rollback();
+            if (error.name === 'SequelizeValidationError') {
+                throw CustomError.badRequest(`${error.errors[0].message}`);
+            }
             throw CustomError.internalServerError(`${error}`);
         }
     }

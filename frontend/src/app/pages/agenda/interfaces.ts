@@ -43,6 +43,12 @@ export interface EditableVisitRequest {
     deletedAt: string | null;
 }
 
+interface Evolution {
+    id: number;
+    status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
+    user: string;
+    createdAt: Date;
+}
 export interface VisitRequestInterface {
     id: number,
     reason: string,
@@ -62,4 +68,5 @@ export interface VisitRequestInterface {
     end: Date | null,
     createdAt: Date,
     createdBy: string,
+    evolutions: Evolution[],
 }
