@@ -69,9 +69,8 @@ export const ProjectAccounts = () => {
     }
   };
 
-  const handleRedirectAccount = (id: number) => {
-    // navigate(`/cuentas-proveedores/${id}`);
-    alert(`No implementado: redireccionar a la cuenta corriente con id ${id}`);
+  const handleRedirectAccount = (id_project_account: number) => {
+    navigate(`/proyectos/${id}/cuentas/${id_project_account}`);
   };
 
   return (
@@ -116,7 +115,8 @@ export const ProjectAccounts = () => {
                         <span>Saldo: </span>
                         {account.balance < 0 ? (
                           <span className="text-danger">
-                            - ${toMoney(account.balance * -1)}
+                            -{account.is_monetary && "$"}
+                            {toMoney(account.balance * -1)}
                           </span>
                         ) : account.balance == 0 ? (
                           <span className="text-muted">
@@ -125,7 +125,8 @@ export const ProjectAccounts = () => {
                           </span>
                         ) : (
                           <span className="text-success">
-                            + ${toMoney(account.balance)}
+                            {account.is_monetary && "$"}
+                            +{toMoney(account.balance)}
                           </span>
                         )}
                       </Card.Subtitle>

@@ -32,6 +32,7 @@ import {
 
     Project,
     ProjectAccount,
+    ProjectAccountTransaction,
 
 } from '../models';
 
@@ -168,5 +169,13 @@ export const initializeAssociations = () => {
 
     Currency.hasMany(ProjectAccount, { foreignKey: 'id_currency', as: 'accounts', onDelete: 'RESTRICT' });
     ProjectAccount.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    
+    ProjectAccount.hasMany(ProjectAccountTransaction, { foreignKey: 'id_project_account', as: 'transactions', onDelete: 'RESTRICT' });
+    ProjectAccountTransaction.belongsTo(ProjectAccount, { foreignKey: 'id_project_account', as: 'account' });
+
+    ProjectAccountTransaction.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    ProjectAccountTransaction.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
 
 };

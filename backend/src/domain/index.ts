@@ -70,3 +70,7 @@ export * from './entities/projects';
 // PROJECT ACCOUNTS
 export * from './dtos/project_account';
 export * from './entities/project_account';
+
+// PROJECT ACCOUNT TRANSACTIONS
+export * from './dtos/project_account_transaction';
+export * from './entities/project_account_transactions';

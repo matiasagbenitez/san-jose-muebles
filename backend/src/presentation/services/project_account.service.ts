@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Project, ProjectAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, CreateProjectAccountDTO, ProjectAccountDetailEntity, ProjectAccountListEntity } from "../../domain";
+import { CustomError, PaginationDto, CreateProjectAccountDTO, ProjectAccountDetailEntity, ProjectAccountListEntity, ProjectAccountInfoEntity } from "../../domain";
 import { ProjectService } from "./project.service";
 
 export class ProjectAccountService {
@@ -65,13 +65,18 @@ export class ProjectAccountService {
         try {
             const account = await ProjectAccount.findByPk(id, {
                 include: [
-                    { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
-                    { association: 'project', attributes: ['name'] }
+                    { association: 'currency' },
+                    {
+                        association: 'project', include: [
+                            { association: 'client', attributes: ['name'] },
+                            { association: 'locality', attributes: ['name'] }
+                        ]
+                    }
                 ]
             });
             if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
 
-            const item = ProjectAccountDetailEntity.fromObject(account);
+            const item = ProjectAccountInfoEntity.fromObject(account);
             return { account: item };
 
         } catch (error) {

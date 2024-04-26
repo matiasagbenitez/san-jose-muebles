@@ -38,6 +38,7 @@ import { VisitEvolution, initVisitEvolutionModel } from './VisitEvolution.model'
 
 import { Project, initProjectModel } from './Project.model';
 import { ProjectAccount, initProjectAccountModel } from './ProjectAccount.model';
+import { ProjectAccountTransaction, initProjectAccountTransactionModel } from './ProjectAccountTransaction.model';
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -82,6 +83,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   // PROJECT
   initProjectModel(sequelize);
   initProjectAccountModel(sequelize);
+  initProjectAccountTransactionModel(sequelize);
 };
 
 export {
@@ -106,24 +108,25 @@ export {
   PurchaseItem,
   ReceptionPartial,
   ReceptionTotal,
-  
+
   SupplierAccount,
   SupplierAccountTransaction,
   PurchaseTransaction,
 
   StockAdjust,
-  
+
   InventoryBrand,
   InventoryCategory,
   InventoryItem,
   InventoryItemRetired,
   InventoryItemUpdated,
-  
+
   Client,
   VisitReason,
   VisitRequest,
   VisitEvolution,
-  
+
   Project,
   ProjectAccount,
+  ProjectAccountTransaction,
 };
