@@ -66,3 +66,7 @@ export * from './entities/select2';
 // PROJECTS
 export * from './dtos/projects';
 export * from './entities/projects';
+
+// PROJECT ACCOUNTS
+export * from './dtos/project_account';
+export * from './entities/project_account';

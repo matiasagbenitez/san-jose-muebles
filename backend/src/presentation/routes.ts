@@ -27,6 +27,7 @@ import { InventoryItemRoutes } from './inventory_items/routes';
 import { ClientRoutes } from './clients/routes';
 import { VisitRequestRoutes } from './visit_requests/routes';
 import { ProjectRoutes } from './projects/routes';
+import { ProjectAccountRoutes } from './project_accounts/routes';
 
 export class AppRoutes {
 
@@ -71,7 +72,9 @@ export class AppRoutes {
 
         router.use('/api/clients', ClientRoutes.routes);
         router.use('/api/visit_requests', VisitRequestRoutes.routes);
+        
         router.use('/api/projects', ProjectRoutes.routes);
+        router.use('/api/project_accounts', ProjectAccountRoutes.routes);
 
 
         return router;

@@ -1,4 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Client } from './Client.model';
+import { Locality } from './Locality.model';
 
 export class Project extends Model {
     public id!: number;
@@ -16,6 +18,9 @@ export class Project extends Model {
 
     public requested_deadline!: Date;
     public estimated_deadline!: Date;
+
+    public client!: Client;
+    public locality!: Locality;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

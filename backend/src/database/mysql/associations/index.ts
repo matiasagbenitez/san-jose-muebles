@@ -31,6 +31,7 @@ import {
     VisitEvolution,
 
     Project,
+    ProjectAccount,
 
 } from '../models';
 
@@ -161,5 +162,11 @@ export const initializeAssociations = () => {
 
     Client.hasMany(Project, { foreignKey: 'id_client', as: 'projects', onDelete: 'RESTRICT' });
     Project.belongsTo(Client, { foreignKey: 'id_client', as: 'client' });
+
+    Project.hasMany(ProjectAccount, { foreignKey: 'id_project', as: 'accounts', onDelete: 'RESTRICT' });
+    ProjectAccount.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
+
+    Currency.hasMany(ProjectAccount, { foreignKey: 'id_currency', as: 'accounts', onDelete: 'RESTRICT' });
+    ProjectAccount.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
 
 };
