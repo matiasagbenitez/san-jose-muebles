@@ -1,6 +1,6 @@
 import { Op, Order } from "sequelize";
 import { Project } from "../../database/mysql/models";
-import { CustomError, CreateProjectDTO, PaginationDto, ProjectListableEntity } from "../../domain";
+import { CustomError, CreateProjectDTO, PaginationDto, ProjectListableEntity, ProjectDetailEntity } from "../../domain";
 
 export interface ProjectFilters {
     id_client?: number;
@@ -50,7 +50,7 @@ export class ProjectService {
             Project.findAll({
                 where,
                 include: [
-                    { association: 'client', attributes: ['name'] }, 
+                    { association: 'client', attributes: ['name'] },
                     { association: 'locality', attributes: ['name'] },
                 ],
                 offset: (page - 1) * limit,
@@ -67,17 +67,16 @@ export class ProjectService {
     public async getProject(id: number) {
         const project = await Project.findByPk(id, {
             include: [
-                { association: 'client', attributes: ['name'] },
+                { association: 'client', attributes: ['id', 'name', 'phone'] },
                 { association: 'locality', attributes: ['name'] },
             ]
         });
         if (!project) throw CustomError.notFound('Proyecto no encontrado');
-        const { ...entity } = ProjectListableEntity.fromObject(project);
+        const { ...entity } = ProjectDetailEntity.fromObject(project);
         return { item: entity };
     }
 
     public async createProject(dto: CreateProjectDTO) {
-
         try {
             await Project.create({ ...dto });
             return { message: 'Proyecto creado correctamente' };

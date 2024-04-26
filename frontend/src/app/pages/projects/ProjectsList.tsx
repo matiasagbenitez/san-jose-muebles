@@ -134,7 +134,7 @@ export const ProjectsList = () => {
   ];
 
   const handleClick = (row: DataRow) => {
-    navigate(`/agenda/${row.id}`);
+    navigate(`/proyectos/${row.id}`);
   };
 
   const handleHide = () => {

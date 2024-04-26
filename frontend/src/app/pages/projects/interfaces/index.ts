@@ -33,3 +33,22 @@ export interface ProjectFormInterface {
     requested_deadline: Date | null;
     estimated_deadline: Date | null;
 }
+
+export interface ProjectDetailInterface {
+    id: number;
+    title: string;
+    status: "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
+    priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
+    id_client: string;
+    client: string;
+    client_phone: string;
+    locality: string;
+    address: string;
+    env_total: number;
+    env_des: number;
+    env_fab: number;
+    env_ins: number;
+    requested_deadline: Date | null;
+    estimated_deadline: Date | null;
+    createdAt: Date;
+}

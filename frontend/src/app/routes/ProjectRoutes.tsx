@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
-import { ProjectsList } from "../pages/projects";
+import { ProjectsList, Project } from "../pages/projects";
 
 const ProjectRoutes = () => {
   const { roles } = useSelector((state: RootState) => state.auth);
@@ -12,6 +12,7 @@ const ProjectRoutes = () => {
       {roles.includes("USER") && (
         <>
           <Route path="/" element={<ProjectsList />} />
+          <Route path="/:id" element={<Project />} />
         </>
       )}
 

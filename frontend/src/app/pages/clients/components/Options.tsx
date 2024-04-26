@@ -26,7 +26,7 @@ export const ClientOptions = ({
           title="Ver proyectos del cliente"
           onClick={redirectProjects}
         >
-          <i className="bi bi-kanban me-2 fs-6"></i>
+          <i className="bi bi-gem me-2 fs-6"></i>
           Ver proyectos del cliente
         </button>
         <button

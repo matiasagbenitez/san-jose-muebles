@@ -34,6 +34,16 @@ export class DayJsAdapter {
         return formatted;
     }
 
+    static toDateYearString(date: Date): string {
+        const new_date = new Date(date);
+        const formatted = new_date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+        return formatted;
+    }
+
     static toDatetimeString(date: Date): string {
         const new_date = new Date(date);
         const formatted = new_date.toLocaleDateString('es-ES', {
@@ -43,6 +53,15 @@ export class DayJsAdapter {
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
+        });
+        return formatted;
+    }
+
+    static toMonthYearString(date: Date): string {
+        const new_date = new Date(date);
+        const formatted = new_date.toLocaleDateString('es-ES', {
+            month: 'long',
+            year: 'numeric',
         });
         return formatted;
     }
