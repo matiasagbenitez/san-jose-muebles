@@ -1,7 +1,7 @@
 export class VisitRequestDTO {
     private constructor(
         public id_visit_reason: number,
-        public status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA' = 'PENDIENTE',
+        public status: 'PENDIENTE' | 'PAUSADA' | 'REALIZADA' | 'CANCELADA' = 'PENDIENTE',
         public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE' = 'MEDIA',
         public id_client: number,
         public id_locality: number,

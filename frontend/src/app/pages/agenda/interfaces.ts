@@ -16,7 +16,7 @@ export interface VisitRequestListItemInterface {
     id: number;
     schedule: "NOT_SCHEDULED" | "PARTIAL_SCHEDULED" | "FULL_SCHEDULED";
     start: Date | null;
-    status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
+    status: "PENDIENTE" | "PAUSADA" | "REALIZADA" | "CANCELADA";
     client: string;
     locality: string;
     reason: string;
@@ -45,14 +45,15 @@ export interface EditableVisitRequest {
 
 interface Evolution {
     id: number;
-    status: "PENDIENTE" | "REALIZADA" | "CANCELADA";
+    status: "PENDIENTE" | "PAUSADA" | "REALIZADA" | "CANCELADA";
+    comment: string;
     user: string;
     createdAt: Date;
 }
 export interface VisitRequestInterface {
     id: number,
     reason: string,
-    status: "PENDIENTE" | "REALIZADA" | "CANCELADA",
+    status: "PENDIENTE" | "PAUSADA" | "REALIZADA" | "CANCELADA",
     priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE",
     overdue: boolean,
     client: {
@@ -69,4 +70,18 @@ export interface VisitRequestInterface {
     createdAt: Date,
     createdBy: string,
     evolutions: Evolution[],
+}
+
+export enum VisitStatuses {
+    PENDIENTE = "#FFD966",
+    PAUSADA = "#CCCCCC",
+    REALIZADA = "#5A965A",
+    CANCELADA = "#CC3333",
+}
+
+export enum VisitPriorities {
+    BAJA = "#B5D6A7",
+    MEDIA = "#FFF47A",
+    ALTA = "#FD9800",
+    URGENTE = "#F55D1E",
 }

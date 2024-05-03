@@ -129,8 +129,10 @@ export class VisitRequestService {
                 { association: 'locality', attributes: ['name'] },
                 { association: 'user', attributes: ['name'] },
                 { association: 'evolutions', include: [{ association: 'user', attributes: ['name'] }] }
-            ]
+            ],
+            order: [[{ model: VisitEvolution, as: 'evolutions' }, 'createdAt', 'DESC']]
         });
+
         if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');
 
         const entity = VisitRequestDetailEntity.fromObject(row);
@@ -173,7 +175,11 @@ export class VisitRequestService {
         const t = await VisitRequest.sequelize!.transaction();
         try {
             await VisitRequest.update({ ...dto }, { where: { id }, transaction: t });
-            await VisitEvolution.create({ id_visit_request: id, status: dto.status, id_user: id_user }, { transaction: t });
+            await VisitEvolution.create({
+                id_visit_request: id,
+                ...dto,
+                id_user: id_user
+            }, { transaction: t });
             await t.commit();
             return { message: '¡Estado de la visita actualizado correctamente!' };
         } catch (error: any) {

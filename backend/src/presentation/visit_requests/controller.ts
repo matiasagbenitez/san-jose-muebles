@@ -146,7 +146,7 @@ export class VisitRequestController {
         const id = parseInt(req.params.id);
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
-        const [error, status] = UpdateVisitRequestStatusDTO.create(req.body);
+        const [error, status] = UpdateVisitRequestStatusDTO.create(req.body.formData);
         if (error) return res.status(400).json({ message: error });
 
         const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);

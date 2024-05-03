@@ -96,7 +96,7 @@ export const Data = ({ project }: Props) => {
             </th>
             <td>
               {project.requested_deadline
-                ? DayJsAdapter.toMonthYearString(project.requested_deadline)
+                ? DayJsAdapter.toDateYearString(project.requested_deadline)
                 : "No especificada"}
             </td>
           </tr>
@@ -106,7 +106,7 @@ export const Data = ({ project }: Props) => {
             </th>
             <td>
               {project.estimated_deadline
-                ? DayJsAdapter.toMonthYearString(project.estimated_deadline)
+                ? DayJsAdapter.toDateYearString(project.estimated_deadline)
                 : "No especificada"}
             </td>
           </tr>

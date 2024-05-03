@@ -1,13 +1,10 @@
-import { Badge, Table } from "react-bootstrap";
-import { VisitRequestInterface } from "../interfaces";
+import { Badge, ListGroup, Table } from "react-bootstrap";
+import {
+  VisitRequestInterface,
+  VisitStatuses,
+  VisitPriorities,
+} from "../interfaces";
 import { DayJsAdapter } from "../../../../helpers";
-
-enum Priority {
-  BAJA = "#B5D6A7",
-  MEDIA = "#FFF47A",
-  ALTA = "#FD9800",
-  URGENTE = "#F55D1E",
-}
 
 interface Props {
   visit: VisitRequestInterface;
@@ -16,94 +13,13 @@ interface Props {
 export const VisitRequestInfo = ({ visit }: Props) => {
   return (
     <>
-      <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
+      <Table size="sm" className="small mb-2" striped bordered responsive>
+        <tbody className="text-uppercase">
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Cliente
-            </th>
-            <td>
-              {visit.client.name} ({visit.client.locality})
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Teléfono
-            </th>
-            <td>{visit.client.phone}</td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Lugar a visitar
-            </th>
-            <td>{visit.locality}</td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Dirección
-            </th>
-            <td>{visit.address || "No especificada"}</td>
-          </tr>
-        </tbody>
-      </Table>
-      <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Estado
-            </th>
-            <td>
-              <span
-                style={{ fontSize: ".85em", color: "black" }}
-                className={`badge ${
-                  visit.status === "PENDIENTE"
-                    ? "bg-warning"
-                    : visit.status === "REALIZADA"
-                    ? "bg-success"
-                    : "bg-danger"
-                }`}
-              >
-                {visit.status}
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Prioridad
-            </th>
-            <td>
-              <span
-                style={{
-                  fontSize: ".85em",
-                  color: "black",
-                  backgroundColor:
-                    Priority[visit.priority as keyof typeof Priority],
-                }}
-                className="badge"
-              >
-                {visit.priority}
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Motivo visita
-            </th>
-            <td>{visit.reason}</td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Notas adicionales
-            </th>
-            <td>
-              <div className="text-break">{visit.notes || ""}</div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
+            <th scope="row" className="px-2 col-3">
               Fecha programada
             </th>
-            <td>
+            <td className="px-2">
               <span>
                 {visit.schedule === "NOT_SCHEDULED" && "No programada"}
                 {visit.schedule === "PARTIAL_SCHEDULED" && (
@@ -114,46 +30,116 @@ export const VisitRequestInfo = ({ visit }: Props) => {
                 )}
               </span>
               {visit.overdue && (
-                <Badge
-                  bg="danger"
-                  className="float-end"
-                  style={{ fontSize: ".85em" }}
+                <span
+                  className="badge rounded-pill bg-danger float-end"
+                  style={{ fontSize: ".8em" }}
                 >
                   <i className="bi bi-exclamation-triangle-fill me-1"></i>
                   La fecha programada ya pasó
-                </Badge>
+                </span>
               )}
             </td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-3">
-              Creado por
+            <th scope="row" className="px-2">
+              Cliente a visitar
             </th>
-            <td className="text-muted fst-italic">
-              {visit.createdBy} (
-              {DayJsAdapter.toDayMonthYearHour(visit.createdAt)})
+            <td className="px-2">
+              {visit.client.name} ({visit.client.locality}
+              <span className="text-muted">, Tel: {visit.client.phone}</span>)
             </td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2">
+              Lugar a visitar
+            </th>
+            <td className="px-2">{visit.locality}</td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2">
+              Dirección
+            </th>
+            <td className="px-2">{visit.address || ""}</td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2 text-uppercase">
+              Motivo de la visita
+            </th>
+            <td className="px-2">{visit.reason}</td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2">
+              Estado de la visita
+            </th>
+            <td className="px-2">
+              <span
+                className="badge rounded-pill"
+                style={{
+                  fontSize: ".85em",
+                  color: "black",
+                  backgroundColor: VisitStatuses[visit.status] || "gray",
+                }}
+              >
+                {visit.status}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2 text-uppercase">
+              Prioridad
+            </th>
+            <td className="px-2">
+              <span
+                className="badge rounded-pill"
+                style={{
+                  fontSize: ".85em",
+                  color: "black",
+                  backgroundColor: VisitPriorities[visit.priority] || "gray",
+                }}
+              >
+                {visit.priority}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" className="px-2">
+              Notas adicionales
+            </th>
+            <td className="px-2">{visit.notes || ""}</td>
           </tr>
         </tbody>
       </Table>
 
-      <h6>Registro de cambios de estado</h6>
+      <small className="text-muted fst-italic">
+        Solicitud de visita registrada por {visit.createdBy} (
+        {DayJsAdapter.toDayMonthYearHour(visit.createdAt)})
+      </small>
+
+      <h6 className="my-3">
+        Registro de cambios de estado
+        <span className="small mx-1 fw-normal fst-italic">
+          (más recientes primero)
+        </span>
+      </h6>
+
       {visit.evolutions.length === 0 ? (
         <p className="text-muted fst-italic small">
           No se han registrado cambios de estado
         </p>
       ) : (
-        <ul className="small">
-          {visit.evolutions.map((evolution, index) => (
-            <li
-              key={evolution.id}
-              className={index === visit.evolutions.length - 1 ? "fw-bold" : ""}
-            >
-              {evolution.user} marcó la visita como {evolution.status} el día{" "}
-              {DayJsAdapter.toDayMonthYearHour(evolution.createdAt)}.
-            </li>
+        <ListGroup className="small">
+          {visit.evolutions.map((evolution) => (
+            <ListGroup.Item key={evolution.id}>
+              {evolution.user} marcó la visita como <b>{evolution.status}</b> el
+              día {DayJsAdapter.toDayMonthYearHour(evolution.createdAt)}.{" "}
+              {evolution.comment && (
+                <span className="text-muted fst-italic">
+                  Comentario: {evolution.comment}
+                </span>
+              )}
+            </ListGroup.Item>
           ))}
-        </ul>
+        </ListGroup>
       )}
     </>
   );

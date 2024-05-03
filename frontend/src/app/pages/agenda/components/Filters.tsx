@@ -205,9 +205,10 @@ export const Filters = ({
                 })
               }
             >
-              <option value="PENDIENTE">PENDIENTE</option>
-              <option value="REALIZADA">REALIZADA</option>
-              <option value="CANCELADA">CANCELADA</option>
+              <option value="PENDIENTE">PENDIENTES</option>
+              <option value="PAUSADA">PAUSADAS</option>
+              <option value="REALIZADA">REALIZADAS</option>
+              <option value="CANCELADA">CANCELADAS</option>
               <option value="ALL">Todos los estados</option>
             </Form.Select>
           </InputGroup>

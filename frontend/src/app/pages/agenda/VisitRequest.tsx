@@ -1,12 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { Row, Col, Button, Modal } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { VisitRequestInterface } from "./interfaces";
 import { VisitRequestInfo, VisitRequestOptions } from "./components";
 import { LoadingSpinner } from "../../components";
 import { SweetAlert2 } from "../../utils";
+import { MySelect, MyTextArea } from "../../components/forms";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+
+interface InitialFormInterface {
+  status: "PENDIENTE" | "PAUSADA" | "REALIZADA" | "CANCELADA";
+  comment: string;
+}
+
+const initialForm: InitialFormInterface = {
+  status: "PENDIENTE",
+  comment: "",
+};
 
 export const VisitRequest = () => {
   const { id } = useParams();
@@ -14,7 +27,7 @@ export const VisitRequest = () => {
   const [loading, setLoading] = useState(true);
   const [visit, setVisit] = useState<VisitRequestInterface>();
 
-  const [formStatus, setFormStatus] = useState("");
+  const [form, setForm] = useState(initialForm);
   const [showModal, setShowModal] = useState(false);
 
   const fetch = async () => {
@@ -22,7 +35,7 @@ export const VisitRequest = () => {
       setLoading(true);
       const { data } = await apiSJM.get(`/visit_requests/${id}`);
       setVisit(data.item);
-      setFormStatus(data.item.status);
+      setForm({ status: data.item.status, comment: data.item.comment });
       setLoading(false);
     } catch (error) {
       return navigate("/");
@@ -56,29 +69,22 @@ export const VisitRequest = () => {
     setShowModal(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (formData: any) => {
     const confirmation = await SweetAlert2.confirm(
       "¿Estás seguro de que quieres actualizar el estado de la visita?"
     );
+    if (!confirmation.isConfirmed) return;
 
-    if (formStatus === "" || formStatus === visit?.status) {
-      return SweetAlert2.errorAlert(
-        "Debes seleccionar un estado diferente al actual"
-      );
-    }
-
-    if (confirmation.isConfirmed) {
-      try {
-        const { data } = await apiSJM.put(`/visit_requests/${id}/status`, { status: formStatus });
-        fetch();
-        setShowModal(false);
-        SweetAlert2.successToast(data.message);
-        setFormStatus(visit?.status || "");
-      } catch (error: any) {
-        SweetAlert2.errorAlert(error.response.data.message);
-      }
+    try {
+      const { data } = await apiSJM.put(`/visit_requests/${id}/status`, {
+        formData,
+      });
+      fetch();
+      setShowModal(false);
+      SweetAlert2.successToast(data.message);
+      setForm(initialForm);
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
     }
   };
 
@@ -88,7 +94,7 @@ export const VisitRequest = () => {
       {visit && !loading && (
         <>
           <Row>
-            <Col lg={8}>
+            <Col lg={9}>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <Button
                   variant="light border text-muted"
@@ -103,7 +109,7 @@ export const VisitRequest = () => {
               </div>
               <VisitRequestInfo visit={visit} />
             </Col>
-            <Col lg={4}>
+            <Col lg={3}>
               <VisitRequestOptions
                 id={visit.id}
                 handleDelete={handleDelete}
@@ -117,48 +123,60 @@ export const VisitRequest = () => {
               <Modal.Title>Actualizar estado de la visita</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group
-                  controlId="status"
-                  className="my-2 d-flex justify-content-between fw-bold"
-                >
-                  <Form.Check
-                    inline
-                    type="radio"
-                    name="status"
-                    label="PENDIENTE"
-                    value="PENDIENTE"
-                    checked={formStatus === "PENDIENTE"}
-                    onChange={(e) => setFormStatus(e.target.value)}
-                  />
-                  <Form.Check
-                    inline
-                    type="radio"
-                    name="status"
-                    label="REALIZADA"
-                    value="REALIZADA"
-                    checked={formStatus === "REALIZADA"}
-                    onChange={(e) => setFormStatus(e.target.value)}
-                  />
-                  <Form.Check
-                    inline
-                    type="radio"
-                    name="status"
-                    label="CANCELADA"
-                    value="CANCELADA"
-                    checked={formStatus === "CANCELADA"}
-                    onChange={(e) => setFormStatus(e.target.value)}
-                  />
-                </Form.Group>
-                <div className="d-flex mt-3 gap-2 justify-content-end">
-                  <Button size="sm" variant="secondary" onClick={closeModal}>
-                    Cancelar
-                  </Button>
-                  <Button size="sm" variant="primary" type="submit">
-                    Guardar cambios
-                  </Button>
-                </div>
-              </Form>
+              <Formik
+                initialValues={form}
+                onSubmit={(values) => {
+                  console.log(values);
+                  handleSubmit(values);
+                }}
+                validationSchema={Yup.object({
+                  status: Yup.string()
+                    .required("El estado es requerido")
+                    .test(
+                      "is-different",
+                      "El estado debe ser diferente al actual",
+                      (value) => value !== visit.status
+                    ),
+
+                  comment: Yup.string()
+                    .required("El comentario es requerido")
+                    .min(5, "El comentario debe tener al menos 5 caracteres")
+                    .max(255, "El comentario debe tener como máximo 255 caracteres"),
+                })}
+              >
+                {({ errors, touched }) => (
+                  <Form id="form">
+                    <MySelect
+                      label="Estado de la visita"
+                      name="status"
+                      as="select"
+                      isInvalid={!!errors.status && touched.status}
+                    >
+                      <option value="PENDIENTE">PENDIENTE</option>
+                      <option value="PAUSADA">PAUSADA</option>
+                      <option value="REALIZADA">REALIZADA</option>
+                      <option value="CANCELADA">CANCELADA</option>
+                    </MySelect>
+
+                    <MyTextArea
+                label="Comentarios"
+                name="comment"
+                placeholder="Ingrese un comentario"
+                rows={4}
+                isInvalid={!!errors.comment && touched.comment}
+              />
+
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className="mt-3 float-end"
+                      size="sm"
+                    >
+                      Guardar
+                    </Button>
+                  </Form>
+                )}
+              </Formik>
             </Modal.Body>
           </Modal>
         </>

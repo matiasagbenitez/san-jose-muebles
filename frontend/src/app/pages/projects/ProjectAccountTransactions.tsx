@@ -217,7 +217,8 @@ export const ProjectAccountTransactions = () => {
     {
       name: "MONTO EQUIVALENTE",
       maxWidth: "170px",
-      selector: (row: DataRow) => toMoney(row.received_amount),
+      // selector: (row: DataRow) => toMoney(row.equivalent_amount),
+      selector: (row: DataRow) => toMoney(row.equivalent_amount),
       right: true,
       style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1.1em" },
     },
@@ -384,17 +385,17 @@ export const ProjectAccountTransactions = () => {
                     <InputGroup className="mb-3" size="sm">
                       <InputGroup.Text>Monto</InputGroup.Text>
                       <NumericFormat
-                        prefix="$"
+                        // prefix="$"
                         thousandSeparator="."
                         decimalSeparator=","
                         decimalScale={2}
                         fixedDecimalScale
                         className="text-end form-control"
-                        value={formData.amount}
+                        // value={formData.amount}
                         required
                         onValueChange={(values) => {
                           const { floatValue } = values;
-                          setFormData({ ...formData, amount: floatValue || 0 });
+                          // setFormData({ ...formData, amount: floatValue || 0 });
                         }}
                       />
                     </InputGroup>
@@ -415,7 +416,7 @@ export const ProjectAccountTransactions = () => {
                     <InputGroup className="mb-3" size="sm">
                       <InputGroup.Text>Equivalente</InputGroup.Text>
                       <NumericFormat
-                        prefix="$"
+                        // prefix="$"
                         thousandSeparator="."
                         decimalSeparator=","
                         decimalScale={2}
@@ -425,7 +426,7 @@ export const ProjectAccountTransactions = () => {
                         required
                         onValueChange={(values) => {
                           const { floatValue } = values;
-                          setFormData({ ...formData, amount: floatValue || 0 });
+                          // setFormData({ ...formData, amount: floatValue || 0 });
                         }}
                       />
                     </InputGroup>

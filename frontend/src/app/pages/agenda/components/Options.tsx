@@ -43,7 +43,7 @@ export const VisitRequestOptions = ({
           onClick={handleDelete}
         >
           <i className="bi bi-x-circle-fill me-2 fs-6"></i>
-          Eliminar visita
+          Eliminar registro del sistema
         </button>
       </div>
     </div>

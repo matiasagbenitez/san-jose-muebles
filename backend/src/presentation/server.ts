@@ -42,14 +42,14 @@ export class Server {
             res.sendFile(indexPath);
         });
 
-        this.serverListener = this.app.listen(this.port, () => {
-            console.log(`Server running on port ${this.port}`);
-        });
-
-        // NETWORK
-        // this.serverListener = this.app.listen(this.port, '0.0.0.0', () => {
+        // this.serverListener = this.app.listen(this.port, () => {
         //     console.log(`Server running on port ${this.port}`);
         // });
+
+        // NETWORK
+        this.serverListener = this.app.listen(this.port, '0.0.0.0', () => {
+            console.log(`Server running on port ${this.port}`);
+        });
     }
 
     public close() {

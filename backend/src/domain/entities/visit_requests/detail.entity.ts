@@ -8,7 +8,7 @@ interface ClientData {
 
 interface Evolution {
     id: number;
-    status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA';
+    status: 'PENDIENTE' | 'PAUSADA' | 'REALIZADA' | 'CANCELADA';
     user: string;
     createdAt: Date;
 }
@@ -16,7 +16,7 @@ export class VisitRequestDetailEntity {
     constructor(
         public id: number,
         public reason: string,
-        public status: 'PENDIENTE' | 'REALIZADA' | 'CANCELADA',
+        public status: 'PENDIENTE' | 'PAUSADA' | 'REALIZADA' | 'CANCELADA',
         public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
         public overdue: boolean,
         public client: ClientData,
@@ -47,6 +47,7 @@ export class VisitRequestDetailEntity {
             return {
                 id: evolution.id,
                 status: evolution.status,
+                comment: evolution.comment,
                 user: evolution.user.name,
                 createdAt: evolution.createdAt,
             }

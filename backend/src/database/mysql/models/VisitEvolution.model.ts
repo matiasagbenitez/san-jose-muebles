@@ -4,6 +4,7 @@ export class VisitEvolution extends Model {
     public id!: number;
     public id_visit_request!: number;
     public status!: string;
+    public comment!: string;
     public id_user!: number;
 
     public readonly createdAt!: Date;
@@ -23,8 +24,11 @@ export const initVisitEvolutionModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('PENDIENTE', 'REALIZADA', 'CANCELADA'),
+                type: DataTypes.ENUM('PENDIENTE', 'PAUSADA', 'REALIZADA', 'CANCELADA'),
                 allowNull: false,
+            },
+            comment: {
+                type: DataTypes.STRING,
             },
             id_user: {
                 type: DataTypes.INTEGER.UNSIGNED,
