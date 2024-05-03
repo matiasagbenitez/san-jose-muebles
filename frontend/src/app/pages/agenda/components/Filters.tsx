@@ -122,9 +122,8 @@ export const Filters = ({
           <Row>
             <Col xs={6}>
               <InputGroup size="sm" className="mb-3">
-                {/* <InputGroup.Text id="from">Desde</InputGroup.Text> */}
                 <Form.Control
-                  type="datetime-local"
+                  type="date"
                   name="start"
                   value={state.filters.start || ""}
                   onChange={(e) =>
@@ -140,11 +139,10 @@ export const Filters = ({
               </InputGroup>
             </Col>
 
-            <Col sm={6}>
+            <Col xs={6}>
               <InputGroup size="sm" className="mb-3">
-                {/* <InputGroup.Text id="to">Hasta</InputGroup.Text> */}
                 <Form.Control
-                  type="datetime-local"
+                  type="date"
                   name="end"
                   value={state.filters.end || ""}
                   onChange={(e) =>
@@ -231,7 +229,7 @@ export const Filters = ({
                 })
               }
             >
-              <option value="">Todas las opciones</option>
+              <option value="">Todas</option>
               <option value="NOT_SCHEDULED">Sin fecha programada</option>
               <option value="PARTIAL_SCHEDULED">Con fecha programada</option>
               <option value="FULL_SCHEDULED">Con fecha y hora programada</option>

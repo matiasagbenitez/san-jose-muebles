@@ -35,6 +35,9 @@ export class VisitRequestService {
             case 'PENDIENTE':
                 where = { ...where, status: 'PENDIENTE' };
                 break;
+            case 'PAUSADA':
+                where = { ...where, status: 'PAUSADA' };
+                break;
             case 'REALIZADA':
                 where = { ...where, status: 'REALIZADA' };
                 break;

@@ -17,6 +17,10 @@ export const VisitRequestOptions = ({
     navigate(`/agenda/${id}/editar`);
   };
 
+  const redirectAuditing = () => {
+    navigate(`/agenda/${id}/auditoria`);
+  }
+
   return (
     <div>
       <h2 className="fs-6 mt-3">Menú de opciones</h2>
@@ -35,7 +39,15 @@ export const VisitRequestOptions = ({
           onClick={redirectEdit}
         >
           <i className="bi bi-pencil me-2 fs-6"></i>
-          Modificar información de la visita
+          Modificar datos de la visita
+        </button>
+        <button
+          className="list-group-item list-group-item-action py-1"
+          title="Historial de modificaciones"
+          onClick={redirectAuditing}
+        >
+          <i className="bi bi-search me-2 fs-6"></i>
+          Historial de modificaciones
         </button>
         <button
           className="list-group-item list-group-item-action py-1 text-danger"

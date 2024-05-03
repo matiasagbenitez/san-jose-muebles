@@ -28,6 +28,7 @@ export const VisitRequest = () => {
   const [visit, setVisit] = useState<VisitRequestInterface>();
 
   const [form, setForm] = useState(initialForm);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const fetch = async () => {
@@ -48,9 +49,7 @@ export const VisitRequest = () => {
 
   const handleDelete = async () => {
     try {
-      const confirmation = await SweetAlert2.confirm(
-        "¿Estás seguro de que quieres eliminar esta solicitud de visita?"
-      );
+      const confirmation = await SweetAlert2.confirm("¿Estás seguro de que quieres eliminar esta solicitud de visita?");
       if (confirmation.isConfirmed) {
         await apiSJM.delete(`/visit_requests/${id}`);
         navigate("/agenda");
@@ -70,22 +69,23 @@ export const VisitRequest = () => {
   };
 
   const handleSubmit = async (formData: any) => {
-    const confirmation = await SweetAlert2.confirm(
-      "¿Estás seguro de que quieres actualizar el estado de la visita?"
-    );
+
+    const confirmation = await SweetAlert2.confirm("¿Estás seguro de que quieres actualizar el estado de la visita?");
     if (!confirmation.isConfirmed) return;
 
     try {
-      const { data } = await apiSJM.put(`/visit_requests/${id}/status`, {
-        formData,
-      });
+      setIsFormSubmitted(true);
+      const { data } = await apiSJM.put(`/visit_requests/${id}/status`, { formData });
       fetch();
       setShowModal(false);
       SweetAlert2.successToast(data.message);
       setForm(initialForm);
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitted(false);
     }
+
   };
 
   return (
@@ -105,7 +105,7 @@ export const VisitRequest = () => {
                   <i className="bi bi-arrow-left me-2"></i>
                   Atrás
                 </Button>
-                <h1 className="fs-5 my-0">Solicitud de visita</h1>
+                <h1 className="fs-5 my-0">Detalle de visita</h1>
               </div>
               <VisitRequestInfo visit={visit} />
             </Col>
@@ -141,7 +141,10 @@ export const VisitRequest = () => {
                   comment: Yup.string()
                     .required("El comentario es requerido")
                     .min(5, "El comentario debe tener al menos 5 caracteres")
-                    .max(255, "El comentario debe tener como máximo 255 caracteres"),
+                    .max(
+                      255,
+                      "El comentario debe tener como máximo 255 caracteres"
+                    ),
                 })}
               >
                 {({ errors, touched }) => (
@@ -159,20 +162,22 @@ export const VisitRequest = () => {
                     </MySelect>
 
                     <MyTextArea
-                label="Comentarios"
-                name="comment"
-                placeholder="Ingrese un comentario"
-                rows={4}
-                isInvalid={!!errors.comment && touched.comment}
-              />
+                      label="Comentarios"
+                      name="comment"
+                      placeholder="Ingrese un comentario"
+                      rows={4}
+                      isInvalid={!!errors.comment && touched.comment}
+                    />
 
                     <Button
                       type="submit"
                       variant="primary"
                       className="mt-3 float-end"
                       size="sm"
+                      disabled={isFormSubmitted}
                     >
-                      Guardar
+                      <i className="bi bi-floppy me-2"></i>
+                      Guardar cambios
                     </Button>
                   </Form>
                 )}

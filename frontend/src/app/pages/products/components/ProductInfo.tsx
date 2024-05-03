@@ -58,41 +58,21 @@ export const ProductInfo = ({ product }: any) => {
           </tr> */}
 
           <tr className="text-center text-uppercase">
-            <th className="px-2 col-2">Unidad de medida</th>
+            <th className="px-2 col-2">Unidad medida</th>
             <th className="px-2 col-2">
               Stock actual
-              <i
-                className="bi bi-info-circle text-muted ms-2"
-                title="Stock existente en la empresa"
-              ></i>
             </th>
             <th className="px-2 col-2">
               Stock a recibir
-              <i
-                className="bi bi-info-circle text-muted ms-2"
-                title="Stock comprado pero aún no recibido"
-              ></i>
             </th>
             <th className="px-2 col-2">
               Stock total
-              <i
-                className="bi bi-info-circle text-muted ms-2"
-                title="Stock actual más stock a recibir"
-              ></i>
             </th>
             <th className="px-2 col-2">
               Stock mínimo
-              <i
-                className="bi bi-info-circle text-muted ms-2"
-                title="Stock mínimo deseado para el producto"
-              ></i>
             </th>
             <th className="px-2 col-2">
               Stock ideal
-              <i
-                className="bi bi-info-circle text-muted ms-2"
-                title="Stock ideal deseado para el producto"
-              ></i>
             </th>
           </tr>
           <tr className="text-center">

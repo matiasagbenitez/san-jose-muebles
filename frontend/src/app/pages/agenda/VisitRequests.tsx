@@ -12,14 +12,11 @@ import {
 import { DayJsAdapter } from "../../../helpers";
 import { Filters } from "./components";
 import { LoadingSpinner } from "../../components";
-import { VisitRequestListItemInterface as DataRow } from "./interfaces";
-
-enum Priority {
-  BAJA = "#B5D6A7",
-  MEDIA = "#FFF47A",
-  ALTA = "#FD9800",
-  URGENTE = "#F55D1E",
-}
+import {
+  VisitRequestListItemInterface as DataRow,
+  VisitPriorities,
+  VisitStatuses,
+} from "./interfaces";
 
 export const VisitRequests = () => {
   const navigate = useNavigate();
@@ -105,14 +102,12 @@ export const VisitRequests = () => {
       selector: (row: DataRow) => row.status,
       cell: (row: DataRow) => (
         <span
-          style={{ fontSize: ".9em", color: "black" }}
-          className={`badge ${
-            row.status === "PENDIENTE"
-              ? "bg-warning"
-              : row.status === "REALIZADA"
-              ? "bg-success"
-              : "bg-danger"
-          }`}
+          style={{
+            fontSize: ".9em",
+            backgroundColor: VisitStatuses[row.status],
+            color: "black",
+          }}
+          className="badge rounded-pill"
         >
           {row.status}
         </span>
@@ -140,10 +135,10 @@ export const VisitRequests = () => {
         <span
           style={{
             fontSize: ".9em",
-            backgroundColor: Priority[row.priority],
+            backgroundColor: VisitPriorities[row.priority],
             color: "black",
           }}
-          className={`badge`}
+          className="badge rounded-pill"
         >
           {row.priority}
         </span>

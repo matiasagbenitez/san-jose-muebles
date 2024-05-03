@@ -1,9 +1,5 @@
-import { Badge, ListGroup, Table } from "react-bootstrap";
-import {
-  VisitRequestInterface,
-  VisitStatuses,
-  VisitPriorities,
-} from "../interfaces";
+import { ListGroup, Table } from "react-bootstrap";
+import { VisitRequestInterface, VisitStatuses, VisitPriorities, } from "../interfaces";
 import { DayJsAdapter } from "../../../../helpers";
 
 interface Props {
@@ -116,7 +112,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
       </small>
 
       <h6 className="my-3">
-        Registro de cambios de estado
+        Historial de cambios de estado
         <span className="small mx-1 fw-normal fst-italic">
           (más recientes primero)
         </span>
