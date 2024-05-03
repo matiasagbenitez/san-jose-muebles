@@ -21,6 +21,8 @@ export class VisitRequestRoutes {
         router.put('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);
 
+        router.get('/:id/historial/paginated', [AuthMiddleware.validateJWT], controller.getHistorialPaginated);
+
         return router;
     }
 

@@ -18,7 +18,7 @@ export const VisitRequestOptions = ({
   };
 
   const redirectAuditing = () => {
-    navigate(`/agenda/${id}/auditoria`);
+    navigate(`/agenda/${id}/historial`);
   }
 
   return (

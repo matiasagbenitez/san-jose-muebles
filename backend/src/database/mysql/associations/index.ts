@@ -158,8 +158,8 @@ export const initializeAssociations = () => {
     VisitEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
     // VISIT REQUEST AUDIT
-    VisitRequest.hasMany(VisitRequestAudit, { foreignKey: 'id_visit_request', as: 'audits', onDelete: 'RESTRICT' });
-    VisitRequestAudit.belongsTo(VisitRequest, { foreignKey: 'id_visit_request', as: 'visit' });
+    VisitRequest.hasMany(VisitRequestAudit, { foreignKey: 'id_row', as: 'audits', onDelete: 'RESTRICT' });
+    VisitRequestAudit.belongsTo(VisitRequest, { foreignKey: 'id_row', as: 'visit' });
 
     VisitRequestAudit.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 

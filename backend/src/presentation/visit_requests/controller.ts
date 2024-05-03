@@ -182,4 +182,22 @@ export class VisitRequestController {
             });
     }
 
+    getHistorialPaginated = async (req: Request, res: Response) => {
+
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: 'Falta el ID' });
+
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+
+        this.service.getVisitRequestHistorial(parseInt(id), paginationDto!)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
 }

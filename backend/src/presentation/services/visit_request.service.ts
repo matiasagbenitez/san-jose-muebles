@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
-import { VisitEvolution, VisitRequest } from "../../database/mysql/models";
-import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto, UpdateVisitRequestStatusDTO } from "../../domain";
+import { VisitEvolution, VisitRequest, VisitRequestAudit } from "../../database/mysql/models";
+import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto, UpdateVisitRequestStatusDTO, VisitRequestAuditEntity } from "../../domain";
 
 export interface VisitRequestFilters {
     id_client?: number;
@@ -225,6 +225,25 @@ export class VisitRequestService {
             }
             throw CustomError.internalServerError(`${error}`);
         }
+    }
+
+    public async getVisitRequestHistorial(id: number, paginationDto: PaginationDto) {
+        const { page, limit } = paginationDto;
+
+        const [rows, total] = await Promise.all([
+            VisitRequestAudit.findAll({
+                where: { id_row: id },
+                include: [
+                    { association: 'user', attributes: ['name'] }
+                ],
+                offset: (page - 1) * limit,
+                limit,
+            }),
+            VisitRequestAudit.count({ where: { id_row: id } })
+        ]);
+
+        const entities = rows.map(priority => VisitRequestAuditEntity.fromObject(priority));
+        return { items: entities, total_items: total };
     }
 
 }
