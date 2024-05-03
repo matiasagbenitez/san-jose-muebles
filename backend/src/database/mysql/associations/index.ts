@@ -33,6 +33,7 @@ import {
     Project,
     ProjectAccount,
     ProjectAccountTransaction,
+    VisitRequestAudit,
 
 } from '../models';
 
@@ -155,6 +156,12 @@ export const initializeAssociations = () => {
     VisitEvolution.belongsTo(VisitRequest, { foreignKey: 'id_visit_request', as: 'visit' });
 
     VisitEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    // VISIT REQUEST AUDIT
+    VisitRequest.hasMany(VisitRequestAudit, { foreignKey: 'id_visit_request', as: 'audits', onDelete: 'RESTRICT' });
+    VisitRequestAudit.belongsTo(VisitRequest, { foreignKey: 'id_visit_request', as: 'visit' });
+
+    VisitRequestAudit.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
 
     // PROJECT

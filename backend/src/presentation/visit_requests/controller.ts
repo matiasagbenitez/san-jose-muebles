@@ -130,10 +130,14 @@ export class VisitRequestController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
         const [error, updateDto] = VisitRequestDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.service.updateVisitRequest(id, updateDto!)
+        this.service.updateVisitRequest(id, updateDto!, loggedUserIdDto!.id_user)
             .then((data) => {
                 res.json(data);
             })
@@ -165,7 +169,11 @@ export class VisitRequestController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Falta el ID' });
 
-        this.service.deleteVisitRequest(parseInt(id))
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+        this.service.deleteVisitRequest(parseInt(id), loggedUserIdDto!.id_user)
             .then((data) => {
                 res.json(data);
             })

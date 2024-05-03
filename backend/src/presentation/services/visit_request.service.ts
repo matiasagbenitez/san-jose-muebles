@@ -1,6 +1,6 @@
+import { Op, Sequelize } from "sequelize";
 import { VisitEvolution, VisitRequest } from "../../database/mysql/models";
 import { CustomError, VisitRequestDTO, VisitRequestListEntity, PaginationDto, VisitRequestDetailEntity, VisitRequestEditableEntity, CalendarEventEntity, CalendarIntervalDto, UpdateVisitRequestStatusDTO } from "../../domain";
-import { Op, Order, Sequelize } from "sequelize";
 
 export interface VisitRequestFilters {
     id_client?: number;
@@ -151,19 +151,32 @@ export class VisitRequestService {
 
     public async createVisitRequest(createDto: VisitRequestDTO, id_user: number) {
 
+        const transaction = await VisitRequest.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la solicitud de visita!');
+
         try {
-            await VisitRequest.create({ ...createDto, id_user });
+            await VisitRequest.create({ ...createDto, id_user }, { transaction, id_user } as any);
+            await transaction.commit();
             return { message: '¡Solitud de visita creada correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }
 
-    public async updateVisitRequest(id: number, updateDto: VisitRequestDTO) {
+    public async updateVisitRequest(id: number, updateDto: VisitRequestDTO, id_user: number) {
+        const row = await VisitRequest.findByPk(id);
+        if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');
+
+        const transaction = await VisitRequest.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡No se pudo iniciar la transacción!');
+
         try {
-            await VisitRequest.update({ ...updateDto }, { where: { id } });
+            await row.update({ ...updateDto }, { transaction, id_user } as any);
+            await transaction.commit();
             return { message: '¡Solicitud de visita actualizada correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             if (error.name === 'SequelizeForeignKeyConstraintError') {
                 throw CustomError.badRequest('¡No se puede actualizar la solicitud de visita!');
             }
@@ -175,18 +188,20 @@ export class VisitRequestService {
     }
 
     public async updateVisitRequestStatus(id: number, dto: UpdateVisitRequestStatusDTO, id_user: number) {
-        const t = await VisitRequest.sequelize!.transaction();
+        const transaction = await VisitRequest.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡No se pudo iniciar la transacción!');
+
         try {
-            await VisitRequest.update({ ...dto }, { where: { id }, transaction: t });
+            await VisitRequest.update({ ...dto }, { where: { id }, transaction });
             await VisitEvolution.create({
                 id_visit_request: id,
                 ...dto,
                 id_user: id_user
-            }, { transaction: t });
-            await t.commit();
+            }, { transaction });
+            await transaction.commit();
             return { message: '¡Estado de la visita actualizado correctamente!' };
         } catch (error: any) {
-            await t.rollback();
+            await transaction.rollback();
             if (error.name === 'SequelizeValidationError') {
                 throw CustomError.badRequest(`${error.errors[0].message}`);
             }
@@ -194,9 +209,15 @@ export class VisitRequestService {
         }
     }
 
-    public async deleteVisitRequest(id: number) {
+    public async deleteVisitRequest(id: number, id_user: number) {
+        const row = await VisitRequest.findByPk(id);
+        if (!row) throw CustomError.notFound('¡Solicitud de visita no encontrada!');
+
+        const transaction = await VisitRequest.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡No se pudo iniciar la transacción!');
+
         try {
-            await VisitRequest.destroy({ where: { id } });
+            await row.destroy({ transaction, id_user } as any);
             return { message: '¡Solicitud de visita eliminada correctamente!' };
         } catch (error: any) {
             if (error.name === 'SequelizeForeignKeyConstraintError') {

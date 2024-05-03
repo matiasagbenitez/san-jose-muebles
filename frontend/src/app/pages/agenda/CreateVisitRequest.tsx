@@ -19,6 +19,7 @@ export const CreateVisitRequest = () => {
       SweetAlert2.successToast(data.message || "Visita creada correctamente");
       navigate("/agenda");
     } catch (error) {
+      console.log(error);
       SweetAlert2.errorAlert("Error al crear la visita");
     }
   };

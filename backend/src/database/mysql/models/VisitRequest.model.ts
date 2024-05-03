@@ -1,4 +1,5 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { VisitRequestAudit } from './VisitRequestAudit.model';
 
 export class VisitRequest extends Model {
     public id!: number;
@@ -16,6 +17,7 @@ export class VisitRequest extends Model {
 
     public id_user!: number;
 
+    public _previousDataValues: any;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -61,7 +63,7 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             start: {
-                type: DataTypes.DATE, 
+                type: DataTypes.DATE,
                 allowNull: true,
             },
             end: {
@@ -81,4 +83,50 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
             timestamps: true,
         }
     );
+
+    VisitRequest.afterCreate(async (record: VisitRequest, options: any) => {
+        await VisitRequestAudit.create({
+            action: 'CREATE',
+            id_row: record.dataValues.id,
+            before: null,
+            after: record.toJSON(),
+            id_user: options.id_user,
+        }, { transaction: options.transaction });
+    });
+
+    VisitRequest.beforeUpdate(async (record: VisitRequest, options: any) => {
+        const changedFields = record.changed();
+
+        if (changedFields) {
+            const auditData: any = {
+                action: 'UPDATE',
+                id_row: record.id,
+                id_user: options.id_user,
+                before: {},
+                after: {}
+            };
+
+            changedFields.forEach((field: any) => {
+                auditData.before[field] = record._previousDataValues[field];
+                auditData.after[field] = record.getDataValue(field);
+            });
+
+            await VisitRequestAudit.create(auditData, { transaction: options.transaction });
+        }
+    });
+
+    VisitRequest.beforeDestroy(async (record: VisitRequest, options: any) => {
+        const dbRecord = await VisitRequest.findByPk(record.id, { raw: true });
+        if (!dbRecord) return;
+
+        await VisitRequestAudit.create({
+            action: 'DELETE',
+            id_row: record.id,
+            before: dbRecord,
+            after: null,
+            id_user: options.id_user,
+        }, { transaction: options.transaction });
+    });
+
+
 };
