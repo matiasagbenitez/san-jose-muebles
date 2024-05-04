@@ -2,7 +2,7 @@ import { VisitRequest, VisitRequestAudit } from "../models";
 
 VisitRequest.addHook('afterCreate', async (visit_request: any, opt: any) => {
     await VisitRequestAudit.create({
-        accion: 'CREATE',
+        accion: 'ALTA',
         id_row: visit_request.id,
         before: null,
         after: visit_request.toJSON(),
@@ -27,7 +27,7 @@ VisitRequest.addHook('beforeUpdate', async (visit_request: any, opt: any) => {
 
 
         await VisitRequestAudit.create({
-            accion: 'UPDATE',
+            accion: 'MODIFICACION',
             id_row: visit_request.id,
             before: old_values,
             after: new_values,
@@ -45,7 +45,7 @@ VisitRequest.addHook('beforeDestroy', async (visit_request: any, opt: any) => {
     const old_values = db_row.toJSON();
 
     await VisitRequestAudit.create({
-        accion: 'DELETE',
+        accion: 'BAJA',
         id_registro: visit_request.id,
         data_antes: old_values,
         data_despues: null,

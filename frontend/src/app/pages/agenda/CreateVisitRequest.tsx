@@ -1,26 +1,30 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import { VisitForm } from "./components";
 import { VisitRequestFormInterface } from "./interfaces";
 import { SweetAlert2 } from "../../utils";
 import apiSJM from "../../../api/apiSJM";
-import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
 
 export const CreateVisitRequest = () => {
   const navigate = useNavigate();
+  
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
   const handleSubmit = async (formData: VisitRequestFormInterface) => {
-    const confirmation = await SweetAlert2.confirm(
-      "¿Estás seguro de crear la visita?"
-    );
+    const confirmation = await SweetAlert2.confirm("¿Estás seguro de crear la visita?");
     if (!confirmation.isConfirmed) return;
 
     try {
+      setIsFormSubmitting(true);
       const { data } = await apiSJM.post("/visit_requests", formData);
       SweetAlert2.successToast(data.message || "Visita creada correctamente");
       navigate("/agenda");
     } catch (error) {
       console.log(error);
       SweetAlert2.errorAlert("Error al crear la visita");
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -39,7 +43,7 @@ export const CreateVisitRequest = () => {
         <h1 className="fs-5 my-0">Registrar una nueva solicitud de visita</h1>
       </div>
       <hr className="my-3" />
-      <VisitForm onSubmit={handleSubmit} />
+      <VisitForm onSubmit={handleSubmit} submitting={isFormSubmitting} />
     </>
   );
 };

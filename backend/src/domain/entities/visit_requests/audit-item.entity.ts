@@ -3,7 +3,7 @@ import { CustomError } from '../../errors/custom.error';
 export class VisitRequestAuditEntity {
     constructor(
         public id: number,
-        public action: 'CREATE' | 'UPDATE' | 'DELETE',
+        public action: 'ALTA' | 'BAJA' | 'MODIFICACION',
         public before: { [key: string]: any },
         public after: { [key: string]: any },
         public user: string,

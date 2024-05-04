@@ -36,7 +36,13 @@ export class ClientService {
 
         // FILTERS
         let where = {};
-        if (filters.name) where = { ...where, name: { [Op.like]: `%${filters.name}%` } };
+        if (filters.name) where = {
+            [Op.or]: [
+                { id: { [Op.like]: `%${filters.name}%` } },
+                { name: { [Op.like]: `%${filters.name}%` } },
+                { phone: { [Op.like]: `%${filters.name}%` } },
+            ]
+        };
         if (filters.id_locality) where = { ...where, id_locality: filters.id_locality };
 
         const [clients, total] = await Promise.all([

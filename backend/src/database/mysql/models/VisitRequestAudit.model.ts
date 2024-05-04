@@ -21,7 +21,7 @@ export const initVisitRequestAuditModel = (sequelize: Sequelize) => {
                 primaryKey: true,
             },
             action: {
-                type: DataTypes.ENUM('CREATE', 'UPDATE', 'DELETE'),
+                type: DataTypes.ENUM('ALTA', 'BAJA', 'MODIFICACION'),
                 allowNull: false,
             },
             id_row: {

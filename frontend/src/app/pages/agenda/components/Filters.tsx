@@ -108,7 +108,7 @@ export const Filters = ({
                 })
               }
             >
-              <option value="">Todas los motivos de visita</option>
+              <option value="">Todos los motivos</option>
               {visitReasons.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.label}
@@ -229,7 +229,7 @@ export const Filters = ({
                 })
               }
             >
-              <option value="">Todas</option>
+              <option value="">Todas las fechas</option>
               <option value="NOT_SCHEDULED">Sin fecha programada</option>
               <option value="PARTIAL_SCHEDULED">Con fecha programada</option>
               <option value="FULL_SCHEDULED">Con fecha y hora programada</option>

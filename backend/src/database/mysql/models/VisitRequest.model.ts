@@ -85,11 +85,13 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
     );
 
     VisitRequest.afterCreate(async (record: VisitRequest, options: any) => {
+        const { createdAt, updatedAt, id_user, ...recordData } = record.toJSON();
+
         await VisitRequestAudit.create({
-            action: 'CREATE',
+            action: 'ALTA',
             id_row: record.dataValues.id,
             before: null,
-            after: record.toJSON(),
+            after: recordData,
             id_user: options.id_user,
         }, { transaction: options.transaction });
     });
@@ -99,7 +101,7 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
 
         if (changedFields) {
             const auditData: any = {
-                action: 'UPDATE',
+                action: 'MODIFICACION',
                 id_row: record.id,
                 id_user: options.id_user,
                 before: {},
@@ -107,6 +109,7 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
             };
 
             changedFields.forEach((field: any) => {
+                if (['updatedAt'].includes(field)) return;
                 auditData.before[field] = record._previousDataValues[field];
                 auditData.after[field] = record.getDataValue(field);
             });
@@ -116,13 +119,15 @@ export const initVisitRequestModel = (sequelize: Sequelize) => {
     });
 
     VisitRequest.beforeDestroy(async (record: VisitRequest, options: any) => {
-        const dbRecord = await VisitRequest.findByPk(record.id, { raw: true });
+        const dbRecord = await VisitRequest.findByPk(record.id);
         if (!dbRecord) return;
 
+        const { createdAt, updatedAt, deletedAt, id_user, ...dbRecordData } = dbRecord.toJSON();
+
         await VisitRequestAudit.create({
-            action: 'DELETE',
+            action: 'BAJA',
             id_row: record.id,
-            before: dbRecord,
+            before: dbRecordData,
             after: null,
             id_user: options.id_user,
         }, { transaction: options.transaction });

@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 export const EditVisitRequest = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [visit, setVisit] = useState<VisitRequestFormInterface>();
   const navigate = useNavigate();
 
@@ -36,6 +37,7 @@ export const EditVisitRequest = () => {
     if (!confirmation.isConfirmed) return;
 
     try {
+      setIsFormSubmitting(true);
       const { data } = await apiSJM.put(`/visit_requests/${id}`, formData);
       SweetAlert2.successToast(
         data.message || "Visita actualizada correctamente"
@@ -44,29 +46,34 @@ export const EditVisitRequest = () => {
     } catch (error) {
       console.log(error);
       SweetAlert2.errorAlert("Error al actualizar la visita");
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
   return (
     <>
+      <div className="d-flex gap-3 align-items-center mb-3">
+        <Button
+          variant="light border text-muted"
+          size="sm"
+          onClick={() => navigate(`/agenda/${id}`)}
+          title="Volver al detalle de la visita"
+        >
+          <i className="bi bi-arrow-left me-2"></i>
+          Atrás
+        </Button>
+        <h1 className="fs-5 my-0">Editar visita</h1>
+      </div>
+      <hr className="my-3" />
       {loading && <LoadingSpinner />}
       {!loading && visit && (
-        <>
-          <div className="d-flex gap-3 align-items-center mb-3">
-            <Button
-              variant="light border text-muted"
-              size="sm"
-              onClick={() => navigate(`/agenda/${id}`)}
-              title="Volver al detalle de la visita"
-            >
-              <i className="bi bi-arrow-left me-2"></i>
-              Atrás
-            </Button>
-            <h1 className="fs-5 my-0">Editar visita</h1>
-          </div>
-          <hr className="my-3" />
-          <VisitForm editMode initialForm={visit} onSubmit={handleSubmit} />
-        </>
+        <VisitForm
+          editMode
+          initialForm={visit}
+          onSubmit={handleSubmit}
+          submitting={isFormSubmitting}
+        />
       )}
     </>
   );

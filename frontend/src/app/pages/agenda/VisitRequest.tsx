@@ -48,13 +48,15 @@ export const VisitRequest = () => {
   }, [id]);
 
   const handleDelete = async () => {
+    const confirmation = await SweetAlert2.confirm(
+      "¿Estás seguro de que quieres eliminar esta solicitud de visita?"
+    );
+    if (!confirmation.isConfirmed) return;
+
     try {
-      const confirmation = await SweetAlert2.confirm("¿Estás seguro de que quieres eliminar esta solicitud de visita?");
-      if (confirmation.isConfirmed) {
-        await apiSJM.delete(`/visit_requests/${id}`);
-        navigate("/agenda");
-        SweetAlert2.successToast("Solicitud eliminada correctamente");
-      }
+      await apiSJM.delete(`/visit_requests/${id}`);
+      navigate("/agenda");
+      SweetAlert2.successToast("Solicitud eliminada correctamente");
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     }
@@ -69,13 +71,16 @@ export const VisitRequest = () => {
   };
 
   const handleSubmit = async (formData: any) => {
-
-    const confirmation = await SweetAlert2.confirm("¿Estás seguro de que quieres actualizar el estado de la visita?");
+    const confirmation = await SweetAlert2.confirm(
+      "¿Estás seguro de que quieres actualizar el estado de la visita?"
+    );
     if (!confirmation.isConfirmed) return;
 
     try {
       setIsFormSubmitted(true);
-      const { data } = await apiSJM.put(`/visit_requests/${id}/status`, { formData });
+      const { data } = await apiSJM.put(`/visit_requests/${id}/status`, {
+        formData,
+      });
       fetch();
       setShowModal(false);
       SweetAlert2.successToast(data.message);
@@ -85,7 +90,6 @@ export const VisitRequest = () => {
     } finally {
       setIsFormSubmitted(false);
     }
-
   };
 
   return (

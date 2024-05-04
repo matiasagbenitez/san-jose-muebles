@@ -15,7 +15,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             <th scope="row" className="px-2 col-3">
               Fecha programada
             </th>
-            <td className="px-2">
+            <td className="px-2 align-middle">
               <span>
                 {visit.schedule === "NOT_SCHEDULED" && "No programada"}
                 {visit.schedule === "PARTIAL_SCHEDULED" && (
@@ -25,7 +25,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
                   <>{DayJsAdapter.toDatetimeString(visit.start as Date)} </>
                 )}
               </span>
-              {visit.overdue && (
+              {visit.overdue && visit.status === "PENDIENTE" && (
                 <span
                   className="badge rounded-pill bg-danger float-end"
                   style={{ fontSize: ".8em" }}
@@ -40,7 +40,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             <th scope="row" className="px-2">
               Cliente a visitar
             </th>
-            <td className="px-2">
+            <td className="px-2 align-middle">
               {visit.client.name} ({visit.client.locality}
               <span className="text-muted">, Tel: {visit.client.phone}</span>)
             </td>
@@ -49,25 +49,25 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             <th scope="row" className="px-2">
               Lugar a visitar
             </th>
-            <td className="px-2">{visit.locality}</td>
+            <td className="px-2 align-middle">{visit.locality}</td>
           </tr>
           <tr>
             <th scope="row" className="px-2">
               Dirección
             </th>
-            <td className="px-2">{visit.address || ""}</td>
+            <td className="px-2 align-middle">{visit.address || ""}</td>
           </tr>
           <tr>
             <th scope="row" className="px-2 text-uppercase">
               Motivo de la visita
             </th>
-            <td className="px-2">{visit.reason}</td>
+            <td className="px-2 align-middle">{visit.reason}</td>
           </tr>
           <tr>
             <th scope="row" className="px-2">
               Estado de la visita
             </th>
-            <td className="px-2">
+            <td className="px-2 align-middle">
               <span
                 className="badge rounded-pill"
                 style={{
@@ -101,7 +101,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
             <th scope="row" className="px-2">
               Notas adicionales
             </th>
-            <td className="px-2">{visit.notes || ""}</td>
+            <td className="px-2 align-middle">{visit.notes || ""}</td>
           </tr>
         </tbody>
       </Table>

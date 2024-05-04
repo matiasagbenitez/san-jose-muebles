@@ -150,7 +150,7 @@ export const VisitRequests = () => {
 
   const conditionalRowStyles = [
     {
-      when: (row: DataRow) => row.overdue,
+      when: (row: DataRow) => row.overdue && row.status === "PENDIENTE",
       style: {
         backgroundColor: "#f8d7da",
       },

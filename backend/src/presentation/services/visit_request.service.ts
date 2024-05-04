@@ -218,8 +218,10 @@ export class VisitRequestService {
 
         try {
             await row.destroy({ transaction, id_user } as any);
+            await transaction.commit();
             return { message: '¡Solicitud de visita eliminada correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             if (error.name === 'SequelizeForeignKeyConstraintError') {
                 throw CustomError.badRequest('¡No se puede eliminar la solicitud de visita!');
             }
