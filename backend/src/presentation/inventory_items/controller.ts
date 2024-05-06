@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {
     CustomError, PaginationDto,
-    CreateInventoryItemDTO, UpdateInventoryItemDTO, LoggedUserIdDto
+    CreateInventoryItemDTO, UpdateInventoryItemDTO, LoggedUserIdDto, UpdateInventoryItemStatusDTO
 } from "../../domain";
 import { InventoryItemService, InventoryItemFilters } from '../services/inventory_item.service';
 
@@ -116,5 +116,33 @@ export class InventoryItemController {
                 this.handleError(error, res);
             });
     }
+
+    updateStatus = async (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+        if (!id) return res.status(400).json({ message: 'Falta el ID' });
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase().trim();
+            }
+        }
+
+        const [error, dto] = UpdateInventoryItemStatusDTO.create(req.body);
+        if (error) return res.status(400).json({ message: error });
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+
+        if (!loggedUserIdDto || !dto) return res.status(400).json({ message: 'Ocurrió un error' });
+        const { id_user } = loggedUserIdDto;
+
+        this.service.updateInventoryItemStatus(id, dto, id_user)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
 
 }

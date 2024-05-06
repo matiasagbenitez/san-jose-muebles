@@ -97,13 +97,13 @@ export const InventoryItems = () => {
     {
       name: "CATEGORÍA",
       selector: (row: DataRow) => row.category,
-      maxWidth: "200px",
+      maxWidth: "180px",
       wrap: true,
     },
     {
       name: "MARCA",
       selector: (row: DataRow) => row.brand,
-      maxWidth: "200px",
+      maxWidth: "180px",
       wrap: true,
     },
     {
@@ -113,7 +113,7 @@ export const InventoryItems = () => {
     },
     {
       name: "CÓDIGO INTERNO",
-      maxWidth: "200px",
+      maxWidth: "180px",
       selector: (row: DataRow) => row.code,
       center: true,
     },
@@ -132,7 +132,7 @@ export const InventoryItems = () => {
           {row.status}
         </span>
       ),
-      maxWidth: "200px",
+      maxWidth: "180px",
       center: true,
     },
   ];

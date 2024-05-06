@@ -1,37 +1,26 @@
 export interface EditableItem {
     id_inventory_categ: number;
     id_inventory_brand: number;
-    quantity: number;
     name: string;
+}
+
+export interface EvolutionsData {
+    id: number;
+    status: "OPERATIVO" | "RESERVADO" | "RETIRADO" | "DESCARTADO";
+    comment: string;
+    user: string;
+    at: Date;
 }
 
 export interface ItemData {
     id: number;
     category: string;
     brand: string;
-    quantity: number;
     code: string;
     name: string;
-    last_check: Date;
-    last_check_by: string;
-    is_retired: boolean;
+    status: "OPERATIVO" | "RESERVADO" | "RETIRADO" | "DESCARTADO";
+    evolutions: EvolutionsData[];
 }
-
-export interface UpdatesData {
-    id: number;
-    updated_at: Date;
-    prev_quantity: number;
-    new_quantity: number;
-    updated_by: string;
-}
-
-export interface RetirementsData {
-    id: number;
-    retired_at: Date;
-    reason: string;
-    retired_by: string;
-}
-
 
 export interface InventoryDataRow {
     id: number;

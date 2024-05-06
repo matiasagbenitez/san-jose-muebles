@@ -1,5 +1,9 @@
 import { ListGroup, Table } from "react-bootstrap";
-import { VisitRequestInterface, VisitStatuses, VisitPriorities, } from "../interfaces";
+import {
+  VisitRequestInterface,
+  VisitStatuses,
+  VisitPriorities,
+} from "../interfaces";
 import { DayJsAdapter } from "../../../../helpers";
 
 interface Props {
@@ -129,9 +133,10 @@ export const VisitRequestInfo = ({ visit }: Props) => {
               {evolution.user} marcó la visita como <b>{evolution.status}</b> el
               día {DayJsAdapter.toDayMonthYearHour(evolution.createdAt)}.{" "}
               {evolution.comment && (
-                <span className="text-muted fst-italic">
-                  Comentario: {evolution.comment}
-                </span>
+                <p className="text-muted fst-italic m-0">
+                  <i className="bi bi-chat-right-text me-1 small"></i>{" "}
+                  {evolution.comment}
+                </p>
               )}
             </ListGroup.Item>
           ))}

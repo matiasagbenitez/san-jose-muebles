@@ -60,9 +60,6 @@ export const InventoryItemsForm = ({
               "La marca del artículo es requerida"
             ),
             name: Yup.string().required("El nombre del artículo es requerido"),
-            status: Yup.string()
-              .required("El estado del artículo es requerido")
-              .oneOf(["OPERATIVO", "RESERVADO", "RETIRADO", "DESCARTADO"]),
           })}
         >
           {({ errors, touched }) => (
@@ -75,6 +72,7 @@ export const InventoryItemsForm = ({
                 isInvalid={
                   !!errors.id_inventory_categ && touched.id_inventory_categ
                 }
+                disabled={isFormSubmitting}
               >
                 <option value="">Seleccione una categoría</option>
                 {categories &&
@@ -93,6 +91,7 @@ export const InventoryItemsForm = ({
                 isInvalid={
                   !!errors.id_inventory_brand && touched.id_inventory_brand
                 }
+                disabled={isFormSubmitting}
               >
                 <option value="">Seleccione una marca</option>
                 {brands &&
@@ -109,6 +108,7 @@ export const InventoryItemsForm = ({
                 type="text"
                 placeholder="Ejemplo: TALADRADOR PERCUTOR MAKITA HP1630"
                 isInvalid={!!errors.name && touched.name}
+                disabled={isFormSubmitting}
               />
 
               {!editMode && (
@@ -118,6 +118,7 @@ export const InventoryItemsForm = ({
                   as="select"
                   placeholder="Seleccione un estado"
                   isInvalid={!!errors.status && touched.status}
+                  disabled={isFormSubmitting}
                 >
                   <option value="OPERATIVO">OPERATIVO</option>
                   <option value="RESERVADO">RESERVADO</option>
