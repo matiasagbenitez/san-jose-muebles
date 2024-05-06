@@ -31,6 +31,31 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           Proyectos
         </MenuItem>
 
+        <SubMenu
+          prefix={
+            <>
+              <i className="bi bi-people me-3 fs-6"></i>
+              Grupos de trabajo
+            </>
+          }
+          style={{ height: "45px" }}
+        >
+          <MenuItem
+            component={<Link to="/grupos" />}
+            title="Listado de grupos"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Listado de grupos</small>
+          </MenuItem>
+          <MenuItem
+            component={<Link to="/grupos/miembros" />}
+            title="Gestión de miembros"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Gestión de miembros</small>
+          </MenuItem>
+        </SubMenu>
+
         <MenuItem
           component={<Link to="/productos" />}
           title="Productos"
@@ -49,30 +74,23 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           Clientes
         </MenuItem>
 
-        <SubMenu
-          prefix={
-            <>
-              <i className="bi bi-calendar3 me-3 fs-6"></i>Agenda de visitas
-            </>
-          }
+        <MenuItem
+          component={<Link to="/agenda" />}
+          title="Agenda de visitas"
           style={{ height: "45px" }}
         >
-          <MenuItem
-            component={<Link to="/agenda" />}
-            title="Ir a la agenda de visitas"
-            style={{ height: "45px", marginLeft: "10px" }}
-          >
-            <small>Gestionar agenda</small>
-          </MenuItem>
-          <MenuItem
-            component={<Link to="/agenda/calendario" />}
-            title="Ver calendario de visitas pendientes"
-            style={{ height: "45px", marginLeft: "10px" }}
-          >
-            <i className="bi bi-calendar2 mx-2 small"></i>
-            <small>Calendario</small>
-          </MenuItem>
-        </SubMenu>
+          <i className="bi bi-journal-text me-3 fs-6"></i>
+          Agenda de visitas
+        </MenuItem>
+
+        <MenuItem
+          component={<Link to="/agenda/calendario" />}
+          title="Calendario"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-calendar-date me-3 fs-6"></i>
+          Calendario
+        </MenuItem>
 
         <SubMenu
           prefix={
@@ -139,7 +157,6 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           <i className="bi bi-gear-wide-connected me-3 fs-6"></i>
           Parámetros
         </MenuItem>
-
       </Menu>
     </Sidebar>
   );

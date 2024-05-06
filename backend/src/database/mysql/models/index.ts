@@ -40,6 +40,10 @@ import { ProjectAccount, initProjectAccountModel } from './ProjectAccount.model'
 import { ProjectAccountTransaction, initProjectAccountTransactionModel } from './ProjectAccountTransaction.model';
 import { VisitRequestAudit, initVisitRequestAuditModel } from './VisitRequestAudit.model';
 
+import { Group, initGroupModel } from './Group.model';
+import { Member, initMemberModel } from './Member.model';
+import { GroupMember, initGroupMemberModel } from './GroupMember.model';
+
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
   initRoleModel(sequelize);
@@ -84,6 +88,11 @@ export const initializeModels = (sequelize: Sequelize) => {
   initProjectModel(sequelize);
   initProjectAccountModel(sequelize);
   initProjectAccountTransactionModel(sequelize);
+
+  // GROUP
+  initMemberModel(sequelize);
+  initGroupModel(sequelize);
+  initGroupMemberModel(sequelize);
 };
 
 export {
@@ -129,4 +138,9 @@ export {
   Project,
   ProjectAccount,
   ProjectAccountTransaction,
+
+
+  Group,
+  Member,
+  GroupMember,
 };

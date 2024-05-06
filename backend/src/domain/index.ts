@@ -3,6 +3,7 @@ export * from './errors/custom.error';
 
 // SHARED
 export * from './dtos/shared';
+export * from './entities/shared';
 
 // USERS
 export * from './dtos/auth';
@@ -74,3 +75,8 @@ export * from './entities/project_account';
 // PROJECT ACCOUNT TRANSACTIONS
 export * from './dtos/project_account_transaction';
 export * from './entities/project_account_transactions';
+
+
+// GROUPS
+export * from './dtos/groups';
+export * from './entities/groups';

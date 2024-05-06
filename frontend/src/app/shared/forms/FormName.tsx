@@ -3,6 +3,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import { MyTextInput } from "../../components/forms";
+import { SweetAlert2 } from "../../utils";
 
 interface NameInterface {
   name: string;
@@ -16,6 +17,7 @@ interface FormProps {
   onSubmit: (values: any) => void;
   prefix: string;
   title: string;
+  isFormSubmitting?: boolean;
 }
 
 export const FormName = ({
@@ -26,7 +28,19 @@ export const FormName = ({
   onSubmit,
   prefix,
   title,
+  isFormSubmitting,
 }: FormProps) => {
+  const handleLocalSubmit = async (values: NameInterface) => {
+    const confirmation = await SweetAlert2.confirm(
+      editingId
+        ? `¿Está seguro de modificar ${title}?`
+        : `¿Está seguro de crear ${title}?`
+    );
+    if (confirmation.isConfirmed) {
+      onSubmit(values);
+    }
+  };
+
   return (
     <Modal show={show} onHide={onHide}>
       <div className="p-4">
@@ -38,7 +52,7 @@ export const FormName = ({
         <Formik
           initialValues={form}
           onSubmit={(values) => {
-            onSubmit(values);
+            handleLocalSubmit(values);
           }}
           validationSchema={Yup.object({
             name: Yup.string().required("El nombre es requerido"),
@@ -59,8 +73,10 @@ export const FormName = ({
                 variant="primary"
                 className="mt-3 float-end"
                 size="sm"
+                disabled={isFormSubmitting}
               >
-                Guardar
+                <i className="bi bi-floppy me-2"></i>
+                {isFormSubmitting ? "Guardando..." : "Guardar"}
               </Button>
             </Form>
           )}

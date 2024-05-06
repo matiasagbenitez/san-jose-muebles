@@ -34,6 +34,9 @@ import {
     ProjectAccountTransaction,
     VisitRequestAudit,
 
+    Group,
+    Member,
+    GroupMember,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -130,7 +133,7 @@ export const initializeAssociations = () => {
     InventoryItemEvolution.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
     InventoryItemEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
-    
+
     // CLIENT
     Locality.hasMany(Client, { foreignKey: 'id_locality', as: 'clients', onDelete: 'RESTRICT' });
     Client.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
@@ -173,12 +176,18 @@ export const initializeAssociations = () => {
     Currency.hasMany(ProjectAccount, { foreignKey: 'id_currency', as: 'accounts', onDelete: 'RESTRICT' });
     ProjectAccount.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
 
-    
+
     ProjectAccount.hasMany(ProjectAccountTransaction, { foreignKey: 'id_project_account', as: 'transactions', onDelete: 'RESTRICT' });
     ProjectAccountTransaction.belongsTo(ProjectAccount, { foreignKey: 'id_project_account', as: 'account' });
 
     ProjectAccountTransaction.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
     ProjectAccountTransaction.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    // GROUP
+
+    // many to many
+    Member.belongsToMany(Group, { through: GroupMember, foreignKey: 'id_member', otherKey: 'id_group', as: 'groups', onDelete: 'RESTRICT' });
+    Group.belongsToMany(Member, { through: GroupMember, foreignKey: 'id_group', otherKey: 'id_member', as: 'members', onDelete: 'RESTRICT' });
 
 };

@@ -16,14 +16,14 @@ export const ActionButtons = ({
         className="btn btn-transparent py-0 px-1"
         onClick={() => handleEdit(row)}
       >
-        <i className="bi bi-pencil-square text-secondary-emphasis"></i>
+        <i className="bi bi-pencil-fill text-secondary-emphasis"></i>
       </button>
       <button
         title="Eliminar"
         className="btn btn-transparent py-0 px-1"
         onClick={() => handleDelete(row)}
       >
-        <i className="bi bi-trash2 text-danger"></i>
+        <i className="bi bi-x-circle-fill text-danger"></i>
       </button>
     </div>
   );

@@ -10,6 +10,7 @@ import InventoryItemsRoutes from "./InventoryItemsRoutes";
 import ClientRoutes from "./ClientRoutes";
 import AgendaRoutes from "./AgendaRoutes";
 import ProjectRoutes from "./ProjectRoutes";
+import GroupRoutes from './GroupRoutes';
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const AppRoutes = () => {
         <Route path="/clientes/*" element={<ClientRoutes />} />
         <Route path="/agenda/*" element={<AgendaRoutes />} />
         <Route path="/proyectos/*" element={<ProjectRoutes />} />
+        <Route path="/grupos/*" element={<GroupRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />

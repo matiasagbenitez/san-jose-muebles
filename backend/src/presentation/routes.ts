@@ -30,6 +30,8 @@ import { ProjectRoutes } from './projects/routes';
 import { ProjectAccountRoutes } from './project_accounts/routes';
 import { ProjectAccountTransactionRoutes } from './project_account_transactions/routes';
 
+import { MemberRoutes } from './members/routes';
+
 export class AppRoutes {
 
     static get routes(): Router {
@@ -77,6 +79,8 @@ export class AppRoutes {
         router.use('/api/projects', ProjectRoutes.routes);
         router.use('/api/project_accounts', ProjectAccountRoutes.routes);
         router.use('/api/project_account_transactions', ProjectAccountTransactionRoutes.routes);
+
+        router.use('/api/members', MemberRoutes.routes);
 
         return router;
     }
