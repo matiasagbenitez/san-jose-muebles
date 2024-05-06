@@ -23,8 +23,7 @@ import {
     InventoryBrand,
     InventoryCategory,
     InventoryItem,
-    InventoryItemRetired,
-    InventoryItemUpdated,
+    InventoryItemEvolution,
     Client,
     VisitReason,
     VisitRequest,
@@ -127,14 +126,11 @@ export const initializeAssociations = () => {
 
     InventoryItem.belongsTo(User, { foreignKey: 'last_check_by', as: 'user_check' });
 
-    InventoryItem.hasMany(InventoryItemUpdated, { foreignKey: 'id_inventory_item', as: 'updates', onDelete: 'RESTRICT' });
-    InventoryItemUpdated.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
-    InventoryItemUpdated.belongsTo(User, { foreignKey: 'updated_by', as: 'user_update' });
+    InventoryItem.hasMany(InventoryItemEvolution, { foreignKey: 'id_inventory_item', as: 'evolutions', onDelete: 'RESTRICT' });
+    InventoryItemEvolution.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
+    InventoryItemEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
-    InventoryItem.hasMany(InventoryItemRetired, { foreignKey: 'id_inventory_item', as: 'retirements', onDelete: 'RESTRICT' });
-    InventoryItemRetired.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
-    InventoryItemRetired.belongsTo(User, { foreignKey: 'retired_by', as: 'user_retired' });
-
+    
     // CLIENT
     Locality.hasMany(Client, { foreignKey: 'id_locality', as: 'clients', onDelete: 'RESTRICT' });
     Client.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });

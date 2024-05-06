@@ -30,8 +30,7 @@ import { StockAdjust, initStockAdjustModel } from './StockAdjust.model';
 import { InventoryBrand, initInventoryBrandModel } from './InventoryBrand.model';
 import { InventoryCategory, initInventoryCategoryModel } from './InventoryCategory.model';
 import { InventoryItem, initInventoryItemModel } from './InventoryItem.model';
-import { InventoryItemRetired, initInventoryItemRetiredModel } from './InventoryItemRetired.model';
-import { InventoryItemUpdated, initInventoryItemUpdatedModel } from './InventoryItemUpdated.model';
+import { InventoryItemEvolution, initInventoryItemEvolutionModel } from './InventoryItemEvolution.model';
 import { Client, initClientModel } from './Client.model';
 import { VisitRequest, initVisitRequestModel } from './VisitRequest.model';
 import { VisitEvolution, initVisitEvolutionModel } from './VisitEvolution.model';
@@ -74,8 +73,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initInventoryBrandModel(sequelize);
   initInventoryCategoryModel(sequelize);
   initInventoryItemModel(sequelize);
-  initInventoryItemRetiredModel(sequelize);
-  initInventoryItemUpdatedModel(sequelize);
+  initInventoryItemEvolutionModel(sequelize);
 
   initClientModel(sequelize);
   initVisitRequestModel(sequelize);
@@ -120,8 +118,7 @@ export {
   InventoryBrand,
   InventoryCategory,
   InventoryItem,
-  InventoryItemRetired,
-  InventoryItemUpdated,
+  InventoryItemEvolution,
 
   Client,
   VisitReason,

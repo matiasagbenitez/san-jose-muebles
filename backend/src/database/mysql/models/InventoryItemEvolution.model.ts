@@ -1,17 +1,19 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export class InventoryItemRetired extends Model {
+export class InventoryItemEvolution extends Model {
     public id!: number;
+
     public id_inventory_item!: number;
-    public reason!: string;
-    public retired_by!: number;
+    public status!: 'RESERVADO' | 'OPERATIVO' | 'RETIRADO' | 'DESCARTADO';
+    public comment!: string;
+    public id_user!: number;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-export const initInventoryItemRetiredModel = (sequelize: Sequelize) => {
-    InventoryItemRetired.init(
+export const initInventoryItemEvolutionModel = (sequelize: Sequelize) => {
+    InventoryItemEvolution.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -22,19 +24,23 @@ export const initInventoryItemRetiredModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
-            reason: {
+            status: {
+                type: DataTypes.ENUM('RESERVADO', 'OPERATIVO', 'RETIRADO', 'DESCARTADO'),
+                allowNull: false,
+            },
+            comment: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            retired_by: {
+            id_user: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
         },
         {
             sequelize,
-            modelName: 'InventoryItemRetired',
-            tableName: 'inventory_items_retired',
+            modelName: 'InventoryItemEvolution',
+            tableName: 'inventory_items_evolutions',
             timestamps: true,
         }
     );

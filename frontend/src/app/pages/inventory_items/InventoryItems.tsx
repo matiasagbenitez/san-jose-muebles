@@ -9,26 +9,16 @@ import {
   fetchData,
 } from "../../shared";
 
-import { Filters, InventoryItemsForm } from "./components";
 import apiSJM from "../../../api/apiSJM";
-import { DayJsAdapter } from "../../../helpers";
-import { Badge, Button } from "react-bootstrap";
 import { SweetAlert2 } from "../../utils";
+import { Filters, InventoryItemsForm } from "./components";
+
+import { InventoryDataRow as DataRow, InventoryStatus } from "./interfaces";
+import { LoadingSpinner } from "../../components";
 
 interface ParamsInterface {
   id: string;
   name: string;
-}
-interface DataRow {
-  id: number;
-  category: string;
-  brand: string;
-  quantity: number;
-  code: string;
-  name: string;
-  last_check_at: Date;
-  last_check_by: string;
-  is_retired: boolean;
 }
 
 export const InventoryItems = () => {
@@ -37,18 +27,27 @@ export const InventoryItems = () => {
   const [brands, setBrands] = useState<ParamsInterface[]>([]);
   const [categories, setCategories] = useState<ParamsInterface[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
   const endpoint = "/inventory_items";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
-    const [_, res2, res3] = await Promise.all([
-      fetchData(endpoint, 1, state, dispatch),
-      apiSJM.get("/inventory_brands"),
-      apiSJM.get("/inventory_categories"),
-    ]);
-    setBrands(res2.data.items);
-    setCategories(res3.data.items);
+    try {
+      setLoading(true);
+      const [_, res2, res3] = await Promise.all([
+        fetchData(endpoint, 1, state, dispatch),
+        apiSJM.get("/inventory_brands"),
+        apiSJM.get("/inventory_categories"),
+      ]);
+      setBrands(res2.data.items);
+      setCategories(res3.data.items);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      navigate("/");
+    }
   };
 
   const fetchInventoryItems = async () => {
@@ -98,13 +97,13 @@ export const InventoryItems = () => {
     {
       name: "CATEGORÍA",
       selector: (row: DataRow) => row.category,
-      maxWidth: "220px",
+      maxWidth: "200px",
       wrap: true,
     },
     {
       name: "MARCA",
       selector: (row: DataRow) => row.brand,
-      maxWidth: "145px",
+      maxWidth: "200px",
       wrap: true,
     },
     {
@@ -114,86 +113,27 @@ export const InventoryItems = () => {
     },
     {
       name: "CÓDIGO INTERNO",
-      maxWidth: "140px",
+      maxWidth: "200px",
       selector: (row: DataRow) => row.code,
       center: true,
     },
     {
-      name: "CANTIDAD",
-      selector: (row: DataRow) => row.quantity,
-      maxWidth: "100px",
-      center: true,
-      style: {
-        fontWeight: "bold",
-        backgroundColor: "#f0f0f0",
-        fontSize: "1.1em",
-      },
-    },
-    {
-      name: "ÚLTIMA ACTUALIZACIÓN",
-      selector: (row: DataRow) =>
-        DayJsAdapter.toDayMonthYearHour(row.last_check_at),
-      maxWidth: "175px",
-      center: true,
-    },
-    {
-      name: "RESPONSABLE",
-      selector: (row: DataRow) => row.last_check_by,
-      maxWidth: "140px",
-      center: true,
-      wrap: true,
-    },
-    {
       name: "ESTADO",
-      selector: (row: DataRow) => row.is_retired,
+      selector: (row: DataRow) => row.status,
       cell: (row: DataRow) => (
-        <Badge bg={row.is_retired ? "danger" : "success"}>
-          {row.is_retired ? "BAJA" : "VIGENTE"}
-        </Badge>
+        <span
+          style={{
+            fontSize: ".9em",
+            backgroundColor: InventoryStatus[row.status] || "gray",
+            color: "black",
+          }}
+          className="badge rounded-pill"
+        >
+          {row.status}
+        </span>
       ),
-      maxWidth: "100px",
+      maxWidth: "200px",
       center: true,
-    },
-    {
-      name: "ACCIONES",
-      cell: (row: DataRow) => (
-        <>
-          <Button
-            className="p-0"
-            size="sm"
-            variant="transparent"
-            title="Validar existencia"
-            onClick={() => handleValidate(row)}
-          >
-            <i className="bi bi-check-circle-fill text-success fs-6"></i>
-          </Button>
-          {!row.is_retired && (
-            <>
-              <Button
-                className="py-0 px-1"
-                size="sm"
-                variant="transparent"
-                title="Retirar artículos"
-                onClick={() => handleRetire(row)}
-              >
-                <i className="bi bi-x-circle-fill text-danger fs-6"></i>
-              </Button>
-              <Button
-                className="p-0"
-                size="sm"
-                variant="transparent"
-                title="Actualizar cantidad"
-                onClick={() => handleUpdateQuantity(row)}
-              >
-                <i className="bi bi-wrench-adjustable-circle-fill text-secondary fs-6"></i>
-              </Button>
-            </>
-          )}
-        </>
-      ),
-      maxWidth: "125px",
-      center: true,
-      button: true,
     },
   ];
 
@@ -210,140 +150,60 @@ export const InventoryItems = () => {
   };
 
   const handleSubmit = async (formData: any) => {
+    const name = (formData.name as string).toUpperCase();
+    const confirm = await SweetAlert2.confirm("¿Desea crear el artículo " + name + "?");
+    if (!confirm.isConfirmed) return;
     try {
-      const quantity = formData.quantity as number;
-      const name = (formData.name as string).toUpperCase();
-      const confirm = await SweetAlert2.confirm(
-        "¿Desea crear " + quantity + " artículo/s " + name + "?"
-      );
-      if (!confirm.isConfirmed) return;
+      setIsFormSubmitting(true);
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);
       handleHide();
       fetchInventoryItems();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
-    }
-  };
-
-  const handleValidate = async (row: DataRow) => {
-    const confirm = await SweetAlert2.confirm(
-      "¿Confrima la existencia de " +
-        row.quantity +
-        " artículo/s de " +
-        row.name +
-        " marca " +
-        row.brand +
-        "?"
-    );
-    if (!confirm.isConfirmed) return;
-    try {
-      const { data } = await apiSJM.put(`${endpoint}/${row.id}/validate`);
-      SweetAlert2.successToast(data.message);
-      fetchInventoryItems();
-    } catch (error: any) {
-      SweetAlert2.errorAlert(error.response.data.message);
-    }
-  };
-
-  const handleRetire = async (row: DataRow) => {
-    const message =
-      row.quantity + " artículo/s de " + row.name + " marca " + row.brand;
-
-    const reason = await SweetAlert2.inputDialog(
-      "Motivo de la baja de " + message,
-      "warning"
-    );
-    if (!reason.isConfirmed) return;
-    const confirm = await SweetAlert2.confirm(
-      "¿Desea retirar " +
-        row.quantity +
-        " artículo/s de " +
-        row.name +
-        " marca " +
-        row.brand +
-        " del inventario?"
-    );
-    if (!confirm.isConfirmed) return;
-    try {
-      const { data } = await apiSJM.put(`${endpoint}/${row.id}/retire`, {
-        reason: reason.value,
-      });
-      SweetAlert2.successToast(data.message);
-      fetchInventoryItems();
-    } catch (error: any) {
-      SweetAlert2.errorAlert(error.response.data.message);
-    }
-  };
-
-  const handleUpdateQuantity = async (row: DataRow) => {
-    const message = row.name + " marca " + row.brand;
-
-    const reason = await SweetAlert2.inputDialog(
-      "Actualizar cantidad de " + message,
-      "warning"
-    );
-    if (!reason.isConfirmed) return;
-    if (isNaN(reason.value) || !reason.value || reason.value <= 0) {
-      SweetAlert2.errorAlert("La cantidad debe ser un número mayor a 0");
-      return;
-    }
-    const confirm = await SweetAlert2.confirm(
-      "¿Actualizar a " +
-        reason.value +
-        " la cantidad de " +
-        row.name +
-        " marca " +
-        row.brand +
-        "?"
-    );
-    if (!confirm.isConfirmed) return;
-    try {
-      const { data } = await apiSJM.put(
-        `${endpoint}/${row.id}/update-quantity`,
-        {
-          prev_quantity: row.quantity,
-          new_quantity: reason.value,
-        }
-      );
-      SweetAlert2.successToast(data.message);
-      fetchInventoryItems();
-    } catch (error: any) {
-      SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
   return (
     <div>
-      <Filters
-        state={state}
-        dispatch={dispatch}
-        handleFiltersChange={handleFiltersChange}
-        handleResetFilters={handleResetFilters}
-        handleCreate={handleCreate}
-        brands={brands}
-        categories={categories}
-      />
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <Filters
+            state={state}
+            dispatch={dispatch}
+            handleFiltersChange={handleFiltersChange}
+            handleResetFilters={handleResetFilters}
+            handleCreate={handleCreate}
+            brands={brands}
+            categories={categories}
+          />
 
-      <Datatable
-        title="Inventario de artículos"
-        columns={columns as TableColumn<DataRow>[]}
-        data={state.data}
-        loading={state.loading}
-        totalRows={state.totalRows}
-        handleRowsPerPageChange={handleRowsPerPageChange}
-        handlePageChange={handlePageChange}
-        clickableRows
-        onRowClicked={handleClick}
-      />
+          <Datatable
+            title="Inventario de artículos"
+            columns={columns as TableColumn<DataRow>[]}
+            data={state.data}
+            loading={state.loading}
+            totalRows={state.totalRows}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+            handlePageChange={handlePageChange}
+            clickableRows
+            onRowClicked={handleClick}
+          />
 
-      <InventoryItemsForm
-        show={isModalOpen}
-        onHide={handleHide}
-        onSubmit={handleSubmit}
-        brands={brands}
-        categories={categories}
-      />
+          <InventoryItemsForm
+            show={isModalOpen}
+            onHide={handleHide}
+            onSubmit={handleSubmit}
+            brands={brands}
+            categories={categories}
+            isFormSubmitting={isFormSubmitting}
+          />
+        </>
+      )}
     </div>
   );
 };

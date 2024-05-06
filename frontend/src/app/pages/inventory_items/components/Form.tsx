@@ -2,24 +2,20 @@ import { Button, Modal } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import {
-  MyNumberInput,
-  MySelect,
-  MyTextInput,
-} from "../../../components/forms";
+import { MySelect, MyTextInput } from "../../../components/forms";
 
 interface FormInterface {
   id_inventory_categ: string;
   id_inventory_brand: string;
   name: string;
-  quantity: number;
+  status: "OPERATIVO" | "RESERVADO" | "RETIRADO" | "DESCARTADO";
 }
 
 const form: FormInterface = {
   id_inventory_categ: "",
   id_inventory_brand: "",
   name: "",
-  quantity: 0,
+  status: "OPERATIVO",
 };
 
 interface FormProps {
@@ -28,7 +24,7 @@ interface FormProps {
   editMode?: boolean;
   onSubmit: (values: any) => void;
   initialForm?: FormInterface;
-  isFormSubmitted?: boolean;
+  isFormSubmitting?: boolean;
   brands: any[];
   categories: any[];
 }
@@ -39,7 +35,7 @@ export const InventoryItemsForm = ({
   editMode = false,
   onSubmit,
   initialForm = form,
-  isFormSubmitted,
+  isFormSubmitting,
   brands,
   categories,
 }: FormProps) => {
@@ -64,9 +60,9 @@ export const InventoryItemsForm = ({
               "La marca del artículo es requerida"
             ),
             name: Yup.string().required("El nombre del artículo es requerido"),
-            quantity: Yup.number()
-              .required("La cantidad del artículo es requerida")
-              .min(1, "La cantidad debe ser mayor a 0"),
+            status: Yup.string()
+              .required("El estado del artículo es requerido")
+              .oneOf(["OPERATIVO", "RESERVADO", "RETIRADO", "DESCARTADO"]),
           })}
         >
           {({ errors, touched }) => (
@@ -108,21 +104,26 @@ export const InventoryItemsForm = ({
               </MySelect>
 
               <MyTextInput
-                label="Nombre del artículo (descripción)"
+                label="Nombre del artículo"
                 name="name"
                 type="text"
-                placeholder="Ingrese el nombre del artículo"
+                placeholder="Ejemplo: TALADRADOR PERCUTOR MAKITA HP1630"
                 isInvalid={!!errors.name && touched.name}
               />
 
               {!editMode && (
-                <MyNumberInput
-                  label="Cantidad"
-                  name="quantity"
-                  type="number"
-                  placeholder="Ingrese la cantidad"
-                  isInvalid={!!errors.quantity && touched.quantity}
-                />
+                <MySelect
+                  label="Estado"
+                  name="status"
+                  as="select"
+                  placeholder="Seleccione un estado"
+                  isInvalid={!!errors.status && touched.status}
+                >
+                  <option value="OPERATIVO">OPERATIVO</option>
+                  <option value="RESERVADO">RESERVADO</option>
+                  <option value="RETIRADO">RETIRADO</option>
+                  <option value="DESCARTADO">DESCARTADO</option>
+                </MySelect>
               )}
 
               <Button
@@ -130,8 +131,9 @@ export const InventoryItemsForm = ({
                 variant="primary"
                 className="mt-3 float-end"
                 size="sm"
-                disabled={isFormSubmitted}
+                disabled={isFormSubmitting}
               >
+                <i className="bi bi-floppy me-1"></i>
                 Guardar
               </Button>
             </Form>

@@ -6,8 +6,6 @@ import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
 import {
   ItemData,
-  ItemRetirements,
-  ItemUpdates,
   Options,
   InventoryItemsForm,
 } from "./components";
@@ -119,11 +117,11 @@ export const InventoryItem = () => {
               <Options handleOpen={handleOpen} handleDelete={handleDelete} />
             </Col>
             <Col lg={8}>
-              <ItemUpdates updates={item.updates} />
+              {/* <ItemUpdates updates={item.updates} /> */}
             </Col>
             <Col>{/* NOTHING */}</Col>
             <Col lg={8}>
-              <ItemRetirements retirements={item.retirements} />
+              {/* <ItemRetirements retirements={item.retirements} /> */}
             </Col>
           </Row>
           <InventoryItemsForm

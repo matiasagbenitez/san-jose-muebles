@@ -31,3 +31,20 @@ export interface RetirementsData {
     reason: string;
     retired_by: string;
 }
+
+
+export interface InventoryDataRow {
+    id: number;
+    category: string;
+    brand: string;
+    code: string;
+    name: string;
+    status: "OPERATIVO" | "RESERVADO" | "RETIRADO" | "DESCARTADO";
+}
+
+export enum InventoryStatus {
+    RESERVADO = "#5A966A",
+    OPERATIVO = "#B5D6A7",
+    RETIRADO = "#FFF47A",
+    DESCARTADO = "#FD9800",
+}

@@ -2,16 +2,13 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class InventoryItem extends Model {
     public id!: number;
+
     public id_inventory_categ!: number;
     public id_inventory_brand!: number;
-    public quantity!: number;
+
+    public status!: 'RESERVADO' | 'OPERATIVO' | 'RETIRADO' | 'DESCARTADO';
     public code!: string;
     public name!: string;
-
-    public last_check_at!: Date;
-    public last_check_by!: number;
-
-    public is_retired!: boolean;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -33,8 +30,8 @@ export const initInventoryItemModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
-            quantity: {
-                type: DataTypes.INTEGER.UNSIGNED,
+            status: {
+                type: DataTypes.ENUM('RESERVADO', 'OPERATIVO', 'RETIRADO', 'DESCARTADO'),
                 allowNull: false,
             },
             code: {
@@ -45,19 +42,6 @@ export const initInventoryItemModel = (sequelize: Sequelize) => {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
-            },
-            last_check_at: {
-                type: DataTypes.DATE,
-                allowNull: false,
-            },
-            last_check_by: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            is_retired: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                defaultValue: false,
             },
         },
         {

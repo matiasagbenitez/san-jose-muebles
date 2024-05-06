@@ -99,20 +99,20 @@ export const Filters = ({
               <Form.Select
                 size="sm"
                 className="mb-3"
-                name="retired"
-                value={state.filters.retired || ""}
+                name="status"
+                value={state.filters.status || ""}
                 onChange={(e) =>
                   dispatch({
                     type: "FILTERS_CHANGE",
-                    newFilters: { ...state.filters, retired: e.target.value },
+                    newFilters: { ...state.filters, status: e.target.value },
                   })
                 }
               >
-                <option value="false">Mostrar solo inventario activo</option>
-                <option value="true">Mostrar inventario retirado</option>
-                <option value="all">
-                  Mostrar todo el inventario (activo y retirado)
-                </option>
+                <option value="OPERATIVO">OPERATIVO</option>
+                <option value="RESERVADO">RESERVADO</option>
+                <option value="RETIRADO">RETIRADO</option>
+                <option value="DESCARTADO">DESCARTADO</option>
+                <option value="ALL">Todos</option>
               </Form.Select>
             </Col>
           </Row>

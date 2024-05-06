@@ -17,10 +17,6 @@ export class InventoryItemRoutes {
         router.put('/:id', [AuthMiddleware.validateJWT], controller.update);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);
 
-        router.put('/:id/validate', [AuthMiddleware.validateJWT], controller.validate);
-        router.put('/:id/retire', [AuthMiddleware.validateJWT], controller.retire);
-        router.put('/:id/update-quantity', [AuthMiddleware.validateJWT], controller.updateQuantity);
-
         return router;
     }
 
