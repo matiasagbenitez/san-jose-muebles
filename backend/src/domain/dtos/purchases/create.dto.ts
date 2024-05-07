@@ -7,7 +7,7 @@ interface PurchaseItem {
 
 export class CreatePurchaseDTO {
     private constructor(
-        public status: string = 'VIGENTE',
+        public status: string = 'VALIDA',
         public date: Date,
 
         public id_supplier: number,
@@ -60,7 +60,7 @@ export class CreatePurchaseDTO {
         if (local_total !== total) return ['El total no coincide con el cálculo de los subtotales, descuento y otros cargos'];
 
         return [undefined, new CreatePurchaseDTO(
-            'VIGENTE',
+            'VALIDA',
             date,
 
             id_supplier,

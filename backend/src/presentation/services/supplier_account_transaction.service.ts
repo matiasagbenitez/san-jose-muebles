@@ -1,6 +1,7 @@
 import { CustomError, PaginationDto, SupplierAccountTransactionEntity, TransactionDto } from "../../domain";
 import { SupplierAccountTransaction } from "../../database/mysql/models";
 import { SupplierAccountService } from "./supplier_account.service";
+import { Transaction } from "sequelize";
 
 // ! --- TYPES ---
 // NEW_PURCHASE: Nueva compra (valor negativo, aumenta deuda) -> se crea al momento de registrar una compra
@@ -55,7 +56,7 @@ export class SupplierAccountTransactionService {
     // * NEW_PURCHASE *
     // El monto de la compra incrementa la deuda con el proveedor (númerico negativo)
     // Se crea al momento de registrar una compra
-    public async createTransactionNewPurchase(data: DataInterface) {
+    public async createTransactionNewPurchase(data: DataInterface, transaction: Transaction) {
         try {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
@@ -65,7 +66,8 @@ export class SupplierAccountTransactionService {
                 amount: data.amount * -1,
                 post_balance: data.post_balance,
                 id_user: data.id_user,
-            });
+            }, { transaction });
+
             if (!item) throw CustomError.internalServerError('¡Error al registrar la transacción!');
             return { transaction: item, message: '¡Transacción registrada correctamente!' };
         } catch (error: any) {
@@ -76,7 +78,7 @@ export class SupplierAccountTransactionService {
     // * DEL_PURCHASE *
     // El monto de la compra decrementa la deuda con el proveedor (númerico positivo)
     // Se crea al momento de anular una compra
-    public async createTransactionDelPurchase(data: DataInterface) {
+    public async createTransactionDelPurchase(data: DataInterface, transaction: Transaction) {
         try {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
@@ -86,7 +88,7 @@ export class SupplierAccountTransactionService {
                 amount: data.amount,
                 post_balance: data.post_balance,
                 id_user: data.id_user,
-            });
+            }, { transaction });
             if (!item) throw CustomError.internalServerError('¡Error al registrar la transacción!');
             return { transaction: item, message: '¡Transacción registrada correctamente!' };
         } catch (error: any) {

@@ -132,7 +132,7 @@ export const SupplierPurchases = () => {
       selector: (row: DataRow) => row.nullified,
       format: (row: DataRow) => (
         <Badge bg={row.nullified ? "danger" : "success"}>
-          {row.nullified ? "ANULADA" : "VIGENTE"}
+          {row.nullified ? "ANULADA" : "VALIDA"}
         </Badge>
       ),
       center: true,

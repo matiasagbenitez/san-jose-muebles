@@ -5,7 +5,7 @@ import { Supplier } from './Supplier.model';
 
 export class Purchase extends Model {
     public id!: number;
-    public status!: 'VIGENTE' | 'ANULADA';
+    public status!: 'VALIDA' | 'ANULADA';
     public date!: Date;
     public id_supplier!: number;
 
@@ -36,7 +36,7 @@ export const initPurchaseModel = (sequelize: Sequelize) => {
                 primaryKey: true,
             },
             status: {
-                type: DataTypes.ENUM('VIGENTE', 'ANULADA'),
+                type: DataTypes.ENUM('VALIDA', 'ANULADA'),
                 allowNull: false,
             },
             date: {

@@ -11,7 +11,7 @@ export const PurchaseOptions = ({
   id: number;
   isFullyStocked: boolean;
   nullifyPurchase: () => void;
-  status: "VIGENTE" | "ANULADA";
+  status: "VALIDA" | "ANULADA";
   updatePurchaseFullStock: () => void;
   accountId: number;
 }) => {
@@ -65,8 +65,8 @@ export const PurchaseOptions = ({
           className="list-group-item list-group-item-action py-1 text-danger"
           title="Anular compra (esta acción no se puede deshacer)"
           onClick={nullifyPurchase}
-          disabled={status === "ANULADA"}
-          hidden={status === "ANULADA"}
+          disabled={status === "ANULADA" || isFullyStocked}
+          hidden={status === "ANULADA" || isFullyStocked}
         >
           <i className="bi bi-x-circle-fill me-2 fs-6"></i>
           Anular compra

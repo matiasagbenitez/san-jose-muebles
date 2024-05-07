@@ -19,7 +19,7 @@ export const Purchase = () => {
   const [loading, setLoading] = useState(true);
 
   const [purchaseId, setPurchaseId] = useState<number>();
-  const [status, setStatus] = useState<"VIGENTE" | "ANULADA">("VIGENTE");
+  const [status, setStatus] = useState<"VALIDA" | "ANULADA">("VALIDA");
   const [isFullyStocked, setIsFullyStocked] = useState<boolean>(false);
 
   const [resume, setResume] = useState();
@@ -34,7 +34,7 @@ export const Purchase = () => {
   const fetch = async () => {
     try {
       setLoading(true);
-      const { data } = await apiSJM.get(`/purchases/v2/${id}`);
+      const { data } = await apiSJM.get(`/purchases/${id}`);
 
       setPurchaseId(data.purchase.id);
       setStatus(data.purchase.status);
@@ -68,7 +68,7 @@ export const Purchase = () => {
       );
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post(
-        `/purchases/v2/${purchaseId}/nullify`,
+        `/purchases/${purchaseId}/nullify`,
         {
           reason,
         }
@@ -180,7 +180,7 @@ export const Purchase = () => {
                     </h1>
                   </div>
                   <div className="d-flex align-items-center ">
-                    {status === "VIGENTE" &&
+                    {status === "VALIDA" &&
                       (isFullyStocked ? (
                         <Badge bg="success" className="me-2">
                           STOCK COMPLETO
@@ -205,7 +205,7 @@ export const Purchase = () => {
                 />
               </Col>
               <Col xs={12}>
-                <h2 className="fs-5">Detalle de productos</h2>
+                <h2 className="fs-6">Detalle de productos</h2>
                 <PurchaseItems
                   status={status}
                   items={items}

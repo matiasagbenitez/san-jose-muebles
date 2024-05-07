@@ -1,5 +1,5 @@
-import { Op, Sequelize } from "sequelize";
-import { Purchase, SupplierAccountTransaction, User } from "../../database/mysql/models";
+import { Op, Sequelize, Transaction } from "sequelize";
+import { Product, Purchase, PurchaseItem, PurchaseNullation, PurchaseTransaction, SupplierAccount, SupplierAccountTransaction, User } from "../../database/mysql/models";
 import { CustomError, CreatePurchaseDTO, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
@@ -13,7 +13,7 @@ export interface PurchaseFilters {
     from_date: Date | undefined;
     to_date: Date | undefined;
     stock: string | undefined;
-    nullified: string | undefined;
+    status: 'ALL' | 'VALIDA' | 'ANULADA' | undefined;
 }
 
 export class PurchaseService {
@@ -23,7 +23,6 @@ export class PurchaseService {
         const listable = purchases.map(item => ListablePurchaseEntity.fromObject(item));
         return { items: listable };
     }
-
 
     public async getPurchasesPaginated(paginationDto: PaginationDto, filters: PurchaseFilters) {
         const { page, limit } = paginationDto;
@@ -42,15 +41,23 @@ export class PurchaseService {
 
 
         if (filters.stock === 'fully_stocked') {
-            where = { ...where, fully_stocked: true, nullified: false };
+            where = { ...where, fully_stocked: true };
         } else if (filters.stock === 'not_fully_stocked') {
-            where = { ...where, fully_stocked: false, nullified: false };
+            where = { ...where, fully_stocked: false };
         }
 
-        if (filters.nullified === 'true') {
-            where = { ...where, nullified: true };
-        } else if (filters.nullified === 'false') {
-            where = { ...where, nullified: false };
+        switch (filters.status) {
+            case 'VALIDA':
+                where = { ...where, status: 'VALIDA' };
+                break;
+            case 'ANULADA':
+                where = { ...where, status: 'ANULADA' };
+                break;
+            case 'ALL':
+                break;
+            default:
+                where = { ...where, status: 'VALIDA' };
+                break;
         }
 
         const [purchases, total] = await Promise.all([
@@ -108,14 +115,14 @@ export class PurchaseService {
                 }]
             }],
         });
-        if (!purchase) throw CustomError.notFound('¡Compra no encontrada!');
+        if (!purchase) throw CustomError.notFound('Compra no encontrada');
 
         const supplierAccountService = new SupplierAccountService();
         const supplierAccount = await supplierAccountService.findAccount(purchase.id_supplier, purchase.id_currency);
         if (!supplierAccount) throw CustomError.notFound('Cuenta corriente no encontrada');
 
         const { ...entity } = DetailPurchaseEntity.fromObject(purchase);
-        return { data: entity, account: supplierAccount.id };
+        return { purchase: entity, account: supplierAccount.id };
     }
 
     public async getPurchasesBySupplierId(paginationDto: PaginationDto, id_supplier: number) {
@@ -135,107 +142,199 @@ export class PurchaseService {
 
     public async createPurchase(form: CreatePurchaseDTO, id_user: number) {
 
+        const transaction: Transaction = await Purchase.sequelize!.transaction();
+
         try {
             const { products_list, ...rest } = form;
 
-            // CREAR CUENTA CORRIENTE SI NO EXISTE
+            //* 1) OBTENER O CREAR CUENTA CORRIENTE DEL PROVEEDOR EN LA MONEDA DE LA COMPRA
             const { id_supplier, id_currency } = rest;
-            const supplierAccountService = new SupplierAccountService();
-            const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
+            const [supplier_account, _] = await SupplierAccount.findOrCreate({
+                where: { id_supplier, id_currency },
+                defaults: { id_supplier, id_currency, balance: 0 },
+                transaction,
+            });
+            if (!supplier_account) throw CustomError.internalServerError('¡Error al buscar o crear la cuenta corriente!')
 
-            // CREAR COMPRA
+            //* 2) CREAR LA COMPRA
             const purchase = await Purchase.create({
                 ...rest,
-                created_by: id_user,
-                nullified_by: id_user,
-            });
+                id_user,
+            }, { transaction });
 
-            // ASOCIAR PRODUCTOS A LA COMPRA
-            const purchaseItemService = new PurchaseItemService();
-            purchaseItemService.createItems(purchase.id, id_currency, products_list);
+            //* 3) ASOCIAR PRODUCTOS A LA COMPRA
+            const itemsToCreate = products_list.map((item) => ({
+                id_purchase: purchase.id,
+                ...item,
+                actual_stocked: 0,
+                fully_stocked: false,
+            }));
+            const itemsCreated = await PurchaseItem.bulkCreate(itemsToCreate, { transaction });
 
-            // CALCULAR BALANCES
-            const prev_balance = Number(supplierAccount.balance);
-            const post_balance: number = Number(supplierAccount.balance) - Number(purchase.total);
+            //* 4) ACTUALIZAR EL INC_STOCK DE LOS PRODUCTOS, LA MONEDA Y EL PRECIO
+            for (const item of itemsCreated) {
+                try {
+                    await Product.update({
+                        inc_stock: Sequelize.literal(`inc_stock + ${item.quantity}`),
+                        last_price: item.price,
+                        id_currency: id_currency,
+                    }, { where: { id: item.id_product }, transaction });
+                } catch (error) {
+                    throw CustomError.internalServerError('Ocurrió un error al actualizar los productos');
+                }
+            }
 
-            // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
+            //* 5) CALCULAR BALANCES
+            const prev_balance: number = Number(supplier_account.balance);
+            const post_balance: number = Number(supplier_account.balance) - Number(purchase.total);
+
+            //* 6) REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
             const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            const { transaction } = await supplierAccountTransactionService.createTransactionNewPurchase({
-                id_supplier_account: supplierAccount.id,
+            const { transaction: account_transaction } = await supplierAccountTransactionService.createTransactionNewPurchase({
+                id_supplier_account: supplier_account.id,
                 id_purchase: purchase.id,
                 prev_balance,
                 amount: purchase.total,
                 post_balance,
                 id_user,
-            });
+            }, transaction);
 
-            // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
-            await supplierAccount.update({
+            //* 7) ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
+            await supplier_account.update({
                 balance: post_balance
-            });
+            }, { transaction });
 
-            // CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
-            const purchaseTransactionService = new PurchaseTransactionService();
-            await purchaseTransactionService.createPurchaseTransaction({
+            //* 8) CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
+            await PurchaseTransaction.create({
                 id_purchase: purchase.id,
-                id_supplier_account_transaction: transaction.id,
-            });
+                id_supplier_account_transaction: account_transaction.id,
+            }, { transaction });
+
+            await transaction.commit();
 
             return { id: purchase.id, message: '¡La compra se creó correctamente!' };
 
         } catch (error: any) {
-            if (error.name === 'SequelizeValidationError') {
-                throw CustomError.badRequest(`Ocurrió un error al crear la compra: ${error.errors[0].message}`);
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al crear la compra',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al crear la compra',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al crear la compra',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al crear la compra',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al crear la compra';
+            throw CustomError.internalServerError(errorMessage);
+        }
+
+    }
+
+    public async nullifyPurchase(id: number, reason: string, id_user: number) {
+
+        //* 1) OBTENER LA COMPRA
+        const purchase = await Purchase.findByPk(id);
+        if (!purchase) throw CustomError.notFound('¡La compra no existe!');
+
+        const transaction: Transaction = await Purchase.sequelize!.transaction();
+
+        try {
+
+            //* 2) VERIFICAR SI LA COMPRA YA TIENE RECEPCIONES
+            const itemsPurchase = await PurchaseItem.findAll({ where: { id_purchase: purchase.id } });
+            const receivedItems = itemsPurchase.some(item => item.actual_stocked > 0);
+            if (receivedItems) throw CustomError.badRequest('¡No se puede anular la compra porque ya se ha registrado una recepción!');
+
+            //* 3) ANULAR LA COMPRA
+            await purchase.update({
+                status: 'ANULADA',
+            }, { transaction });
+
+            //* 4) REGISTRAR LA ANULACIÓN
+            await PurchaseNullation.create({
+                id_purchase: purchase.id,
+                reason,
+                id_user: id_user,
+            }, { transaction });
+
+            //* 5) ACTUALIZAR EL STOCK DE LOS PRODUCTOS
+            for (const item of itemsPurchase) {
+                try {
+                    const quantity = Number(item.quantity);
+                    await Product.update({
+                        inc_stock: Sequelize.literal(`inc_stock - ${quantity}`),
+                    }, { where: { id: item.id_product }, transaction });
+                } catch (error) {
+                    throw CustomError.internalServerError('Ocurrió un error al actualizar el stock a recibir de los productos');
+                }
             }
-            throw CustomError.internalServerError(`${error}`);
+
+            //* 6) OBTENER LA CUENTA CORRIENTE DEL PROVEEDOR
+            const { id_supplier, id_currency } = purchase;
+            const supplier_account = await SupplierAccount.findOne({
+                where: { id_supplier, id_currency },
+            });
+            if (!supplier_account) throw CustomError.internalServerError('¡Error al buscar la cuenta corriente!');
+
+            //* 7) CALCULAR BALANCES
+            const prev_balance = Number(supplier_account.balance);
+            const post_balance: number = Number(supplier_account.balance) + Number(purchase.total);
+
+            //* 8) REGISTRAR TRANSACCIÓN DE ANULACIÓN
+            const supplierAccountTransactionService = new SupplierAccountTransactionService();
+            const { transaction: account_transaction } = await supplierAccountTransactionService.createTransactionDelPurchase({
+                id_supplier_account: supplier_account.id,
+                id_purchase: purchase.id,
+                prev_balance,
+                amount: purchase.total,
+                post_balance,
+                id_user,
+            }, transaction);
+            if (!account_transaction) throw CustomError.internalServerError('¡Error al registrar la transacción!');
+
+            //* 9) ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
+            await supplier_account.update({
+                balance: post_balance
+            }, { transaction });
+
+            //* 10) CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
+            await PurchaseTransaction.create({
+                id_purchase: purchase.id,
+                id_supplier_account_transaction: account_transaction.id,
+            }, { transaction });
+
+            await transaction.commit();
+
+            return { message: '¡Compra anulada correctamente. Se actualizaron los niveles de stock!' };
+
+        } catch (error: any) {
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al anular la compra',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al anular la compra',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al anular la compra',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al anular la compra',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al anular la compra';
+            throw CustomError.internalServerError(errorMessage);
         }
     }
 
-    public async checkFullyStocked(id_purchase: number): Promise<boolean> {
+    public async isPurchaseFullyStocked(id_purchase: number): Promise<boolean> {
         try {
             const purchase = await Purchase.findByPk(id_purchase, { include: ['items'] });
             if (!purchase || !purchase.items) throw CustomError.notFound('No se encontraron ítems de la compra');
 
             const fully_stocked = purchase.items.every(item => item.fully_stocked);
-            if (fully_stocked) {
+            if (fully_stocked && !purchase.fully_stocked) {
                 await purchase.update({ fully_stocked: true });
                 return true;
             }
 
             return false;
         } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
+            throw error;
         }
-    }
-
-    public async updateReceivedStock(updateItemDto: UpdateItemStockDto, id_user: number) {
-
-        try {
-            const purchaseItemService = new PurchaseItemService();
-            const item = await purchaseItemService.updateItemStock(updateItemDto, id_user);
-            const fully_stocked = await this.checkFullyStocked(updateItemDto.id_purchase);
-
-            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
-            const { quantity_received } = updateItemDto;
-            const [detailError, detailDto] = ReceptionPartialDto.create({ id_purchase_item: item.id, id_user, quantity_received });
-            if (detailError) throw CustomError.badRequest(detailError);
-            const detailService = new ReceptionPartialService();
-            if (detailDto) await detailService.createReceptionPartial(detailDto);
-
-            return {
-                fully_stocked,
-                item: {
-                    id: item.id,
-                    quantity: Number(item.quantity),
-                    actual_stocked: item.actual_stocked,
-                    fully_stocked: item.fully_stocked,
-                },
-                message: '¡Stock actualizado correctamente!'
-            };
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-
     }
 
     public async setPurchaseFullyStocked(id_purchase: number, id_user: number) {
@@ -258,70 +357,34 @@ export class PurchaseService {
         }
     }
 
-
-    public async nullifyPurchase(id: number, reason: string, id_user: number) {
-        const purchase = await Purchase.findByPk(id);
-        if (!purchase) throw CustomError.notFound('Compra no encontrada');
+    public async updateReceivedStock(updateItemDto: UpdateItemStockDto, id_user: number) {
 
         try {
-
             const purchaseItemService = new PurchaseItemService();
-            const hasOneItemReceived = await purchaseItemService.hasOneItemReceived(id);
-            if (hasOneItemReceived) throw CustomError.badRequest('¡No se puede anular la compra porque ya se ha registrado una recepción!');
+            const item = await purchaseItemService.updateItemStock(updateItemDto, id_user);
+            const fully_stocked = await this.isPurchaseFullyStocked(updateItemDto.id_purchase);
 
-            const user = await User.findByPk(id_user);
-            if (!user) throw CustomError.notFound('Usuario no encontrado');
+            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
+            const { quantity_received } = updateItemDto;
+            const [detailError, detailDto] = ReceptionPartialDto.create({ id_purchase_item: item.id, id_user, quantity_received });
+            if (detailError) throw CustomError.badRequest(detailError);
+            const detailService = new ReceptionPartialService();
+            if (detailDto) await detailService.createReceptionPartial(detailDto);
 
-            const now = Date.now();
-
-            await purchase.update({
-                nullified: true, nullified_by: user.id, nullified_reason: reason, nullified_date: now
-            })
-
-            const nullifiedData = {
-                nullifier: user.name,
-                nullified_reason: reason,
-                nullified_date: now
-            }
-
-            await purchaseItemService.decreaseIncomingStockByCancellation(id);
-
-            // CREAR CUENTA CORRIENTE SI NO EXISTE
-            const { id_supplier, id_currency } = purchase;
-            const supplierAccountService = new SupplierAccountService();
-            const supplierAccount = await supplierAccountService.findOrCreateAccount(id_supplier, id_currency);
-
-            //  CALCULAR BALANCES
-            const prev_balance = Number(supplierAccount.balance);
-            const post_balance: number = Number(supplierAccount.balance) + Number(purchase.total);
-
-            // REGISTRAR TRANSACCIÓN A CUENTA DEL PROVEEDOR
-            const supplierAccountTransactionService = new SupplierAccountTransactionService();
-            const { transaction } = await supplierAccountTransactionService.createTransactionDelPurchase({
-                id_supplier_account: supplierAccount.id,
-                id_purchase: purchase.id,
-                prev_balance,
-                amount: purchase.total,
-                post_balance,
-                id_user,
-            });
-
-            // ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
-            await supplierAccount.update({
-                balance: post_balance
-            });
-
-            // CREAR RELACIÓN DE COMPRA CON LA CUENTA CORRIENTE
-            const purchaseTransactionService = new PurchaseTransactionService();
-            await purchaseTransactionService.createPurchaseTransaction({
-                id_purchase: purchase.id,
-                id_supplier_account_transaction: transaction.id,
-            });
-
-            return { nullifiedData, message: 'Compra anulada correctamente. Se reestableció el stock de los productos incluidos.' };
+            return {
+                fully_stocked,
+                item: {
+                    id: item.id,
+                    quantity: Number(item.quantity),
+                    actual_stocked: item.actual_stocked,
+                    fully_stocked: item.fully_stocked,
+                },
+                message: '¡Stock actualizado correctamente!'
+            };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
+
     }
 
     public async getPurchaseReceptions(id_purchase: number) {

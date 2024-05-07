@@ -24,7 +24,7 @@ export const PurchaseItems = ({
   showModal,
   setShowModal,
 }: {
-  status: 'VIGENTE' | 'ANULADA';
+  status: 'VALIDA' | 'ANULADA';
   items: ItemInterface[];
   totals: any;
   updateItemStock: any;
@@ -93,7 +93,7 @@ export const PurchaseItems = ({
               </td>
               <td className="text-center px-2">
                 {/* ACTUALIZAR */}
-                {!item.fully_stocked && status === "VIGENTE" && (
+                {!item.fully_stocked && status === "VALIDA" && (
                   <Dropdown>
                     <Dropdown.Toggle
                       size="sm"

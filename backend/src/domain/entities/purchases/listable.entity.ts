@@ -12,7 +12,7 @@ export class ListablePurchaseEntity {
         },
         public total: string,
         public fully_stocked: boolean,
-        public status: 'VIGENTE' | 'ANULADA',
+        public status: 'VALIDA' | 'ANULADA',
     ) { }
 
     static fromObject(object: { [key: string]: any }): ListablePurchaseEntity {
@@ -37,7 +37,7 @@ export class ListablePurchaseEntity {
             },
             total,
             fully_stocked,
-            nullation ? 'ANULADA' : 'VIGENTE',
+            nullation ? 'ANULADA' : 'VALIDA',
         );
 
     }

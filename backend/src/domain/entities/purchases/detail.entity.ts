@@ -45,7 +45,7 @@ interface NullationInterface {
 export class DetailPurchaseEntity {
     constructor(
         public id: number,
-        public status: 'VIGENTE' | 'ANULADA',
+        public status: 'VALIDA' | 'ANULADA',
         public fully_stocked: boolean,
         public resume: ResumeInterface,
         public items: ItemInterface[],

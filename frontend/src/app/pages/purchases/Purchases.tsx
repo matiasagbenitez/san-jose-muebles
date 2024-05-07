@@ -29,7 +29,7 @@ interface DataRow {
   };
   total: number;
   fully_stocked: boolean;
-  status: "ANULADA" | "VIGENTE";
+  status: "ANULADA" | "VALIDA";
 }
 
 export const Purchases = () => {
@@ -125,7 +125,7 @@ export const Purchases = () => {
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (
         <>
-          {row.status === "VIGENTE" && (
+          {row.status === "VALIDA" && (
             <Badge
               bg={row.fully_stocked ? "success" : "warning"}
               className="rounded-pill"
