@@ -45,10 +45,10 @@ const initialForm: ProductFormInterface = {
 
 interface FormProps {
   onSubmit: (values: any) => void;
-  isFormSubmitted?: boolean;
+  isFormSubmitting: boolean;
 }
 
-export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
+export const PurchaseForm = ({ onSubmit, isFormSubmitting }: FormProps) => {
   const [loading, setLoading] = useState(true);
   const [currencies, setCurrencies] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -123,6 +123,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
                         setFieldValue("date", e.target.value);
                       }}
                       required
+                      disabled={isFormSubmitting}
                     />
                   </InputGroup>
                 </Col>
@@ -138,6 +139,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
                         setFieldValue("id_supplier", e.target.value);
                       }}
                       required
+                      disabled={isFormSubmitting}
                     >
                       <option value="">Seleccione una opción</option>
                       {suppliers &&
@@ -161,6 +163,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
                         setFieldValue("id_currency", e.target.value);
                       }}
                       required
+                      disabled={isFormSubmitting}
                     >
                       <option value="">Seleccione una opción</option>
                       {currencies &&
@@ -212,6 +215,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
                         products={products}
                         setFieldValue={setFieldValue}
                         values={values}
+                        isFormSubmitting={isFormSubmitting}
                       />
                     ))}
 
@@ -220,7 +224,7 @@ export const NewPurchaseForm = ({ onSubmit, isFormSubmitted }: FormProps) => {
                         push={push}
                         values={values}
                         setFieldValue={setFieldValue}
-                        isFormSubmitted={isFormSubmitted}
+                        isFormSubmitting={isFormSubmitting}
                       />
                     )}
                   </>

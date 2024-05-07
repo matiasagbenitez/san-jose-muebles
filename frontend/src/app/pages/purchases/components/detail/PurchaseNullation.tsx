@@ -1,6 +1,6 @@
 import { Alert, Col, Row } from "react-bootstrap";
-import { NullationInterface } from "../interfaces";
-import { DayJsAdapter } from "../../../../helpers";
+import { NullationInterface } from "../../interfaces";
+import { DayJsAdapter } from "../../../../../helpers";
 
 interface Props {
   nullation: NullationInterface | null | undefined;

@@ -1,6 +1,6 @@
 import { Table } from "react-bootstrap";
-import { ResumeInterface } from "../interfaces";
-import { DayJsAdapter, toMoney } from "../../../../helpers";
+import { ResumeInterface } from "../../interfaces";
+import { DayJsAdapter, toMoney } from "../../../../../helpers";
 
 interface Props {
   resume: ResumeInterface;

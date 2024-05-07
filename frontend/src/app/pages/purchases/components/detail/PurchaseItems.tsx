@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Dropdown, Table } from "react-bootstrap";
-import { ItemInterface } from "../interfaces";
-import { toMoney } from "../../../../helpers";
-import { UpdateItemStockForm } from ".";
+import { ItemInterface } from "../../interfaces";
+import { toMoney } from "../../../../../helpers";
+import { UpdateItemStockForm } from "..";
 
 const initialItem: ItemInterface = {
   id: 0,

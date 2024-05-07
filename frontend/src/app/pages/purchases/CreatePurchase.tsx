@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Offcanvas, Button } from "react-bootstrap";
-import { Instructions, NewPurchaseForm } from "./components";
+import { Instructions, PurchaseForm } from "./components";
 import apiSJM from "../../../api/apiSJM";
 import { SweetAlert2 } from "../../utils";
 
@@ -11,7 +11,10 @@ export const CreatePurchase = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+
   const handleSubmit = async (formData: any) => {
+    setIsFormSubmitting(true);
     try {
       const confirmation = await SweetAlert2.confirm(
         "¿Desea registrar la compra?"
@@ -24,6 +27,8 @@ export const CreatePurchase = () => {
     } catch (error: any) {
       console.log(error.response.data.message);
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -44,7 +49,10 @@ export const CreatePurchase = () => {
 
       <hr className="my-3" />
 
-      <NewPurchaseForm onSubmit={handleSubmit} />
+      <PurchaseForm
+        onSubmit={handleSubmit}
+        isFormSubmitting={isFormSubmitting}
+      />
 
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>

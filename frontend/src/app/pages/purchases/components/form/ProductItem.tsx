@@ -11,6 +11,7 @@ interface ProductItemProps {
   values: any;
   setFieldValue: any;
   remove: any;
+  isFormSubmitting: boolean;
 }
 
 export const ProductItem = ({
@@ -19,6 +20,7 @@ export const ProductItem = ({
   values,
   setFieldValue,
   remove,
+  isFormSubmitting,
 }: ProductItemProps) => {
   return (
     <Row key={index} className="mb-1" style={{ height: "" }}>
@@ -31,6 +33,7 @@ export const ProductItem = ({
           onClick={() => {
             remove(index);
           }}
+          disabled={isFormSubmitting}
         >
           <i className="bi bi-x-circle-fill small"></i>
         </Button>
@@ -64,6 +67,7 @@ export const ProductItem = ({
             step="0.01"
             min={1}
             required
+            disabled={isFormSubmitting}
           />
         </InputGroup>
       </Col>
@@ -91,6 +95,7 @@ export const ProductItem = ({
           }}
           getOptionValue={(option) => option.id}
           required
+          isDisabled={isFormSubmitting}
         />
       </Col>
       <Col xs={2}>
@@ -116,6 +121,7 @@ export const ProductItem = ({
             }}
             step="0.01"
             required
+            disabled={isFormSubmitting}
           />
         </InputGroup>
       </Col>

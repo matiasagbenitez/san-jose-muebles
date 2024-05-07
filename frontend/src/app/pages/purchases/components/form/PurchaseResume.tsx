@@ -5,7 +5,7 @@ export const PurchaseResume = ({
   push,
   values,
   setFieldValue,
-  isFormSubmitted,
+  isFormSubmitting,
 }: any) => {
   return (
     <>
@@ -24,6 +24,7 @@ export const PurchaseResume = ({
                 subtotal: 0,
               })
             }
+            disabled={isFormSubmitting}
           >
             <i className="bi bi-plus-circle"></i>
             &ensp; Agregar producto
@@ -80,6 +81,7 @@ export const PurchaseResume = ({
               min={0}
               max={values.subtotal}
               defaultValue={0}
+              disabled={isFormSubmitting}
             />
           </InputGroup>
         </Col>
@@ -117,6 +119,7 @@ export const PurchaseResume = ({
               value={values.other_charges}
               min={0}
               defaultValue={0}
+              disabled={isFormSubmitting}
             />
           </InputGroup>
         </Col>
@@ -159,7 +162,7 @@ export const PurchaseResume = ({
             variant="primary"
             className="w-100"
             size="sm"
-            disabled={isFormSubmitted}
+            disabled={isFormSubmitting}
           >
             <i className="bi bi-floppy"></i>
             &ensp; Registrar compra
