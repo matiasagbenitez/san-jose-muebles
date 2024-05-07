@@ -17,10 +17,12 @@ export const CreatePurchase = () => {
         "¿Desea registrar la compra?"
       );
       if (!confirmation.isConfirmed) return;
-      const { data } = await apiSJM.post("/purchases", formData);
+      const { data } = await apiSJM.post("/purchases/v2", formData);
+      console.log(data);
       SweetAlert2.successToast(data.message);
       navigate(`/compras/${data.id}`);
     } catch (error: any) {
+      console.log(error.response.data.message);
       SweetAlert2.errorAlert(error.response.data.message);
     }
   };

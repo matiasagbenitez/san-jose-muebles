@@ -20,10 +20,12 @@ export const initGroupMemberModel = (sequelize: Sequelize) => {
             id_group: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
+                unique: 'group_member',
             },
             id_member: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
+                unique: 'group_member',
             },
         },
         {

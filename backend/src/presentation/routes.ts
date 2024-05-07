@@ -31,6 +31,7 @@ import { ProjectAccountRoutes } from './project_accounts/routes';
 import { ProjectAccountTransactionRoutes } from './project_account_transactions/routes';
 
 import { MemberRoutes } from './members/routes';
+import { PurchaseV2Routes } from './purchases.v2/routes';
 
 export class AppRoutes {
 
@@ -63,6 +64,7 @@ export class AppRoutes {
 
         router.use('/api/products', ProductRoutes.routes);
         router.use('/api/purchases', PurchaseRoutes.routes);
+        router.use('/api/purchases/v2', PurchaseV2Routes.routes);
 
         router.use('/api/supplier_accounts', SupplierAccountRoutes.routes);
         router.use('/api/supplier_account_transactions', SupplierAccountTransactionRoutes.routes);
