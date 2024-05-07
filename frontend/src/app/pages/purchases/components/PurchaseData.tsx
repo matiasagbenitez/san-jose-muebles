@@ -2,53 +2,62 @@ import { Table } from "react-bootstrap";
 import { ResumeInterface } from "../interfaces";
 import { DayJsAdapter, toMoney } from "../../../../helpers";
 
-export const PurchaseData = ({ data }: { data: ResumeInterface }) => {
-  const {
-    date,
-    supplier,
-    currency,
-    is_monetary,
-    total,
-    created_at,
-    created_by,
-  } = data;
+interface Props {
+  resume: ResumeInterface;
+}
 
+export const PurchaseData = ({ resume }: Props) => {
   return (
     <>
       <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
-          <tr className="text-center fw-bold text-uppercase">
+        <tbody className="text-uppercase">
+          <tr className="text-center fw-bold">
             <th colSpan={2}>Resumen de la compra</th>
           </tr>
           <tr>
-            <th scope="row" className="text-uppercase">Fecha compra</th>
-            <td className="text-end">{DayJsAdapter.toDayMonthYear(date)}</td>
+            <th scope="row" className="px-2">
+              Fecha compra
+            </th>
+            <td className="text-end px-2">
+              {DayJsAdapter.toDayMonthYear(resume.date)}
+            </td>
           </tr>
           <tr>
-            <th scope="row" className="text-uppercase">Proveedor</th>
-            <td className="text-end">
-              <a href={`/proveedores/${supplier.id}`} target="_blank" title="Ver proveedor">
+            <th scope="row" className="px-2">
+              Proveedor
+            </th>
+            <td className="text-end px-2">
+              <a
+                href={`/proveedores/${resume.supplier.id}`}
+                target="_blank"
+                title="Ver proveedor"
+              >
                 <i className="bi bi-box-arrow-up-right me-2"></i>
-                {supplier.name} ({supplier.locality})
+                {resume.supplier.name} ({resume.supplier.locality})
               </a>
             </td>
           </tr>
           <tr>
-            <th scope="row" className="text-uppercase">Moneda compra</th>
-            <td className="text-end">{currency}</td>
+            <th scope="row" className="px-2">
+              Moneda compra
+            </th>
+            <td className="text-end px-2">{resume.currency}</td>
           </tr>
           <tr>
-            <th scope="row" className="text-uppercase">Importe compra</th>
-            <td className="text-end">
-              {is_monetary && "$"}
-              {toMoney(total)}
+            <th scope="row" className="px-2">
+              Importe compra
+            </th>
+            <td className="text-end px-2">
+              {resume.is_monetary && "$"}
+              {toMoney(resume.total)}
             </td>
           </tr>
           <tr>
             <td colSpan={2}>
-              <small className="text-muted">
+              <small className="text-muted px-2 fst-italic">
                 Compra registrada el{" "}
-                {DayJsAdapter.toDayMonthYearHour(created_at)} por {created_by}
+                {DayJsAdapter.toDayMonthYearHour(resume.created_at)} por{" "}
+                {resume.created_by}
               </small>
             </td>
           </tr>

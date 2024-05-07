@@ -126,7 +126,7 @@ export const InventoryItem = () => {
 
   const handleStatusSubmit = async (formData: InitialStatusFormInterface) => {
     const confirmation = await SweetAlert2.confirm(
-      "¿Estás seguro de modificar el estado de este artículo?"
+      "¿Actualizar estado del artículo a " + formData.status + "?"
     );
     if (confirmation.isConfirmed) {
       try {
@@ -204,12 +204,15 @@ export const InventoryItem = () => {
                 }}
                 validationSchema={Yup.object({
                   status: Yup.string()
-                    .required("El estado es requerido")
-                    .test(
-                      "is-different",
-                      "El estado debe ser diferente al actual",
-                      (value) => value !== item.data.status
-                    ),
+                    .required("El estado es requerido"),
+
+                  // status: Yup.string()
+                  //   .required("El estado es requerido")
+                  //   .test(
+                  //     "is-different",
+                  //     "El estado debe ser diferente al actual",
+                  //     (value) => value !== item.data.status
+                  //   ),
 
                   comment: Yup.string()
                     .required("El comentario es requerido")

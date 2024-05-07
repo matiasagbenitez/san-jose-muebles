@@ -22,7 +22,7 @@ interface ProductsFilterProps {
   suppliers: ParamsInterface[];
 }
 
-export const PurchasesFilters = ({
+export const Filters = ({
   state,
   dispatch,
   handleFiltersChange,

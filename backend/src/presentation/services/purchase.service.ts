@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Purchase, SupplierAccountTransaction, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto, PurchasesBySupplierEntity } from "../../domain";
+import { CustomError, CreatePurchaseDTO, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
@@ -56,7 +56,7 @@ export class PurchaseService {
         const [purchases, total] = await Promise.all([
             Purchase.findAll({
                 where,
-                include: ['supplier', 'currency'],
+                include: ['supplier', 'currency', 'nullation'],
                 offset: (page - 1) * limit,
                 limit,
                 order: [['date', 'DESC'], ['createdAt', 'DESC']],
@@ -98,21 +98,24 @@ export class PurchaseService {
                     }]
                 }]
             }, {
-                association: 'creator',
+                association: 'user',
                 attributes: ['name']
             }, {
-                association: 'nullifier',
-                attributes: ['name']
+                association: 'nullation',
+                include: [{
+                    association: 'user',
+                    attributes: ['name']
+                }]
             }],
         });
-        if (!purchase) throw CustomError.notFound('Compra no encontrada');
+        if (!purchase) throw CustomError.notFound('¡Compra no encontrada!');
 
         const supplierAccountService = new SupplierAccountService();
         const supplierAccount = await supplierAccountService.findAccount(purchase.id_supplier, purchase.id_currency);
         if (!supplierAccount) throw CustomError.notFound('Cuenta corriente no encontrada');
 
         const { ...entity } = DetailPurchaseEntity.fromObject(purchase);
-        return { purchase: entity, account: supplierAccount.id };
+        return { data: entity, account: supplierAccount.id };
     }
 
     public async getPurchasesBySupplierId(paginationDto: PaginationDto, id_supplier: number) {
@@ -120,17 +123,17 @@ export class PurchaseService {
 
         const purchases = await Purchase.findAndCountAll({
             where: { id_supplier },
-            include: ['supplier', 'currency', 'creator'],
+            include: ['supplier', 'currency', 'nullation'],
             offset: (page - 1) * limit,
             limit,
             order: [['date', 'DESC'], ['createdAt', 'DESC']],
         });
 
-        const items = purchases.rows.map(item => PurchasesBySupplierEntity.fromObject(item));
+        const items = purchases.rows.map(item => ListablePurchaseEntity.fromObject(item));
         return { items, total_items: purchases.count }
     }
 
-    public async createPurchase(form: NewPurchaseDto, id_user: number) {
+    public async createPurchase(form: CreatePurchaseDTO, id_user: number) {
 
         try {
             const { products_list, ...rest } = form;

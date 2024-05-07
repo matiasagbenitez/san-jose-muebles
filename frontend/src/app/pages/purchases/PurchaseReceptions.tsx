@@ -9,6 +9,7 @@ import {
   PurchaseReceptionInterface,
 } from "./interfaces";
 import { DayJsAdapter } from "../../../helpers";
+
 export const PurchaseReceptions = () => {
   const { id } = useParams();
   const navigate = useNavigate();

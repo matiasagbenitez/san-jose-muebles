@@ -1,48 +1,53 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button, Badge } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
 import {
   PurchaseData,
   PurchaseItems,
-  PurchaseNullified,
+  PurchaseNullation,
   PurchaseOptions,
-  PurchaseTitle,
 } from "./components";
-import { ItemInterface } from "./interfaces";
+import { NullationInterface, ItemInterface } from "./interfaces";
 import { SweetAlert2 } from "../../utils";
 
 export const Purchase = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(true);
+
   const [purchaseId, setPurchaseId] = useState<number>();
-  const [isNullified, setIsNullified] = useState<boolean>(false);
+  const [status, setStatus] = useState<"VIGENTE" | "ANULADA">("VIGENTE");
   const [isFullyStocked, setIsFullyStocked] = useState<boolean>(false);
-  const [data, setData] = useState();
+
+  const [resume, setResume] = useState();
   const [items, setItems] = useState<ItemInterface[]>();
   const [totals, setTotals] = useState();
-  const [nullifiedData, setNullifiedData] = useState();
-  const [accountId, setAccountId] = useState<number>();
+
+  const [nullation, setNullation] = useState<NullationInterface | null>();
+  const [supplierAccountId, setSupplierAccountId] = useState<number>();
+
   const [showModal, setShowModal] = useState(false);
 
   const fetch = async () => {
     try {
       setLoading(true);
-      const { data } = await apiSJM.get(`/purchases/${id}`);
+      const { data } = await apiSJM.get(`/purchases/v2/${id}`);
+
       setPurchaseId(data.purchase.id);
-      setIsNullified(data.purchase.nullified);
+      setStatus(data.purchase.status);
       setIsFullyStocked(data.purchase.fully_stocked);
-      setData(data.purchase.data);
+      setResume(data.purchase.resume);
       setItems(data.purchase.items);
       setTotals(data.purchase.totals);
-      setNullifiedData(data.purchase.nullifiedData);
-      setAccountId(data.account);
+      setNullation(data.purchase.nullation);
+      setSupplierAccountId(data.account);
+
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error.response.data.message);
       return navigate("/compras");
     }
   };
@@ -53,19 +58,22 @@ export const Purchase = () => {
 
   const nullifyPurchase = async () => {
     try {
-      const confirmation = await SweetAlert2.confirm(
-        "¿Está seguro de anular la compra?"
-      );
-      if (!confirmation.isConfirmed) return;
       const { value: reason } = await SweetAlert2.inputDialog(
         "Motivo de anulación"
       );
       if (!reason) return;
-      const { data } = await apiSJM.post(`/purchases/${purchaseId}/nullify`, {
-        reason,
-      });
-      setIsNullified(true);
-      setNullifiedData(data.nullifiedData);
+
+      const confirmation = await SweetAlert2.confirm(
+        "¿Está seguro de anular la compra?"
+      );
+      if (!confirmation.isConfirmed) return;
+      const { data } = await apiSJM.post(
+        `/purchases/v2/${purchaseId}/nullify`,
+        {
+          reason,
+        }
+      );
+      fetch();
       SweetAlert2.successToast(data.message);
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
@@ -132,46 +140,84 @@ export const Purchase = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {purchaseId && data && items && totals && nullifiedData && !loading && accountId && (
-        <>
-          <Row>
-            {isNullified && (
-              <Col xs={12}>
-                <PurchaseNullified nullifiedData={nullifiedData} />
+      {purchaseId &&
+        resume &&
+        items &&
+        totals &&
+        status &&
+        !loading &&
+        supplierAccountId && (
+          <>
+            <Row>
+              {status === "ANULADA" && (
+                <PurchaseNullation nullation={nullation} />
+              )}
+              <Col xl={8}>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div className="d-flex gap-3 align-items-center">
+                    <Button
+                      variant="light border text-muted"
+                      size="sm"
+                      onClick={() => navigate(`/compras`)}
+                      title="Volver al listado de compras"
+                    >
+                      <i className="bi bi-arrow-left me-2"></i>
+                      Atrás
+                    </Button>
+                    <h1 className="fs-4 my-0">
+                      Compra #{purchaseId}
+                      {status === "ANULADA" ? (
+                        <i
+                          className="bi bi-x-circle-fill text-danger fs-5 ms-2"
+                          title="Compra anulada"
+                        ></i>
+                      ) : (
+                        <i
+                          className="bi bi-check-circle-fill text-success fs-5 ms-2"
+                          title="Compra válida"
+                        ></i>
+                      )}
+                    </h1>
+                  </div>
+                  <div className="d-flex align-items-center ">
+                    {status === "VIGENTE" &&
+                      (isFullyStocked ? (
+                        <Badge bg="success" className="me-2">
+                          STOCK COMPLETO
+                        </Badge>
+                      ) : (
+                        <Badge bg="warning" className="me-2">
+                          STOCK PENDIENTE
+                        </Badge>
+                      ))}
+                  </div>
+                </div>
+                <PurchaseData resume={resume} />
               </Col>
-            )}
-            <Col xl={6}>
-              <PurchaseTitle
-                purchaseId={purchaseId}
-                isNullified={isNullified}
-                isFullyStocked={isFullyStocked}
-              />
-              <PurchaseData data={data} />
-            </Col>
-            <Col xl={6}>
-              <PurchaseOptions
-                id={purchaseId}
-                isFullyStocked={isFullyStocked}
-                isNullified={isNullified}
-                nullifyPurchase={nullifyPurchase}
-                updatePurchaseFullStock={updatePurchaseFullStock}
-                accountId={accountId}
-              />
-            </Col>
-            <Col xs={12}>
-              <h2 className="fs-5">Detalle de productos</h2>
-              <PurchaseItems
-                isNullified={isNullified}
-                items={items}
-                totals={totals}
-                updateItemStock={updateItemStock}
-                showModal={showModal}
-                setShowModal={setShowModal}
-              />
-            </Col>
-          </Row>
-        </>
-      )}
+              <Col xl={4}>
+                <PurchaseOptions
+                  id={purchaseId}
+                  isFullyStocked={isFullyStocked}
+                  status={status}
+                  nullifyPurchase={nullifyPurchase}
+                  updatePurchaseFullStock={updatePurchaseFullStock}
+                  accountId={supplierAccountId}
+                />
+              </Col>
+              <Col xs={12}>
+                <h2 className="fs-5">Detalle de productos</h2>
+                <PurchaseItems
+                  status={status}
+                  items={items}
+                  totals={totals}
+                  updateItemStock={updateItemStock}
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                />
+              </Col>
+            </Row>
+          </>
+        )}
     </>
   );
 };

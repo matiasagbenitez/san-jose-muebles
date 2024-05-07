@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, NewPurchaseDto, LoggedUserIdDto, UpdateItemStockDto } from "../../domain";
+import { CustomError, PaginationDto, CreatePurchaseDTO, LoggedUserIdDto, UpdateItemStockDto } from "../../domain";
 import { PurchaseV2Service, PurchaseFilters } from "../services/purchase.v2.service";
 
 export class PurchaseV2Controller {
@@ -47,7 +47,7 @@ export class PurchaseV2Controller {
 
     create = async (req: Request, res: Response) => {
 
-        const [error, createDto] = NewPurchaseDto.create(req.body);
+        const [error, createDto] = CreatePurchaseDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
         const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);

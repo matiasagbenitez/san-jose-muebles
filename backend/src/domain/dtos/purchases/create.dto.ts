@@ -4,9 +4,12 @@ interface PurchaseItem {
     price: number,
     subtotal: number,
 }
-export class NewPurchaseDto {
+
+export class CreatePurchaseDTO {
     private constructor(
+        public status: string = 'VIGENTE',
         public date: Date,
+
         public id_supplier: number,
         public id_currency: number,
 
@@ -18,16 +21,15 @@ export class NewPurchaseDto {
         public products_list: PurchaseItem[] = [],
 
         public fully_stocked: boolean = false,
-        public nullified: boolean = false,
     ) { }
 
-    static create(object: { [key: string]: any }): [string?, NewPurchaseDto?] {
+    static create(object: { [key: string]: any }): [string?, CreatePurchaseDTO?] {
         const { date, id_supplier, id_currency, subtotal, discount, other_charges, total, products_list } = object;
 
         if (!date) return ['La fecha de la compra es requerida'];
         if (!id_supplier) return ['El proveedor es requerido'];
         if (!id_currency) return ['La moneda es requerida'];
-        
+
         if (!subtotal) return ['El subtotal es requerido'];
         if (isNaN(discount)) return ['El descuento debe ser un número'];
         if (isNaN(other_charges)) return ['El valor de otros cargos debe ser un número'];
@@ -57,19 +59,18 @@ export class NewPurchaseDto {
         const local_total = Math.round((subtotal - discount + other_charges) * 100) / 100;
         if (local_total !== total) return ['El total no coincide con el cálculo de los subtotales, descuento y otros cargos'];
 
-        return [undefined, new NewPurchaseDto(
+        return [undefined, new CreatePurchaseDTO(
+            'VIGENTE',
             date,
+
             id_supplier,
             id_currency,
-
             subtotal,
             discount,
             other_charges,
             total,
 
             products_list,
-
-            false,
             false,
         )];
     }

@@ -1,6 +1,6 @@
 import { Op, Sequelize, Transaction } from "sequelize";
-import { Product, Purchase, PurchaseItem, PurchaseTransaction, SupplierAccount, SupplierAccountTransaction, User } from "../../database/mysql/models";
-import { CustomError, NewPurchaseDto, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto, PurchasesBySupplierEntity } from "../../domain";
+import { Product, Purchase, PurchaseItem, PurchaseNullation, PurchaseTransaction, SupplierAccount, SupplierAccountTransaction, User } from "../../database/mysql/models";
+import { CustomError, CreatePurchaseDTO, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto, } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
@@ -50,7 +50,7 @@ export class PurchaseV2Service {
         const [purchases, total] = await Promise.all([
             Purchase.findAll({
                 where,
-                include: ['supplier', 'currency'],
+                include: ['supplier', 'currency', 'nullation'],
                 offset: (page - 1) * limit,
                 limit,
                 order: [['date', 'DESC'], ['createdAt', 'DESC']],
@@ -92,11 +92,14 @@ export class PurchaseV2Service {
                     }]
                 }]
             }, {
-                association: 'creator',
+                association: 'user',
                 attributes: ['name']
             }, {
-                association: 'nullifier',
-                attributes: ['name']
+                association: 'nullation',
+                include: [{
+                    association: 'user',
+                    attributes: ['name']
+                }]
             }],
         });
         if (!purchase) throw CustomError.notFound('Compra no encontrada');
@@ -114,17 +117,17 @@ export class PurchaseV2Service {
 
         const purchases = await Purchase.findAndCountAll({
             where: { id_supplier },
-            include: ['supplier', 'currency', 'creator'],
+            include: ['supplier', 'currency', 'nullation'],
             offset: (page - 1) * limit,
             limit,
             order: [['date', 'DESC'], ['createdAt', 'DESC']],
         });
 
-        const items = purchases.rows.map(item => PurchasesBySupplierEntity.fromObject(item));
+        const items = purchases.rows.map(item => ListablePurchaseEntity.fromObject(item));
         return { items, total_items: purchases.count }
     }
 
-    public async createPurchaseV2(form: NewPurchaseDto, id_user: number) {
+    public async createPurchaseV2(form: CreatePurchaseDTO, id_user: number) {
 
         const transaction = await Purchase.sequelize!.transaction();
 
@@ -143,8 +146,7 @@ export class PurchaseV2Service {
             //* 2) CREAR LA COMPRA
             const purchase = await Purchase.create({
                 ...rest,
-                created_by: id_user,
-                nullified_by: id_user,
+                id_user,
             }, { transaction });
 
             //* 3) ASOCIAR PRODUCTOS A LA COMPRA
@@ -181,7 +183,7 @@ export class PurchaseV2Service {
                 prev_balance: prev_balance,
                 amount: purchase.total * -1,
                 post_balance: post_balance,
-                id_user: id_user,
+                id_user,
             }, { transaction });
 
             //* 7) ACTUALIZAR SALDO DE LA CUENTA CORRIENTE
@@ -200,6 +202,7 @@ export class PurchaseV2Service {
             return { id: purchase.id, message: '¡La compra se creó correctamente!' };
 
         } catch (error: any) {
+            console.log(error);
             await transaction.rollback();
             const errorMessages: Record<string, string> = {
                 SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al crear la compra',
@@ -230,17 +233,17 @@ export class PurchaseV2Service {
             const user = await User.findByPk(id_user);
             if (!user) throw CustomError.notFound('Usuario no encontrado');
 
-            const now = Date.now();
-
+            // ANULAR COMPRA
             await purchase.update({
-                nullified: true, nullified_by: id_user, nullified_reason: reason, nullified_date: now
+                status: 'ANULADA',
             }, { transaction });
 
-            const nullifiedData = {
-                nullifier: user.name,
-                nullified_reason: reason,
-                nullified_date: now
-            }
+            // CREAR NULACIÓN
+            await PurchaseNullation.create({
+                id_purchase: purchase.id,
+                reason,
+                id_user: id_user,
+            }, { transaction });
 
             for (const item of itemsPurchase) {
                 try {
@@ -287,9 +290,12 @@ export class PurchaseV2Service {
                 id_supplier_account_transaction: account_transaction.id,
             }, { transaction });
 
+            await transaction.commit();
 
-            return { nullifiedData, message: 'Compra anulada correctamente. Se reestableció el stock de los productos incluidos.' };
+            return { message: '¡Compra anulada correctamente. Se actualizaron los niveles de stock!' };
+
         } catch (error) {
+            await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }

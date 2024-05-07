@@ -4,14 +4,14 @@ export const PurchaseOptions = ({
   id,
   isFullyStocked,
   nullifyPurchase,
-  isNullified,
+  status,
   updatePurchaseFullStock,
   accountId,
 }: {
   id: number;
   isFullyStocked: boolean;
   nullifyPurchase: () => void;
-  isNullified: boolean;
+  status: "VIGENTE" | "ANULADA";
   updatePurchaseFullStock: () => void;
   accountId: number;
 }) => {
@@ -23,7 +23,7 @@ export const PurchaseOptions = ({
 
   const handleRedirectAccount = () => {
     navigate(`/cuentas-proveedores/${accountId}`);
-  }
+  };
 
   return (
     <div className="mb-4">
@@ -33,7 +33,7 @@ export const PurchaseOptions = ({
           className="list-group-item list-group-item-action py-1"
           title="Marcar todos los productos como recibidos"
           onClick={updatePurchaseFullStock}
-          disabled={isNullified || isFullyStocked}
+          disabled={status === "ANULADA" || isFullyStocked}
         >
           <i className="bi bi-check2-square me-2 fs-56"></i>
           Marcar todos los productos como recibidos
@@ -65,8 +65,8 @@ export const PurchaseOptions = ({
           className="list-group-item list-group-item-action py-1 text-danger"
           title="Anular compra (esta acción no se puede deshacer)"
           onClick={nullifyPurchase}
-          disabled={isNullified}
-          hidden={isNullified}
+          disabled={status === "ANULADA"}
+          hidden={status === "ANULADA"}
         >
           <i className="bi bi-x-circle-fill me-2 fs-6"></i>
           Anular compra

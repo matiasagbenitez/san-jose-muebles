@@ -19,6 +19,7 @@ import { BankAccount, initBankAccountModel } from './BankAccount.model';
 import { Product, initProductModel } from './Product.model';
 import { Purchase, initPurchaseModel } from './Purchase.model';
 import { PurchaseItem, initPurchaseItemModel } from './PurchaseItem.model';
+import { PurchaseNullation, initPurchaseNullationModel } from './PurchaseNullation.model';
 import { ReceptionPartial, initReceptionPartialModel } from './ReceptionPartial.model';
 import { ReceptionTotal, initReceptionTotalModel } from './ReceptionTotal.model';
 
@@ -66,6 +67,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initProductModel(sequelize);
   initPurchaseModel(sequelize);
   initPurchaseItemModel(sequelize);
+  initPurchaseNullationModel(sequelize);
   initReceptionPartialModel(sequelize);
   initReceptionTotalModel(sequelize);
 
@@ -115,6 +117,7 @@ export {
   Product,
   Purchase,
   PurchaseItem,
+  PurchaseNullation,
   ReceptionPartial,
   ReceptionTotal,
 

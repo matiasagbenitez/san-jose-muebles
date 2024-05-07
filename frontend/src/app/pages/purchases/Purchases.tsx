@@ -12,7 +12,7 @@ import {
 
 import apiSJM from "../../../api/apiSJM";
 import { Badge } from "react-bootstrap";
-import { PurchasesFilters } from "./components";
+import { Filters } from "./components";
 
 interface ParamsInterface {
   id: string;
@@ -28,10 +28,8 @@ interface DataRow {
     is_monetary: boolean;
   };
   total: number;
-  payed_status: string;
-  payed_message: string;
   fully_stocked: boolean;
-  nullified: boolean;
+  status: "ANULADA" | "VIGENTE";
 }
 
 export const Purchases = () => {
@@ -127,25 +125,35 @@ export const Purchases = () => {
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (
         <>
-          {!row.nullified && (
-            <Badge bg={row.fully_stocked ? "success" : "warning"}>
+          {row.status === "VIGENTE" && (
+            <Badge
+              bg={row.fully_stocked ? "success" : "warning"}
+              className="rounded-pill"
+              style={{ fontSize: ".9em" }}
+            >
               {row.fully_stocked ? "COMPLETO" : "PENDIENTE"}
             </Badge>
           )}
         </>
       ),
-      maxWidth: "150px",
+      maxWidth: "175px",
       center: true,
     },
     {
-      name: "VALIDEZ",
-      selector: (row: DataRow) => row.nullified,
+      name: "ESTADO",
+      selector: (row: DataRow) => row.status,
       format: (row: DataRow) => (
-        <Badge bg={row.nullified ? "danger" : "success"}>
-          {row.nullified ? "ANULADA" : "VIGENTE"}
+        <Badge
+          bg={row.status === "ANULADA" ? "danger" : "success"}
+          className="rounded-pill"
+          style={{
+            fontSize: ".9em",
+          }}
+        >
+          {row.status}
         </Badge>
       ),
-      maxWidth: "150px",
+      maxWidth: "175px",
       center: true,
     },
   ];
@@ -160,8 +168,7 @@ export const Purchases = () => {
 
   return (
     <div>
-
-      <PurchasesFilters
+      <Filters
         state={state}
         dispatch={dispatch}
         handleFiltersChange={handleFiltersChange}

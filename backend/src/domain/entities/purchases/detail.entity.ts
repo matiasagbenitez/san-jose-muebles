@@ -1,4 +1,3 @@
-// import { DayJsAdapter, MoneyAdapter } from '../../../config';
 import { CustomError } from '../../errors/custom.error';
 
 interface SupplierInterface {
@@ -6,7 +5,8 @@ interface SupplierInterface {
     name: string;
     locality: string;
 }
-interface DataInterface {
+
+interface ResumeInterface {
     date: string;
     supplier: SupplierInterface;
     currency: string;
@@ -15,6 +15,7 @@ interface DataInterface {
     created_at: string;
     created_by: string;
 }
+
 interface ItemInterface {
     id: number;
     quantity: number;
@@ -36,56 +37,60 @@ interface TotalsInterface {
     total: number;
 }
 
-interface NullifiedInterface {
-    nullifier: string;
-    nullified_date: string;
-    nullified_reason: string;
+interface NullationInterface {
+    by: string;
+    at: string;
+    reason: string;
 }
 export class DetailPurchaseEntity {
     constructor(
         public id: number,
-        public nullified: boolean,
+        public status: 'VIGENTE' | 'ANULADA',
         public fully_stocked: boolean,
-        public data: DataInterface,
+        public resume: ResumeInterface,
         public items: ItemInterface[],
         public totals: TotalsInterface,
-        public nullifiedData: NullifiedInterface
+        public nullation: NullationInterface | null,
     ) { }
 
     static fromObject(object: { [key: string]: any }): DetailPurchaseEntity {
         const {
             id,
+            status,
             date,
+
             supplier,
-            creator,
-            createdAt,
             currency,
             subtotal,
             discount,
             other_charges,
             total,
+
             fully_stocked,
-            nullified,
-            nullifier,
-            nullified_date,
-            nullified_reason,
-            items
+            items,
+
+            user,
+            createdAt,
+
+            nullation,
         } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
+        if (!status) throw CustomError.badRequest('Falta el estado');
         if (!date) throw CustomError.badRequest('Falta la fecha');
+
         if (!supplier) throw CustomError.badRequest('Falta el proveedor');
-        if (!creator) throw CustomError.badRequest('Falta el creador');
-        if (!createdAt) throw CustomError.badRequest('Falta la fecha de creación');
         if (!currency) throw CustomError.badRequest('Falta la moneda');
         if (!subtotal) throw CustomError.badRequest('Falta el subtotal');
         if (!discount) throw CustomError.badRequest('Falta el descuento');
         if (!other_charges) throw CustomError.badRequest('Faltan otros cargos');
         if (!total) throw CustomError.badRequest('Falta el total');
         if (fully_stocked === undefined) throw CustomError.badRequest('Falta si está completamente abastecido');
-        if (nullified === undefined) throw CustomError.badRequest('Falta si está anulado');
-        if (!nullifier) throw CustomError.badRequest('Falta el anulador');
+
         if (!items) throw CustomError.badRequest('Faltan los ítems');
+
+        if (!user) throw CustomError.badRequest('Falta el creador');
+        if (!createdAt) throw CustomError.badRequest('Falta la fecha de creación');
 
         const supplierEntity: SupplierInterface = {
             id: supplier.id,
@@ -93,28 +98,28 @@ export class DetailPurchaseEntity {
             locality: supplier.locality.name + ', ' + supplier.locality.province.name,
         };
 
-        const data: DataInterface = {
+        const data: ResumeInterface = {
             date,
             supplier: supplierEntity,
             currency: currency.name + ' (' + currency.symbol + ')',
             is_monetary: currency.is_monetary,
             total,
             created_at: createdAt,
-            created_by: creator.name,
+            created_by: user.name,
         };
 
         let itemsArray: ItemInterface[] = [];
-        for (let i = 0; i < items.length; i++) {
+        for (const item of items) {
             itemsArray.push({
-                id: items[i].id,
-                quantity: Number(items[i].quantity),
-                unit: items[i].product.unit.symbol,
-                brand: items[i].product.brand.name,
-                product: items[i].product.name,
-                price: items[i].price,
-                subtotal: items[i].subtotal,
-                actual_stocked: Number(items[i].actual_stocked),
-                fully_stocked: items[i].fully_stocked,
+                id: item.id,
+                quantity: Number(item.quantity),
+                unit: item.product.unit.symbol,
+                brand: item.product.brand.name,
+                product: item.product.name,
+                price: item.price,
+                subtotal: item.subtotal,
+                actual_stocked: Number(item.actual_stocked),
+                fully_stocked: item.fully_stocked,
             });
         }
 
@@ -127,21 +132,27 @@ export class DetailPurchaseEntity {
             total,
         };
 
-        const nullifiedData: NullifiedInterface = {
-            nullifier: nullifier.name,
-            nullified_date,
-            nullified_reason,
-        };
+        let nullationData : NullationInterface | null = null;
+        if (nullation) {
+            const { user, createdAt, reason } = nullation;
+            if (!user) throw CustomError.badRequest('Falta el anulador');
+            if (!createdAt) throw CustomError.badRequest('Falta la fecha de anulación');
+            if (!reason) throw CustomError.badRequest('Falta la razón de la anulación');
+            nullationData = {
+                by: user.name,
+                at: createdAt,
+                reason,
+            };
+        }
 
         return new DetailPurchaseEntity(
             id,
-            nullified,
+            status,
             fully_stocked,
             data,
             itemsArray,
             totals,
-            nullifiedData
+            nullationData,
         );
-
     }
 }

@@ -37,6 +37,7 @@ import {
     Group,
     Member,
     GroupMember,
+    PurchaseNullation,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -90,8 +91,12 @@ export const initializeAssociations = () => {
     Product.hasMany(PurchaseItem, { foreignKey: 'id_product', as: 'purchases', onDelete: 'RESTRICT' });
     PurchaseItem.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
 
-    Purchase.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
-    Purchase.belongsTo(User, { foreignKey: 'nullified_by', as: 'nullifier' });
+    Purchase.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+    
+    Purchase.hasOne(PurchaseNullation, { foreignKey: 'id_purchase', as: 'nullation', onDelete: 'RESTRICT' });
+    PurchaseNullation.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
+    
+    PurchaseNullation.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
     PurchaseItem.hasMany(ReceptionPartial, { foreignKey: 'id_purchase_item', as: 'receptions', onDelete: 'RESTRICT' });
     ReceptionPartial.belongsTo(User, { foreignKey: 'id_user', as: 'user' });

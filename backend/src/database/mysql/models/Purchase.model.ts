@@ -5,23 +5,23 @@ import { Supplier } from './Supplier.model';
 
 export class Purchase extends Model {
     public id!: number;
-    public created_by!: number;
-    public id_supplier!: number;
+    public status!: 'VIGENTE' | 'ANULADA';
     public date!: Date;
+    public id_supplier!: number;
+
     public id_currency!: number;
     public subtotal!: number;
     public discount!: number;
+    public other_charges!: number;
     public total!: number;
+
     public fully_stocked!: boolean;
-    public nullified!: boolean;
-    public nullified_by!: number;
-    public nullified_date!: Date;
-    public nullified_reason!: string;
+    public id_user!: number;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    // relationships
+    // ASSOCIATIONS
     public items: PurchaseItem[] | undefined;
     public reception: ReceptionTotal | undefined;
     public supplier!: Supplier;
@@ -35,16 +35,16 @@ export const initPurchaseModel = (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            created_by: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            id_supplier: {
-                type: DataTypes.INTEGER.UNSIGNED,
+            status: {
+                type: DataTypes.ENUM('VIGENTE', 'ANULADA'),
                 allowNull: false,
             },
             date: {
                 type: DataTypes.DATEONLY,
+                allowNull: false,
+            },
+            id_supplier: {
+                type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
             id_currency: {
@@ -71,25 +71,14 @@ export const initPurchaseModel = (sequelize: Sequelize) => {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
             },
-            nullified: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-            },
-            nullified_by: {
+            id_user: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
-            },
-            nullified_date: {
-                type: DataTypes.DATE,
-                allowNull: true,
-            },
-            nullified_reason: {
-                type: DataTypes.STRING,
-                allowNull: true,
             },
         },
         {
             sequelize,
+            // paranoid: true,
             modelName: 'Purchase',
             tableName: 'purchases',
             timestamps: true,

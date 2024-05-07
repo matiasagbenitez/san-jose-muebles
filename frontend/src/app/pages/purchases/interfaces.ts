@@ -1,21 +1,23 @@
-interface SupplierInterface {
-    id: number;
-    name: string;
-    locality: string;
+export interface NullationInterface {
+    by: string;
+    at: Date;
+    reason: string;
 }
+
 export interface ResumeInterface {
     date: Date;
-    supplier: SupplierInterface;
+    supplier: {
+        id: number;
+        name: string;
+        locality: string;
+    };
     currency: string;
     is_monetary: boolean;
     total: number;
     created_at: Date;
     created_by: string;
-    nullified: boolean;
-    nullified_by: string;
-    nullified_date: Date;
-    nullified_reason: string;
 }
+
 export interface ItemInterface {
     id: number;
     quantity: number;
@@ -28,30 +30,8 @@ export interface ItemInterface {
     fully_stocked: boolean;
 }
 
-export interface DetailInterface {
-    items: ItemInterface[];
-    currency: string;
-    is_monetary: boolean;
-    subtotal: number;
-    discount: number;
-    other_charges: number;
-    total: number;
-}
-
-export interface PurchaseDetailInterface {
-    id: number;
-    resume: ResumeInterface;
-    detail: DetailInterface;
-}
 
 
-
-
-export interface NullifiedInterface {
-    nullifier: string;
-    nullified_date: Date;
-    nullified_reason: string;
-}
 
 export interface ReceptionDataInterface {
     id: number;
