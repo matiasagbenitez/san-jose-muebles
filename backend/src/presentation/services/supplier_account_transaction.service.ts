@@ -1,5 +1,5 @@
 import { CustomError, PaginationDto, SupplierAccountTransactionEntity, TransactionDto } from "../../domain";
-import { SupplierAccountTransaction } from "../../database/mysql/models";
+import { SupplierAccount, SupplierAccountTransaction } from "../../database/mysql/models";
 import { SupplierAccountService } from "./supplier_account.service";
 import { Transaction } from "sequelize";
 
@@ -100,12 +100,15 @@ export class SupplierAccountTransactionService {
     // El monto del pago disminuye la deuda con el proveedor (númerico positivo)
     // Se crea al momento de registrar un pago por parte de la empresa
     public async createTransactionNewPayment(data: TransactionDto, id_user: number) {
+
+        const transaction = await SupplierAccountTransaction.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡No se pudo iniciar la transacción!');
+
         try {
 
             // Verificar si la cuenta del proveedor existe
-            const supplierAccountService = new SupplierAccountService();
-            const supplierAccount = await supplierAccountService.getSupplierAccountById(data.id_supplier_account);
-            if (!supplierAccount) throw CustomError.notFound('¡La cuenta del proveedor no existe!');
+            const supplierAccount = await SupplierAccount.findByPk(data.id_supplier_account);
+            if (!supplierAccount) throw CustomError.notFound('¡No se encontró la cuenta corriente del proveedor!');
 
             // Calcular el nuevo saldo de la cuenta del proveedor
             const prev_balance = Number(supplierAccount.balance);
@@ -120,13 +123,16 @@ export class SupplierAccountTransactionService {
                 amount: data.amount,
                 post_balance: post_balance,
                 id_user: id_user,
-            });
+            }, { transaction });
 
             // Actualizar el saldo de la cuenta del proveedor
-            await supplierAccountService.updateSupplierAccountBalance(supplierAccount.id, post_balance);
+            await supplierAccount.update({ balance: post_balance }, { transaction });
 
-            return { message: '¡Transacción NEW_PAYMENT registrada correctamente!' };
+            await transaction.commit();
+
+            return { message: '¡Transacción PAGO PROPIO registrada correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }
@@ -135,11 +141,14 @@ export class SupplierAccountTransactionService {
     // El monto del ajuste positivo disminuye la deuda con el proveedor (númerico positivo)
     // Se crea al momento de registrar un ajuste positivo
     public async createTransactionPosAdj(data: TransactionDto, id_user: number) {
+
+        const transaction = await SupplierAccountTransaction.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡No se pudo iniciar la transacción!');
+
         try {
 
             // Verificar si la cuenta del proveedor existe
-            const supplierAccountService = new SupplierAccountService();
-            const supplierAccount = await supplierAccountService.getSupplierAccountById(data.id_supplier_account);
+            const supplierAccount = await SupplierAccount.findByPk(data.id_supplier_account);
             if (!supplierAccount) throw CustomError.notFound('¡La cuenta del proveedor no existe!');
 
             // Calcular el nuevo saldo de la cuenta del proveedor
@@ -155,13 +164,16 @@ export class SupplierAccountTransactionService {
                 amount: data.amount,
                 post_balance: post_balance,
                 id_user: id_user,
-            });
+            }, { transaction });
 
             // Actualizar el saldo de la cuenta del proveedor
-            await supplierAccountService.updateSupplierAccountBalance(supplierAccount.id, post_balance);
+            await supplierAccount.update({ balance: post_balance }, { transaction });
 
-            return { message: '¡Transacción POS_ADJ registrada correctamente!' };
+            await transaction.commit();
+
+            return { ok: true, message: '¡Transacción AJUSTE A FAVOR registrada correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }
@@ -170,11 +182,14 @@ export class SupplierAccountTransactionService {
     // El monto del ajuste negativo incrementa la deuda con el proveedor (númerico negativo)
     // Se crea al momento de registrar un ajuste negativo
     public async createTransactionNegAdj(data: TransactionDto, id_user: number) {
+
+        const transaction = await SupplierAccountTransaction.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡No se pudo iniciar la transacción!');
+
         try {
 
             // Verificar si la cuenta del proveedor existe
-            const supplierAccountService = new SupplierAccountService();
-            const supplierAccount = await supplierAccountService.getSupplierAccountById(data.id_supplier_account);
+            const supplierAccount = await SupplierAccount.findByPk(data.id_supplier_account);
             if (!supplierAccount) throw CustomError.notFound('¡La cuenta del proveedor no existe!');
 
             // Calcular el nuevo saldo de la cuenta del proveedor
@@ -193,10 +208,13 @@ export class SupplierAccountTransactionService {
             });
 
             // Actualizar el saldo de la cuenta del proveedor
-            await supplierAccountService.updateSupplierAccountBalance(supplierAccount.id, post_balance);
-            return { message: '¡Transacción NEG_ADJ registrada correctamente!' };
+            await supplierAccount.update({ balance: post_balance }, { transaction });
 
+            await transaction.commit();
+
+            return { message: '¡Transacción AJUSTE EN CONTRA registrada correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }

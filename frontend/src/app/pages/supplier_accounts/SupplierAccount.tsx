@@ -7,6 +7,8 @@ import {
   Row,
   Col,
   Badge,
+  Popover,
+  OverlayTrigger,
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
@@ -52,11 +54,11 @@ const types: Record<
   },
   [MovementType.DEL_PURCHASE]: {
     label: "COMPRA ANULADA",
-    icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+    icon: "bi bi-x-circle-fill fs-6 text-secondary",
     title: "Disminuye la deuda con el proveedor",
   },
   [MovementType.NEW_PAYMENT]: {
-    label: "PAGO A PROVEEDOR",
+    label: "PAGO PROPIO",
     icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
     title: "Disminuye la deuda con el proveedor",
   },
@@ -113,6 +115,7 @@ export const SupplierAccount = () => {
   const endpoint = `/supplier_account_transactions/${id}`;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<AccountInterface | null>(null);
 
@@ -155,9 +158,17 @@ export const SupplierAccount = () => {
     },
     {
       name: "FECHA REGISTRO",
-      selector: (row: DataRow) =>
-        DayJsAdapter.toDayMonthYearHour(row.createdAt),
-      maxWidth: "140px",
+      selector: (row: any) => row.createdAt,
+      format: (row: DataRow) => (
+        <>
+          {DayJsAdapter.toDayMonthYearHour(row.createdAt)}
+          <i
+            className="bi bi-person ms-2"
+            title={`Movimiento registrado por ${row.user}`}
+          ></i>
+        </>
+      ),
+      maxWidth: "160px",
       center: true,
     },
     {
@@ -165,6 +176,7 @@ export const SupplierAccount = () => {
       selector: (row: DataRow) => row.user,
       maxWidth: "140px",
       center: true,
+      omit: true,
     },
     {
       name: "DESCRIPCIÓN",
@@ -172,15 +184,18 @@ export const SupplierAccount = () => {
       cell: (row: DataRow) => {
         return (
           <>
-            {row.description}
             {row.id_purchase && (
               <Button
                 size="sm"
                 variant="link"
                 onClick={() => handleRedirectPurchase(row.id_purchase!)}
+                className="p-0 text-start"
               >
-                <small>Ver compra</small>
+                <small>{row.description}</small>
               </Button>
+            )}
+            {!row.id_purchase && row.description && (
+              <span>{row.description}</span>
             )}
           </>
         );
@@ -206,7 +221,7 @@ export const SupplierAccount = () => {
           </div>
         );
       },
-      maxWidth: "250px",
+      maxWidth: "200px",
     },
     {
       name: "SALDO ANTERIOR",
@@ -246,23 +261,48 @@ export const SupplierAccount = () => {
     e.preventDefault();
 
     try {
+      if (formData.amount <= 0) {
+        SweetAlert2.errorAlert("¡El monto del movimiento debe ser mayor a 0!");
+        return;
+      }
+      setIsFormSubmitting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de registrar el movimiento?"
       );
       if (!confirmation.isConfirmed) return;
       setLoading(true);
-      await apiSJM.post("/supplier_account_transactions/new-movement", {
-        ...formData,
-        id_supplier_account: id,
-      });
-      fetch();
+      const { data } = await apiSJM.post(
+        "/supplier_account_transactions/new-movement",
+        { ...formData, id_supplier_account: id }
+      );
+      SweetAlert2.successAlert(data.message);
       handleClose();
-      setLoading(false);
+      fetch();
     } catch (error: any) {
       console.error(error);
-      SweetAlert2.errorAlert(error.response.data.message);
+      // SweetAlert2.errorAlert(error.response.data.message);
+      SweetAlert2.errorAlert(
+        "¡Ocurrió un error al registrar el movimiento! Intente nuevamente."
+      );
+    } finally {
+      setIsFormSubmitting(false);
+      setLoading(false);
     }
   };
+
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">Pago de cliente a proveedor</Popover.Header>
+      <Popover.Body>
+        Para registrar un
+        <b> pago de cliente a proveedor </b> como pago de su proyecto, el mismo
+        debe registrarse en la cuenta corriente del proyecto cuya moneda
+        coincide con la de la cuenta corriente del proveedor. Una vez registrado
+        el pago, el mismo se verá reflejado tanto en la cuenta corriente del
+        proyecto como en la cuenta corriente del proveedor.
+      </Popover.Body>
+    </Popover>
+  );
 
   return (
     <>
@@ -299,17 +339,17 @@ export const SupplierAccount = () => {
               <p className="text-center">
                 {account.balance < 0 && (
                   <Badge className="fs-6" bg="danger">
-                    Saldo: {convertToMoney(account.balance)}
+                    Saldo: {account.symbol} {convertToMoney(account.balance)}
                   </Badge>
                 )}
                 {account.balance == 0 && (
                   <Badge className="fs-6" bg="secondary">
-                    Saldo: {convertToMoney(account.balance)}
+                    Saldo: {account.symbol} {convertToMoney(account.balance)}
                   </Badge>
                 )}
                 {account.balance > 0 && (
                   <Badge className="fs-6" bg="success">
-                    Saldo: {convertToMoney(account.balance)}
+                    Saldo: {account.symbol} {convertToMoney(account.balance)}
                   </Badge>
                 )}
               </p>
@@ -335,7 +375,7 @@ export const SupplierAccount = () => {
 
               <Form onSubmit={handleSubmit}>
                 {/* TIPO DE MOVIMIENTO */}
-                <InputGroup className="mb-3" size="sm">
+                <InputGroup size="sm">
                   <InputGroup.Text>Tipo de movimiento</InputGroup.Text>
                   <Form.Select
                     required
@@ -343,9 +383,10 @@ export const SupplierAccount = () => {
                     onChange={(e: any) =>
                       setFormData({ ...formData, type: e.target.value })
                     }
+                    disabled={isFormSubmitting}
                   >
                     <option value="">Seleccione una opción</option>
-                    <option value="NEW_PAYMENT">Pago a proveedor</option>
+                    <option value="NEW_PAYMENT">Pago propio a proveedor</option>
                     <option value="POS_ADJ">
                       Ajuste a favor (disminuye deuda c/ proveedor)
                     </option>
@@ -355,8 +396,23 @@ export const SupplierAccount = () => {
                   </Form.Select>
                 </InputGroup>
 
+                <OverlayTrigger
+                  trigger="click"
+                  placement="left"
+                  overlay={popover}
+                >
+                  <Button
+                    variant="link"
+                    className="p-0 m-0 text-decoration-none text-muted"
+                    style={{ fontSize: "0.88em" }}
+                  >
+                    <small>
+                      ¿Desea registrar el pago de un cliente al proveedor?
+                    </small>
+                  </Button>
+                </OverlayTrigger>
                 {/* DESCRIPCIÓN */}
-                <InputGroup className="mb-3" size="sm">
+                <InputGroup className="mt-2 mb-3" size="sm">
                   <InputGroup.Text>Descripción</InputGroup.Text>
                   <Form.Control
                     as="textarea"
@@ -368,9 +424,9 @@ export const SupplierAccount = () => {
                         description: e.target.value,
                       })
                     }
+                    disabled={isFormSubmitting}
                   />
                 </InputGroup>
-
                 {/* MONTO */}
                 <InputGroup className="mb-3" size="sm">
                   <InputGroup.Text>Monto movimiento</InputGroup.Text>
@@ -385,20 +441,22 @@ export const SupplierAccount = () => {
                     required
                     onValueChange={(values) => {
                       const { floatValue } = values;
-                      setFormData({ ...formData, amount: floatValue || 0 });
+                      setFormData({ ...formData, amount: floatValue || 1 });
                     }}
+                    disabled={isFormSubmitting}
                   />
                 </InputGroup>
-
                 <div className="d-flex gap-2 justify-content-end">
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={() => setIsModalOpen(false)}
+                    disabled={isFormSubmitting}
                   >
                     Cerrar
                   </Button>
                   <Button size="sm" variant="primary" type="submit">
+                    <i className="bi bi-floppy me-2"></i>
                     Registrar movimiento
                   </Button>
                 </div>

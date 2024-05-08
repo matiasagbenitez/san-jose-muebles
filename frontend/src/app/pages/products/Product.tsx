@@ -83,7 +83,7 @@ export const Product = () => {
               </Button>
               <h1 className="fs-5 my-0">{product.name}</h1>
             </div>
-            <Col lg={8}>
+            <Col lg={9}>
               <ProductInfo product={product} />
               {product.inc_stock > 0 && (
                 <>
@@ -102,7 +102,7 @@ export const Product = () => {
                 </>
               )}
             </Col>
-            <Col lg={4}>
+            <Col lg={3}>
               <Row>
                 <Col xs={12}>
                   <ProductImage />
