@@ -1,6 +1,6 @@
 import { Op, Sequelize, Transaction } from "sequelize";
 import { Product, Purchase, PurchaseItem, PurchaseNullation, PurchaseTransaction, SupplierAccount, SupplierAccountTransaction, User } from "../../database/mysql/models";
-import { CustomError, CreatePurchaseDTO, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto } from "../../domain";
+import { CustomError, CreatePurchaseDTO, PaginationDto, ListablePurchaseEntity, DetailPurchaseEntity, UpdateItemStockDto, ReceptionPartialDto, ReceptionTotalDto, PartialReceptionEntity, TotalReceptionEntity, SupplierAccountDto, ListableSupplierPurchaseEntity } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { ReceptionPartialService } from "./reception_partial.service";
 import { ReceptionTotalService } from "./reception_total.service.service";
@@ -130,13 +130,13 @@ export class PurchaseService {
 
         const purchases = await Purchase.findAndCountAll({
             where: { id_supplier },
-            include: ['supplier', 'currency', 'nullation'],
+            include: ['currency', 'nullation', 'user'],
             offset: (page - 1) * limit,
             limit,
             order: [['date', 'DESC'], ['createdAt', 'DESC']],
         });
 
-        const items = purchases.rows.map(item => ListablePurchaseEntity.fromObject(item));
+        const items = purchases.rows.map(item => ListableSupplierPurchaseEntity.fromObject(item));
         return { items, total_items: purchases.count }
     }
 
@@ -327,14 +327,14 @@ export class PurchaseService {
             if (!purchase || !purchase.items) throw CustomError.notFound('No se encontraron ítems de la compra');
 
             const fully_stocked = purchase.items.every(item => item.fully_stocked);
-            if (fully_stocked && !purchase.fully_stocked) {
+            if (fully_stocked) {
                 await purchase.update({ fully_stocked: true }, { transaction });
                 return true;
             }
 
             return false;
         } catch (error) {
-            throw error;
+            throw CustomError.internalServerError(`${error}`);
         }
     }
 
@@ -397,8 +397,18 @@ export class PurchaseService {
             if (quantity_received > max_to_receive) throw CustomError.badRequest(`¡La cantidad recibida no puede ser superior a ${max_to_receive}!`);
 
             // ACTUALIZAR STOCK DEL ITEM
+            let fully_stocked: boolean = false;
             if (actual + quantity_received == buyed) {
                 await item.update({ actual_stocked: buyed, fully_stocked: true }, { transaction });
+
+                // VERIFICAR SI LA COMPRA YA ESTÁ COMPLETAMENTE STOCKEADA (excluyendo el ítem actual, por la transacción)
+                const purchase = await Purchase.findByPk(id_purchase, { include: ['items'] });
+                if (!purchase || !purchase.items) throw CustomError.notFound('No se encontraron ítems de la compra');
+                const items = purchase.items.filter(item => item.id !== id_item);
+                fully_stocked = items.every(item => item.fully_stocked);
+                if (fully_stocked) {
+                    await purchase.update({ fully_stocked: true }, { transaction });
+                }
             } else {
                 await item.update({ actual_stocked: actual + quantity_received }, { transaction });
             }
@@ -408,9 +418,6 @@ export class PurchaseService {
                 inc_stock: Sequelize.literal(`inc_stock - ${quantity_received}`),
                 actual_stock: Sequelize.literal(`actual_stock + ${quantity_received}`),
             }, { where: { id: item.id_product }, transaction });
-
-
-            const fully_stocked = await this.isPurchaseFullyStocked(id_purchase, transaction);
 
             // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN PARCIAL
             const [error, dto] = ReceptionPartialDto.create({ id_purchase_item: item.id, id_user, quantity_received });
@@ -430,6 +437,7 @@ export class PurchaseService {
                 },
                 message: '¡Stock actualizado correctamente!'
             };
+
         } catch (error: any) {
             await transaction.rollback();
             const errorMessages: Record<string, string> = {

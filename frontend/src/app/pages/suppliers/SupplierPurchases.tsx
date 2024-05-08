@@ -18,11 +18,13 @@ interface DataRow {
   created_at: Date;
   user: string;
   date: Date;
-  currency: string;
-  symbol: string;
+  currency: {
+    symbol: string;
+    is_monetary: boolean;
+  };
   total: number;
   fully_stocked: boolean;
-  nullified: boolean;
+  status: "VALIDA" | "ANULADA";
 }
 
 export const SupplierPurchases = () => {
@@ -60,7 +62,7 @@ export const SupplierPurchases = () => {
 
   const handleClick = (row: DataRow) => {
     navigate(`/compras/${row.id}`);
-  }
+  };
 
   const handlePageChange = async (page: number) => {
     dispatch({ type: "PAGE_CHANGE", page });
@@ -108,8 +110,9 @@ export const SupplierPurchases = () => {
       right: true,
       format: (row: DataRow) => (
         <>
-          <small className="text-muted">{row.symbol}</small>
-          {"$ " + toMoney(row.total)}
+          <small className="text-muted">{row.currency.symbol}</small>
+          {row.currency.is_monetary && " $"}
+          {toMoney(row.total)}
         </>
       ),
     },
@@ -118,8 +121,12 @@ export const SupplierPurchases = () => {
       selector: (row: DataRow) => row.fully_stocked,
       format: (row: DataRow) => (
         <>
-          {!row.nullified && (
-            <Badge bg={row.fully_stocked ? "success" : "warning"}>
+          {row.status === "VALIDA" && (
+            <Badge
+              bg={row.fully_stocked ? "success" : "warning"}
+              className="rounded-pill"
+              style={{ fontSize: ".9em" }}
+            >
               {row.fully_stocked ? "COMPLETO" : "PENDIENTE"}
             </Badge>
           )}
@@ -128,11 +135,17 @@ export const SupplierPurchases = () => {
       center: true,
     },
     {
-      name: "VALIDEZ",
-      selector: (row: DataRow) => row.nullified,
+      name: "ESTADO",
+      selector: (row: DataRow) => row.status,
       format: (row: DataRow) => (
-        <Badge bg={row.nullified ? "danger" : "success"}>
-          {row.nullified ? "ANULADA" : "VALIDA"}
+        <Badge
+          bg={row.status === "ANULADA" ? "danger" : "success"}
+          className="rounded-pill"
+          style={{
+            fontSize: ".9em",
+          }}
+        >
+          {row.status}
         </Badge>
       ),
       center: true,

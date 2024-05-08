@@ -113,7 +113,7 @@ export const PurchaseForm = ({ onSubmit, isFormSubmitting }: FormProps) => {
                 <p className="mb-3 text-muted small">Para registrar una nueva compra, complete los siguientes campos del formulario:</p>
                 <Col xs={12} lg={2}>
                   <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Text id="from">Fecha compra *</InputGroup.Text>
+                    <InputGroup.Text id="from">Fecha *</InputGroup.Text>
                     <FormRB.Control
                       type="date"
                       name="date"
