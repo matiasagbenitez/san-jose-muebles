@@ -139,11 +139,6 @@ export class ProjectAccountService {
         }
     }
 
-    public async existsAccount(id_project: number, id_currency: number) {
-        const item = await ProjectAccount.findOne({ where: { id_project, id_currency } });
-        return item ? true : false;
-    }
-
     public async findOrCreateAccount(id_project: number, id_currency: number): Promise<ProjectAccount> {
 
         const account = await ProjectAccount.findOrCreate({
@@ -153,11 +148,6 @@ export class ProjectAccountService {
 
         if (!account) throw CustomError.internalServerError('¡Error al buscar o crear la cuenta corriente!');
         return account[0];
-    }
-
-    public async findAccount(id_project: number, id_currency: number) {
-        const account = await ProjectAccount.findOne({ where: { id_project, id_currency } });
-        return account;
     }
 
 }

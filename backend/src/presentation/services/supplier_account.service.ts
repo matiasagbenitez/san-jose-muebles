@@ -108,25 +108,4 @@ export class SupplierAccountService {
         }
     }
 
-    public async existsAccount(id_supplier: number, id_currency: number) {
-        const item = await SupplierAccount.findOne({ where: { id_supplier, id_currency } });
-        return item ? true : false;
-    }
-
-    public async findOrCreateAccount(id_supplier: number, id_currency: number): Promise<SupplierAccount> {
-
-        const account = await SupplierAccount.findOrCreate({
-            where: { id_supplier, id_currency },
-            defaults: { id_supplier, id_currency, balance: 0 }
-        });
-
-        if (!account) throw CustomError.internalServerError('¡Error al buscar o crear la cuenta corriente!');
-        return account[0];
-    }
-
-    public async findAccount(id_supplier: number, id_currency: number) {
-        const account = await SupplierAccount.findOne({ where: { id_supplier, id_currency } });
-        return account;
-    }
-
 }

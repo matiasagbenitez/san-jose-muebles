@@ -7,6 +7,7 @@ import { ReceptionTotalService } from "./reception_total.service.service";
 import { SupplierAccountService } from "./supplier_account.service";
 import { SupplierAccountTransactionService } from "./supplier_account_transaction.service";
 import { PurchaseTransactionService } from "./purchase_transaction.service";
+import { ProductService } from "./product.service";
 
 export interface PurchaseFilters {
     id_supplier: string | undefined;
@@ -117,8 +118,7 @@ export class PurchaseService {
         });
         if (!purchase) throw CustomError.notFound('Compra no encontrada');
 
-        const supplierAccountService = new SupplierAccountService();
-        const supplierAccount = await supplierAccountService.findAccount(purchase.id_supplier, purchase.id_currency);
+        const supplierAccount = await SupplierAccount.findOne({ where: { id_supplier: purchase.id_supplier, id_currency: purchase.id_currency } });
         if (!supplierAccount) throw CustomError.notFound('Cuenta corriente no encontrada');
 
         const { ...entity } = DetailPurchaseEntity.fromObject(purchase);
@@ -320,14 +320,15 @@ export class PurchaseService {
         }
     }
 
-    public async isPurchaseFullyStocked(id_purchase: number): Promise<boolean> {
+    // LOCAL METHOD
+    public async isPurchaseFullyStocked(id_purchase: number, transaction: Transaction): Promise<boolean> {
         try {
             const purchase = await Purchase.findByPk(id_purchase, { include: ['items'] });
             if (!purchase || !purchase.items) throw CustomError.notFound('No se encontraron ítems de la compra');
 
             const fully_stocked = purchase.items.every(item => item.fully_stocked);
             if (fully_stocked && !purchase.fully_stocked) {
-                await purchase.update({ fully_stocked: true });
+                await purchase.update({ fully_stocked: true }, { transaction });
                 return true;
             }
 
@@ -338,38 +339,86 @@ export class PurchaseService {
     }
 
     public async setPurchaseFullyStocked(id_purchase: number, id_user: number) {
+        const transaction = await Purchase.sequelize!.transaction();
         try {
-            const purchase = await Purchase.findByPk(id_purchase);
-            if (!purchase) throw CustomError.notFound('Compra no encontrada');
-            const purchaseItemService = new PurchaseItemService();
-            await purchaseItemService.updateAllItemsStock(id_purchase);
-            await purchase.update({ fully_stocked: true });
+            const items = await PurchaseItem.findAll({ where: { id_purchase } });
+            for (const item of items) {
+                const received: number = Number(item.quantity) - Number(item.actual_stocked);
+                const [_, __] = await Promise.all([
+                    item.update({ actual_stocked: item.quantity, fully_stocked: true }, { transaction }),
+                    Product.update({
+                        inc_stock: Sequelize.literal(`inc_stock - ${received}`),
+                        actual_stock: Sequelize.literal(`actual_stock + ${received}`),
+                    }, { where: { id: item.id_product }, transaction }),
+                ]);
+            }
 
-            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
-            const [detailError, detailDto] = ReceptionTotalDto.create({ id_purchase, id_user });
-            if (detailError) throw CustomError.badRequest(detailError);
+            await Purchase.update({ fully_stocked: true }, { where: { id: id_purchase }, transaction });
+
+            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN TOTAL
+            const [error, dto] = ReceptionTotalDto.create({ id_purchase, id_user });
+            if (error) throw CustomError.badRequest(error);
             const detailService = new ReceptionTotalService();
-            if (detailDto) await detailService.createReceptionTotal(detailDto);
+            if (dto) await detailService.createReceptionTotal(dto, transaction);
+
+            await transaction.commit();
 
             return { message: '¡Stock de la compra actualizado correctamente!' };
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
+        } catch (error: any) {
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al anular la compra',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al anular la compra',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al anular la compra',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al anular la compra',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al anular la compra';
+            throw CustomError.internalServerError(errorMessage);
         }
     }
 
     public async updateReceivedStock(updateItemDto: UpdateItemStockDto, id_user: number) {
 
-        try {
-            const purchaseItemService = new PurchaseItemService();
-            const item = await purchaseItemService.updateItemStock(updateItemDto, id_user);
-            const fully_stocked = await this.isPurchaseFullyStocked(updateItemDto.id_purchase);
+        const transaction = await Purchase.sequelize!.transaction();
 
-            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN
-            const { quantity_received } = updateItemDto;
-            const [detailError, detailDto] = ReceptionPartialDto.create({ id_purchase_item: item.id, id_user, quantity_received });
-            if (detailError) throw CustomError.badRequest(detailError);
+        try {
+            const { id_item, id_purchase, quantity_received } = updateItemDto;
+
+            const item = await PurchaseItem.findOne({ where: { id: id_item, id_purchase } });
+            if (!item) throw CustomError.notFound('¡No se encontró el ítem de la compra!');
+
+            const buyed = Number(item.quantity);
+            const actual = Number(item.actual_stocked);
+            const max_to_receive = buyed - actual;
+
+            if (quantity_received <= 0) throw CustomError.badRequest('¡La cantidad recibida debe ser mayor a 0!');
+            if (item.fully_stocked) throw CustomError.badRequest('¡El ítem ya está completamente stockeado!');
+            if (quantity_received > max_to_receive) throw CustomError.badRequest(`¡La cantidad recibida no puede ser superior a ${max_to_receive}!`);
+
+            // ACTUALIZAR STOCK DEL ITEM
+            if (actual + quantity_received == buyed) {
+                await item.update({ actual_stocked: buyed, fully_stocked: true }, { transaction });
+            } else {
+                await item.update({ actual_stocked: actual + quantity_received }, { transaction });
+            }
+
+            // ACTUALIZAR STOCK DEL PRODUCTO
+            await Product.update({
+                inc_stock: Sequelize.literal(`inc_stock - ${quantity_received}`),
+                actual_stock: Sequelize.literal(`actual_stock + ${quantity_received}`),
+            }, { where: { id: item.id_product }, transaction });
+
+
+            const fully_stocked = await this.isPurchaseFullyStocked(id_purchase, transaction);
+
+            // REGISTRAR EL USUARIO QUE REGISTRÓ LA RECEPCIÓN PARCIAL
+            const [error, dto] = ReceptionPartialDto.create({ id_purchase_item: item.id, id_user, quantity_received });
+            if (error) throw CustomError.badRequest(error);
             const detailService = new ReceptionPartialService();
-            if (detailDto) await detailService.createReceptionPartial(detailDto);
+            if (dto) await detailService.createReceptionPartial(dto, transaction);
+
+            await transaction.commit();
 
             return {
                 fully_stocked,
@@ -381,8 +430,17 @@ export class PurchaseService {
                 },
                 message: '¡Stock actualizado correctamente!'
             };
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
+        } catch (error: any) {
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al anular la compra',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al anular la compra',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al anular la compra',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al anular la compra',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al anular la compra';
+            throw CustomError.internalServerError(errorMessage);
         }
 
     }
@@ -429,12 +487,12 @@ export class PurchaseService {
 
             const partialsEntities = partials_receptions.map(item => PartialReceptionEntity.fromObject(item));
             const total_reception = purchase.reception ? TotalReceptionEntity.fromObject(purchase.reception) : null;
+
             const purchaseData = {
                 id: purchase.id,
                 date: purchase.date,
                 supplier: purchase.supplier.name,
             }
-
 
             return { purchaseData, partials: partialsEntities, total: total_reception };
         } catch (error) {
