@@ -64,7 +64,7 @@ export class VisitRequestService {
                 where,
                 include: [
                     { association: 'reason', attributes: ['name', 'color'] },
-                    { association: 'client', attributes: ['name'] },
+                    { association: 'client', attributes: ['name', 'last_name'] },
                     { association: 'locality', attributes: ['name'] },
                 ],
                 offset: (page - 1) * limit,
@@ -95,7 +95,7 @@ export class VisitRequestService {
             },
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },
-                { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
+                { association: 'client', attributes: ['name', 'last_name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
                 { association: 'locality', attributes: ['name'] },
             ],
         });
@@ -116,7 +116,7 @@ export class VisitRequestService {
             },
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },
-                { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
+                { association: 'client', attributes: ['name', 'last_name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
                 { association: 'locality', attributes: ['name'] },
             ],
         });
@@ -128,7 +128,7 @@ export class VisitRequestService {
         const row = await VisitRequest.findByPk(id, {
             include: [
                 { association: 'reason', attributes: ['name', 'color'] },
-                { association: 'client', attributes: ['name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
+                { association: 'client', attributes: ['name', 'last_name', 'phone'], include: [{ association: 'locality', attributes: ['name'] }] },
                 { association: 'locality', attributes: ['name'] },
                 { association: 'user', attributes: ['name'] },
                 { association: 'evolutions', include: [{ association: 'user', attributes: ['name'] }] }

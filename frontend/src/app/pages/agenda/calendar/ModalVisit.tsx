@@ -26,7 +26,7 @@ export const ModalVisit = ({ event, showModal, setShowModal }: Props) => {
 
   const handleRedirectWhastapp = () => {
     const formatedPhone = event?.resource.phone.replace(/[-\s]/g, "");
-    window.open(`https://wa.me/54${formatedPhone}`);
+    window.open(`https://api.whatsapp.com/send?phone=54${formatedPhone}`);
   };
 
   return (
@@ -65,12 +65,22 @@ export const ModalVisit = ({ event, showModal, setShowModal }: Props) => {
               <strong>Cliente:</strong> {event.resource.client}
             </p>
             <p className="mb-2">
-              <strong>Teléfono:</strong> {event.resource.phone}
-              <i
-                className="bi bi-whatsapp ms-2 text-success"
-                title="Enviar mensaje de WhatsApp"
-                onClick={handleRedirectWhastapp}
-              ></i>
+              <strong>Teléfono: </strong>
+
+              {event.resource?.phone && (
+                <>
+                  {event.resource.phone}{" "}
+                  <button
+                    className="btn btn-link p-0 btn-sm text-decoration-none"
+                    title="Ir a WhatsApp"
+                    onClick={handleRedirectWhastapp}
+                  >
+                    <i className="bi bi-whatsapp ms-2 text-success">
+                      <span className="ms-2">Enviar un WhatsApp</span>
+                    </i>
+                  </button>
+                </>
+              )}
             </p>
             <p className="mb-2">
               <strong>Localidad de visita:</strong> {event.resource.locality}

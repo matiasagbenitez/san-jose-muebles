@@ -63,7 +63,7 @@ export class VisitRequestDetailEntity {
             priority,
             overdue,
             {
-                name: client.name,
+                name: client.name + ' ' + client.last_name,
                 phone: client.phone,
                 locality: client.locality.name,
             },

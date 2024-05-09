@@ -4,14 +4,13 @@ export class ClientListEntity {
     constructor(
         public id: string,
         public name: string,
-        public dni_cuit: string,
         public phone: string,
         public locality: string,
         public province: string,
     ) { }
 
     static fromObject(object: { [key: string]: any }): ClientListEntity {
-        const { id, name, last_name, dni_cuit, phone, locality } = object;
+        const { id, name, last_name, phone, locality } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!name) throw CustomError.badRequest('Falta el nombre del cliente');
@@ -22,7 +21,6 @@ export class ClientListEntity {
         return new ClientListEntity(
             id,
             last_name + ' ' + name,
-            dni_cuit,
             phone,
             locality.name,
             locality.province.name,

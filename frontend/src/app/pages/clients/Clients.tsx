@@ -115,11 +115,6 @@ export const Clients = () => {
       selector: (row: DataRow) => row.name,
     },
     {
-      name: "DNI/CUIT",
-      selector: (row: DataRow) => row.dni_cuit,
-      center: true,
-    },
-    {
       name: "TELÉFONO",
       selector: (row: DataRow) => row.phone,
       center: true,

@@ -32,13 +32,15 @@ export class CalendarEventEntity {
 
         let allDay: boolean = false;
         if (schedule === 'PARTIAL_SCHEDULED') allDay = true;
+        const client_full_name = client.name + ' ' + client.last_name;
 
-        const eventTitle = `${client.name} - ${reason.name}`;
+        const eventTitle = `${client_full_name} - ${reason.name}`;
+
 
         const resource = {
             id: id,
             priority: priority,
-            client: client.name,
+            client: client_full_name,
             phone: client.phone,
             locality: locality.name,
             address: address,
