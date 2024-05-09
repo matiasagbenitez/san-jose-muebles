@@ -8,10 +8,10 @@ import {
   initialState,
   paginationReducer,
   fetchData,
-  FilterByName,
 } from "../../shared";
 import { SweetAlert2 } from "../../utils";
-import { ClientsForm } from "./components";
+import { ClientsForm, Filters } from "./components";
+import { LoadingSpinner } from "../../components";
 
 interface DataRow {
   id: number;
@@ -19,16 +19,35 @@ interface DataRow {
   dni_cuit: string;
   phone: string;
   locality: string;
+  province: string;
 }
 
 export const Clients = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [state, dispatch] = useReducer(paginationReducer, initialState);
+  const [loading, setLoading] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+  const [localities, setLocalities] = useState([]);
   const endpoint = "/clients";
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
+    setLoading(true);
+    try {
+      const [res, _] = await Promise.all([
+        apiSJM.get("/localities"),
+        fetchData(endpoint, 1, state, dispatch),
+      ]);
+      setLocalities(res.data.localities);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      navigate("/");
+    }
+  };
+
+  const fetchClients = async () => {
     await fetchData(endpoint, 1, state, dispatch);
   };
 
@@ -69,12 +88,19 @@ export const Clients = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
+      const confirmation = await SweetAlert2.confirm(
+        "¿Desea crear el cliente?"
+      );
+      if (!confirmation.isConfirmed) return;
+      setIsFormSubmitting(true);
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);
       handleHide();
-      fetch();
+      fetchClients();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -87,7 +113,7 @@ export const Clients = () => {
       center: true,
     },
     {
-      name: "PROVEEDOR",
+      name: "CLIENTE",
       selector: (row: DataRow) => row.name,
     },
     {
@@ -104,6 +130,10 @@ export const Clients = () => {
       name: "LOCALIDAD",
       selector: (row: DataRow) => row.locality,
     },
+    {
+      name: "PROVINCIA",
+      selector: (row: DataRow) => row.province,
+    },
   ];
 
   // MODAL
@@ -117,32 +147,39 @@ export const Clients = () => {
 
   return (
     <div>
-      <FilterByName
-        state={state}
-        dispatch={dispatch}
-        placeholder="Buscar por nombre de cliente"
-        handleFiltersChange={handleFiltersChange}
-        handleResetFilters={handleResetFilters}
-        handleCreate={handleCreate}
-      />
+      {loading && <LoadingSpinner />}
+      {!loading && (
+        <>
+          <Filters
+            state={state}
+            dispatch={dispatch}
+            handleFiltersChange={handleFiltersChange}
+            handleResetFilters={handleResetFilters}
+            handleCreate={handleCreate}
+            localities={localities}
+          />
 
-      <Datatable
-        title="Listado de clientes"
-        columns={columns as TableColumn<DataRow>[]}
-        data={state.data}
-        loading={state.loading}
-        totalRows={state.totalRows}
-        handleRowsPerPageChange={handleRowsPerPageChange}
-        handlePageChange={handlePageChange}
-        clickableRows
-        onRowClicked={handleClick}
-      />
+          <Datatable
+            title="Listado de clientes"
+            columns={columns as TableColumn<DataRow>[]}
+            data={state.data}
+            loading={state.loading}
+            totalRows={state.totalRows}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+            handlePageChange={handlePageChange}
+            clickableRows
+            onRowClicked={handleClick}
+          />
 
-      <ClientsForm
-        show={isModalOpen}
-        onHide={handleHide}
-        onSubmit={handleSubmit}
-      />
+          <ClientsForm
+            show={isModalOpen}
+            onHide={handleHide}
+            onSubmit={handleSubmit}
+            localities={localities}
+            isFormSubmitting={isFormSubmitting}
+          />
+        </>
+      )}
     </div>
   );
 };

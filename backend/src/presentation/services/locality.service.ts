@@ -8,13 +8,13 @@ export interface LocalityFilters {
 export class LocalityService {
 
     public async getLocalities() {
-        const localities = await Locality.findAll({ order: [['name', 'ASC']] });
+        const localities = await Locality.findAll({ order: [['id_province', 'ASC'], ['name', 'ASC']] });
         const localitiesEntities = localities.map(locality => LocalityEntity.fromObject(locality));
         return { localities: localitiesEntities };
     }
 
     public async getLocalitiesList() {
-        const localities = await Locality.findAll({ order: [['name', 'ASC']] });
+        const localities = await Locality.findAll({ order: [['id_province', 'ASC'], ['name', 'ASC']] });
         const localitiesEntities = localities.map(locality => Select2ItemEntity.fromObject(locality));
         return { localities: localitiesEntities };
     }

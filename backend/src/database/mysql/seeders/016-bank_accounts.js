@@ -4,17 +4,6 @@ const { faker } = require('@faker-js/faker');
 
 module.exports = {
 
-  // [
-  //   { "id_supplier": 1, "account_owner": "EGGER ARGENTINA" },
-  //   { "id_supplier": 2, "account_owner": "HAFELE ARGENTINA" },
-  //   { "id_supplier": 3, "account_owner": "BISAGRA OH" },
-  //   { "id_supplier": 4, "account_owner": "MECH" },
-  //   { "id_supplier": 5, "account_owner": "HERRATUR HERRAJES" },
-  //   { "id_supplier": 6, "account_owner": "DAC MADERAS" },
-  //   { "id_supplier": 7, "account_owner": "MADEIRAS DO SUL" },
-  //   { "id_supplier": 8, "account_owner": "FISCHER BRASIL" },
-  // ]
-
   async up(queryInterface) {
     const list = [
       {

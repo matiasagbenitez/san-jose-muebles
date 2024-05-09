@@ -9,48 +9,48 @@ export const ClientInfo = ({ client }: Props) => {
   return (
     <>
       <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
+        <tbody className="text-uppercase">
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2 col-2">
               Cliente
             </th>
-            <td>{client.name}</td>
+            <td className="px-2">{client.name} {client.last_name}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2">
               DNI/CUIT
             </th>
-            <td>{client.dni_cuit}</td>
+            <td className="px-2">{client.dni_cuit}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2">
               Teléfono
             </th>
-            <td>{client.phone}</td>
+            <td className="px-2">{client.phone}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2">
               Email
             </th>
-            <td>{client.email}</td>
+            <td className="px-2">{client.email}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2">
               Dirección
             </th>
-            <td>{client.address}</td>
+            <td className="px-2">{client.address}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2">
               Localidad
             </th>
-            <td>{client.locality}</td>
+            <td className="px-2">{client.locality}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-2">
+            <th scope="row" className="px-2">
               Anotaciones
             </th>
-            <td>
+            <td className="px-2">
               <div className="text-break">
                 <small>{client.annotations}</small>
               </div>

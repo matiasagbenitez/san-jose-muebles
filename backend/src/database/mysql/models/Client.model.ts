@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class Client extends Model {
     public id!: number;
     public name!: string;
+    public last_name!: string;
     public dni_cuit!: string;
     public phone!: string;
     public email!: string;
@@ -23,6 +24,10 @@ export const initClientModel = (sequelize: Sequelize) => {
                 primaryKey: true,
             },
             name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            last_name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

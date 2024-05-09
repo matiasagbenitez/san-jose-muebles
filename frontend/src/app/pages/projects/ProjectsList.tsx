@@ -3,9 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../api/apiSJM";
-import { Datatable, initialState, paginationReducer, fetchData } from "../../shared";
+import {
+  Datatable,
+  initialState,
+  paginationReducer,
+  fetchData,
+} from "../../shared";
 import { LoadingSpinner } from "../../components";
-import { ProjectListable as DataRow, Priorities, ProjectFormInterface, Statuses } from "./interfaces";
+import {
+  ProjectListable as DataRow,
+  Priorities,
+  ProjectFormInterface,
+  Statuses,
+} from "./interfaces";
 import { CreateProjectModal, Filters } from "./components";
 import { SweetAlert2 } from "../../utils";
 // import { DayJsAdapter } from "../../../helpers";
@@ -23,15 +33,21 @@ export const ProjectsList = () => {
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
-    setLoading(true);
-    const [_, res2, res3] = await Promise.all([
-      await fetchData(endpoint, 1, state, dispatch),
-      await apiSJM.get("/clients/list"),
-      await apiSJM.get("/localities/list"),
-    ]);
-    setClients(res2.data.clients);
-    setLocalities(res3.data.localities);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const [_, res2, res3] = await Promise.all([
+        await fetchData(endpoint, 1, state, dispatch),
+        await apiSJM.get("/clients/select"),
+        await apiSJM.get("/localities/list"),
+      ]);
+      setClients(res2.data.items);
+      setLocalities(res3.data.localities);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      return navigate("/");
+    }
   };
 
   const fetchProjects = async () => {

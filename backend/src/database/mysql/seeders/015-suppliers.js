@@ -59,12 +59,12 @@ module.exports = {
       },
       {
         "id": 7,
-        "name": "MADEIRAS DO SUL",
+        "name": "HECTOR LOPEZ DISTRIBUCIONES",
         "dni_cuit": "30-12345678-9",
         "phone": "011-555-1111",
-        "email": "MADEIRASDOSUL@CORRE.COM",
-        "address": "AV. DOS ESTADOS 1234",
-        "id_locality": 16,
+        "email": "HECTORLOPEZDIST@CORRE.COM",
+        "address": "AV. GENERAL PERON 1234",
+        "id_locality": 13,
       },
       {
         "id": 8,
@@ -74,12 +74,30 @@ module.exports = {
         "email": "PEM@INFO.COM",
         "address": "AV. DAS AMÉRICAS 1234",
         "id_locality": 17,
-      }
+      },
+      {
+        "id": 9,
+        "name": "EUROHARD S.A.",
+        "dni_cuit": "30-58414426-1",
+        "phone": "011-555-4444",
+        "email": "EUROHARD@INFO.COM",
+        "address": "AV. HIPOLITO YRIGOYEN 1234",
+        "id_locality": 11,
+      },
+      {
+        "id": 10,
+        "name": "GREENWAY ARGENTINA S.R.L.",
+        "dni_cuit": "30-38541563-1",
+        "phone": "011-555-5555",
+        "email": "INFO@GRRENWAYSRL.COM",
+        "address": "INTENDENTE LUMBRERAS 1234",
+        "id_locality": 11,
+      },
     ];
 
 
+    const timestamp = new Date();
     const suppliers = list.map(item => {
-      const timestamp = new Date();
       return {
         id: item.id,
         name: item.name,

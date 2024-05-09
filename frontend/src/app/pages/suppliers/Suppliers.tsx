@@ -19,6 +19,7 @@ interface DataRow {
   dni_cuit: string;
   phone: string;
   locality: string;
+  province: string;
 }
 
 export const Suppliers = () => {
@@ -103,6 +104,10 @@ export const Suppliers = () => {
     {
       name: "LOCALIDAD",
       selector: (row: DataRow) => row.locality,
+    },
+    {
+      name: "PROVINCIA / ESTADO",
+      selector: (row: DataRow) => row.province,
     },
   ];
 

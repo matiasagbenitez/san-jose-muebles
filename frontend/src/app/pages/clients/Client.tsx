@@ -13,14 +13,13 @@ export const Client = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [client, setClient] = useState<ClientInterface>();
 
   const fetch = async () => {
     try {
       setLoading(true);
       const { data } = await apiSJM.get(`/clients/${id}`);
-      console.log(data);
       setClient(data.client);
       setLoading(false);
     } catch (error) {
@@ -38,18 +37,17 @@ export const Client = () => {
 
   const handleSubmit = async (formData: ClientInterface) => {
     try {
-      const confirmation = await SweetAlert2.confirm(
-        "¿Estás seguro de que quieres modificar este cliente?"
-      );
+      setIsFormSubmitting(true);
+      const confirmation = await SweetAlert2.confirm("¿Estás seguro de que quieres modificar este cliente?");
       if (!confirmation.isConfirmed) return;
-      setIsFormSubmitted(true);
       const { data } = await apiSJM.put(`/clients/${id}`, formData);
       SweetAlert2.successToast(data.message);
       setIsModalOpen(false);
-      setIsFormSubmitted(false);
       fetch();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -79,14 +77,15 @@ export const Client = () => {
                 <Button
                   variant="light border text-muted"
                   size="sm"
-                  onClick={() => navigate(`/clientees`)}
-                  title="Volver al listado de clientees"
+                  onClick={() => navigate(`/clientes`)}
+                  title="Volver al listado de clientes"
                 >
                   <i className="bi bi-arrow-left me-2"></i>
                   Atrás
                 </Button>
-                {/* <h1 className="fs-5 my-0">Cliente #{client.id}: {client.name}</h1> */}
-                <h1 className="fs-5 my-0">{client.name}</h1>
+                <h1 className="fs-5 my-0">
+                  {client.name} {client.last_name}
+                </h1>
               </div>
               <ClientInfo client={client} />
             </Col>
@@ -105,7 +104,8 @@ export const Client = () => {
             editMode={true}
             onSubmit={handleSubmit}
             initialForm={client}
-            isFormSubmitted={isFormSubmitted}
+            isFormSubmitting={isFormSubmitting}
+            localities={[]}
           />
         </>
       )}

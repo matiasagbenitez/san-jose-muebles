@@ -7,22 +7,25 @@ export class ClientListEntity {
         public dni_cuit: string,
         public phone: string,
         public locality: string,
+        public province: string,
     ) { }
 
     static fromObject(object: { [key: string]: any }): ClientListEntity {
-        const { id, name, dni_cuit, phone, address, locality } = object;
+        const { id, name, last_name, dni_cuit, phone, locality } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!name) throw CustomError.badRequest('Falta el nombre del cliente');
+        if (!last_name) throw CustomError.badRequest('Falta el apellido del cliente');
         if (!locality) throw CustomError.badRequest('Falta la localidad del cliente');
-
+        if (!locality.province) throw CustomError.badRequest('Falta la provincia de la localidad del cliente');
 
         return new ClientListEntity(
             id,
-            name,
+            last_name + ' ' + name,
             dni_cuit,
             phone,
             locality.name,
+            locality.province.name,
         );
     }
 }

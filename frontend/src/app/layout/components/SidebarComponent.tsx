@@ -18,7 +18,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
     >
       <Menu style={{ marginLeft: "5px", fontSize: "14px" }}>
         <MenuItem component={<Link to="/" />} title="Inicio">
-          <i className="bi bi-house me-3 fs-6"></i>
+          <i className="bi bi-columns me-3 fs-6"></i>
           Inicio
         </MenuItem>
 
@@ -27,34 +27,9 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           title="Proyectos"
           style={{ height: "45px" }}
         >
-          <i className="bi bi-gem me-3 fs-6"></i>
+          <i className="bi bi-houses me-3 fs-6"></i>
           Proyectos
         </MenuItem>
-
-        <SubMenu
-          prefix={
-            <>
-              <i className="bi bi-people me-3 fs-6"></i>
-              Grupos de trabajo
-            </>
-          }
-          style={{ height: "45px" }}
-        >
-          <MenuItem
-            component={<Link to="/grupos" />}
-            title="Listado de grupos"
-            style={{ height: "45px", marginLeft: "10px" }}
-          >
-            <small>Listado de grupos</small>
-          </MenuItem>
-          <MenuItem
-            component={<Link to="/grupos/miembros" />}
-            title="Gestión de miembros"
-            style={{ height: "45px", marginLeft: "10px" }}
-          >
-            <small>Gestión de miembros</small>
-          </MenuItem>
-        </SubMenu>
 
         <MenuItem
           component={<Link to="/productos" />}

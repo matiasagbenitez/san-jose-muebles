@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Supplier } from "../../database/mysql/models";
-import { CustomError, SupplierDto, SupplierEntity, PaginationDto, SupplierSelectEntity } from "../../domain";
+import { CustomError, SupplierDto, SupplierEntity, PaginationDto, SupplierSelectEntity, SupplierListEntity } from "../../domain";
 
 export interface SupplierFilters {
     name: string;
@@ -50,11 +50,12 @@ export class SupplierService {
                     }]
                 }],
                 offset: (page - 1) * limit,
-                limit
+                limit,
+                order: ['name']
             }),
             Supplier.count({ where })
         ]);
-        const suppliersEntities = suppliers.map(supplier => SupplierEntity.listableSupplier(supplier));
+        const suppliersEntities = suppliers.map(supplier => SupplierListEntity.fromObject(supplier));
         return { items: suppliersEntities, total_items: total };
     }
 

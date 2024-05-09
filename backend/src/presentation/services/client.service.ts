@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Client } from "../../database/mysql/models";
-import { CustomError, ClientCreateUpdateDto, ClientDetailEntity, ClientListEntity, PaginationDto, Select2ItemEntity } from "../../domain";
+import { CustomError, ClientCreateUpdateDto, ClientDetailEntity, ClientListEntity, PaginationDto, Select2ItemEntity, ClientSelectEntity } from "../../domain";
 
 export interface ClientFilters {
     name: string;
@@ -16,18 +16,17 @@ export class ClientService {
     }
 
     public async getClientsList() {
-        const rows = await Client.findAll({ order: [['name', 'ASC']] });
+        const rows = await Client.findAll({ order: [['last_name', 'ASC']] });
         const entities = rows.map(row => Select2ItemEntity.fromObject(row));
         return { clients: entities };
     }
 
     public async getClientsSelect() {
         const clients = await Client.findAll({
-            order: ['name'], include: [{
-                association: 'locality',
-            }],
+            attributes: ['id', 'name', 'last_name'],
+            order: [['last_name', 'ASC']],
         });
-        const clientsEntities = clients.map(client => ClientListEntity.fromObject(client));
+        const clientsEntities = clients.map(client => ClientSelectEntity.fromObject(client));
         return { items: clientsEntities };
     }
 
@@ -40,6 +39,7 @@ export class ClientService {
             [Op.or]: [
                 { id: { [Op.like]: `%${filters.name}%` } },
                 { name: { [Op.like]: `%${filters.name}%` } },
+                { last_name: { [Op.like]: `%${filters.name}%` } },
                 { phone: { [Op.like]: `%${filters.name}%` } },
             ]
         };
@@ -47,9 +47,13 @@ export class ClientService {
 
         const [clients, total] = await Promise.all([
             Client.findAll({
+                order: [['last_name', 'ASC']],
                 where,
                 include: [{
                     association: 'locality',
+                    include: [{
+                        association: 'province',
+                    }]
                 }],
                 offset: (page - 1) * limit,
                 limit

@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import apiSJM from "../../../../api/apiSJM";
 import { MySelect, MyTextArea, MyTextInput } from "../../../components/forms";
+import { useEffect, useState } from "react";
+import apiSJM from "../../../../api/apiSJM";
 
 interface ClientFormInterface {
   name: string;
+  last_name: string;
   dni_cuit?: string;
   phone?: string;
   email?: string;
@@ -18,6 +19,7 @@ interface ClientFormInterface {
 
 const clientForm: ClientFormInterface = {
   name: "",
+  last_name: "",
   dni_cuit: "",
   phone: "",
   email: "",
@@ -37,7 +39,8 @@ interface FormProps {
   editMode?: boolean;
   onSubmit: (values: any) => void;
   initialForm?: ClientFormInterface;
-  isFormSubmitted?: boolean;
+  isFormSubmitting: boolean;
+  localities: LocalitiesInterface[];
 }
 
 export const ClientsForm = ({
@@ -46,17 +49,22 @@ export const ClientsForm = ({
   editMode = false,
   onSubmit,
   initialForm = clientForm,
-  isFormSubmitted,
+  isFormSubmitting,
+  localities = [],
 }: FormProps) => {
-  const [localities, setLocalities] = useState<LocalitiesInterface[]>([]);
+  const [localitiesLocal, setLocalitiesLocal] = useState(localities);
 
-  const fetch = async () => {
-    const { data } = await apiSJM.get("/localities");
-    setLocalities(data.localities);
+  const fetchLocalities = async () => {
+    try {
+      const { data } = await apiSJM.get("/localities");
+      setLocalitiesLocal(data.localities);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    fetch();
+    if (editMode) fetchLocalities();
   }, []);
 
   return (
@@ -74,6 +82,7 @@ export const ClientsForm = ({
           }}
           validationSchema={Yup.object({
             name: Yup.string().required("El nombre es requerido"),
+            last_name: Yup.string().required("El apellido es requerido"),
             id_locality: Yup.string().required("La localidad es requerida"),
           })}
         >
@@ -87,15 +96,18 @@ export const ClientsForm = ({
                     type="text"
                     placeholder="Ingrese el nombre del cliente"
                     isInvalid={!!errors.name && touched.name}
+                    disabled={isFormSubmitting}
+                    obligatory
                   />
                 </Col>
                 <Col md={6}>
                   <MyTextInput
-                    label="DNI/CUIT"
-                    name="dni_cuit"
+                    label="Apellido del cliente"
+                    name="last_name"
                     type="text"
-                    placeholder="DNI/CUIT del cliente"
-                    isInvalid={!!errors.dni_cuit && touched.dni_cuit}
+                    placeholder="Ingrese el apellido del cliente"
+                    isInvalid={!!errors.name && touched.name}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
               </Row>
@@ -103,11 +115,22 @@ export const ClientsForm = ({
               <Row>
                 <Col md={6}>
                   <MyTextInput
+                    label="DNI/CUIT"
+                    name="dni_cuit"
+                    type="text"
+                    placeholder="DNI/CUIT del cliente"
+                    isInvalid={!!errors.dni_cuit && touched.dni_cuit}
+                    disabled={isFormSubmitting}
+                  />
+                </Col>
+                <Col md={6}>
+                  <MyTextInput
                     label="Teléfono"
                     name="phone"
                     type="text"
                     placeholder="Ingrese el teléfono del cliente"
                     isInvalid={!!errors.phone && touched.phone}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
                 <Col md={6}>
@@ -117,6 +140,7 @@ export const ClientsForm = ({
                     type="email"
                     placeholder="Ingrese el email del cliente"
                     isInvalid={!!errors.email && touched.email}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
               </Row>
@@ -129,6 +153,7 @@ export const ClientsForm = ({
                     type="text"
                     placeholder="Ingrese la dirección"
                     isInvalid={!!errors.address && touched.address}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
 
@@ -139,10 +164,11 @@ export const ClientsForm = ({
                     as="select"
                     placeholder="Seleccione una localidad"
                     isInvalid={!!errors.id_locality && touched.id_locality}
+                    disabled={isFormSubmitting}
                   >
                     <option value="">Seleccione una localidad</option>
-                    {localities &&
-                      localities.map((locality) => (
+                    {localitiesLocal &&
+                      localitiesLocal.map((locality) => (
                         <option key={locality.id} value={locality.id}>
                           {locality.name}
                         </option>
@@ -157,6 +183,7 @@ export const ClientsForm = ({
                 placeholder="Ingrese anotaciones adicionales"
                 rows={4}
                 isInvalid={!!errors.annotations && touched.annotations}
+                disabled={isFormSubmitting}
               />
 
               <Button
@@ -164,9 +191,10 @@ export const ClientsForm = ({
                 variant="primary"
                 className="mt-3 float-end"
                 size="sm"
-                disabled={isFormSubmitted}
+                disabled={isFormSubmitting}
               >
-                Guardar
+                <i className="bi bi-floppy me-2"></i>
+                {editMode ? "Guardar cambios" : "Crear cliente"}
               </Button>
             </Form>
           )}
