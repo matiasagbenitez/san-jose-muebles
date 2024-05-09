@@ -1,6 +1,7 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Client } from './Client.model';
 import { Locality } from './Locality.model';
+import { ProjectAccount } from './ProjectAccount.model';
 
 export class Project extends Model {
     public id!: number;
@@ -21,6 +22,9 @@ export class Project extends Model {
 
     public client!: Client;
     public locality!: Locality;
+
+    // ASSOCIATIONS
+    public readonly accounts: ProjectAccount[] = [];
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

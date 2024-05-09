@@ -39,7 +39,7 @@ export class ProjectDetailEntity {
             status,
             priority,
             client.id,
-            client.name,
+            client.name + ' ' + client.last_name,
             client.phone,
             locality.name,
             address,

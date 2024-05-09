@@ -1,6 +1,6 @@
 import { Op, Order } from "sequelize";
 import { Project } from "../../database/mysql/models";
-import { CustomError, CreateProjectDTO, PaginationDto, ProjectListableEntity, ProjectDetailEntity } from "../../domain";
+import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity } from "../../domain";
 
 export interface ProjectFilters {
     id_client?: number;
@@ -50,7 +50,7 @@ export class ProjectService {
             Project.findAll({
                 where,
                 include: [
-                    { association: 'client', attributes: ['name'] },
+                    { association: 'client', attributes: ['name', 'last_name'] },
                     { association: 'locality', attributes: ['name'] },
                 ],
                 offset: (page - 1) * limit,
@@ -60,14 +60,14 @@ export class ProjectService {
             }),
             Project.count({ where })
         ]);
-        const entities = rows.map(project => ProjectListableEntity.fromObject(project));
+        const entities = rows.map(project => ProjectListEntity.fromObject(project));
         return { items: entities, total_items: total };
     }
 
     public async getProject(id: number) {
         const project = await Project.findByPk(id, {
             include: [
-                { association: 'client', attributes: ['id', 'name', 'phone'] },
+                { association: 'client', attributes: ['id', 'name', 'last_name', 'phone'] },
                 { association: 'locality', attributes: ['name'] },
             ]
         });

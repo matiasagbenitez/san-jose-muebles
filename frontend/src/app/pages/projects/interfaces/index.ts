@@ -52,3 +52,86 @@ export interface ProjectDetailInterface {
     estimated_deadline: Date | null;
     createdAt: Date;
 }
+
+export interface ProjectAccountsInterface {
+    project: ProjectBasicData;
+    accounts: ProjectAccountsData[];
+}
+
+export interface ProjectBasicData {
+    id: number;
+    title: string;
+    client: string;
+    locality: string;
+    status: "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
+}
+
+export interface ProjectAccountsData {
+    id: number;
+    currency: {
+        name: string;
+        symbol: string;
+        is_monetary: boolean;
+    };
+    balance: number;
+    updatedAt: Date;
+}
+
+export interface AccountInterface {
+    id: number;
+    client: string;
+    locality: string;
+    title: string;
+    status: "PENDIENTE" | "PAUSADO" | "PROCESO" | "FINALIZADO" | "CANCELADO";
+    currency: {
+        name: string;
+        symbol: string;
+        is_monetary: boolean;
+    };
+    balance: number;
+}
+
+export interface TransactionDataRow {
+    id: number;
+    createdAt: Date;
+    user: string;
+    type:
+    | "NEW_PAYMENT"
+    | "POS_ADJ"
+    | "NEG_ADJ"
+    | "NEW_SUPPLIER_PAYMENT"
+    | "DEL_SUPPLIER_PAYMENT";
+    description: string;
+    received_amount: number;
+    currency: string;
+    prev_balance: number;
+    equivalent_amount: number;
+    post_balance: number;
+}
+
+export enum MovementType {
+    NEW_PAYMENT = "NEW_PAYMENT",
+    POS_ADJ = "POS_ADJ",
+    NEG_ADJ = "NEG_ADJ",
+}
+
+export const types: Record<
+    MovementType,
+    { label: string; icon: string; title: string }
+> = {
+    [MovementType.NEW_PAYMENT]: {
+        label: "PAGO DEL CLIENTE",
+        icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+        title: "Disminuye la deuda del cliente",
+    },
+    [MovementType.POS_ADJ]: {
+        label: "AJUSTE A FAVOR",
+        icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+        title: "Disminuye la deuda del cliente",
+    },
+    [MovementType.NEG_ADJ]: {
+        label: "AJUSTE EN CONTRA",
+        icon: "bi bi-arrow-down-circle-fill fs-6 text-danger",
+        title: "Aumenta la deuda del cliente",
+    },
+};

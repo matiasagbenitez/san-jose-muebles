@@ -1,6 +1,6 @@
 import { CustomError } from '../../errors/custom.error';
 
-export class ProjectListableEntity {
+export class ProjectListEntity {
     constructor(
         public id: number,
         public title: string,
@@ -12,7 +12,7 @@ export class ProjectListableEntity {
         public createdAt: Date,
     ) { }
 
-    static fromObject(object: { [key: string]: any }): ProjectListableEntity {
+    static fromObject(object: { [key: string]: any }): ProjectListEntity {
 
         const { id, title, status, priority, client, locality, requested_deadline, createdAt} = object;
 
@@ -21,12 +21,12 @@ export class ProjectListableEntity {
         if (!client) throw CustomError.badRequest('Falta el cliente');
         if (!locality) throw CustomError.badRequest('Falta la localidad');
 
-        return new ProjectListableEntity(
+        return new ProjectListEntity(
             id,
             title,
             status,
             priority,
-            client.name,
+            client.last_name + ' ' + client.name,
             locality.name,
             requested_deadline,
             createdAt,

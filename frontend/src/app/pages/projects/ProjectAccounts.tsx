@@ -3,8 +3,9 @@ import { Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { DayJsAdapter, toMoney } from "../../../helpers";
 import { SweetAlert2 } from "../../utils";
+import { ProjectAccountsData, ProjectBasicData, Statuses } from "./interfaces";
+import { DateFormatter, NumberFormatter } from "../../helpers";
 
 const initialForm = {
   id_currency: "",
@@ -15,11 +16,12 @@ export const ProjectAccounts = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [project, setProject] = useState<string>("");
-  const [accounts, setAccounts] = useState<any[]>([]);
+  const [project, setProject] = useState<ProjectBasicData>();
+  const [accounts, setAccounts] = useState<ProjectAccountsData[]>([]);
   const [currencies, setCurrencies] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(initialForm);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
   const fetch = async () => {
     try {
@@ -28,8 +30,8 @@ export const ProjectAccounts = () => {
         apiSJM.get(`/project_accounts/project/${id}`),
         apiSJM.get("/currencies"),
       ]);
-      setAccounts(res1.data.accounts);
       setProject(res1.data.project);
+      setAccounts(res1.data.accounts);
       setCurrencies(res2.data.items);
       setLoading(false);
     } catch (error) {
@@ -54,6 +56,7 @@ export const ProjectAccounts = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsFormSubmitting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de crear una nueva cuenta corriente?"
       );
@@ -66,6 +69,8 @@ export const ProjectAccounts = () => {
       }
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -76,7 +81,7 @@ export const ProjectAccounts = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && (
+      {!loading && project && accounts && (
         <>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="d-flex gap-3 align-items-center">
@@ -90,7 +95,7 @@ export const ProjectAccounts = () => {
                 Atrás
               </Button>
               <h1 className="fs-5 my-0">
-                Cuentas corrientes de <span className="fw-bold">{project}</span>
+                Listado de cuentas corrientes del proyecto
               </h1>
             </div>
             <Button size="sm" variant="success" onClick={handleCreate}>
@@ -98,6 +103,38 @@ export const ProjectAccounts = () => {
             </Button>
           </div>
           <hr />
+          <Row>
+            <Col xs={12} md={6} xl={3}>
+              <p className="text-muted">
+                Cliente: <span className="fw-bold">{project.client}</span>
+              </p>
+            </Col>
+            <Col xs={12} md={6}>
+              <p className="text-muted">
+                Proyecto:{" "}
+                <span className="fw-bold">
+                  {project.title || "Sin título especificado"} (
+                  {project.locality})
+                </span>
+              </p>
+            </Col>
+            <Col xs={12} md={6} xl={3}>
+              <p className="text-muted">
+                Estado proyecto:{" "}
+                <span
+                  className="badge rounded-pill ms-1"
+                  style={{
+                    fontSize: ".9em",
+                    color: "black",
+                    backgroundColor: Statuses[project.status],
+                  }}
+                >
+                  {project.status}
+                </span>
+              </p>
+            </Col>
+          </Row>
+
           {accounts.length === 0 ? (
             <p className="text-muted text-center">
               <i className="bi bi-exclamation-circle me-2"></i>
@@ -105,48 +142,54 @@ export const ProjectAccounts = () => {
             </p>
           ) : (
             <Row>
-              {accounts.map((account: any) => (
-                <Col key={account.id} xs={12} md={6} lg={4} className="mb-3">
-                  <Card className="text-center small">
-                    <Card.Header>{project}</Card.Header>
-                    <Card.Body>
-                      <Card.Title>Cuenta en {account.currency}</Card.Title>
-                      <Card.Subtitle className="my-3 text-muted">
-                        <span>Saldo: </span>
-                        {account.balance < 0 ? (
-                          <span className="text-danger">
-                            -{account.is_monetary && "$"}
-                            {toMoney(account.balance * -1)}
+              {accounts.map(
+                (
+                  { id, balance, currency, updatedAt }: ProjectAccountsData,
+                  index
+                ) => (
+                  <Col key={index} xs={12} md={6} lg={4} className="mb-3">
+                    <Card className="text-center small">
+                      <Card.Header>CUENTA CORRIENTE PROYECTO</Card.Header>
+                      <Card.Body>
+                        <Card.Title>
+                          {currency.name} ({currency.symbol})
+                        </Card.Title>
+                        <Card.Subtitle
+                          className={`my-3 text-${
+                            balance < 0
+                              ? "danger"
+                              : balance == 0
+                              ? "muted"
+                              : "success"
+                          }`}
+                        >
+                          <span>{currency.symbol} </span>
+                          <span>
+                            {NumberFormatter.formatSignedCurrency(
+                              currency.is_monetary,
+                              balance
+                            )}
                           </span>
-                        ) : account.balance == 0 ? (
-                          <span className="text-muted">
-                            {account.is_monetary && "$"}
-                            {toMoney(account.balance)}
-                          </span>
-                        ) : (
-                          <span className="text-success">
-                            {account.is_monetary && "$"}
-                            +{toMoney(account.balance)}
-                          </span>
-                        )}
-                      </Card.Subtitle>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleRedirectAccount(account.id)}
-                      >
-                        Ir a cuenta
-                      </Button>
-                    </Card.Body>
-                    <Card.Footer className="text-muted">
-                      <span>
-                        Última actualización:{" "}
-                        {DayJsAdapter.toDayMonthYearHour(account.updatedAt)}
-                      </span>
-                    </Card.Footer>
-                  </Card>
-                </Col>
-              ))}
+                        </Card.Subtitle>
+
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleRedirectAccount(id)}
+                        >
+                          Ir a cuenta
+                        </Button>
+                      </Card.Body>
+                      <Card.Footer className="text-muted">
+                        <span>
+                          Última actualización:{" "}
+                          {DateFormatter.toDMYH(updatedAt)}
+                        </span>
+                      </Card.Footer>
+                    </Card>
+                  </Col>
+                )
+              )}
             </Row>
           )}
 
@@ -164,6 +207,7 @@ export const ProjectAccounts = () => {
                   onChange={(e) =>
                     setForm({ ...form, id_currency: e.target.value })
                   }
+                  disabled={isFormSubmitting}
                 >
                   <option value="">Seleccione una moneda</option>
                   {currencies.map((currency: any) => (
@@ -177,7 +221,13 @@ export const ProjectAccounts = () => {
                   <Button size="sm" variant="secondary">
                     Cerrar
                   </Button>
-                  <Button type="submit" size="sm" variant="primary">
+                  <Button
+                    type="submit"
+                    size="sm"
+                    variant="primary"
+                    disabled={isFormSubmitting}
+                  >
+                    <i className="bi bi-floppy me-2"></i>
                     Guardar
                   </Button>
                 </div>

@@ -1,23 +1,26 @@
 import { Table } from "react-bootstrap";
 import { ProjectDetailInterface, Priorities, Statuses } from "../interfaces";
-import { DayJsAdapter } from "../../../../helpers";
+import { DateFormatter } from "../../../helpers";
 
 interface Props {
   project: ProjectDetailInterface;
 }
 
 export const Data = ({ project }: Props) => {
+  const handleRedirectWhatsapp = () => {
+    const formatedPhone = project.client_phone.replace(/[-\s]/g, "");
+    window.open(`https://api.whatsapp.com/send?phone=54${formatedPhone}`);
+  };
+
   return (
     <>
       <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
+        <tbody className="text-uppercase">
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+            <th scope="row" className="px-2 col-4">
               Cliente
             </th>
-            <td>
-              {/* {project.client}{" "}
-              <i className="text-muted">(Teléfono: {project.client_phone})</i> */}
+            <td className="px-2">
               <a
                 href={`/clientes/${project.id_client}`}
                 target="_blank"
@@ -26,32 +29,47 @@ export const Data = ({ project }: Props) => {
                 <i className="bi bi-box-arrow-up-right me-2"></i>
                 {project.client}
               </a>{" "}
-              <i className="text-muted">(Teléfono: {project.client_phone})</i>
+              <i className="text-muted">
+                {project.client_phone && (
+                  <>
+                    (Tel: {project.client_phone})
+                    <button
+                      className="btn btn-link p-0 btn-sm text-decoration-none"
+                      title="Ir a WhatsApp"
+                      onClick={handleRedirectWhatsapp}
+                    >
+                      <i className="bi bi-whatsapp ms-2 text-success">
+                        <span className="ms-2">Enviar un WhatsApp</span>
+                      </i>
+                    </button>
+                  </>
+                )}
+              </i>
             </td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
-              Proyecto
+            <th scope="row" className="px-2">
+              Título proyecto
             </th>
-            <td>{project.title}</td>
+            <td className="px-2">{project.title}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+            <th scope="row" className="px-2">
               Localidad del proyecto
             </th>
-            <td>{project.locality}</td>
+            <td className="px-2">{project.locality}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+            <th scope="row" className="px-2">
               Dirección del proyecto
             </th>
-            <td>{project.address}</td>
+            <td className="px-2">{project.address}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+            <th scope="row" className="px-2">
               Estado actual
             </th>
-            <td>
+            <td className="px-2">
               {" "}
               <span
                 className="badge rounded-pill"
@@ -66,10 +84,10 @@ export const Data = ({ project }: Props) => {
             </td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+            <th scope="row" className="px-2">
               Prioridad
             </th>
-            <td>
+            <td className="px-2">
               <span
                 className="badge rounded-pill"
                 style={{
@@ -82,32 +100,32 @@ export const Data = ({ project }: Props) => {
               </span>
             </td>
           </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
-              Fecha de registro en el sistema
-            </th>
-            <td className="fst-italic text-muted">
-              {DayJsAdapter.toDateYearString(project.createdAt)}
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+                  <tr>
+            <th scope="row" className="px-2">
               Fecha de entrega solicitada
             </th>
-            <td>
+            <td className="px-2">
               {project.requested_deadline
-                ? DayJsAdapter.toDateYearString(project.requested_deadline)
+                ? DateFormatter.toWDMYText(project.requested_deadline)
                 : "No especificada"}
             </td>
           </tr>
           <tr>
-            <th scope="row" className="px-2 text-uppercase col-4">
+            <th scope="row" className="px-2">
               Fecha de entrega estimada
             </th>
-            <td>
+            <td className="px-2">
               {project.estimated_deadline
-                ? DayJsAdapter.toDateYearString(project.estimated_deadline)
+                ? DateFormatter.toWDMYText(project.estimated_deadline)
                 : "No especificada"}
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={2}>
+              <small className="text-muted px-2 fst-italic">
+                Proyecto registrado en el sistema el{" "}
+                {DateFormatter.toDMYText(project.createdAt)}
+              </small>
             </td>
           </tr>
         </tbody>
@@ -125,13 +143,13 @@ export const Data = ({ project }: Props) => {
             <th className="px-2 col-2">Ambientes instalados</th>
           </tr>
           <tr className="text-center">
-            <td>
+            <td className="px-2">
               {project.env_des} / {project.env_total}
             </td>
-            <td>
+            <td className="px-2">
               {project.env_fab} / {project.env_total}
             </td>
-            <td>
+            <td className="px-2">
               {project.env_ins} / {project.env_total}
             </td>
           </tr>

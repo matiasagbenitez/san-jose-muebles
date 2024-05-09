@@ -17,13 +17,6 @@ export const Options = ({ id }: Props) => {
       <div className="list-group small" style={{ marginTop: "10px" }}>
         <button
           className="list-group-item list-group-item-action py-1"
-          title="Presupuestos del proyecto"
-        >
-          <i className="bi bi-journals me-2 fs-6"></i>
-          Presupuestos del proyecto
-        </button>
-        <button
-          className="list-group-item list-group-item-action py-1"
           title="Cuentas corrientes del proyecto"
           onClick={redirectAccounts}
         >
@@ -31,6 +24,16 @@ export const Options = ({ id }: Props) => {
           Gestionar cuentas corrientes
         </button>
         <button
+          hidden
+          className="list-group-item list-group-item-action py-1"
+          title="Presupuestos del proyecto"
+        >
+          <i className="bi bi-journals me-2 fs-6"></i>
+          Presupuestos del proyecto
+        </button>
+
+        <button
+          hidden
           className="list-group-item list-group-item-action py-1"
           title="Modificar información del proyecto"
         >
@@ -38,6 +41,7 @@ export const Options = ({ id }: Props) => {
           Modificar información del proyecto
         </button>
         <button
+          hidden
           className="list-group-item list-group-item-action py-1"
           title="Gestionar ambientes del proyecto"
         >
@@ -45,6 +49,7 @@ export const Options = ({ id }: Props) => {
           Gestionar ambientes del proyecto
         </button>
         <button
+          hidden
           className="list-group-item list-group-item-action py-1"
           title="Actualizar estado del proyecto"
         >
@@ -52,6 +57,7 @@ export const Options = ({ id }: Props) => {
           Actualizar estado del proyecto
         </button>
         <button
+          hidden
           className="list-group-item list-group-item-action py-1"
           title="Actualizar fecha estimada de entrega"
         >
@@ -59,6 +65,7 @@ export const Options = ({ id }: Props) => {
           Actualizar fecha estimada de entrega
         </button>
         <button
+          hidden
           className="list-group-item list-group-item-action py-1"
           title="Personas relacionadas al proyecto"
         >
@@ -66,6 +73,7 @@ export const Options = ({ id }: Props) => {
           Personas relacionadas al proyecto
         </button>
         <button
+          hidden
           className="list-group-item list-group-item-action py-1"
           title="Archivos adjuntos"
         >
@@ -73,6 +81,7 @@ export const Options = ({ id }: Props) => {
           Archivos adjuntos
         </button>
         <button
+          hidden
           className="list-group-item list-group-item-action py-1 text-danger"
           title="Eliminar proyecto"
         >

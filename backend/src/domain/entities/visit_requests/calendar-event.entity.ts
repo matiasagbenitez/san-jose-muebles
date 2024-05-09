@@ -36,7 +36,6 @@ export class CalendarEventEntity {
 
         const eventTitle = `${client_full_name} - ${reason.name}`;
 
-
         const resource = {
             id: id,
             priority: priority,

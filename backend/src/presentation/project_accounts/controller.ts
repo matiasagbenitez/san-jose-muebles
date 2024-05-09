@@ -52,7 +52,7 @@ export class ProjectAccountController {
         const id_project = parseInt(req.params.id_project);
         if (!id_project) return res.status(400).json({ message: 'Missing id_project' });
 
-        this.service.getAccountsByProject(id_project)
+        this.service.getProjectAccounts(id_project)
             .then((data) => {
                 res.json(data);
             })

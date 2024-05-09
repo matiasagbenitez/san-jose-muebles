@@ -1,7 +1,6 @@
 import { Op } from "sequelize";
 import { Project, ProjectAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, CreateProjectAccountDTO, ProjectAccountDetailEntity, ProjectAccountListEntity, ProjectAccountInfoEntity } from "../../domain";
-import { ProjectService } from "./project.service";
+import { CustomError, PaginationDto, CreateProjectAccountDTO, ProjectAccountListEntity, ProjectAccountInfoEntity, ProjectBasicEntity, ProjectAccountEntity } from "../../domain";
 
 export class ProjectAccountService {
 
@@ -37,6 +36,7 @@ export class ProjectAccountService {
     }
 
 
+    // !DELETEABLE (! REVISAR)
     public async getProjectAccountById(id: number) {
         try {
             const account = await ProjectAccount.findByPk(id);
@@ -68,7 +68,7 @@ export class ProjectAccountService {
                     { association: 'currency' },
                     {
                         association: 'project', include: [
-                            { association: 'client', attributes: ['name'] },
+                            { association: 'client', attributes: ['name', 'last_name'] },
                             { association: 'locality', attributes: ['name'] }
                         ]
                     }
@@ -76,7 +76,7 @@ export class ProjectAccountService {
             });
             if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
 
-            const item = ProjectAccountInfoEntity.fromObject(account);
+            const item = ProjectAccountEntity.fromObject(account);
             return { account: item };
 
         } catch (error) {
@@ -84,31 +84,27 @@ export class ProjectAccountService {
         }
     }
 
-    public async getAccountsByProject(id_project: number) {
+    public async getProjectAccounts(id_project: number) {
         try {
-            const project = await Project.findByPk(id_project, {
-                include: [
-                    { association: 'client', attributes: ['name'] },
-                    { association: 'locality', attributes: ['name'] }
-                ]
-            });
-            if (!project) throw CustomError.notFound('Proveedor no encontrado');
-            const title = project.title || "Proyecto sin título";
-            const projectName = title + ' (' + project.client.name + ' - ' + project.locality.name + ')';
+            const [project, accounts] = await Promise.all([
+                Project.findByPk(id_project, {
+                    include: [
+                        { association: 'client', attributes: ['name', 'last_name'] },
+                        { association: 'locality', attributes: ['name'] },
+                    ]
+                }),
+                ProjectAccount.findAll({
+                    where: { id_project },
+                    include: { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
+                })
+            ]);
 
-            const rows = await ProjectAccount.findAll({
-                where: { id_project }, include: [
-                    { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
-                    {
-                        association: 'project', attributes: ['title'], include: [
-                            { association: 'client', attributes: ['name'] },
-                            { association: 'locality', attributes: ['name'] }
-                        ]
-                    }
-                ]
-            });
-            const entities = rows.map(item => ProjectAccountListEntity.fromObject(item));
-            return { project: projectName, accounts: entities };
+            if (!project) throw CustomError.notFound('¡Proyecto no encontrado!');
+
+            const entity = ProjectBasicEntity.fromObject(project);
+            const entities = accounts.map(account => ProjectAccountListEntity.fromObject(account));
+
+            return { project: entity, accounts: entities };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

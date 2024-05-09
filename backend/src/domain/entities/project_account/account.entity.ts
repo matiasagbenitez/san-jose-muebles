@@ -1,11 +1,13 @@
 import { CustomError } from '../../errors/custom.error';
 
-export class ProjectAccountInfoEntity {
+export class ProjectAccountEntity {
     constructor(
         public id: string,
-        public title: string,
         public client: string,
         public locality: string,
+        public title: string,
+        public status: 'PENDIENTE' | 'PAUSADO' | 'PROCESO' | 'FINALIZADO' | 'CANCELADO',
+
         public currency: {
             name: string,
             symbol: string,
@@ -14,7 +16,7 @@ export class ProjectAccountInfoEntity {
         public balance: number,
     ) { }
 
-    static fromObject(object: { [key: string]: any }): ProjectAccountInfoEntity {
+    static fromObject(object: { [key: string]: any }): ProjectAccountEntity {
         const { id, project, currency, balance } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
@@ -22,14 +24,12 @@ export class ProjectAccountInfoEntity {
         if (!currency) throw CustomError.badRequest('Falta la moneda');
         if (!balance) throw CustomError.badRequest('Falta el saldo');
 
-        const title = project.title || "Proyecto sin título2";
-        const projectName = title + ' (' + project.client.name + ' - ' + project.locality.name + ')';
-
-        return new ProjectAccountInfoEntity(
+        return new ProjectAccountEntity(
             id,
-            projectName,
-            project.client.name,
+            project.client.name + ' ' + project.client.last_name,
             project.locality.name,
+            project.title,
+            project.status,
             {
                 name: currency.name,
                 symbol: currency.symbol,
