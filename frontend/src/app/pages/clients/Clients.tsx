@@ -88,11 +88,9 @@ export const Clients = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
-      const confirmation = await SweetAlert2.confirm(
-        "¿Desea crear el cliente?"
-      );
-      if (!confirmation.isConfirmed) return;
       setIsFormSubmitting(true);
+      const confirmation = await SweetAlert2.confirm("¿Desea crear el cliente?");
+      if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);
       handleHide();

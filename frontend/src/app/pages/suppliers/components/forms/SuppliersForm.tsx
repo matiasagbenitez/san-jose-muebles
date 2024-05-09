@@ -4,7 +4,11 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import apiSJM from "../../../../../api/apiSJM";
-import { MySelect, MyTextArea, MyTextInput } from "../../../../components/forms";
+import {
+  MySelect,
+  MyTextArea,
+  MyTextInput,
+} from "../../../../components/forms";
 
 interface SupplierFormInterface {
   name: string;
@@ -37,7 +41,7 @@ interface FormProps {
   editMode?: boolean;
   onSubmit: (values: any) => void;
   initialForm?: SupplierFormInterface;
-  isFormSubmitted?: boolean;
+  isFormSubmitting: boolean;
 }
 
 export const SuppliersForm = ({
@@ -46,7 +50,7 @@ export const SuppliersForm = ({
   editMode = false,
   onSubmit,
   initialForm = supplierForm,
-  isFormSubmitted,
+  isFormSubmitting,
 }: FormProps) => {
   const [localities, setLocalities] = useState<LocalitiesInterface[]>([]);
 
@@ -87,6 +91,7 @@ export const SuppliersForm = ({
                     type="text"
                     placeholder="Ingrese el nombre del proveedor"
                     isInvalid={!!errors.name && touched.name}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
                 <Col md={6}>
@@ -96,6 +101,7 @@ export const SuppliersForm = ({
                     type="text"
                     placeholder="DNI/CUIT del proveedor"
                     isInvalid={!!errors.dni_cuit && touched.dni_cuit}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
               </Row>
@@ -108,6 +114,7 @@ export const SuppliersForm = ({
                     type="text"
                     placeholder="Ingrese el teléfono del proveedor"
                     isInvalid={!!errors.phone && touched.phone}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
                 <Col md={6}>
@@ -117,6 +124,7 @@ export const SuppliersForm = ({
                     type="email"
                     placeholder="Ingrese el email del proveedor"
                     isInvalid={!!errors.email && touched.email}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
               </Row>
@@ -129,6 +137,7 @@ export const SuppliersForm = ({
                     type="text"
                     placeholder="Ingrese la dirección"
                     isInvalid={!!errors.address && touched.address}
+                    disabled={isFormSubmitting}
                   />
                 </Col>
 
@@ -139,6 +148,7 @@ export const SuppliersForm = ({
                     as="select"
                     placeholder="Seleccione una localidad"
                     isInvalid={!!errors.id_locality && touched.id_locality}
+                    disabled={isFormSubmitting}
                   >
                     <option value="">Seleccione una localidad</option>
                     {localities &&
@@ -157,6 +167,7 @@ export const SuppliersForm = ({
                 placeholder="Ingrese anotaciones adicionales"
                 rows={4}
                 isInvalid={!!errors.annotations && touched.annotations}
+                disabled={isFormSubmitting}
               />
 
               <Button
@@ -164,9 +175,10 @@ export const SuppliersForm = ({
                 variant="primary"
                 className="mt-3 float-end"
                 size="sm"
-                disabled={isFormSubmitted}
+                disabled={isFormSubmitting}
               >
-                Guardar
+                <i className="bi bi-floppy me-2"></i>
+                {editMode ? "Guardar cambios" : "Crear proveedor"}
               </Button>
             </Form>
           )}

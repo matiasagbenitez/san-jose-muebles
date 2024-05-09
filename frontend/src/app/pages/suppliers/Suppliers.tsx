@@ -26,6 +26,7 @@ export const Suppliers = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [state, dispatch] = useReducer(paginationReducer, initialState);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const endpoint = "/suppliers";
 
   // DATOS Y PAGINACIÓN
@@ -70,12 +71,17 @@ export const Suppliers = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
+      setIsFormSubmitting(true);
+      const confirmation = await SweetAlert2.confirm("¿Desea crear el proveedor?");
+      if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);
       handleHide();
       fetch();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -147,6 +153,7 @@ export const Suppliers = () => {
         show={isModalOpen}
         onHide={handleHide}
         onSubmit={handleSubmit}
+        isFormSubmitting={isFormSubmitting}
       />
     </div>
   );

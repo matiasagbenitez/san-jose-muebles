@@ -13,7 +13,7 @@ export const Supplier = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [supplier, setSupplier] = useState<SupplierInterface>();
 
   const fetch = async () => {
@@ -37,18 +37,19 @@ export const Supplier = () => {
 
   const handleSubmit = async (formData: SupplierInterface) => {
     try {
+      setIsFormSubmitting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de que quieres modificar este proveedor?"
       );
       if (!confirmation.isConfirmed) return;
-      setIsFormSubmitted(true);
       const { data } = await apiSJM.put(`/suppliers/${id}`, formData);
       SweetAlert2.successToast(data.message);
       setIsModalOpen(false);
-      setIsFormSubmitted(false);
       fetch();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -84,7 +85,6 @@ export const Supplier = () => {
                   <i className="bi bi-arrow-left me-2"></i>
                   Atrás
                 </Button>
-                {/* <h1 className="fs-5 my-0">Proveedor #{supplier.id}: {supplier.name}</h1> */}
                 <h1 className="fs-5 my-0">{supplier.name}</h1>
               </div>
               <SupplierInfo supplier={supplier} />
@@ -104,7 +104,7 @@ export const Supplier = () => {
             editMode={true}
             onSubmit={handleSubmit}
             initialForm={supplier}
-            isFormSubmitted={isFormSubmitted}
+            isFormSubmitting={isFormSubmitting}
           />
         </>
       )}
