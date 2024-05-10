@@ -78,8 +78,8 @@ export class ProjectService {
 
     public async createProject(dto: CreateProjectDTO) {
         try {
-            await Project.create({ ...dto });
-            return { message: 'Proyecto creado correctamente' };
+            const { id } = await Project.create({ ...dto });
+            return { id, message: '¡Proyecto creado correctamente!' };
         } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);
         }

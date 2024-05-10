@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Project, ProjectAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, CreateProjectAccountDTO, ProjectAccountListEntity, ProjectAccountInfoEntity, ProjectBasicEntity, ProjectAccountEntity } from "../../domain";
+import { CustomError, PaginationDto, CreateProjectAccountDTO, ProjectAccountListEntity, ProjectBasicEntity, ProjectAccountEntity } from "../../domain";
 
 export class ProjectAccountService {
 
@@ -33,32 +33,6 @@ export class ProjectAccountService {
 
         // const items = projectsAccounts.map(item => ProjectAccountListEntity.fromObject(item));
         return { items: projectsAccounts, total_items: total };
-    }
-
-
-    // !DELETEABLE (! REVISAR)
-    public async getProjectAccountById(id: number) {
-        try {
-            const account = await ProjectAccount.findByPk(id);
-            if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
-            return account;
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-    }
-
-    public async updateProjectAccountBalance(id: number, balance: number) {
-        try {
-            const account = await this.getProjectAccountById(id);
-            if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
-
-            const updated = await account.update({ balance: balance });
-            if (!updated) throw CustomError.internalServerError('¡Error al actualizar el saldo de la cuenta corriente!');
-
-            return { account: updated, message: '¡Saldo actualizado correctamente!' };
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
-        }
     }
 
     public async getAccountDataById(id: number) {
@@ -133,17 +107,6 @@ export class ProjectAccountService {
             }
             throw CustomError.internalServerError(`${error}`);
         }
-    }
-
-    public async findOrCreateAccount(id_project: number, id_currency: number): Promise<ProjectAccount> {
-
-        const account = await ProjectAccount.findOrCreate({
-            where: { id_project, id_currency },
-            defaults: { id_project, id_currency, balance: 0 }
-        });
-
-        if (!account) throw CustomError.internalServerError('¡Error al buscar o crear la cuenta corriente!');
-        return account[0];
     }
 
 }

@@ -1,34 +1,5 @@
 import { CustomError, PaginationDto, ProjectAccountTransactionEntity, CreateProjectAccountTransactionDTO } from "../../domain";
-import { ProjectAccountTransaction } from "../../database/mysql/models";
-import { ProjectAccountService } from "./project_account.service";
-
-// ! --- TYPES ---
-
-// NEW_PAYMENT: Nuevo pago del cliente a la empresa (valor positivo, disminuye deuda) -> se crea al momento de registrar un pago del cliente a la empresa
-
-// POS_ADJ: Ajuste positivo (valor positivo, disminuye deuda) -> se crea al momento de registrar un ajuste positivo
-// NEG_ADJ: Ajuste negativo (valor negativo, aumenta deuda) -> se crea al momento de registrar un ajuste negativo
-
-// NEW_SUPPLIER_PAYMENT: Nuevo pago de cliente a proyecto (valor positivo, disminuye deuda) -> se crea al momento de registrar un pago de cliente a proyecto
-// DEL_SUPPLIER_PAYMENT: Anulación de pago de cliente a proyecto (valor negativo, aumenta deuda) -> se crea al momento de anular un pago de cliente a proyecto
-
-// ! --- TYPES ---
-
-interface DataInterface {
-
-    id_project_account: number;
-    // type -> NEW_PAYMENT | POS_ADJ | NEG_ADJ | NEW_SUPPLIER_PAYMENT | DEL_SUPPLIER_PAYMENT
-    description?: string;
-
-    received_amount: number;
-    id_currency: number;
-
-    prev_balance: number;
-    amount: number;
-    post_balance: number;
-
-    id_user: number;
-}
+import { ProjectAccount, ProjectAccountTransaction } from "../../database/mysql/models";
 
 export class ProjectAccountTransactionService {
 
@@ -61,11 +32,11 @@ export class ProjectAccountTransactionService {
     // El monto del pago disminuye la deuda del cliente con la empresa (númerico positivo)
     // Se crea al momento de registrar un pago por parte de un cliente a la empresa
     public async createTransactionNewPayment(dto: CreateProjectAccountTransactionDTO, id_user: number) {
-        try {
+        const transaction = await ProjectAccount.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!');
 
-            // Verificar si la cuenta del proyecto existe
-            const projectAccountService = new ProjectAccountService();
-            const projectAccount = await projectAccountService.getProjectAccountById(dto.id_project_account);
+        try {
+            const projectAccount = await ProjectAccount.findByPk(dto.id_project_account);
             if (!projectAccount) throw CustomError.notFound('¡La cuenta del proyecto no existe!');
 
             // Calcular el nuevo saldo de la cuenta del proyecto
@@ -76,21 +47,31 @@ export class ProjectAccountTransactionService {
             await ProjectAccountTransaction.create({
                 id_project_account: projectAccount.id,
                 type: 'NEW_PAYMENT',
-                description: dto.description || 'PAGO DE CLIENTE A LA EMPRESA',
+                description: dto.description,
                 received_amount: dto.received_amount,
                 id_currency: dto.id_currency,
                 prev_balance: prev_balance,
                 equivalent_amount: dto.equivalent_amount,
                 post_balance: post_balance,
                 id_user: id_user,
-            });
+            }, { transaction });
 
             // Actualizar el saldo de la cuenta del proyecto
-            await projectAccountService.updateProjectAccountBalance(projectAccount.id, post_balance);
+            await projectAccount.update({ balance: post_balance }, { transaction });
+            await transaction.commit();
 
-            return { message: '¡Transacción NEW_PAYMENT registrada correctamente!' };
+            return { message: '¡Transacción PAGO DE CLIENTE registrada correctamente!' };
         } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al crear el pago del cliente',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al crear el pago del cliente',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al crear el pago del cliente',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al crear el pago del cliente',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al crear el pago del cliente';
+            throw CustomError.internalServerError(errorMessage);
         }
     }
 
@@ -98,11 +79,13 @@ export class ProjectAccountTransactionService {
     // El monto del ajuste positivo disminuye la deuda del cliente con la empresa (númerico positivo)
     // Se crea al momento de registrar un ajuste positivo
     public async createTransactionPosAdj(dto: CreateProjectAccountTransactionDTO, id_user: number) {
-        try {
 
+        const transaction = await ProjectAccount.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!');
+
+        try {
             // Verificar si la cuenta del proyecto existe
-            const projectAccountService = new ProjectAccountService();
-            const projectAccount = await projectAccountService.getProjectAccountById(dto.id_project_account);
+            const projectAccount = await ProjectAccount.findByPk(dto.id_project_account);
             if (!projectAccount) throw CustomError.notFound('¡La cuenta del proyecto no existe!');
 
             // Calcular el nuevo saldo de la cuenta del proyecto
@@ -113,21 +96,31 @@ export class ProjectAccountTransactionService {
             await ProjectAccountTransaction.create({
                 id_project_account: projectAccount.id,
                 type: 'POS_ADJ',
-                description: dto.description || 'AJUSTE POSITIVO',
+                description: dto.description,
                 received_amount: dto.received_amount,
                 id_currency: dto.id_currency,
                 prev_balance: prev_balance,
                 equivalent_amount: dto.equivalent_amount,
                 post_balance: post_balance,
                 id_user: id_user,
-            });
+            }, { transaction });
 
             // Actualizar el saldo de la cuenta del proyecto
-            await projectAccountService.updateProjectAccountBalance(projectAccount.id, post_balance);
+            await projectAccount.update({ balance: post_balance }, { transaction });
+            await transaction.commit();
 
-            return { message: '¡Transacción POS_ADJ registrada correctamente!' };
+            return { message: '¡Transacción AJUSTE POSITIVO registrada correctamente!' };
         } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al crear el ajuste positivo',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al crear el ajuste positivo',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al crear el ajuste positivo',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al crear el ajuste positivo',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al crear el ajuste positivo';
+            throw CustomError.internalServerError(errorMessage);
         }
     }
 
@@ -135,11 +128,14 @@ export class ProjectAccountTransactionService {
     // El monto del ajuste negativo incrementa la deuda del cliente con la empresa (númerico negativo)
     // Se crea al momento de registrar un ajuste negativo
     public async createTransactionNegAdj(dto: CreateProjectAccountTransactionDTO, id_user: number) {
+
+        const transaction = await ProjectAccount.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!');
+
         try {
 
             // Verificar si la cuenta del proyecto existe
-            const projectAccountService = new ProjectAccountService();
-            const projectAccount = await projectAccountService.getProjectAccountById(dto.id_project_account);
+            const projectAccount = await ProjectAccount.findByPk(dto.id_project_account);
             if (!projectAccount) throw CustomError.notFound('¡La cuenta del proyecto no existe!');
 
             // Calcular el nuevo saldo de la cuenta del proyecto
@@ -150,7 +146,7 @@ export class ProjectAccountTransactionService {
             await ProjectAccountTransaction.create({
                 id_project_account: projectAccount.id,
                 type: 'NEG_ADJ',
-                description: dto.description || 'AJUSTE NEGATIVO',
+                description: dto.description,
                 received_amount: dto.received_amount,
                 id_currency: dto.id_currency,
                 prev_balance: prev_balance,
@@ -160,11 +156,22 @@ export class ProjectAccountTransactionService {
             });
 
             // Actualizar el saldo de la cuenta del proyecto
-            await projectAccountService.updateProjectAccountBalance(projectAccount.id, post_balance);
-            return { message: '¡Transacción NEG_ADJ registrada correctamente!' };
+            await projectAccount.update({ balance: post_balance }, { transaction });
+            await transaction.commit();
+
+            return { message: '¡Transacción AJUSTE NEGATIVO registrada correctamente!' };
 
         } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al crear el ajuste negativo',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al crear el ajuste negativo',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al crear el ajuste negativo',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al crear el ajuste negativo',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al crear el ajuste negativo';
+            throw CustomError.internalServerError(errorMessage);
         }
     }
 

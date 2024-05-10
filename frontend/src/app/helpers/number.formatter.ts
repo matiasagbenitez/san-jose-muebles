@@ -50,7 +50,7 @@ export class NumberFormatter {
      */
     static formatSignedCurrency(is_monetary: boolean = true, value: number): string {
         if (value == 0) { return `${is_monetary ? '$' : ''}0,00`; }
-        const sign = value < 0 ? '- ' : '+ ';
+        const sign = value < 0 ? '-' : '+';
         const num = new Intl.NumberFormat('es-AR', {
             style: 'decimal',
             minimumFractionDigits: 2

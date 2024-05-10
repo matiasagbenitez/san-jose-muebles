@@ -51,16 +51,22 @@ export const ProjectAccountTransactions = () => {
   const [formData, setFormData] = useState(initialForm);
 
   const fetch = async () => {
-    const [res1, res2, _] = await Promise.all([
-      apiSJM.get(`/project_accounts/${id_project_account}`),
-      apiSJM.get("/currencies"),
-      fetchData(endpoint, 1, state, dispatch),
-    ]);
-    setAccount(res1.data.account);
-    setCurrencies(res2.data.items);
-    setAccountCurrency(res1.data.account.currency);
-    const disabled = res1.data.account.currency.id == res2.data.items[0].id;
-    setDisabledEquivalent(disabled);
+    try {
+      setLoading(true);
+      const [res1, res2, _] = await Promise.all([
+        apiSJM.get(`/project_accounts/${id_project_account}`),
+        apiSJM.get("/currencies"),
+        fetchData(endpoint, 1, state, dispatch),
+      ]);
+      setAccount(res1.data.account);
+      setCurrencies(res2.data.items);
+      setAccountCurrency(res1.data.account.currency);
+      const disabled = res1.data.account.currency.id == res2.data.items[0].id;
+      setDisabledEquivalent(disabled);
+      setLoading(false);
+    } catch (error) {
+      navigate("/proyectos");
+    }
   };
 
   useEffect(() => {
@@ -108,6 +114,11 @@ export const ProjectAccountTransactions = () => {
     {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
+      format: (row: DataRow) => (
+        <div className="text-break" style={{ maxWidth: "300px" }}>
+          {row.description}
+        </div>
+      ),
     },
     {
       name: "TIPO MOVIMIENTO",
@@ -129,10 +140,10 @@ export const ProjectAccountTransactions = () => {
           </div>
         );
       },
-      maxWidth: "200px",
+      maxWidth: "180px",
     },
     {
-      name: "MONTO MOVIMIENTO",
+      name: "IMPORTE",
       selector: (row: DataRow) => row.received_amount,
       format: (row: DataRow) => (
         <>
@@ -143,7 +154,7 @@ export const ProjectAccountTransactions = () => {
           )}
         </>
       ),
-      maxWidth: "160px",
+      maxWidth: "145px",
       right: true,
     },
     {
@@ -156,18 +167,18 @@ export const ProjectAccountTransactions = () => {
               accountCurrency!.symbol
             } `}</small>
             {NumberFormatter.formatSignedCurrency(
-              row.is_monetary,
+              accountCurrency!.is_monetary,
               row.prev_balance
             )}
           </>
         );
       },
-      maxWidth: "160px",
+      maxWidth: "145px",
       right: true,
     },
     {
       name: `IMPORTE REAL (${accountCurrency?.symbol})`,
-      maxWidth: "170px",
+      maxWidth: "160px",
       selector: (row: DataRow) => row.equivalent_amount,
       format: (row: DataRow) => {
         return (
@@ -176,7 +187,7 @@ export const ProjectAccountTransactions = () => {
               accountCurrency!.symbol
             } `}</small>
             {NumberFormatter.formatSignedCurrency(
-              row.is_monetary,
+              accountCurrency!.is_monetary,
               row.equivalent_amount
             )}
           </>
@@ -187,8 +198,7 @@ export const ProjectAccountTransactions = () => {
     },
     {
       name: "SALDO POSTERIOR",
-      maxWidth: "160px",
-
+      maxWidth: "145px",
       selector: (row: DataRow) => row.post_balance,
       format: (row: DataRow) => {
         return (
@@ -197,7 +207,7 @@ export const ProjectAccountTransactions = () => {
               accountCurrency!.symbol
             } `}</small>
             {NumberFormatter.formatSignedCurrency(
-              row.is_monetary,
+              accountCurrency!.is_monetary,
               row.post_balance
             )}
           </>
@@ -225,14 +235,15 @@ export const ProjectAccountTransactions = () => {
         "¿Está seguro de registrar el movimiento?"
       );
       if (!confirmation.isConfirmed) return;
-      setLoading(true);
-      await apiSJM.post("/project_account_transactions/new-movement", {
-        ...formData,
-        id_project_account: id_project_account,
-      });
+      const { data } = await apiSJM.post(
+        "/project_account_transactions/new-movement",
+        { ...formData, id_project_account }
+      );
+      SweetAlert2.successToast(
+        data.message || "¡Movimiento registrado correctamente!"
+      );
       fetch();
       handleClose();
-      setLoading(false);
     } catch (error: any) {
       console.error(error);
       SweetAlert2.errorAlert(error.response.data.message);
@@ -320,7 +331,10 @@ export const ProjectAccountTransactions = () => {
             </Col>
             <Col xs={12} md={6} xl={4}>
               <p className="text-muted">
-                Moneda: <span className="fw-bold">{account.currency.name}</span>
+                Moneda:{" "}
+                <span className="fw-bold">
+                  {account.currency.name} ({account.currency.symbol})
+                </span>
               </p>
             </Col>
             <Col xs={12} md={6} xl={5}>
@@ -464,10 +478,6 @@ export const ProjectAccountTransactions = () => {
                   />
                   <InputGroup.Text>{accountCurrency.name}</InputGroup.Text>
                 </InputGroup>
-
-                <div className="mb-3 text-break">
-                  {JSON.stringify(formData)}
-                </div>
 
                 <div className="d-flex gap-2 justify-content-end">
                   <Button

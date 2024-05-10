@@ -26,6 +26,7 @@ interface FormProps {
   onSubmit: (values: any) => void;
   clients: ParamsInterface[];
   localities: ParamsInterface[];
+  isFormSubmitting: boolean;
 }
 
 export const CreateProjectModal = ({
@@ -34,6 +35,7 @@ export const CreateProjectModal = ({
   onSubmit,
   clients,
   localities,
+  isFormSubmitting,
 }: FormProps) => {
   return (
     <Modal show={show} onHide={onHide}>
@@ -60,6 +62,7 @@ export const CreateProjectModal = ({
                 as="select"
                 placeholder="Seleccione un cliente"
                 isInvalid={!!errors.id_client && touched.id_client}
+                disabled={isFormSubmitting}
               >
                 <option value="">Seleccione un cliente</option>
                 {clients.map((client) => (
@@ -75,6 +78,7 @@ export const CreateProjectModal = ({
                 type="text"
                 placeholder="Ejemplo: Cocina completa con isla y barra"
                 isInvalid={!!errors.title && touched.title}
+                disabled={isFormSubmitting}
               />
 
               <MySelect
@@ -83,6 +87,7 @@ export const CreateProjectModal = ({
                 as="select"
                 placeholder="Seleccione una localidad"
                 isInvalid={!!errors.id_locality && touched.id_locality}
+                disabled={isFormSubmitting}
               >
                 <option value="">Seleccione una localidad</option>
                 {localities.map((locality) => (
@@ -98,6 +103,7 @@ export const CreateProjectModal = ({
                 type="text"
                 placeholder="Ingrese la dirección del proyecto"
                 isInvalid={!!errors.address && touched.address}
+                disabled={isFormSubmitting}
               />
 
               <MySelect
@@ -106,6 +112,7 @@ export const CreateProjectModal = ({
                 as="select"
                 placeholder="Seleccione una prioridad"
                 isInvalid={!!errors.priority && touched.priority}
+                disabled={isFormSubmitting}
               >
                 <option value="BAJA">BAJA</option>
                 <option value="MEDIA">MEDIA</option>
@@ -118,7 +125,9 @@ export const CreateProjectModal = ({
                 variant="primary"
                 className="mt-3 float-end"
                 size="sm"
+                disabled={isFormSubmitting}
               >
+                <i className="bi bi-floppy me-2"></i>
                 Guardar
               </Button>
             </Form>

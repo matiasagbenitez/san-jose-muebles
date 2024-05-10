@@ -30,6 +30,7 @@ export const ProjectsList = () => {
   const [showModal, setShowModal] = useState(false);
   const [clients, setClients] = useState([]);
   const [localities, setLocalities] = useState([]);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
@@ -48,10 +49,6 @@ export const ProjectsList = () => {
       console.log(error);
       return navigate("/");
     }
-  };
-
-  const fetchProjects = async () => {
-    await fetchData(endpoint, 1, state, dispatch);
   };
 
   useEffect(() => {
@@ -153,21 +150,27 @@ export const ProjectsList = () => {
     navigate(`/proyectos/${row.id}`);
   };
 
+  const handleRedirect = (id: number) => {
+    navigate(`/proyectos/${id}`);
+  };
+
   const handleHide = () => {
     setShowModal(false);
   };
 
   const handleSumit = async (formData: ProjectFormInterface) => {
-    const confirmation = await SweetAlert2.confirm("¿Desea crear el proyecto?");
-    if (confirmation.isConfirmed) {
-      try {
-        const { data } = await apiSJM.post(endpoint, formData);
-        SweetAlert2.successToast(data.message);
-        handleHide();
-        fetchProjects();
-      } catch (error: any) {
-        SweetAlert2.errorAlert(error.response.data.message);
-      }
+    setIsFormSubmitting(true);
+    try {
+      const confirmation = await SweetAlert2.confirm("¿Desea crear el proyecto?");
+      if (!confirmation.isConfirmed) return;
+      const { data } = await apiSJM.post(endpoint, formData);
+      SweetAlert2.successToast(data.message);
+      handleHide();
+      handleRedirect(data.id);
+    } catch (error: any) {
+      SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -193,6 +196,7 @@ export const ProjectsList = () => {
             onSubmit={handleSumit}
             clients={clients}
             localities={localities}
+            isFormSubmitting={isFormSubmitting}
           />
         </>
       )}
