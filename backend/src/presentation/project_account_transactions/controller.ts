@@ -44,23 +44,24 @@ export class ProjectAccountTransactionController {
 
             const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
             if (id_error) return res.status(400).json({ message: id_error });
+            const { id_user } = loggedUserIdDto as LoggedUserIdDto;
 
             if (createDto && loggedUserIdDto) {
                 switch (createDto.type) {
                     case 'NEW_PAYMENT':
-                        this.service.createTransactionNewPayment(createDto, loggedUserIdDto.id_user)
+                        this.service.createTransactionNewPayment(createDto, id_user)
                             .then((data) => { res.json(data); })
                             .catch((error) => { this.handleError(error, res); });
                         break;
 
                     case 'POS_ADJ':
-                        this.service.createTransactionPosAdj(createDto, loggedUserIdDto.id_user)
+                        this.service.createTransactionPosAdj(createDto, id_user)
                             .then((data) => { res.json(data); })
                             .catch((error) => { this.handleError(error, res); });
                         break;
 
                     case 'NEG_ADJ':
-                        this.service.createTransactionNegAdj(createDto, loggedUserIdDto.id_user)
+                        this.service.createTransactionNegAdj(createDto, id_user)
                             .then((data) => { res.json(data); })
                             .catch((error) => { this.handleError(error, res); });
                         break;

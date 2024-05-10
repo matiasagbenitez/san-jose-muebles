@@ -59,5 +59,21 @@ export class NumberFormatter {
         return `${sign}${is_monetary ? '$' : ''}${num}`;
     }
 
+    /**
+     * Example: formatNotsignedCurrency(true, 1234567.89) => $1.234.567,89
+     * @param is_monetary indicates if the value is monetary
+     * @param value represents the number to format
+     * @returns formatted string
+     */
+    static formatNotsignedCurrency(is_monetary: boolean = true, value: number): string {
+        if (value == 0) { return `${is_monetary ? '$' : ''}0,00`; }
+        const num = new Intl.NumberFormat('es-AR', {
+            style: 'decimal',
+            minimumFractionDigits: 2
+        }).format(Math.abs(value));
+
+        return `${is_monetary ? '$' : ''}${num}`;
+    }
+
 
 }

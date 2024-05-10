@@ -10,11 +10,11 @@ export class CreateProjectAccountTransactionDTO {
 
     static create(object: { [key: string]: any }): [string?, CreateProjectAccountTransactionDTO?] {
 
-        const { id_project_account, type, description, received_amount, id_currency, equivalent_amount } = object;
+        const { id_project_account, type, description, amount, id_currency, equivalent_amount } = object;
 
         if (!id_project_account) return ['El ID de la cuenta del proveedor es requerido'];
         if (!type) return ['El tipo de transacción DEL_IN es requerido'];
-        if (!received_amount) return ['El monto recibido es requerido'];
+        if (!amount) return ['El monto recibido es requerido'];
         if (!id_currency) return ['El ID de la moneda es requerido'];
 
         return [
@@ -23,7 +23,7 @@ export class CreateProjectAccountTransactionDTO {
                 id_project_account,
                 type,
                 description,
-                received_amount,
+                amount,
                 id_currency,
                 equivalent_amount
             )

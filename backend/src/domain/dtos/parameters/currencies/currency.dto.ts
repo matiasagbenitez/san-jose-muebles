@@ -10,7 +10,6 @@ export class CurrencyDto {
 
         if (!name) return ['El nombre es requerido'];
         if (!symbol) return ['El símbolo es requerido'];
-        if (!is_monetary) return ['Debe especificar si es monetaria'];
 
         return [undefined, new CurrencyDto(name, symbol, is_monetary)];
     }

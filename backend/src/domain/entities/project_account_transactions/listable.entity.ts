@@ -11,7 +11,7 @@ export class ProjectAccountTransactionEntity {
         public currency: string,
         public is_monetary: boolean,
         public prev_balance: number,
-        public amount: number,
+        public equivalent_amount: number,
         public post_balance: number,
     ) { }
 

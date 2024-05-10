@@ -2,13 +2,14 @@ import { CustomError } from '../../errors/custom.error';
 
 export class ProjectAccountEntity {
     constructor(
-        public id: string,
+        public id: number,
         public client: string,
         public locality: string,
         public title: string,
         public status: 'PENDIENTE' | 'PAUSADO' | 'PROCESO' | 'FINALIZADO' | 'CANCELADO',
 
         public currency: {
+            id: number,
             name: string,
             symbol: string,
             is_monetary: boolean,
@@ -31,6 +32,7 @@ export class ProjectAccountEntity {
             project.title,
             project.status,
             {
+                id: currency.id,
                 name: currency.name,
                 symbol: currency.symbol,
                 is_monetary: currency.is_monetary,

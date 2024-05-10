@@ -3,7 +3,6 @@ import { Button, Modal, Form, InputGroup, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { DayJsAdapter, toMoney } from "../../../helpers";
 
 import { NumericFormat } from "react-number-format";
 import { SweetAlert2 } from "../../utils";
@@ -21,8 +20,10 @@ import {
   TransactionDataRow as DataRow,
   MovementType,
   types,
+  AccountCurrency,
+  ParamsInterface,
 } from "./interfaces";
-import { NumberFormatter } from "../../helpers";
+import { DateFormatter, NumberFormatter } from "../../helpers";
 
 const initialForm = {
   type: "",
@@ -42,9 +43,11 @@ export const ProjectAccountTransactions = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<AccountInterface>();
-  const [accountCurrency, setAccountCurrency] = useState<string>("");
+  const [accountCurrency, setAccountCurrency] = useState<AccountCurrency>();
+  const [disabledEquivalent, setDisabledEquivalent] = useState(false);
+  const [isFormSubmiting, setIsFormSubmiting] = useState(false);
 
-  const [currencies, setCurrencies] = useState<any>([]);
+  const [currencies, setCurrencies] = useState<ParamsInterface[]>([]);
   const [formData, setFormData] = useState(initialForm);
 
   const fetch = async () => {
@@ -55,7 +58,9 @@ export const ProjectAccountTransactions = () => {
     ]);
     setAccount(res1.data.account);
     setCurrencies(res2.data.items);
-    setAccountCurrency(res1.data.account.currency.name);
+    setAccountCurrency(res1.data.account.currency);
+    const disabled = res1.data.account.currency.id == res2.data.items[0].id;
+    setDisabledEquivalent(disabled);
   };
 
   useEffect(() => {
@@ -87,15 +92,17 @@ export const ProjectAccountTransactions = () => {
     },
     {
       name: "FECHA REGISTRO",
-      selector: (row: DataRow) =>
-        DayJsAdapter.toDayMonthYearHour(row.createdAt),
-      maxWidth: "140px",
-      center: true,
-    },
-    {
-      name: "RESPONSABLE",
-      selector: (row: DataRow) => row.user,
-      maxWidth: "140px",
+      selector: (row: any) => row.createdAt,
+      format: (row: DataRow) => (
+        <>
+          {DateFormatter.toDMYH(row.createdAt)}
+          <i
+            className="bi bi-person ms-2"
+            title={`Movimiento registrado por ${row.user}`}
+          ></i>
+        </>
+      ),
+      maxWidth: "160px",
       center: true,
     },
     {
@@ -122,45 +129,80 @@ export const ProjectAccountTransactions = () => {
           </div>
         );
       },
-      maxWidth: "300px",
+      maxWidth: "200px",
     },
     {
       name: "MONTO MOVIMIENTO",
       selector: (row: DataRow) => row.received_amount,
-      format: (row: any) => (
+      format: (row: DataRow) => (
         <>
-          <small className="text-muted">{row.currency}</small>
-          {row.is_monetary ? " $" : " "}
-          {toMoney(row.received_amount)}
+          <small className="text-muted">{`${row.currency} `}</small>
+          {NumberFormatter.formatNotsignedCurrency(
+            row.is_monetary === true,
+            row.received_amount
+          )}
         </>
       ),
-      maxWidth: "170px",
+      maxWidth: "160px",
       right: true,
-    },
-    {
-      name: "MONEDA",
-      selector: (row: DataRow) => row.currency,
-      maxWidth: "50px",
-      omit: true,
     },
     {
       name: "SALDO ANTERIOR",
-      selector: (row: DataRow) => toMoney(row.prev_balance),
-      maxWidth: "170px",
+      selector: (row: DataRow) => row.prev_balance,
+      format: (row: DataRow) => {
+        return (
+          <>
+            <small className="text-muted">{`${
+              accountCurrency!.symbol
+            } `}</small>
+            {NumberFormatter.formatSignedCurrency(
+              row.is_monetary,
+              row.prev_balance
+            )}
+          </>
+        );
+      },
+      maxWidth: "160px",
       right: true,
     },
     {
-      name: "MONTO EQUIVALENTE",
+      name: `IMPORTE REAL (${accountCurrency?.symbol})`,
       maxWidth: "170px",
-      // selector: (row: DataRow) => toMoney(row.equivalent_amount),
-      selector: (row: DataRow) => toMoney(row.equivalent_amount),
+      selector: (row: DataRow) => row.equivalent_amount,
+      format: (row: DataRow) => {
+        return (
+          <>
+            <small className="text-muted">{`${
+              accountCurrency!.symbol
+            } `}</small>
+            {NumberFormatter.formatSignedCurrency(
+              row.is_monetary,
+              row.equivalent_amount
+            )}
+          </>
+        );
+      },
       right: true,
       style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1.1em" },
     },
     {
       name: "SALDO POSTERIOR",
-      maxWidth: "170px",
-      selector: (row: DataRow) => toMoney(row.post_balance),
+      maxWidth: "160px",
+
+      selector: (row: DataRow) => row.post_balance,
+      format: (row: DataRow) => {
+        return (
+          <>
+            <small className="text-muted">{`${
+              accountCurrency!.symbol
+            } `}</small>
+            {NumberFormatter.formatSignedCurrency(
+              row.is_monetary,
+              row.post_balance
+            )}
+          </>
+        );
+      },
       right: true,
     },
   ];
@@ -174,14 +216,11 @@ export const ProjectAccountTransactions = () => {
     setFormData(initialForm);
   };
 
-  // const handleRedirectPurchase = (id_purchase: number) => {
-  //   navigate(`/compras/${id_purchase}`);
-  // };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
+      setIsFormSubmiting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de registrar el movimiento?"
       );
@@ -189,7 +228,7 @@ export const ProjectAccountTransactions = () => {
       setLoading(true);
       await apiSJM.post("/project_account_transactions/new-movement", {
         ...formData,
-        id_supplier_account: id_project_account,
+        id_project_account: id_project_account,
       });
       fetch();
       handleClose();
@@ -197,13 +236,34 @@ export const ProjectAccountTransactions = () => {
     } catch (error: any) {
       console.error(error);
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmiting(false);
     }
   };
+
+  // USEFFECTS PARA MANEJAR EL CAMBIO DE MONEDA
+  useEffect(() => {
+    if (accountCurrency) {
+      if (formData.id_currency == accountCurrency.id) {
+        setDisabledEquivalent(true);
+        setFormData({ ...formData, equivalent_amount: formData.amount });
+      } else {
+        setDisabledEquivalent(false);
+        setFormData({ ...formData, equivalent_amount: 0 });
+      }
+    }
+  }, [formData.id_currency]);
+
+  useEffect(() => {
+    if (disabledEquivalent) {
+      setFormData({ ...formData, equivalent_amount: formData.amount });
+    }
+  }, [formData.amount]);
 
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && account && (
+      {!loading && account && accountCurrency && (
         <>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="d-flex gap-3 align-items-center">
@@ -227,7 +287,8 @@ export const ProjectAccountTransactions = () => {
 
           <hr />
 
-          <Row>
+          {/* PROJECT ACCOUNT INFO */}
+          <Row className="mb-2">
             <Col xs={12} md={6} xl={4}>
               <p className="text-muted">
                 Cliente: <span className="fw-bold">{account.client}</span>
@@ -259,8 +320,7 @@ export const ProjectAccountTransactions = () => {
             </Col>
             <Col xs={12} md={6} xl={4}>
               <p className="text-muted">
-                Moneda:{" "}
-                <span className="fw-bold">{account.currency.name}</span>
+                Moneda: <span className="fw-bold">{account.currency.name}</span>
               </p>
             </Col>
             <Col xs={12} md={6} xl={5}>
@@ -283,6 +343,7 @@ export const ProjectAccountTransactions = () => {
             </Col>
           </Row>
 
+          {/* DATATABLE */}
           <Datatable
             title="Listado de últimos movimientos"
             columns={columns as TableColumn<DataRow>[]}
@@ -293,6 +354,7 @@ export const ProjectAccountTransactions = () => {
             handlePageChange={handlePageChange}
           />
 
+          {/* FORMULARIO NUEVO MOVIMIENTO */}
           <Modal show={isModalOpen} onHide={() => handleClose()}>
             <div className="p-3">
               <h5>Nuevo movimiento</h5>
@@ -305,9 +367,10 @@ export const ProjectAccountTransactions = () => {
                   <Form.Select
                     required
                     name="type"
-                    onChange={(e: any) =>
-                      setFormData({ ...formData, type: e.target.value })
-                    }
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      setFormData({ ...formData, type: e.target.value });
+                    }}
+                    disabled={isFormSubmiting}
                   >
                     <option value="">Seleccione una opción</option>
                     <option value="NEW_PAYMENT">
@@ -329,46 +392,52 @@ export const ProjectAccountTransactions = () => {
                     as="textarea"
                     rows={1}
                     required
-                    onChange={(e: any) =>
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                       setFormData({
                         ...formData,
                         description: e.target.value,
                       })
                     }
+                    disabled={isFormSubmiting}
                   />
                 </InputGroup>
 
                 {/* MONTO */}
                 <InputGroup className="mb-3" size="sm">
-                  <InputGroup.Text>Recibí</InputGroup.Text>
+                  <InputGroup.Text>Monto</InputGroup.Text>
                   <NumericFormat
                     thousandSeparator="."
                     decimalSeparator=","
                     decimalScale={2}
                     fixedDecimalScale
                     className="text-end form-control"
-                    required
-                    onChange={(e: any) =>
+                    value={formData.amount}
+                    onValueChange={(values) => {
+                      const { floatValue } = values;
                       setFormData({
                         ...formData,
-                        amount: e.target.value,
-                      })
-                    }
+                        amount: floatValue || 0,
+                      });
+                    }}
+                    disabled={isFormSubmiting}
+                    required
                   />
+
                   <Form.Select
                     required
                     name="id_currency"
-                    onChange={(e: any) =>
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                       setFormData({
                         ...formData,
                         id_currency: e.target.value,
-                      })
-                    }
+                      });
+                    }}
+                    disabled={isFormSubmiting}
                   >
-                    {/* <option value="">Seleccione una moneda</option> */}
-                    {currencies.map((currency: any) => (
-                      <option key={currency.id} value={currency.id}>
-                        {currency.name}
+                    <option value="">Seleccione una moneda</option>
+                    {currencies.map((item: ParamsInterface) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
                       </option>
                     ))}
                   </Form.Select>
@@ -382,11 +451,23 @@ export const ProjectAccountTransactions = () => {
                     decimalScale={2}
                     fixedDecimalScale
                     className="text-end form-control"
-                    value={formData.amount}
+                    value={formData.equivalent_amount}
+                    disabled={disabledEquivalent || isFormSubmiting}
                     required
+                    onValueChange={(values) => {
+                      const { floatValue } = values;
+                      setFormData({
+                        ...formData,
+                        equivalent_amount: floatValue || 0,
+                      });
+                    }}
                   />
-                  <InputGroup.Text>{accountCurrency}</InputGroup.Text>
+                  <InputGroup.Text>{accountCurrency.name}</InputGroup.Text>
                 </InputGroup>
+
+                <div className="mb-3 text-break">
+                  {JSON.stringify(formData)}
+                </div>
 
                 <div className="d-flex gap-2 justify-content-end">
                   <Button
@@ -396,7 +477,12 @@ export const ProjectAccountTransactions = () => {
                   >
                     Cerrar
                   </Button>
-                  <Button size="sm" variant="primary" type="submit">
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    type="submit"
+                    disabled={isFormSubmiting}
+                  >
                     <i className="bi bi-floppy me-2"></i>
                     Registrar movimiento
                   </Button>

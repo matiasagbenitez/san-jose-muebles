@@ -83,12 +83,15 @@ export interface AccountInterface {
     locality: string;
     title: string;
     status: "PENDIENTE" | "PAUSADO" | "PROCESO" | "FINALIZADO" | "CANCELADO";
-    currency: {
-        name: string;
-        symbol: string;
-        is_monetary: boolean;
-    };
+    currency: AccountCurrency;
     balance: number;
+}
+
+export interface AccountCurrency {
+    id: string;
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
 }
 
 export interface TransactionDataRow {
@@ -104,6 +107,7 @@ export interface TransactionDataRow {
     description: string;
     received_amount: number;
     currency: string;
+    is_monetary: boolean;
     prev_balance: number;
     equivalent_amount: number;
     post_balance: number;
@@ -135,3 +139,8 @@ export const types: Record<
         title: "Aumenta la deuda del cliente",
     },
 };
+
+export interface ParamsInterface {
+    id: number;
+    name: string;
+}
