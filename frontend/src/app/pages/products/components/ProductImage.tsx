@@ -1,4 +1,4 @@
-import { Button, Image } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 
 export const ProductImage = () => {
   return (

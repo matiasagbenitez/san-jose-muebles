@@ -1,7 +1,7 @@
 import { ErrorMessage, FormikTouched, useField } from "formik";
 import Form from "react-bootstrap/Form";
 import "./styles.css";
-import ReactDatePicker from "react-datepicker";
+// import ReactDatePicker from "react-datepicker";
 
 interface Props {
   label: string;

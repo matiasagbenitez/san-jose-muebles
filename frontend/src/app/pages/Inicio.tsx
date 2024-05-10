@@ -1,4 +1,4 @@
-import { Image, ProgressBar } from 'react-bootstrap'
+import { ProgressBar } from 'react-bootstrap'
 
 export const Inicio = () => {
   return (
