@@ -1,4 +1,4 @@
-import { CustomError, PaginationDto, ProjectAccountTransactionEntity, CreateProjectAccountTransactionDTO } from "../../domain";
+import { CustomError, PaginationDto, ProjectAccountTransactionEntity, ProjectTransactionDetailEntity, CreateProjectAccountTransactionDTO } from "../../domain";
 import { ProjectAccount, ProjectAccountTransaction } from "../../database/mysql/models";
 
 export class ProjectAccountTransactionService {
@@ -23,6 +23,36 @@ export class ProjectAccountTransactionService {
             const items = transactions.rows.map(item => ProjectAccountTransactionEntity.fromObject(item));
 
             return { items: items, total_items: transactions.count };
+        } catch (error: any) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    // * GET TRANSACTION BY ID *
+    // Obtiene una transacción por su ID
+    public async getTransactionById(id: number) {
+        try {
+            const transaction = await ProjectAccountTransaction.findByPk(id, {
+                include: [
+                    {
+                        association: 'account', include: [
+                            {
+                                association: 'project', include: [
+                                    { association: 'client', attributes: ['name', 'last_name'] },
+                                    { association: 'locality', attributes: ['name'] },
+                                ]
+                            },
+                            { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] }
+                        ]
+                    },
+                    { association: 'user', attributes: ['name'] },
+                    { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] }
+                ],
+            });
+            if (!transaction) throw CustomError.notFound('¡La transacción no existe!');
+            const entity = ProjectTransactionDetailEntity.fromObject(transaction);
+
+            return { item: entity }
         } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);
         }
@@ -174,5 +204,7 @@ export class ProjectAccountTransactionService {
             throw CustomError.internalServerError(errorMessage);
         }
     }
+
+
 
 }

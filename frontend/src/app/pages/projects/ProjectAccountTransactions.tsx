@@ -273,6 +273,12 @@ export const ProjectAccountTransactions = () => {
     }
   }, [formData.amount]);
 
+  const handleRedirect = (row: DataRow) => {
+    navigate(
+      `/proyectos/${id_project}/cuentas/${id_project_account}/movimiento/${row.id}`
+    );
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -368,6 +374,8 @@ export const ProjectAccountTransactions = () => {
             totalRows={state.totalRows}
             handleRowsPerPageChange={handleRowsPerPageChange}
             handlePageChange={handlePageChange}
+            clickableRows
+            onRowClicked={handleRedirect}
           />
 
           {/* FORMULARIO NUEVO MOVIMIENTO */}

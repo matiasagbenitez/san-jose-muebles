@@ -119,6 +119,14 @@ export enum MovementType {
     NEG_ADJ = "NEG_ADJ",
 }
 
+export enum Movements {
+    NEW_PAYMENT = "PAGO DEL CLIENTE",
+    POS_ADJ = "AJUSTE A FAVOR",
+    NEG_ADJ = "AJUSTE EN CONTRA",
+    NEW_SUPPLIER_PAYMENT = "PAGO AL PROVEEDOR",
+    DEL_SUPPLIER_PAYMENT = "ELIMINACIÓN DE PAGO AL PROVEEDOR",
+}
+
 export const types: Record<
     MovementType,
     { label: string; icon: string; title: string }

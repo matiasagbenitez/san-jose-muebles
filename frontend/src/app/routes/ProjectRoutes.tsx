@@ -7,6 +7,7 @@ import {
   Project,
   ProjectAccounts,
   ProjectAccountTransactions,
+  ProjectAccountTransaction,
 } from "../pages/projects";
 
 const ProjectRoutes = () => {
@@ -19,7 +20,14 @@ const ProjectRoutes = () => {
           <Route path="/" element={<ProjectsList />} />
           <Route path="/:id" element={<Project />} />
           <Route path="/:id/cuentas" element={<ProjectAccounts />} />
-          <Route path="/:id/cuentas/:id_project_account" element={<ProjectAccountTransactions />} />
+          <Route
+            path="/:id/cuentas/:id_project_account"
+            element={<ProjectAccountTransactions />}
+          />
+          <Route
+            path="/:id/cuentas/:id_project_account/movimiento/:id_transaction"
+            element={<ProjectAccountTransaction />}
+          />
         </>
       )}
 
