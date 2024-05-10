@@ -80,43 +80,50 @@ export const ProjectAccountTransaction = () => {
       {loading && <LoadingSpinner />}
       {!loading && transaction && (
         <>
-          <div className="d-flex gap-3 align-items-center mb-3">
-            <Button
-              variant="light border text-muted"
-              size="sm"
-              onClick={() =>
-                navigate(
-                  `/proyectos/${transaction.account.project.id}/cuentas/${transaction.account.id}`
-                )
-              }
-              title="Volver al listado de movimientos"
-            >
-              <i className="bi bi-arrow-left me-2"></i>
-              Atrás
-            </Button>
-            <h1 className="fs-5 my-0">Detalle de movimiento</h1>
+          <div className="d-flex gap-3 align-items-center mb-3 justify-content-between">
+            <div className="d-flex gap-3 align-items-center">
+              <Button
+                variant="light border text-muted"
+                size="sm"
+                onClick={() =>
+                  navigate(
+                    `/proyectos/${transaction.account.project.id}/cuentas/${transaction.account.id}`
+                  )
+                }
+                title="Volver al listado de movimientos"
+              >
+                <i className="bi bi-arrow-left me-2"></i>
+                Atrás
+              </Button>
+              <h1 className="fs-5 my-0">Detalle de movimiento</h1>
+            </div>
+            <div>
+              <Button variant="danger" size="sm">
+                <i className="bi bi-file-pdf me-2"></i>
+                Descargar en PDF
+              </Button>
+            </div>
           </div>
           <hr />
           <Row className="mx-0">
-            <Col xs={12} lg={3}></Col>
-            <Col xs={12} lg={6} className="shadow-sm border rounded-2 p-2">
+            <Col xs={12} lg={2}></Col>
+            <Col xs={12} lg={8} className="shadow-sm border rounded-2 p-2">
               <div className="p-3">
-                <h2 className="fs-5">Comprobante de movimiento</h2>
-                <hr />
-                <p>ID movimiento: {id_transaction}</p>
+                <div className="d-flex justify-content-between align-items-center">
+                  <h2 className="fs-5">Comprobante de movimiento</h2>
+                  <span className="font-monospace small">
+                    ID_MOVIMIENTO: {id_transaction}
+                  </span>
+                </div>
+                <hr className="my-2" />
                 <h3 className="fs-6 text-muted">Datos de la cuenta</h3>
                 <Row>
-                  <Col xs={12} md={2}>
-                    <span className="small">
-                      ID cuenta: {transaction.account.id}
-                    </span>
-                  </Col>
-                  <Col xs={12} md={5}>
+                  <Col xs={12} md={6}>
                     <span className="small">
                       Cliente: {transaction.account.project.client}
                     </span>
                   </Col>
-                  <Col xs={12} md={5}>
+                  <Col xs={12} md={6}>
                     <span className="small">
                       Moneda: {transaction.account.currency.name} (
                       {transaction.account.currency.symbol})
@@ -125,18 +132,13 @@ export const ProjectAccountTransaction = () => {
                 </Row>
                 <h3 className="fs-6 text-muted mt-3">Datos del proyecto</h3>
                 <Row>
-                  <Col xs={12} md={2}>
-                    <span className="small">
-                      ID proyecto: {transaction.account.project.id}
-                    </span>
-                  </Col>
-                  <Col xs={12} md={5}>
+                  <Col xs={12} md={6}>
                     <span className="small">
                       Proyecto:{" "}
                       {transaction.account.project.title || "Sin título"}
                     </span>
                   </Col>
-                  <Col xs={12} md={5}>
+                  <Col xs={12} md={6}>
                     <span className="small">
                       Localidad proyecto: {transaction.account.project.locality}
                     </span>
@@ -166,7 +168,7 @@ export const ProjectAccountTransaction = () => {
                 >
                   <thead>
                     <tr>
-                      <th className="col-3">Monto movimiento</th>
+                      <th className="col-3">Importe</th>
                       <th className="col-3">Saldo anterior</th>
                       <th className="col-3">
                         Importe real ({transaction.account.currency.symbol})
@@ -234,7 +236,7 @@ export const ProjectAccountTransaction = () => {
                 </Row>
               </div>
             </Col>
-            <Col xs={12} lg={3}></Col>
+            <Col xs={12} lg={2}></Col>
           </Row>
         </>
       )}

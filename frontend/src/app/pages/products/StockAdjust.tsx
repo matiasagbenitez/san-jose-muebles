@@ -11,9 +11,9 @@ import {
 
 // import { ProductsFilter } from "./components";
 import apiSJM from "../../../api/apiSJM";
-import { DayJsAdapter } from "../../../helpers";
 import { Button, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
 import { SweetAlert2 } from "../../utils";
+import { DateFormatter } from "../../helpers";
 
 interface DataRow {
   id: number;
@@ -86,17 +86,26 @@ export const StockAdjust = () => {
       center: true,
     },
     {
-      name: "FECHA",
-      selector: (row: DataRow) =>
-        DayJsAdapter.toDayMonthYearHour(row.updated_at),
-      width: "150px",
+      name: "FECHA REGISTRO",
+      selector: (row: DataRow) => `${row.updated_at}`,
+      format: (row: DataRow) => (
+        <>
+          {DateFormatter.toDMYH(row.updated_at)}
+          <i
+            className="bi bi-person ms-2"
+            title={`Movimiento registrado por ${row.user}`}
+          ></i>
+        </>
+      ),
+      maxWidth: "160px",
       center: true,
     },
     {
       name: "RESPONSABLE",
       selector: (row: DataRow) => row.user,
-      width: "200px",
+      maxWidth: "160px",
       center: true,
+      omit: true,
     },
     {
       name: "COMENTARIO",
@@ -105,20 +114,20 @@ export const StockAdjust = () => {
     {
       name: "STOCK ANTERIOR",
       selector: (row: DataRow) => row.prev_stock + ` ${product.unit_symbol}`,
-      width: "150px",
+      width: "140px",
       center: true,
     },
     {
       name: "AJUSTE",
       selector: (row: DataRow) => row.quantity + ` ${product.unit_symbol}`,
-      width: "150px",
+      width: "140px",
       style: { fontWeight: "bold" },
       center: true,
     },
     {
       name: "STOCK POSTERIOR",
       selector: (row: DataRow) => row.post_stock + ` ${product.unit_symbol}`,
-      width: "150px",
+      width: "140px",
       center: true,
     },
   ];
@@ -170,37 +179,22 @@ export const StockAdjust = () => {
           <hr className="my-3" />
 
           <Row>
-            <Col lg={5}>
-              <div className="mb-3">
-                <h2 className="fs-6 my-0">Producto</h2>
-                <p className="mb-0">{product.name}</p>
-              </div>
+            <Col lg={8}>
+              <p>
+                <b>Producto: </b>
+                {product.name} ({product.brand} - x {product.unit})
+              </p>
             </Col>
             <Col lg={2}>
-              <div className="mb-3">
-                <h2 className="fs-6 my-0">Marca</h2>
-                <p className="mb-0">{product.brand}</p>
-              </div>
+              <p>
+                <b>Stock actual: </b>
+                {actualStock} {product.unit_symbol}
+              </p>
             </Col>
-            <Col lg={2}>
-              <div className="mb-3">
-                <h2 className="fs-6 my-0">Unidad</h2>
-                <p className="mb-0">
-                  {product.unit} ({product.unit_symbol})
-                </p>
-              </div>
-            </Col>
-            <Col lg={1}>
-              <div className="mb-3">
-                <h2 className="fs-6 my-0">Stock actual</h2>
-                <p className="mb-0">
-                  {actualStock} {product.unit_symbol}
-                </p>
-              </div>
-            </Col>
+
             <Col
               lg={2}
-              className="d-flex justify-content-end align-items-center"
+              className="d-flex justify-content-end align-items-center mb-3"
             >
               <Button size="sm" variant="success" onClick={() => handleOpen()}>
                 Nuevo ajuste de stock
