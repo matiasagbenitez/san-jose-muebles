@@ -36,10 +36,10 @@ export class ProjectAccountController {
     }
 
     getDataById = async (req: Request, res: Response) => {
-        const id_project_account = parseInt(req.params.id_project_account);
-        if (!id_project_account) return res.status(400).json({ message: 'Missing id_project_account' });
+        const { id_project, id_project_account } = req.params;
+        if (!id_project_account || !id_project) return res.status(400).json({ message: '¡Falta el ID del proyecto o de la cuenta!' });
 
-        this.service.getAccountDataById(id_project_account)
+        this.service.getAccountDataById(parseInt(id_project), parseInt(id_project_account))
             .then((data) => {
                 res.json(data);
             })

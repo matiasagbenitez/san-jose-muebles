@@ -35,9 +35,14 @@ export class ProjectAccountService {
         return { items: projectsAccounts, total_items: total };
     }
 
-    public async getAccountDataById(id: number) {
+    public async getAccountDataById(id_project: number, id_project_account: number) {
+        // console.log(id);
         try {
-            const account = await ProjectAccount.findByPk(id, {
+            const account = await ProjectAccount.findOne({
+                where: {
+                    id: id_project_account,
+                    id_project
+                },
                 include: [
                     { association: 'currency' },
                     {

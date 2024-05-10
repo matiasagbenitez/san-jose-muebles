@@ -34,7 +34,7 @@ const initialForm = {
 };
 
 export const ProjectAccountTransactions = () => {
-  const { id, id_project_account } = useParams();
+  const { id: id_project, id_project_account } = useParams();
   const navigate = useNavigate();
 
   const [state, dispatch] = useReducer(paginationReducer, initialState);
@@ -54,7 +54,9 @@ export const ProjectAccountTransactions = () => {
     try {
       setLoading(true);
       const [res1, res2, _] = await Promise.all([
-        apiSJM.get(`/project_accounts/${id_project_account}`),
+        apiSJM.get(
+          `/project_accounts/project/${id_project}/account/${id_project_account}`
+        ),
         apiSJM.get("/currencies"),
         fetchData(endpoint, 1, state, dispatch),
       ]);
@@ -281,7 +283,7 @@ export const ProjectAccountTransactions = () => {
               <Button
                 variant="light border text-muted"
                 size="sm"
-                onClick={() => navigate(`/proyectos/${id}/cuentas`)}
+                onClick={() => navigate(`/proyectos/${id_project}/cuentas`)}
                 title="Volver al detalle de cuentas"
               >
                 <i className="bi bi-arrow-left me-2"></i>

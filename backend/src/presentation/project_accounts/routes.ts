@@ -11,7 +11,9 @@ export class ProjectAccountRoutes {
         const controller = new ProjectAccountController();
 
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
-        router.get('/:id_project_account', [AuthMiddleware.validateJWT], controller.getDataById);
+        
+        router.get('/project/:id_project/account/:id_project_account', [AuthMiddleware.validateJWT], controller.getDataById);
+
         router.get('/project/:id_project', [AuthMiddleware.validateJWT], controller.getByProject);
 
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
