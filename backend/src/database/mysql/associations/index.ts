@@ -39,6 +39,7 @@ import {
     GroupMember,
     PurchaseNullation,
     ProjectSupplierTransaction,
+    RelatedPerson,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -195,7 +196,12 @@ export const initializeAssociations = () => {
 
     SupplierAccountTransaction.hasOne(ProjectSupplierTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'project_supplier_transaction', onDelete: 'RESTRICT' });
     ProjectSupplierTransaction.belongsTo(SupplierAccountTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'supplier_transaction', onDelete: 'RESTRICT' });
- 
+
+
+    // RelatedPerson with Project
+    Project.hasMany(RelatedPerson, { foreignKey: 'id_project', as: 'related_persons', onDelete: 'RESTRICT' });
+    RelatedPerson.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
+
     // GROUP
 
     // many to many

@@ -47,6 +47,8 @@ import { Group, initGroupModel } from './Group.model';
 import { Member, initMemberModel } from './Member.model';
 import { GroupMember, initGroupMemberModel } from './GroupMember.model';
 
+import { RelatedPerson, initRelatedPersonModel } from './RelatedPerson.model';
+
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -94,6 +96,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initProjectAccountModel(sequelize);
   initProjectAccountTransactionModel(sequelize);
   initProjectSupplierTransactionModel(sequelize);
+  initRelatedPersonModel(sequelize);
 
   // GROUP
   initMemberModel(sequelize);
@@ -146,6 +149,7 @@ export {
   ProjectAccount,
   ProjectAccountTransaction,
   ProjectSupplierTransaction,
+  RelatedPerson,
 
 
   Group,

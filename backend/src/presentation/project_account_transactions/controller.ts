@@ -68,7 +68,6 @@ export class ProjectAccountTransactionController {
                         break;
 
                     case 'NEW_SUPPLIER_PAYMENT':
-                        console.log('controller - addNewMovement - NEW_SUPPLIER_PAYMENT');
                         this.service.createTransactionNewSupplierPayment(createDto, id_user)
                             .then((data) => { res.json(data); })
                             .catch((error) => { this.handleError(error, res); });

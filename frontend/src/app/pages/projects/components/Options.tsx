@@ -26,6 +26,14 @@ export const Options = ({ id }: Props) => {
           Gestionar cuentas corrientes
         </button>
         <button
+          className="list-group-item list-group-item-action py-1"
+          title="Personas relacionadas al proyecto"
+          onClick={() => navigate(`/proyectos/${id}/personas-relacionadas`)}
+        >
+          <i className="bi bi-person-lines-fill me-2 fs-6"></i>
+          Personas relacionadas al proyecto
+        </button>
+        <button
           hidden
           className="list-group-item list-group-item-action py-1"
           title="Presupuestos del proyecto"
