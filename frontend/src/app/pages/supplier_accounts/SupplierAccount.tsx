@@ -6,14 +6,12 @@ import {
   InputGroup,
   Row,
   Col,
-  Badge,
   Popover,
   OverlayTrigger,
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { DayJsAdapter, convertToMoney } from "../../../helpers";
 
 import { NumericFormat } from "react-number-format";
 import { SweetAlert2 } from "../../utils";
@@ -25,13 +23,19 @@ import {
   paginationReducer,
   fetchData,
 } from "../../shared";
+import { DateFormatter, NumberFormatter } from "../../helpers";
 
 interface AccountInterface {
   id: number;
-  supplier: string;
-  currency: string;
-  symbol: string;
-  is_monetary: boolean;
+  supplier: {
+    name: string;
+    locality: string;
+  };
+  currency: {
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
+  };
   balance: number;
 }
 
@@ -80,20 +84,6 @@ const types: Record<
   },
 };
 
-const enum Flags {
-  ARS = "🇦🇷",
-  USD = "🇺🇸",
-  BRL = "🇧🇷",
-  EUR = "🇪🇺",
-}
-
-const flags: Record<string, string> = {
-  ARS: Flags.ARS,
-  USD: Flags.USD,
-  BRL: Flags.BRL,
-  EUR: Flags.EUR,
-};
-
 const initialForm = {
   type: "",
   description: "",
@@ -138,7 +128,7 @@ export const SupplierAccount = () => {
       fetchData(endpoint, 1, state, dispatch),
       apiSJM.get(`/supplier_accounts/${id}`),
     ]);
-    setAccount(res2.data.account);
+    setAccount(res2.data.item);
   };
 
   useEffect(() => {
@@ -173,7 +163,7 @@ export const SupplierAccount = () => {
       selector: (row: any) => row.createdAt,
       format: (row: DataRow) => (
         <>
-          {DayJsAdapter.toDayMonthYearHour(row.createdAt)}
+          {DateFormatter.toDMYH(row.createdAt)}
           <i
             className="bi bi-person ms-2"
             title={`Movimiento registrado por ${row.user}`}
@@ -193,37 +183,35 @@ export const SupplierAccount = () => {
     {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
-      cell: (row: DataRow) => {
-        return (
-          <>
-            {row.id_purchase && (
-              <Button
-                size="sm"
-                variant="link"
-                onClick={() => handleRedirectPurchase(row.id_purchase!)}
-                className="p-0 text-start"
-              >
-                <small>{row.description}</small>
-              </Button>
-            )}
-            {row.project && (
-              <Button
-                size="sm"
-                variant="link"
-                onClick={() => handleRedirectClientPayment(row.project!)}
-                className="p-0 text-start"
-              >
-                <small>
-                  {row.description} - {row.project.client}
-                </small>
-              </Button>
-            )}
-            {!row.id_purchase && !row.project && row.description && (
-              <span>{row.description}</span>
-            )}
-          </>
-        );
-      },
+      format: (row: DataRow) => (
+        <div className="text-break" style={{ maxWidth: "300px" }}>
+          {row.id_purchase && (
+            <Button
+              size="sm"
+              variant="link"
+              onClick={() => handleRedirectPurchase(row.id_purchase!)}
+              className="p-0 text-start"
+            >
+              <small>{row.description}</small>
+            </Button>
+          )}
+          {row.project && (
+            <Button
+              size="sm"
+              variant="link"
+              onClick={() => handleRedirectClientPayment(row.project!)}
+              className="p-0 text-start"
+            >
+              <small>
+                {row.description} - {row.project.client}
+              </small>
+            </Button>
+          )}
+          {!row.id_purchase && !row.project && row.description && (
+            <span>{row.description}</span>
+          )}
+        </div>
+      ),
     },
     {
       name: "TIPO MOVIMIENTO",
@@ -249,21 +237,23 @@ export const SupplierAccount = () => {
     },
     {
       name: "SALDO ANTERIOR",
-      selector: (row: DataRow) => convertToMoney(row.prev_balance),
-      maxWidth: "160px",
+      selector: (row: DataRow) =>
+        NumberFormatter.toDecimalMoney(row.prev_balance),
+      maxWidth: "145px",
       right: true,
     },
     {
       name: "MONTO MOVIMIENTO",
-      maxWidth: "160px",
-      selector: (row: DataRow) => convertToMoney(row.amount),
+      maxWidth: "145px",
+      selector: (row: DataRow) => NumberFormatter.toDecimalMoney(row.amount),
       right: true,
       style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1.1em" },
     },
     {
       name: "SALDO POSTERIOR",
-      maxWidth: "160px",
-      selector: (row: DataRow) => convertToMoney(row.post_balance),
+      maxWidth: "145px",
+      selector: (row: DataRow) =>
+        NumberFormatter.toDecimalMoney(row.post_balance),
       right: true,
     },
   ];
@@ -339,10 +329,10 @@ export const SupplierAccount = () => {
       {loading && <LoadingSpinner />}
       {!loading && account && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex gap-3 align-items-center">
+          <Row className="d-flex align-items-center">
+            <Col xs={6} lg={1}>
               <Button
-                variant="light border text-muted"
+                variant="light border text-muted w-100"
                 size="sm"
                 onClick={() => navigate(-1)}
                 title="Volver al detalle del proveedor"
@@ -350,46 +340,70 @@ export const SupplierAccount = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">Cuenta corriente {account.supplier}</h1>
-            </div>
-            <Button size="sm" variant="success" onClick={handleCreate}>
-              Nuevo movimiento
-            </Button>
-          </div>
+            </Col>
+            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
+              <Button
+                size="sm"
+                variant="success"
+                onClick={handleCreate}
+                title="Registrar nuevo movimiento"
+                className="w-100"
+              >
+                Nuevo movimiento
+              </Button>
+            </Col>
+            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
+              <h1 className="fs-5 my-3 my-lg-0">
+                Detalle de cuenta corriente proveedor
+              </h1>
+            </Col>
+          </Row>
 
-          <hr />
+          <hr className="mt-0 mt-lg-3" />
 
-          <Row>
-            <Col md={4}>
-              <p>
-                <strong>Proveedor:</strong> {account.supplier}
+          <Row className="mb-2">
+            <Col xs={12} xl={4}>
+              <p className="text-muted">
+                Proveedor:{" "}
+                <span className="fw-bold">{account.supplier.name}</span>
               </p>
             </Col>
-            <Col md={4}>
-              <p className="text-center">
-                {account.balance < 0 && (
-                  <Badge className="fs-6" bg="danger">
-                    Saldo: {account.symbol} {convertToMoney(account.balance)}
-                  </Badge>
-                )}
-                {account.balance == 0 && (
-                  <Badge className="fs-6" bg="secondary">
-                    Saldo: {account.symbol} {convertToMoney(account.balance)}
-                  </Badge>
-                )}
-                {account.balance > 0 && (
-                  <Badge className="fs-6" bg="success">
-                    Saldo: {account.symbol} {convertToMoney(account.balance)}
-                  </Badge>
-                )}
+            <Col xs={12} xl={4}>
+              <p className="text-muted">
+                Localidad:{" "}
+                <span className="fw-bold">{account.supplier.locality}</span>
               </p>
+            </Col>
+            <Col xs={12} xl={4}>
+              <p className="text-muted">
+                Cuenta:{" "}
+                <span className="fw-bold">
+                  {account.currency.name} ({account.currency.symbol})
+                </span>
+              </p>
+            </Col>
+            <Col xs={12} xl={4}>
+              <span className="text-muted">Saldo cuenta: </span>
+              <span
+                className={`my-0 text-center bg-${
+                  account.balance < 0
+                    ? "danger"
+                    : account.balance == 0
+                    ? "secondary"
+                    : "success"
+                } badge rounded-pill fs-6`}
+              >
+                {account.currency.symbol}{" "}
+                {NumberFormatter.formatSignedCurrency(
+                  account.currency.is_monetary,
+                  account.balance
+                )}
+              </span>
             </Col>
           </Row>
 
           <Datatable
-            title={`Listado de movimientos de cuenta corriente en ${
-              account.currency
-            } ${flags[account.symbol] || ""}`}
+            title={`Listado de últimos movimientos`}
             columns={columns as TableColumn<DataRow>[]}
             data={state.data}
             loading={state.loading}

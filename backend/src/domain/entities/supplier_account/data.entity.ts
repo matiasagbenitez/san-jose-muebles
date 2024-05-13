@@ -3,10 +3,15 @@ import { CustomError } from '../../errors/custom.error';
 export class SupplierAccountDataEntity {
     constructor(
         public id: string,
-        public supplier: string,
-        public currency: string,
-        public symbol: string,
-        public is_monetary: boolean,
+        public supplier: {
+            name: string,
+            locality: string,
+        },
+        public currency: {
+            name: string,
+            symbol: string,
+            is_monetary: boolean,
+        },
         public balance: number,
     ) { }
 
@@ -20,10 +25,15 @@ export class SupplierAccountDataEntity {
 
         return new SupplierAccountDataEntity(
             id,
-            supplier.name,
-            currency.name + ' (' + currency.symbol + ')',
-            currency.symbol,
-            currency.is_monetary,
+            {
+                name: supplier.name,
+                locality: supplier.locality.name + ', ' + supplier.locality.province.name,
+            },
+            {
+                name: currency.name,
+                symbol: currency.symbol,
+                is_monetary: currency.is_monetary,
+            },
             balance
         );
     }

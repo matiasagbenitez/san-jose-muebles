@@ -1,9 +1,12 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Province } from './Province.model';
 
 export class Locality extends Model {
     public id!: number;
     public name!: string;
     public id_province!: number;
+
+    public province!: Province;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

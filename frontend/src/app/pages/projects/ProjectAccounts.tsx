@@ -116,12 +116,12 @@ export const ProjectAccounts = () => {
           <hr className="mt-0 mt-lg-3" />
 
           <Row>
-            <Col xs={12} md={6} xl={3}>
+            <Col xs={12} lg={3}>
               <p className="text-muted">
                 Cliente: <span className="fw-bold">{project.client}</span>
               </p>
             </Col>
-            <Col xs={12} md={6}>
+            <Col xs={12} lg={6}>
               <p className="text-muted">
                 Proyecto:{" "}
                 <span className="fw-bold">
@@ -130,7 +130,7 @@ export const ProjectAccounts = () => {
                 </span>
               </p>
             </Col>
-            <Col xs={12} md={6} xl={3}>
+            <Col xs={12} lg={3}>
               <p className="text-muted">
                 Estado proyecto:{" "}
                 <span

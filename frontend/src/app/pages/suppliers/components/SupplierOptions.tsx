@@ -26,9 +26,11 @@ export const SupplierOptions = ({
   };
 
   return (
-    <div>
-      <h2 className="fs-6 mt-3">Menú de opciones</h2>
-      <div className="list-group small" style={{ marginTop: "10px" }}>
+    <>
+      <div className="list-group small">
+        <div className="list-group-item py-1 fw-bold text-muted text-uppercase text-center bg-light">
+          Opciones del proveedor
+        </div>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Cuentas bancarias del proveedor"
@@ -70,6 +72,6 @@ export const SupplierOptions = ({
           Eliminar proveedor
         </button>
       </div>
-    </div>
+    </>
   );
 };

@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
-import { SupplierAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountEntity, SupplierAccountListEntity, SupplierAccountByCurrencyEntity } from "../../domain";
+import { Supplier, SupplierAccount } from "../../database/mysql/models";
+import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountListEntity, SupplierAccountByCurrencyEntity, SupplierBasicEntity } from "../../domain";
 import { SupplierService } from "./supplier.service";
 
 export class SupplierAccountService {
@@ -52,13 +52,18 @@ export class SupplierAccountService {
             const account = await SupplierAccount.findByPk(id, {
                 include: [
                     { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
-                    { association: 'supplier', attributes: ['name'] }
+                    {
+                        association: 'supplier', attributes: ['name'], include: [{
+                            association: 'locality', attributes: ['name'],
+                            include: [{ association: 'province', attributes: ['name'] }]
+                        }]
+                    }
                 ]
             });
             if (!account) throw CustomError.notFound('Cuenta corriente no encontrada');
+            const entity = SupplierAccountDataEntity.fromObject(account);
 
-            const item = SupplierAccountDataEntity.fromObject(account);
-            return { account: item };
+            return { item: entity };
 
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
@@ -67,13 +72,24 @@ export class SupplierAccountService {
 
     public async getAccountsBySupplier(id_supplier: number) {
         try {
-            const supplierService = new SupplierService();
-            const supplier = await supplierService.getSupplierData(id_supplier);
-            if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
+            const [supplier, accounts] = await Promise.all([
+                Supplier.findByPk(id_supplier, {
+                    include: [{
+                        association: 'locality', attributes: ['name'],
+                        include: [{ association: 'province', attributes: ['name'] }]
+                    }]
+                }),
+                SupplierAccount.findAll({
+                    where: { id_supplier },
+                    include: { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
+                })
+            ]);
+            if (!supplier) throw CustomError.notFound('¡Proveedor no encontrado!');
 
-            const rows = await SupplierAccount.findAll({ where: { id_supplier }, include: 'currency' });
-            const entities = rows.map(item => SupplierAccountEntity.fromObject(item));
-            return { supplier: supplier.name, accounts: entities };
+            const entity = SupplierBasicEntity.fromObject(supplier);
+            const entities = accounts.map(item => SupplierAccountListEntity.fromObject(item));
+
+            return { supplier: entity, accounts: entities };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }
@@ -98,7 +114,7 @@ export class SupplierAccountService {
             const item = await SupplierAccount.create({ ...createSupplierAccountDto });
             const rec = await SupplierAccount.findByPk(item.id, { include: 'currency' });
             if (!rec) throw CustomError.internalServerError('¡Error al crear la cuenta corriente!');
-            const { ...account } = SupplierAccountEntity.fromObject(rec);
+            const { ...account } = SupplierAccountListEntity.fromObject(rec);
             return { account: account, message: '¡Cuenta corriente creada correctamente!' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {

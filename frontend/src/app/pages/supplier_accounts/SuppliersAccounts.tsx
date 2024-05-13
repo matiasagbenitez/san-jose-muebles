@@ -9,9 +9,9 @@ import {
   fetchData,
 } from "../../shared";
 
-import { SuppliersAccountsFilters } from "./components";
 import apiSJM from "../../../api/apiSJM";
-import { DayJsAdapter, convertToMoney } from "../../../helpers";
+import { SuppliersAccountsFilters } from "./components";
+import { DateFormatter, NumberFormatter } from "../../helpers";
 
 interface ParamsInterface {
   id: string;
@@ -21,8 +21,11 @@ interface ParamsInterface {
 interface DataRow {
   id: number;
   supplier: string;
-  currency: string;
-  symbol: string;
+  currency: {
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
+  };
   balance: number;
   updatedAt: Date;
 }
@@ -87,20 +90,16 @@ export const SuppliersAccounts = () => {
     },
     {
       name: "CUENTA CORRIENTE",
-      selector: (row: DataRow) => row.supplier + " - CUENTA CORRIENTE EN " + row.currency,
+      selector: (row: DataRow) =>
+        row.supplier + " - CUENTA CORRIENTE EN " + row.currency.name,
       wrap: true,
     },
-    // {
-    //   name: "MONEDA",
-    //   selector: (row: DataRow) => row.currency,
-    //   wrap: true,
-    // },
     {
       name: "SALDO ACTUAL",
       selector: (row: DataRow) => row.balance,
       cell: (row: DataRow) => (
         <>
-          <small className="text-muted me-1">{row.symbol}</small>
+          <small className="text-muted me-1">{row.currency.symbol}</small>
           <b
             style={{ fontSize: "1.1em" }}
             className={`text-${
@@ -111,7 +110,10 @@ export const SuppliersAccounts = () => {
                 : "secondary"
             }`}
           >
-            {convertToMoney(row.balance)}
+            {NumberFormatter.formatSignedCurrency(
+              row.currency.is_monetary,
+              row.balance
+            )}
           </b>
         </>
       ),
@@ -124,8 +126,7 @@ export const SuppliersAccounts = () => {
       name: "ÚLTIMO MOVIMIENTO",
       maxWidth: "250px",
       center: true,
-      selector: (row: DataRow) =>
-        DayJsAdapter.toDayMonthYearHour(row.updatedAt),
+      selector: (row: DataRow) => DateFormatter.toDMYH(row.updatedAt),
     },
   ];
 

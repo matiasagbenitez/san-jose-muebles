@@ -3,16 +3,17 @@ import { Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
-import { DayJsAdapter, toMoney } from "../../../helpers";
 import { SweetAlert2 } from "../../utils";
-
+import { DateFormatter, NumberFormatter } from "../../helpers";
 interface SupplierAccount {
   id: number;
-  id_supplier: number;
-  id_currency: number;
-  currency: string;
+  currency: {
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
+  };
   balance: number;
-  updated_at: string;
+  updatedAt: Date;
 }
 
 const initialForm = {
@@ -80,17 +81,17 @@ export const SupplierAccounts = () => {
 
   const handleRedirectAccount = (id: number) => {
     navigate(`/cuentas-proveedores/${id}`);
-  }
+  };
 
   return (
     <>
       {loading && <LoadingSpinner />}
       {!loading && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex gap-3 align-items-center">
+          <Row className="d-flex align-items-center">
+            <Col xs={6} lg={1}>
               <Button
-                variant="light border text-muted"
+                variant="light border text-muted w-100"
                 size="sm"
                 onClick={() => navigate(`/proveedores/${id}`)}
                 title="Volver al detalle del proveedor"
@@ -98,15 +99,40 @@ export const SupplierAccounts = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">
-                Cuentas corrientes con proveedor: {supplier}
+            </Col>
+            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
+              <Button
+                size="sm"
+                variant="success"
+                onClick={handleCreate}
+                title="Registrar nueva cuenta corriente"
+                className="w-100"
+              >
+                Nueva cuenta
+              </Button>
+            </Col>
+            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
+              <h1 className="fs-5 my-3 my-lg-0">
+                Listado de cuentas corrientes
               </h1>
-            </div>
-            <Button size="sm" variant="success" onClick={handleCreate}>
-              Nueva cuenta
-            </Button>
-          </div>
-          <hr />
+            </Col>
+          </Row>
+
+          <hr className="mt-0 mt-lg-3" />
+
+          <Row>
+            <Col xs={12} md={6}>
+              <p className="text-muted">
+                Proveedor: <span className="fw-bold">{supplier.name}</span>
+              </p>
+            </Col>
+            <Col xs={12} md={6}>
+              <p className="text-muted">
+                Localidad: <span className="fw-bold">{supplier.locality}</span>
+              </p>
+            </Col>
+          </Row>
+
           {accounts.length === 0 ? (
             <p className="text-muted text-center">
               <i className="bi bi-exclamation-circle me-2"></i>
@@ -114,41 +140,54 @@ export const SupplierAccounts = () => {
             </p>
           ) : (
             <Row>
-              {accounts.map((account: any) => (
-                <Col key={account.id} xs={12} md={6} lg={4} className="mb-3">
-                  <Card className="text-center small">
-                    <Card.Header>{supplier}</Card.Header>
-                    <Card.Body>
-                      <Card.Title>Cuenta en {account.currency}</Card.Title>
-                      <Card.Subtitle className="my-3 text-muted">
-                        <span>Saldo: </span>
-                        {account.balance < 0 ? (
-                          <span className="text-danger">
-                            - ${toMoney(account.balance * -1)}
+              {accounts.map(
+                (
+                  { id, currency, balance, updatedAt }: SupplierAccount,
+                  index
+                ) => (
+                  <Col key={index} xs={12} md={6} lg={4} className="mb-3">
+                    <Card className="text-center small">
+                      <Card.Header>CUENTA CORRIENTE PROVEEDOR</Card.Header>
+                      <Card.Body>
+                        <Card.Title>
+                          {currency.name} ({currency.symbol})
+                        </Card.Title>
+                        <Card.Subtitle
+                          className={`my-3 text-${
+                            balance < 0
+                              ? "danger"
+                              : balance == 0
+                              ? "muted"
+                              : "success"
+                          }`}
+                        >
+                          <span>{currency.symbol} </span>
+                          <span>
+                            {NumberFormatter.formatSignedCurrency(
+                              currency.is_monetary,
+                              balance
+                            )}
                           </span>
-                        ) : account.balance == 0 ? (
-                          <span className="text-muted">
-                            ${toMoney(account.balance)}
-                          </span>
-                        ) : (
-                          <span className="text-success">
-                            + ${toMoney(account.balance)}
-                          </span>
-                        )}
-                      </Card.Subtitle>
-                      <Button variant="primary" size="sm" onClick={() => handleRedirectAccount(account.id)}>
-                        Ir a cuenta
-                      </Button>
-                    </Card.Body>
-                    <Card.Footer className="text-muted">
-                      <span>
-                        Última actualización:{" "}
-                        {DayJsAdapter.toDayMonthYearHour(account.updated_at)}
-                      </span>
-                    </Card.Footer>
-                  </Card>
-                </Col>
-              ))}
+                        </Card.Subtitle>
+
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleRedirectAccount(id)}
+                        >
+                          Ir a cuenta
+                        </Button>
+                      </Card.Body>
+                      <Card.Footer className="text-muted">
+                        <span>
+                          Última actualización:{" "}
+                          {DateFormatter.toDMYH(updatedAt)}
+                        </span>
+                      </Card.Footer>
+                    </Card>
+                  </Col>
+                )
+              )}
             </Row>
           )}
 

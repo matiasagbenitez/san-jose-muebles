@@ -1,4 +1,5 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Locality } from './Locality.model';
 
 export class Supplier extends Model {
     public id!: number;
@@ -9,6 +10,8 @@ export class Supplier extends Model {
     public address!: string;
     public id_locality!: number;
     public annotations!: string;
+
+    public locality!: Locality;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

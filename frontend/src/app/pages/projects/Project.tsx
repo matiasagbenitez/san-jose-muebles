@@ -33,8 +33,8 @@ export const Project = () => {
       {loading && <LoadingSpinner />}
       {!loading && project && (
         <>
-          <Row className="mb-0 mb-lg-3">
-            <Col xs={12} lg={1}>
+          <Row className="mb-0 mb-lg-3 d-flex align-items-center">
+            <Col xs={12} sm={2} xxl={1}>
               <Button
                 variant="light border text-muted"
                 size="sm"
@@ -46,15 +46,15 @@ export const Project = () => {
                 Atrás
               </Button>
             </Col>
-            <Col xs={12} lg={11}>
+            <Col xs={12} sm={10} xx g={11}>
               <h1 className="fs-5 my-3 my-lg-0">Detalle de proyecto</h1>
             </Col>
           </Row>
           <Row>
-            <Col xs={12} lg={8}>
+            <Col xs={12} xl={8}>
               <Data project={project} />
             </Col>
-            <Col xs={12} lg={4}>
+            <Col xs={12} xl={4}>
               <Options id={project.id} />
             </Col>
           </Row>

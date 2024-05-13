@@ -73,23 +73,28 @@ export const Supplier = () => {
       {loading && <LoadingSpinner />}
       {supplier && !loading && (
         <>
+          <Row className="mb-0 mb-lg-3 d-flex align-items-center">
+            <Col xs={12} sm={2} xxl={1}>
+              <Button
+                variant="light border text-muted"
+                size="sm"
+                onClick={() => navigate(`/proveedores`)}
+                title="Volver al listado de proveedores"
+                className="w-100"
+              >
+                <i className="bi bi-arrow-left me-2"></i>
+                Atrás
+              </Button>
+            </Col>
+            <Col xs={12} sm={10} xx g={11}>
+              <h1 className="fs-5 my-3 my-lg-0">{supplier.name}</h1>
+            </Col>
+          </Row>
           <Row>
-            <Col lg={8}>
-              <div className="d-flex gap-3 align-items-center mb-3">
-                <Button
-                  variant="light border text-muted"
-                  size="sm"
-                  onClick={() => navigate(`/proveedores`)}
-                  title="Volver al listado de proveedores"
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Atrás
-                </Button>
-                <h1 className="fs-5 my-0">{supplier.name}</h1>
-              </div>
+            <Col xs={12} xl={8}>
               <SupplierInfo supplier={supplier} />
             </Col>
-            <Col lg={4}>
+            <Col xs={12} xl={4}>
               <SupplierOptions
                 id={+id!}
                 setIsModalOpen={setIsModalOpen}
@@ -97,7 +102,7 @@ export const Supplier = () => {
               />
             </Col>
           </Row>
-
+          
           <SuppliersForm
             show={isModalOpen}
             onHide={handleHide}
