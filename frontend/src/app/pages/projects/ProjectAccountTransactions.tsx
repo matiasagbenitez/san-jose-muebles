@@ -353,7 +353,7 @@ export const ProjectAccountTransactions = () => {
           <hr className="mt-0 mt-lg-3" />
 
           {/* PROJECT ACCOUNT INFO */}
-          <Row className="mb-2">
+          <Row className="mb-3">
             <Col xs={12} xl={4}>
               <p className="text-muted">
                 Cliente: <span className="fw-bold">{account.client}</span>

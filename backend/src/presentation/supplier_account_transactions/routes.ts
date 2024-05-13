@@ -14,6 +14,8 @@ export class SupplierAccountTransactionRoutes {
 
         router.post('/new-movement', [AuthMiddleware.validateJWT], controller.addNewMovement);
 
+        router.get('/:id', [AuthMiddleware.validateJWT], controller.getTransaction);
+        
         return router;
     }
 

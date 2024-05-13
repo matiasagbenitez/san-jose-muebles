@@ -1,20 +1,7 @@
-import { CustomError, PaginationDto, SupplierAccountTransactionEntity, TransactionDto } from "../../domain";
+import { CustomError, PaginationDto, SupplierAccountTransactionEntity, SupplierTransactionDetailEntity, TransactionDto } from "../../domain";
 import { SupplierAccount, SupplierAccountTransaction } from "../../database/mysql/models";
 import { SupplierAccountService } from "./supplier_account.service";
 import { Transaction } from "sequelize";
-
-// ! --- TYPES ---
-// NEW_PURCHASE: Nueva compra (valor negativo, aumenta deuda) -> se crea al momento de registrar una compra
-// DEL_PURCHASE: Anulación de compra (valor positivo, disminuye deuda) -> se crea al momento de anular una compra
-
-// NEW_PAYMENT: Nuevo pago de empresa a proveedor (valor positivo, disminuye deuda) -> se crea al momento de registrar un pago de empresa a proveedor
-// POS_ADJ: Ajuste positivo (valor positivo, disminuye deuda) -> se crea al momento de registrar un ajuste positivo
-// NEG_ADJ: Ajuste negativo (valor negativo, aumenta deuda) -> se crea al momento de registrar un ajuste negativo
-
-// NEW_CLIENT_PAYMENT: Nuevo pago de cliente a proveedor (valor positivo, disminuye deuda) -> se crea al momento de registrar un pago de cliente a proveedor
-// DEL_CLIENT_PAYMENT: Anulación de pago de cliente a proveedor (valor negativo, aumenta deuda) -> se crea al momento de anular un pago de cliente a proveedor
-
-// ! --- TYPES ---
 
 interface DataInterface {
     id_supplier_account: number;
@@ -68,6 +55,34 @@ export class SupplierAccountTransactionService {
             const items = transactions.rows.map(item => SupplierAccountTransactionEntity.fromObject(item));
 
             return { items: items, total_items: transactions.count };
+        } catch (error: any) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    // * GET TRANSACTION BY ID *
+    // Obtiene una transacción por su ID
+    public async getTransactionById(id: number) {
+        try {
+            const transaction = await SupplierAccountTransaction.findByPk(id, {
+                include: [
+                    {
+                        association: 'account', include: [
+                            { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
+                            { association: 'supplier', include: [
+                                    { association: 'locality', attributes: ['name'], include: [{ association: 'province', attributes: ['name'] }] }
+                                ]
+                            },
+                            { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] }
+                        ]
+                    },
+                    { association: 'user', attributes: ['name'] },
+                ],
+            });
+            if (!transaction) throw CustomError.notFound('¡La transacción no existe!');
+            const entity = SupplierTransactionDetailEntity.fromObject(transaction);
+
+            return { item: entity }
         } catch (error: any) {
             throw CustomError.internalServerError(`${error}`);
         }

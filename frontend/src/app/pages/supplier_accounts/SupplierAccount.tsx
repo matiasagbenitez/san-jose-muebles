@@ -324,6 +324,10 @@ export const SupplierAccount = () => {
     </Popover>
   );
 
+  const handleRedirect = (row: DataRow) => {
+    navigate(`/cuentas-proveedores/${id}/movimiento/${row.id}`);
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -361,7 +365,7 @@ export const SupplierAccount = () => {
 
           <hr className="mt-0 mt-lg-3" />
 
-          <Row className="mb-2">
+          <Row className="mb-3">
             <Col xs={12} xl={4}>
               <p className="text-muted">
                 Proveedor:{" "}
@@ -410,6 +414,8 @@ export const SupplierAccount = () => {
             totalRows={state.totalRows}
             handleRowsPerPageChange={handleRowsPerPageChange}
             handlePageChange={handlePageChange}
+            clickableRows
+            onRowClicked={handleRedirect}
           />
 
           <Modal show={isModalOpen} onHide={() => handleClose()}>
