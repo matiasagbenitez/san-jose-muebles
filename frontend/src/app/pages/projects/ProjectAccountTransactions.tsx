@@ -128,7 +128,20 @@ export const ProjectAccountTransactions = () => {
       selector: (row: DataRow) => row.description,
       format: (row: DataRow) => (
         <div className="text-break" style={{ maxWidth: "300px" }}>
-          {row.description}
+          {row.supplier && (
+            <Button
+              size="sm"
+              variant="link"
+              onClick={() => handleRedirectSupplierPayment(row.supplier!)}
+              className="p-0 text-start"
+            >
+              <small>
+                PAGO A PROVEEDOR N° {row.supplier.id_movement} -{" "}
+                {row.supplier.supplier}
+              </small>
+            </Button>
+          )}
+          {!row.supplier && row.description && <span>{row.description}</span>}
         </div>
       ),
     },
@@ -242,7 +255,6 @@ export const ProjectAccountTransactions = () => {
     e.preventDefault();
 
     try {
-      console.log(formData);
       setIsFormSubmiting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de registrar el movimiento?"
@@ -312,6 +324,14 @@ export const ProjectAccountTransactions = () => {
     } catch (error) {
       return [];
     }
+  };
+
+  const handleRedirectSupplierPayment = (supplier: any) => {
+    const url = `/cuentas-proveedores/${supplier.id_account}/movimiento/${supplier.id_movement}`;
+    console.log(url);
+    navigate(
+      `/cuentas-proveedores/${supplier.id_account}/movimiento/${supplier.id_movement}`
+    );
   };
 
   return (

@@ -111,6 +111,11 @@ export interface TransactionDataRow {
     prev_balance: number;
     equivalent_amount: number;
     post_balance: number;
+    supplier?: {
+        id_account: number;
+        id_movement: number;
+        supplier: string;
+    };
 }
 
 export enum MovementType {

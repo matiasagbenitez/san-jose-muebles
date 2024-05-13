@@ -13,7 +13,23 @@ export class ProjectAccountTransactionService {
                 where: { id_project_account: id },
                 include: [
                     { association: 'user', attributes: ['name'] },
-                    { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] }
+                    { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
+                    {
+                        association: 'project_supplier_transaction',
+                        include: [
+                            {
+                                association: 'supplier_transaction', include: [
+                                    {
+                                        association: 'account', include: [
+                                            {
+                                                association: 'supplier', attributes: ['name']
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                        ],
+                    },
                 ],
                 order: [['createdAt', 'DESC']],
                 offset: (page - 1) * limit,
@@ -148,7 +164,7 @@ export class ProjectAccountTransactionService {
             const supplier_transaction = await SupplierAccountTransaction.create({
                 id_supplier_account: supplierAccount.id,
                 type: 'NEW_CLIENT_PAYMENT',
-                description: 'PAGO DE CLIENTE A PROVEEDOR',
+                description: 'PAGO DE CLIENTE A PROVEEDOR N° ' + project_transaction.id,
                 prev_balance: prev_supplier_balance,
                 amount: dto.received_amount,
                 post_balance: post_supplier_balance,

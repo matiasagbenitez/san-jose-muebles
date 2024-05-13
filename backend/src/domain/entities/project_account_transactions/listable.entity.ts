@@ -1,5 +1,9 @@
 import { CustomError } from '../../errors/custom.error';
-
+interface SupplierInterface {
+    id_account: number;
+    id_movement: number;
+    supplier: string;
+}
 export class ProjectAccountTransactionEntity {
     constructor(
         public id: string,
@@ -13,10 +17,11 @@ export class ProjectAccountTransactionEntity {
         public prev_balance: number,
         public equivalent_amount: number,
         public post_balance: number,
+        public supplier?: SupplierInterface | undefined,
     ) { }
 
     static fromObject(object: { [key: string]: any }): ProjectAccountTransactionEntity {
-        const { id, type, createdAt, user, description, received_amount, currency, prev_balance, equivalent_amount, post_balance } = object;
+        const { id, type, createdAt, user, description, received_amount, currency, prev_balance, equivalent_amount, post_balance, project_supplier_transaction } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!type) throw CustomError.badRequest('Falta el tipo');
@@ -27,7 +32,20 @@ export class ProjectAccountTransactionEntity {
         if (!currency) throw CustomError.badRequest('Falta la moneda');
         if (!prev_balance) throw CustomError.badRequest('Falta el saldo anterior');
         if (!equivalent_amount) throw CustomError.badRequest('Falta el monto');
-        if (!post_balance) throw CustomError.badRequest('Falta el saldo posterior'); 
+        if (!post_balance) throw CustomError.badRequest('Falta el saldo posterior');
+
+        let supplier_data: SupplierInterface | undefined = undefined;
+        if (project_supplier_transaction) {
+            supplier_data = {
+                id_account: project_supplier_transaction.supplier_transaction.account.id,
+                id_movement: project_supplier_transaction.id_supplier_account_transaction,
+                supplier: project_supplier_transaction.supplier_transaction.account.supplier.name,
+            };
+        }
+
+        if (!supplier_data || !supplier_data.id_account || !supplier_data.id_movement || !supplier_data.supplier) {
+            supplier_data = undefined;
+        }
 
         return new ProjectAccountTransactionEntity(
             id,
@@ -41,6 +59,7 @@ export class ProjectAccountTransactionEntity {
             prev_balance,
             equivalent_amount,
             post_balance,
+            supplier_data,
         );
     }
 }
