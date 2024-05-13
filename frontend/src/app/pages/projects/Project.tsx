@@ -33,23 +33,28 @@ export const Project = () => {
       {loading && <LoadingSpinner />}
       {!loading && project && (
         <>
+          <Row className="mb-0 mb-lg-3">
+            <Col xs={12} lg={1}>
+              <Button
+                variant="light border text-muted"
+                size="sm"
+                onClick={() => navigate(`/proyectos`)}
+                title="Volver al listado de proyectos"
+                className="w-100"
+              >
+                <i className="bi bi-arrow-left me-2"></i>
+                Atrás
+              </Button>
+            </Col>
+            <Col xs={12} lg={11}>
+              <h1 className="fs-5 my-3 my-lg-0">Detalle de proyecto</h1>
+            </Col>
+          </Row>
           <Row>
-            <Col lg={8}>
-              <div className="d-flex gap-3 align-items-center mb-3">
-                <Button
-                  variant="light border text-muted"
-                  size="sm"
-                  onClick={() => navigate(`/proyectos`)}
-                  title="Volver al listado de proyectos"
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Atrás
-                </Button>
-                <h1 className="fs-5 my-0">Detalle de proyecto</h1>
-              </div>
+            <Col xs={12} lg={8}>
               <Data project={project} />
             </Col>
-            <Col lg={4}>
+            <Col xs={12} lg={4}>
               <Options id={project.id} />
             </Col>
           </Row>

@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { SupplierAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountEntity, SupplierAccountListEntity } from "../../domain";
+import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountEntity, SupplierAccountListEntity, SupplierAccountByCurrencyEntity } from "../../domain";
 import { SupplierService } from "./supplier.service";
 
 export class SupplierAccountService {
@@ -33,7 +33,7 @@ export class SupplierAccountService {
         ]);
 
         const items = suppliersAccounts.map(item => SupplierAccountListEntity.fromObject(item));
-        return { items, total_items: total};
+        return { items, total_items: total };
     }
 
 
@@ -74,6 +74,20 @@ export class SupplierAccountService {
             const rows = await SupplierAccount.findAll({ where: { id_supplier }, include: 'currency' });
             const entities = rows.map(item => SupplierAccountEntity.fromObject(item));
             return { supplier: supplier.name, accounts: entities };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async getSuppliersAccountsByCurrency(id_currency: number) {
+        try {
+            const rows = await SupplierAccount.findAll({
+                where: { id_currency },
+                include: ['currency', 'supplier'],
+                order: [['supplier', 'name', 'ASC']]
+            });
+            const entities = rows.map(item => SupplierAccountByCurrencyEntity.fromObject(item));
+            return { items: entities };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
         }

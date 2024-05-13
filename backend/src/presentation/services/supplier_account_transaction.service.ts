@@ -38,7 +38,27 @@ export class SupplierAccountTransactionService {
                 where: { id_supplier_account: id },
                 include: [
                     { association: 'user', attributes: ['name'] },
-                    { association: 'purchase_transaction' }
+                    { association: 'purchase_transaction' },
+                    {
+                        association: 'project_supplier_transaction',
+                        include: [
+                            {
+                                association: 'project_transaction', include: [
+                                    {
+                                        association: 'account', include: [
+                                            {
+                                                association: 'project', include: [
+                                                    {
+                                                        association: 'client'
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                        ],
+                    },
                 ],
                 order: [['createdAt', 'DESC']],
                 offset: (page - 1) * limit,

@@ -38,7 +38,7 @@ export class VisitRequestListEntity {
             schedule,
             start,
             status,
-            client.name,
+            client.last_name + ' ' + client.name,
             locality.name,
             reason.name,
             priority,

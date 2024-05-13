@@ -115,6 +115,7 @@ export interface TransactionDataRow {
 
 export enum MovementType {
     NEW_PAYMENT = "NEW_PAYMENT",
+    NEW_SUPPLIER_PAYMENT = "NEW_SUPPLIER_PAYMENT",
     POS_ADJ = "POS_ADJ",
     NEG_ADJ = "NEG_ADJ",
 }
@@ -123,7 +124,7 @@ export enum Movements {
     NEW_PAYMENT = "PAGO DEL CLIENTE",
     POS_ADJ = "AJUSTE A FAVOR",
     NEG_ADJ = "AJUSTE EN CONTRA",
-    NEW_SUPPLIER_PAYMENT = "PAGO AL PROVEEDOR",
+    NEW_SUPPLIER_PAYMENT = "PAGO A PROVEEDOR",
     DEL_SUPPLIER_PAYMENT = "ELIMINACIÓN DE PAGO AL PROVEEDOR",
 }
 
@@ -133,6 +134,11 @@ export const types: Record<
 > = {
     [MovementType.NEW_PAYMENT]: {
         label: "PAGO DEL CLIENTE",
+        icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+        title: "Disminuye la deuda del cliente",
+    },
+    [MovementType.NEW_SUPPLIER_PAYMENT]: {
+        label: "PAGO A PROVEEDOR",
         icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
         title: "Disminuye la deuda del cliente",
     },

@@ -15,7 +15,7 @@ export const Data = ({ project }: Props) => {
   return (
     <>
       <Table size="sm" className="small" striped bordered responsive>
-        <tbody className="text-uppercase">
+        <tbody className="text-uppercase align-middle">
           <tr>
             <th scope="row" className="px-2 col-4">
               Cliente

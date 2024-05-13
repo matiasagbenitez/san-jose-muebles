@@ -38,6 +38,7 @@ import {
     Member,
     GroupMember,
     PurchaseNullation,
+    ProjectSupplierTransaction,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -92,10 +93,10 @@ export const initializeAssociations = () => {
     PurchaseItem.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
 
     Purchase.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
-    
+
     Purchase.hasOne(PurchaseNullation, { foreignKey: 'id_purchase', as: 'nullation', onDelete: 'RESTRICT' });
     PurchaseNullation.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
-    
+
     PurchaseNullation.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
     PurchaseItem.hasMany(ReceptionPartial, { foreignKey: 'id_purchase_item', as: 'receptions', onDelete: 'RESTRICT' });
@@ -189,6 +190,12 @@ export const initializeAssociations = () => {
 
     ProjectAccountTransaction.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
 
+    ProjectAccountTransaction.hasOne(ProjectSupplierTransaction, { foreignKey: 'id_project_account_transaction', as: 'project_supplier_transaction', onDelete: 'RESTRICT' });
+    ProjectSupplierTransaction.belongsTo(ProjectAccountTransaction, { foreignKey: 'id_project_account_transaction', as: 'project_transaction', onDelete: 'RESTRICT' });
+
+    SupplierAccountTransaction.hasOne(ProjectSupplierTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'project_supplier_transaction', onDelete: 'RESTRICT' });
+    ProjectSupplierTransaction.belongsTo(SupplierAccountTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'supplier_transaction', onDelete: 'RESTRICT' });
+ 
     // GROUP
 
     // many to many

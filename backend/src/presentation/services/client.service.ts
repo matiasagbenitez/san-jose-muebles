@@ -17,7 +17,7 @@ export class ClientService {
 
     public async getClientsList() {
         const rows = await Client.findAll({ order: [['last_name', 'ASC']] });
-        const entities = rows.map(row => Select2ItemEntity.fromObject(row));
+        const entities = rows.map(row => ClientSelectEntity.fromObject(row));
         return { clients: entities };
     }
 

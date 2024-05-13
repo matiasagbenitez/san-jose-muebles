@@ -12,9 +12,11 @@ export const Options = ({ id }: Props) => {
   };
 
   return (
-    <div>
-      <h2 className="fs-6 mt-3">Menú de opciones</h2>
-      <div className="list-group small" style={{ marginTop: "10px" }}>
+    <>
+      <div className="list-group small">
+        <div className="list-group-item py-1 fw-bold text-muted text-uppercase text-center bg-light">
+          Opciones del proyecto
+        </div>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Cuentas corrientes del proyecto"
@@ -89,6 +91,6 @@ export const Options = ({ id }: Props) => {
           Eliminar proyecto
         </button>
       </div>
-    </div>
+    </>
   );
 };

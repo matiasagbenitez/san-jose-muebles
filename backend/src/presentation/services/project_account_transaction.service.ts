@@ -1,5 +1,5 @@
 import { CustomError, PaginationDto, ProjectAccountTransactionEntity, ProjectTransactionDetailEntity, CreateProjectAccountTransactionDTO } from "../../domain";
-import { ProjectAccount, ProjectAccountTransaction } from "../../database/mysql/models";
+import { ProjectAccount, ProjectAccountTransaction, ProjectSupplierTransaction, SupplierAccount, SupplierAccountTransaction } from "../../database/mysql/models";
 
 export class ProjectAccountTransactionService {
 
@@ -91,6 +91,82 @@ export class ProjectAccountTransactionService {
             await transaction.commit();
 
             return { message: '¡Transacción PAGO DE CLIENTE registrada correctamente!' };
+        } catch (error: any) {
+            await transaction.rollback();
+            const errorMessages: Record<string, string> = {
+                SequelizeValidationError: 'Ocurrió un error de VALIDACIÓN al crear el pago del cliente',
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al crear el pago del cliente',
+                SequelizeUniqueConstraintError: 'Ocurrió un error de CONFLICTO al crear el pago del cliente',
+                SequelizeForeignKeyConstraintError: 'Ocurrió un error de REFERENCIA al crear el pago del cliente',
+            };
+
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al crear el pago del cliente';
+            throw CustomError.internalServerError(errorMessage);
+        }
+    }
+
+    // * NEW_SUPPLIER_PAYMENT *
+    // El monto del pago disminuye la deuda del cliente con la empresa (númerico positivo)
+    // Se crea al momento de registrar un pago por parte de un cliente al proveedor
+    public async createTransactionNewSupplierPayment(dto: CreateProjectAccountTransactionDTO, id_user: number) {
+        const transaction = await ProjectAccount.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!');
+
+        try {
+            const projectAccount = await ProjectAccount.findByPk(dto.id_project_account);
+            if (!projectAccount) throw CustomError.notFound('¡La cuenta del proyecto no existe!');
+
+            // Calcular el nuevo saldo de la cuenta del proyecto
+            const prev_balance = Number(projectAccount.balance);
+            const post_balance = prev_balance + Number(dto.equivalent_amount);
+
+            // Registrar la transacción
+            const project_transaction = await ProjectAccountTransaction.create({
+                id_project_account: projectAccount.id,
+                type: 'NEW_SUPPLIER_PAYMENT',
+                description: dto.description,
+                received_amount: dto.received_amount,
+                id_currency: dto.id_currency,
+                prev_balance: prev_balance,
+                equivalent_amount: dto.equivalent_amount,
+                post_balance: post_balance,
+                id_user: id_user,
+            }, { transaction });
+
+            // Actualizar el saldo de la cuenta del proyecto
+            await projectAccount.update({ balance: post_balance }, { transaction });
+
+            // Buscar la cuenta del proveedor
+            const supplierAccount = await SupplierAccount.findByPk(dto.id_supplier_account);
+            if (!supplierAccount) throw CustomError.notFound('¡La cuenta del proveedor no existe!');
+
+            // Calcular el nuevo saldo de la cuenta del proveedor
+            const prev_supplier_balance = Number(supplierAccount.balance);
+            const post_supplier_balance = prev_supplier_balance + Number(dto.received_amount);
+
+            // Registrar la transacción
+            const supplier_transaction = await SupplierAccountTransaction.create({
+                id_supplier_account: supplierAccount.id,
+                type: 'NEW_CLIENT_PAYMENT',
+                description: 'PAGO DE CLIENTE A PROVEEDOR',
+                prev_balance: prev_supplier_balance,
+                amount: dto.received_amount,
+                post_balance: post_supplier_balance,
+                id_user: id_user,
+            }, { transaction });
+
+            // Actualizar el saldo de la cuenta del proveedor
+            await supplierAccount.update({ balance: post_supplier_balance }, { transaction });
+
+            // Crear transacción de pago de cliente a proveedor
+            await ProjectSupplierTransaction.create({
+                id_project_account_transaction: project_transaction.id,
+                id_supplier_account_transaction: supplier_transaction.id,
+            }, { transaction });
+
+            await transaction.commit();
+
+            return { message: '¡Transacción PAGO DE CLIENTE A PROVEEDOR registrada correctamente!' };
         } catch (error: any) {
             await transaction.rollback();
             const errorMessages: Record<string, string> = {

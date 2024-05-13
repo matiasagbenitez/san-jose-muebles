@@ -13,6 +13,7 @@ export class SupplierAccountRoutes {
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/supplier/:id_supplier', [AuthMiddleware.validateJWT], controller.getBySupplier);
         router.get('/:id_supplier_account', [AuthMiddleware.validateJWT], controller.getDataById);
+        router.get('/by-currency/:id_currency', [AuthMiddleware.validateJWT], controller.getByCurrency);
 
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
 

@@ -83,10 +83,10 @@ export const ProjectAccounts = () => {
       {loading && <LoadingSpinner />}
       {!loading && project && accounts && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex gap-3 align-items-center">
+          <Row className="d-flex align-items-center">
+            <Col xs={6} lg={1}>
               <Button
-                variant="light border text-muted"
+                variant="light border text-muted w-100"
                 size="sm"
                 onClick={() => navigate(`/proyectos/${id}`)}
                 title="Volver al detalle del proyecto"
@@ -94,15 +94,27 @@ export const ProjectAccounts = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">
-                Listado de cuentas corrientes del proyecto
+            </Col>
+            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
+              <Button
+                size="sm"
+                variant="success"
+                onClick={handleCreate}
+                title="Registrar nueva cuenta corriente"
+                className="w-100"
+              >
+                Nueva cuenta
+              </Button>
+            </Col>
+            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
+              <h1 className="fs-5 my-3 my-lg-0">
+                Listado de cuentas corrientes
               </h1>
-            </div>
-            <Button size="sm" variant="success" onClick={handleCreate}>
-              Nueva cuenta
-            </Button>
-          </div>
-          <hr />
+            </Col>
+          </Row>
+
+          <hr className="mt-0 mt-lg-3" />
+
           <Row>
             <Col xs={12} md={6} xl={3}>
               <p className="text-muted">

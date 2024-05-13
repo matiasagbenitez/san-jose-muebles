@@ -39,6 +39,7 @@ enum MovementType {
   NEW_PURCHASE = "NEW_PURCHASE",
   DEL_PURCHASE = "DEL_PURCHASE",
   NEW_PAYMENT = "NEW_PAYMENT",
+  NEW_CLIENT_PAYMENT = "NEW_CLIENT_PAYMENT",
   POS_ADJ = "POS_ADJ",
   NEG_ADJ = "NEG_ADJ",
 }
@@ -59,6 +60,11 @@ const types: Record<
   },
   [MovementType.NEW_PAYMENT]: {
     label: "PAGO PROPIO",
+    icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+    title: "Disminuye la deuda con el proveedor",
+  },
+  [MovementType.NEW_CLIENT_PAYMENT]: {
+    label: "PAGO DE CLIENTE",
     icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
     title: "Disminuye la deuda con el proveedor",
   },
@@ -94,6 +100,12 @@ const initialForm = {
   amount: 0,
 };
 
+interface ProjectInterface {
+  id_project: number;
+  id_account: number;
+  id_movement: number;
+  client: string;
+}
 interface DataRow {
   id: number;
   createdAt: Date;
@@ -104,7 +116,7 @@ interface DataRow {
   amount: number;
   post_balance: number;
   id_purchase?: number;
-  id_project?: number;
+  project?: ProjectInterface;
 }
 
 export const SupplierAccount = () => {
@@ -194,7 +206,19 @@ export const SupplierAccount = () => {
                 <small>{row.description}</small>
               </Button>
             )}
-            {!row.id_purchase && row.description && (
+            {row.project && (
+              <Button
+                size="sm"
+                variant="link"
+                onClick={() => handleRedirectClientPayment(row.project!)}
+                className="p-0 text-start"
+              >
+                <small>
+                  {row.description} - {row.project.client}
+                </small>
+              </Button>
+            )}
+            {!row.id_purchase && !row.project && row.description && (
               <span>{row.description}</span>
             )}
           </>
@@ -255,6 +279,12 @@ export const SupplierAccount = () => {
 
   const handleRedirectPurchase = (id_purchase: number) => {
     navigate(`/compras/${id_purchase}`);
+  };
+
+  const handleRedirectClientPayment = (project: ProjectInterface) => {
+    navigate(
+      `/proyectos/${project.id_project}/cuentas/${project.id_account}/movimiento/${project.id_movement}`
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

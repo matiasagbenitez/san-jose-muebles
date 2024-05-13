@@ -25,7 +25,16 @@ import {
 } from "./interfaces";
 import { DateFormatter, NumberFormatter } from "../../helpers";
 
-const initialForm = {
+interface InitialForm {
+  type: string;
+  description: string;
+  amount: number;
+  id_currency: string;
+  equivalent_amount: number;
+  id_supplier_account?: string;
+}
+
+const initialForm: InitialForm = {
   type: "",
   description: "",
   amount: 0,
@@ -49,6 +58,7 @@ export const ProjectAccountTransactions = () => {
 
   const [currencies, setCurrencies] = useState<ParamsInterface[]>([]);
   const [formData, setFormData] = useState(initialForm);
+  const [supplierAccounts, setSupplierAccounts] = useState([]);
 
   const fetch = async () => {
     try {
@@ -142,7 +152,7 @@ export const ProjectAccountTransactions = () => {
           </div>
         );
       },
-      maxWidth: "180px",
+      maxWidth: "200px",
     },
     {
       name: "IMPORTE",
@@ -232,6 +242,7 @@ export const ProjectAccountTransactions = () => {
     e.preventDefault();
 
     try {
+      console.log(formData);
       setIsFormSubmiting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de registrar el movimiento?"
@@ -265,6 +276,10 @@ export const ProjectAccountTransactions = () => {
         setFormData({ ...formData, equivalent_amount: 0 });
       }
     }
+
+    if (!formData.id_currency) {
+      setFormData({ ...formData, id_supplier_account: "" });
+    }
   }, [formData.id_currency]);
 
   useEffect(() => {
@@ -273,10 +288,30 @@ export const ProjectAccountTransactions = () => {
     }
   }, [formData.amount]);
 
+  useEffect(() => {
+    if (formData.type === "NEW_SUPPLIER_PAYMENT" && formData.id_currency) {
+      fetchSuppliers();
+    } else {
+      setSupplierAccounts([]);
+    }
+  }, [formData.type, formData.id_currency]);
+
   const handleRedirect = (row: DataRow) => {
     navigate(
       `/proyectos/${id_project}/cuentas/${id_project_account}/movimiento/${row.id}`
     );
+  };
+
+  const fetchSuppliers = async () => {
+    if (!formData.id_currency) return [];
+    try {
+      const { data } = await apiSJM.get(
+        `/supplier_accounts/by-currency/${formData.id_currency}`
+      );
+      setSupplierAccounts(data.items);
+    } catch (error) {
+      return [];
+    }
   };
 
   return (
@@ -284,10 +319,10 @@ export const ProjectAccountTransactions = () => {
       {loading && <LoadingSpinner />}
       {!loading && account && accountCurrency && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex gap-3 align-items-center">
+          <Row className="d-flex align-items-center">
+            <Col xs={6} lg={1}>
               <Button
-                variant="light border text-muted"
+                variant="light border text-muted w-100"
                 size="sm"
                 onClick={() => navigate(`/proyectos/${id_project}/cuentas`)}
                 title="Volver al detalle de cuentas"
@@ -295,25 +330,36 @@ export const ProjectAccountTransactions = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">
+            </Col>
+            {/* Botón "Nuevo movimiento" */}
+            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
+              <Button
+                size="sm"
+                variant="success"
+                onClick={handleCreate}
+                title="Registrar nuevo movimiento"
+                className="w-100"
+              >
+                Nuevo movimiento
+              </Button>
+            </Col>
+            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
+              <h1 className="fs-5 my-3 my-lg-0">
                 Detalle de cuenta corriente proyecto
               </h1>
-            </div>
-            <Button size="sm" variant="success" onClick={handleCreate}>
-              Nuevo movimiento
-            </Button>
-          </div>
+            </Col>
+          </Row>
 
-          <hr />
+          <hr className="mt-0 mt-lg-3" />
 
           {/* PROJECT ACCOUNT INFO */}
           <Row className="mb-2">
-            <Col xs={12} md={6} xl={4}>
+            <Col xs={12} xl={4}>
               <p className="text-muted">
                 Cliente: <span className="fw-bold">{account.client}</span>
               </p>
             </Col>
-            <Col xs={12} md={5}>
+            <Col xs={12} xl={5}>
               <p className="text-muted">
                 Proyecto:{" "}
                 <span className="fw-bold">
@@ -322,7 +368,7 @@ export const ProjectAccountTransactions = () => {
                 </span>
               </p>
             </Col>
-            <Col xs={12} md={6} xl={3}>
+            <Col xs={12} xl={3}>
               <p className="text-muted">
                 Estado proyecto:{" "}
                 <span
@@ -337,7 +383,7 @@ export const ProjectAccountTransactions = () => {
                 </span>
               </p>
             </Col>
-            <Col xs={12} md={6} xl={4}>
+            <Col xs={12} xl={4}>
               <p className="text-muted">
                 Moneda:{" "}
                 <span className="fw-bold">
@@ -345,7 +391,7 @@ export const ProjectAccountTransactions = () => {
                 </span>
               </p>
             </Col>
-            <Col xs={12} md={6} xl={5}>
+            <Col xs={12} xl={5}>
               <span className="text-muted">Saldo cuenta: </span>
               <span
                 className={`my-0 text-center bg-${
@@ -379,7 +425,7 @@ export const ProjectAccountTransactions = () => {
           />
 
           {/* FORMULARIO NUEVO MOVIMIENTO */}
-          <Modal show={isModalOpen} onHide={() => handleClose()}>
+          <Modal show={isModalOpen} onHide={() => handleClose()} size="lg">
             <div className="p-3">
               <h5>Nuevo movimiento</h5>
               <hr />
@@ -399,6 +445,9 @@ export const ProjectAccountTransactions = () => {
                     <option value="">Seleccione una opción</option>
                     <option value="NEW_PAYMENT">
                       Pago del cliente a la empresa
+                    </option>
+                    <option value="NEW_SUPPLIER_PAYMENT">
+                      Pago del cliente a un proveedor
                     </option>
                     <option value="POS_ADJ">
                       Ajuste a favor (disminuye deuda del cliente)
@@ -466,6 +515,40 @@ export const ProjectAccountTransactions = () => {
                     ))}
                   </Form.Select>
                 </InputGroup>
+
+                {formData.type === "NEW_SUPPLIER_PAYMENT" && (
+                  <InputGroup className="mb-3" size="sm">
+                    <InputGroup.Text>
+                      Cuenta corriente proveedor
+                    </InputGroup.Text>
+                    <Form.Select
+                      required
+                      name="id_supplier_account"
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        setFormData({
+                          ...formData,
+                          id_supplier_account: e.target.value,
+                        });
+                      }}
+                      disabled={isFormSubmiting || !formData.id_currency}
+                    >
+                      <option value="">Seleccione una opción</option>
+                      {supplierAccounts.map((item: any) => (
+                        <option
+                          key={item.id}
+                          value={item.id}
+                          style={{ color: item.balance < 0 ? "red" : "" }}
+                        >
+                          {item.supplier} Saldo: {item.currency}{" "}
+                          {NumberFormatter.formatSignedCurrency(
+                            true,
+                            item.balance
+                          )}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </InputGroup>
+                )}
 
                 <InputGroup className="mb-3" size="sm">
                   <InputGroup.Text>Equivalentes a</InputGroup.Text>

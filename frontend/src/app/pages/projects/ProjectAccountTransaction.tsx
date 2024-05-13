@@ -80,10 +80,10 @@ export const ProjectAccountTransaction = () => {
       {loading && <LoadingSpinner />}
       {!loading && transaction && (
         <>
-          <div className="d-flex gap-3 align-items-center mb-3 justify-content-between">
-            <div className="d-flex gap-3 align-items-center">
+          <Row className="d-flex align-items-center">
+            <Col xs={6} lg={1}>
               <Button
-                variant="light border text-muted"
+                variant="light border text-muted w-100"
                 size="sm"
                 onClick={() =>
                   navigate(
@@ -95,70 +95,79 @@ export const ProjectAccountTransaction = () => {
                 <i className="bi bi-arrow-left me-2"></i>
                 Atrás
               </Button>
-              <h1 className="fs-5 my-0">Detalle de movimiento</h1>
-            </div>
-            <div>
-              <Button variant="danger" size="sm">
+            </Col>
+            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
+              <Button variant="danger" size="sm" className="w-100">
                 <i className="bi bi-file-pdf me-2"></i>
                 Descargar en PDF
               </Button>
-            </div>
-          </div>
-          <hr />
+            </Col>
+            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
+              <h1 className="fs-5 my-3 my-lg-0">Detalle de movimiento</h1>
+            </Col>
+          </Row>
+
+          <hr className="mt-0 mt-lg-3" />
+
           <Row className="mx-0">
             <Col xs={12} lg={2}></Col>
-            <Col xs={12} lg={8} className="shadow-sm border rounded-2 p-2">
-              <div className="p-3">
-                <div className="d-flex justify-content-between align-items-center">
+            <Col xs={12} lg={8} className="shadow-sm border rounded-2 p-3">
+              <Row className="px-3">
+                <Col xs={12} md={6}>
                   <h2 className="fs-5">Comprobante de movimiento</h2>
+                </Col>
+                <Col xs={12} md={6} className="text-md-end">
                   <span className="font-monospace small">
                     ID_MOVIMIENTO: {id_transaction}
                   </span>
-                </div>
+                </Col>
+              </Row>
+              <div className="px-3">
                 <hr className="my-2" />
-                <h3 className="fs-6 text-muted">Datos de la cuenta</h3>
+                <h3 className="fs-6 text-muted">Información del cliente</h3>
                 <Row>
                   <Col xs={12} md={6}>
                     <span className="small">
-                      Cliente: {transaction.account.project.client}
+                      <b>Cliente:</b> {transaction.account.project.client}
                     </span>
                   </Col>
                   <Col xs={12} md={6}>
                     <span className="small">
-                      Moneda: {transaction.account.currency.name} (
-                      {transaction.account.currency.symbol})
+                      <b>Proyecto:</b>{" "}
+                      {transaction.account.project.title || "Sin título"} (
+                      {transaction.account.project.locality})
                     </span>
                   </Col>
                 </Row>
-                <h3 className="fs-6 text-muted mt-3">Datos del proyecto</h3>
+                <h3 className="fs-6 text-muted mt-3">
+                  Información del movimiento
+                </h3>
                 <Row>
                   <Col xs={12} md={6}>
                     <span className="small">
-                      Proyecto:{" "}
-                      {transaction.account.project.title || "Sin título"}
+                      <b> Moneda cuenta:</b> {transaction.account.currency.name}{" "}
+                      ({transaction.account.currency.symbol})
                     </span>
                   </Col>
                   <Col xs={12} md={6}>
                     <span className="small">
-                      Localidad proyecto: {transaction.account.project.locality}
+                      <b>Moneda movimiento:</b>{" "}
+                      {transaction.received_currency.name} (
+                      {transaction.received_currency.symbol})
+                    </span>
+                  </Col>
+                  <Col xs={12}>
+                    <span className="small">
+                      <b>Tipo de movimiento:</b> {Movements[transaction.type]}
+                    </span>
+                  </Col>
+                  <Col xs={12}>
+                    <span className="small">
+                      <b>Descripción:</b> {transaction.description}
                     </span>
                   </Col>
                 </Row>
-                <hr />
-                <h3 className="fs-6 text-muted mt-3">Detalle del movimiento</h3>
-                <span className="small">
-                  Tipo de movimiento: {Movements[transaction.type]}
-                </span>
-                <br />
-                <span className="small">
-                  Descripción: {transaction.description}
-                </span>
-                <br />
-                <span className="small">
-                  Moneda movimiento: {transaction.received_currency.name} (
-                  {transaction.received_currency.symbol})
-                </span>
-                <br />
+
                 <Table
                   striped
                   bordered
@@ -168,10 +177,11 @@ export const ProjectAccountTransaction = () => {
                 >
                   <thead>
                     <tr>
-                      <th className="col-3">Importe</th>
+                      <th className="col-3">Importe movimiento</th>
                       <th className="col-3">Saldo anterior</th>
                       <th className="col-3">
-                        Importe real ({transaction.account.currency.symbol})
+                        Importe en cuenta ({transaction.account.currency.symbol}
+                        )
                       </th>
                       <th className="col-3">Saldo posterior</th>
                     </tr>

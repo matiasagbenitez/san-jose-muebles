@@ -48,6 +48,19 @@ export class SupplierAccountController {
             });
     }
 
+    getByCurrency = async (req: Request, res: Response) => {
+        const id_currency = parseInt(req.params.id_currency);
+        if (!id_currency) return res.status(400).json({ message: 'Missing id_currency' });
+
+        this.service.getSuppliersAccountsByCurrency(id_currency)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getDataById = async (req: Request, res: Response) => {
         const id_supplier_account = parseInt(req.params.id_supplier_account);
         if (!id_supplier_account) return res.status(400).json({ message: 'Missing id_supplier_account' });
