@@ -117,14 +117,13 @@ export const SuppliersAccounts = () => {
           </b>
         </>
       ),
-      wrap: true,
       right: true,
-      maxWidth: "200px",
+      maxWidth: "175px",
       style: { fontWeight: "bold", backgroundColor: "#f0f0f0" },
     },
     {
       name: "ÚLTIMO MOVIMIENTO",
-      maxWidth: "250px",
+      maxWidth: "175px",
       center: true,
       selector: (row: DataRow) => DateFormatter.toDMYH(row.updatedAt),
     },

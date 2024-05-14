@@ -86,7 +86,7 @@ export const Supplier = () => {
                 Atrás
               </Button>
             </Col>
-            <Col xs={12} sm={10} xx g={11}>
+            <Col xs={12} sm={10} xxl={11}>
               <h1 className="fs-5 my-3 my-lg-0">{supplier.name}</h1>
             </Col>
           </Row>

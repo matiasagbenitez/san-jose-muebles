@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 
 import { NumericFormat } from "react-number-format";
 import { SweetAlert2 } from "../../utils";
@@ -28,6 +28,7 @@ import { DateFormatter, NumberFormatter } from "../../helpers";
 interface AccountInterface {
   id: number;
   supplier: {
+    id: number;
     name: string;
     locality: string;
   };
@@ -333,37 +334,13 @@ export const SupplierAccount = () => {
       {loading && <LoadingSpinner />}
       {!loading && account && (
         <>
-          <Row className="d-flex align-items-center">
-            <Col xs={6} lg={1}>
-              <Button
-                variant="light border text-muted w-100"
-                size="sm"
-                onClick={() => navigate(-1)}
-                title="Volver al detalle del proveedor"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-            </Col>
-            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
-              <Button
-                size="sm"
-                variant="success"
-                onClick={handleCreate}
-                title="Registrar nuevo movimiento"
-                className="w-100"
-              >
-                Nuevo movimiento
-              </Button>
-            </Col>
-            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
-              <h1 className="fs-5 my-3 my-lg-0">
-                Detalle de cuenta corriente proveedor
-              </h1>
-            </Col>
-          </Row>
-
-          <hr className="mt-0 mt-lg-3" />
+          <PageHeader
+            goBackTo={`/proveedores/${account.supplier.id}/cuentas-proveedores`}
+            goBackTitle="Volver al listado de cuentas corrientes"
+            title="Detalle de cuenta corriente proveedor"
+            handleAction={handleCreate}
+            actionButtonText="Nuevo movimiento"
+          />
 
           <Row className="mb-3">
             <Col xs={12} xl={4}>

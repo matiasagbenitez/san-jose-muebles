@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 import { SweetAlert2 } from "../../utils";
 import { ProjectAccountsData, ProjectBasicData, Statuses } from "./interfaces";
 import { DateFormatter, NumberFormatter } from "../../helpers";
@@ -83,37 +83,13 @@ export const ProjectAccounts = () => {
       {loading && <LoadingSpinner />}
       {!loading && project && accounts && (
         <>
-          <Row className="d-flex align-items-center">
-            <Col xs={6} lg={1}>
-              <Button
-                variant="light border text-muted w-100"
-                size="sm"
-                onClick={() => navigate(`/proyectos/${id}`)}
-                title="Volver al detalle del proyecto"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-            </Col>
-            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
-              <Button
-                size="sm"
-                variant="success"
-                onClick={handleCreate}
-                title="Registrar nueva cuenta corriente"
-                className="w-100"
-              >
-                Nueva cuenta
-              </Button>
-            </Col>
-            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
-              <h1 className="fs-5 my-3 my-lg-0">
-                Listado de cuentas corrientes
-              </h1>
-            </Col>
-          </Row>
-
-          <hr className="mt-0 mt-lg-3" />
+          <PageHeader
+            goBackTo={`/proyectos/${id}`}
+            goBackTitle="Volver al proyecto"
+            title="Listado de cuentas corrientes"
+            handleAction={handleCreate}
+            actionButtonText="Nueva cuenta"
+          />
 
           <Row>
             <Col xs={12} lg={3}>

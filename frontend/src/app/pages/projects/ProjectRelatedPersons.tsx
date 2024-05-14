@@ -3,7 +3,7 @@ import { Button, Card, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 import { SweetAlert2 } from "../../utils";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -70,13 +70,21 @@ export const ProjectRelatedPersons = () => {
   const handleSubmit = async (formData: any) => {
     try {
       setIsFormSubmitting(true);
-      const confirmation = await SweetAlert2.confirm("¿Está seguro que desea realizar esta acción?");
+      const confirmation = await SweetAlert2.confirm(
+        "¿Está seguro que desea realizar esta acción?"
+      );
       if (!confirmation.isConfirmed) return;
       if (editingId) {
-        const { data } = await apiSJM.put(`/related_persons/${editingId}`, { ...formData, id_project: id });
+        const { data } = await apiSJM.put(`/related_persons/${editingId}`, {
+          ...formData,
+          id_project: id,
+        });
         SweetAlert2.successToast(data.message);
       } else {
-        const { data } = await apiSJM.post("/related_persons", { ...formData, id_project: id });
+        const { data } = await apiSJM.post("/related_persons", {
+          ...formData,
+          id_project: id,
+        });
         SweetAlert2.successToast(data.message);
       }
       handleCloseModal();
@@ -90,7 +98,9 @@ export const ProjectRelatedPersons = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const confirmation = await SweetAlert2.confirm("¿Está seguro que desea realizar esta acción?");
+      const confirmation = await SweetAlert2.confirm(
+        "¿Está seguro que desea realizar esta acción?"
+      );
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.delete(`/related_persons/${id}`);
       SweetAlert2.successToast(data.message);
@@ -98,44 +108,20 @@ export const ProjectRelatedPersons = () => {
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     }
-  }
+  };
 
   return (
     <>
       {loading && <LoadingSpinner />}
       {!loading && persons && (
         <>
-          <Row className="d-flex align-items-center">
-            <Col xs={6} lg={1}>
-              <Button
-                variant="light border text-muted w-100"
-                size="sm"
-                onClick={() => navigate(`/proyectos/${id}`)}
-                title="Volver al detalle del proyecto"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-            </Col>
-            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
-              <Button
-                size="sm"
-                variant="success"
-                onClick={handleOpenModal}
-                title="Registrar nueva persona relacionada al proyecto"
-                className="w-100"
-              >
-                Nueva persona
-              </Button>
-            </Col>
-            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
-              <h1 className="fs-5 my-3 my-lg-0">
-                Listado de personas relacionadas al proyecto
-              </h1>
-            </Col>
-          </Row>
-
-          <hr className="mt-0 mt-lg-3" />
+          <PageHeader
+            goBackTo={`/proyectos/${id}`}
+            goBackTitle="Volver al detalle del proyecto"
+            title="Personas relacionadas al proyecto"
+            handleAction={handleOpenModal}
+            actionButtonText="Nueva persona"
+          />
 
           {persons.length === 0 ? (
             <p className="text-muted text-center">
@@ -147,12 +133,22 @@ export const ProjectRelatedPersons = () => {
               {persons.map((person: RelatedPerson, index) => (
                 <Col key={index} xs={12} md={6} lg={4} className="mb-3">
                   <Card className="small" key={person.id}>
-                    <Card.Header className="text-center fw-bold">{person.name}</Card.Header>
+                    <Card.Header className="text-center fw-bold">
+                      {person.name}
+                    </Card.Header>
                     <Card.Body>
-                      <p className="mb-1"><b>Persona:</b> {person.name}</p>
-                      <p className="mb-1"><b>Teléfono:</b> {person.phone}</p>
-                      <p className="mb-1"><b>Relación/rol:</b> {person.relation}</p>
-                      <p className="mb-1"><b>Observaciones/rol:</b> {person.annotations}</p>
+                      <p className="mb-1">
+                        <b>Persona:</b> {person.name}
+                      </p>
+                      <p className="mb-1">
+                        <b>Teléfono:</b> {person.phone}
+                      </p>
+                      <p className="mb-1">
+                        <b>Relación/rol:</b> {person.relation}
+                      </p>
+                      <p className="mb-1">
+                        <b>Observaciones/rol:</b> {person.annotations}
+                      </p>
                     </Card.Body>
                     <Card.Footer className="d-flex justify-content-end gap-2">
                       <Button

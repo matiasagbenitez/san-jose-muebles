@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button, Table } from "react-bootstrap";
+import { Row, Col, Table } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 import { DateFormatter } from "../../helpers/date.formatter";
 import { NumberFormatter } from "../../helpers";
 
@@ -70,37 +70,24 @@ export const SupplierAccountTransaction = () => {
     fetch();
   }, [id_transaction]);
 
+  const handleExportPDF = () => {
+    console.log("Exportar PDF");
+  };
+
   return (
     <div>
       {loading && <LoadingSpinner />}
       {!loading && transaction && (
         <>
-          <Row className="d-flex align-items-center">
-            <Col xs={6} lg={1}>
-              <Button
-                variant="light border text-muted w-100"
-                size="sm"
-                onClick={() =>
-                  navigate(`/cuentas-proveedores/${transaction.id_account}`)
-                }
-                title="Volver al listado de movimientos"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-            </Col>
-            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
-              <Button variant="danger" size="sm" className="w-100">
-                <i className="bi bi-file-pdf me-2"></i>
-                Descargar en PDF
-              </Button>
-            </Col>
-            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
-              <h1 className="fs-5 my-3 my-lg-0">Detalle de movimiento</h1>
-            </Col>
-          </Row>
-
-          <hr className="mt-0 mt-lg-3" />
+          <PageHeader
+            goBackTo={`/cuentas-proveedores/${transaction.id_account}`}
+            goBackTitle="Volver al listado de movimientos"
+            title="Detalle de movimiento"
+            handleAction={handleExportPDF}
+            actionButtonText="Descargar en PDF"
+            actionButtonVariant="danger"
+            actionButtonIcon="bi-file-earmark-pdf"
+          />
 
           <Row className="mx-0">
             <Col xs={12} lg={2}></Col>

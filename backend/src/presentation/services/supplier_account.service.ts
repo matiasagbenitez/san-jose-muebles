@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Supplier, SupplierAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountListEntity, SupplierAccountByCurrencyEntity, SupplierBasicEntity } from "../../domain";
+import { CustomError, PaginationDto, SupplierAccountDataEntity, SupplierAccountDto, SupplierAccountListEntity, SupplierAccountByCurrencyEntity, SupplierBasicEntity, SupplierOwnAccountsListEntity } from "../../domain";
 import { SupplierService } from "./supplier.service";
 
 export class SupplierAccountService {
@@ -53,7 +53,7 @@ export class SupplierAccountService {
                 include: [
                     { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
                     {
-                        association: 'supplier', attributes: ['name'], include: [{
+                        association: 'supplier', attributes: ['id', 'name'], include: [{
                             association: 'locality', attributes: ['name'],
                             include: [{ association: 'province', attributes: ['name'] }]
                         }]
@@ -87,7 +87,7 @@ export class SupplierAccountService {
             if (!supplier) throw CustomError.notFound('¡Proveedor no encontrado!');
 
             const entity = SupplierBasicEntity.fromObject(supplier);
-            const entities = accounts.map(item => SupplierAccountListEntity.fromObject(item));
+            const entities = accounts.map(item => SupplierOwnAccountsListEntity.fromObject(item));
 
             return { supplier: entity, accounts: entities };
         } catch (error) {

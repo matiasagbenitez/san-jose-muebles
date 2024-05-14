@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { Button, Modal, Form, InputGroup, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 
 import { NumericFormat } from "react-number-format";
 import { SweetAlert2 } from "../../utils";
@@ -127,7 +127,7 @@ export const ProjectAccountTransactions = () => {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
       format: (row: DataRow) => (
-        <div className="text-break" style={{ maxWidth: "300px" }}>
+        <div className="text-break" style={{ maxWidth: "500px" }}>
           {row.supplier && (
             <Button
               size="sm"
@@ -147,6 +147,7 @@ export const ProjectAccountTransactions = () => {
     },
     {
       name: "TIPO MOVIMIENTO",
+      // hide: "lg" as Media, // import from 'react-data-table-component'
       selector: (row: DataRow) => row.type,
       cell: (row: DataRow) => {
         if (!(row.type in MovementType)) {
@@ -339,38 +340,13 @@ export const ProjectAccountTransactions = () => {
       {loading && <LoadingSpinner />}
       {!loading && account && accountCurrency && (
         <>
-          <Row className="d-flex align-items-center">
-            <Col xs={6} lg={1}>
-              <Button
-                variant="light border text-muted w-100"
-                size="sm"
-                onClick={() => navigate(`/proyectos/${id_project}/cuentas`)}
-                title="Volver al detalle de cuentas"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-            </Col>
-            {/* Botón "Nuevo movimiento" */}
-            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
-              <Button
-                size="sm"
-                variant="success"
-                onClick={handleCreate}
-                title="Registrar nuevo movimiento"
-                className="w-100"
-              >
-                Nuevo movimiento
-              </Button>
-            </Col>
-            <Col xs={{ span: 12, order: 2 }} lg={{ span: 8, order: 0 }}>
-              <h1 className="fs-5 my-3 my-lg-0">
-                Detalle de cuenta corriente proyecto
-              </h1>
-            </Col>
-          </Row>
-
-          <hr className="mt-0 mt-lg-3" />
+          <PageHeader
+            goBackTo={`/proyectos/${id_project}/cuentas`}
+            goBackTitle="Volver al detalle de cuentas"
+            title="Detalle de cuenta corriente proyecto"
+            handleAction={handleCreate}
+            actionButtonText="Nuevo movimiento"
+          />
 
           {/* PROJECT ACCOUNT INFO */}
           <Row className="mb-3">
