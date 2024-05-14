@@ -91,7 +91,7 @@ export const ClientsForm = ({
               <Row>
                 <Col md={6}>
                   <MyTextInput
-                    label="Nombre del cliente"
+                    label="Nombre del cliente *"
                     name="name"
                     type="text"
                     placeholder="Ingrese el nombre del cliente"
@@ -102,7 +102,7 @@ export const ClientsForm = ({
                 </Col>
                 <Col md={6}>
                   <MyTextInput
-                    label="Apellido del cliente"
+                    label="Apellido del cliente *"
                     name="last_name"
                     type="text"
                     placeholder="Ingrese el apellido del cliente"
@@ -159,7 +159,7 @@ export const ClientsForm = ({
 
                 <Col md={6}>
                   <MySelect
-                    label="Localidad"
+                    label="Localidad *"
                     name="id_locality"
                     as="select"
                     placeholder="Seleccione una localidad"

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { ClientInterface } from "./interfaces";
 import { ClientInfo, ClientsForm, ClientOptions } from "./components";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, SimplePageHeader } from "../../components";
 import { SweetAlert2 } from "../../utils";
 
 export const Client = () => {
@@ -38,7 +38,9 @@ export const Client = () => {
   const handleSubmit = async (formData: ClientInterface) => {
     try {
       setIsFormSubmitting(true);
-      const confirmation = await SweetAlert2.confirm("¿Estás seguro de que quieres modificar este cliente?");
+      const confirmation = await SweetAlert2.confirm(
+        "¿Estás seguro de que quieres modificar este cliente?"
+      );
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.put(`/clients/${id}`, formData);
       SweetAlert2.successToast(data.message);
@@ -71,22 +73,13 @@ export const Client = () => {
       {loading && <LoadingSpinner />}
       {client && !loading && (
         <>
+          <SimplePageHeader
+            goBackTo="/clientes"
+            goBackTitle="Volver al listado de clientes"
+            title={`${client.name} ${client.last_name}`}
+          />
           <Row>
             <Col lg={8}>
-              <div className="d-flex gap-3 align-items-center mb-3">
-                <Button
-                  variant="light border text-muted"
-                  size="sm"
-                  onClick={() => navigate(`/clientes`)}
-                  title="Volver al listado de clientes"
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Atrás
-                </Button>
-                <h1 className="fs-5 my-0">
-                  {client.name} {client.last_name}
-                </h1>
-              </div>
               <ClientInfo client={client} />
             </Col>
             <Col lg={4}>

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { SupplierInterface } from "../../interfaces";
 import { SuppliersForm, SupplierInfo, SupplierOptions } from ".";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, SimplePageHeader } from "../../components";
 import { SweetAlert2 } from "../../utils";
 
 export const Supplier = () => {
@@ -73,23 +73,11 @@ export const Supplier = () => {
       {loading && <LoadingSpinner />}
       {supplier && !loading && (
         <>
-          <Row className="mb-0 mb-lg-3 d-flex align-items-center">
-            <Col xs={12} sm={2} xxl={1}>
-              <Button
-                variant="light border text-muted"
-                size="sm"
-                onClick={() => navigate(`/proveedores`)}
-                title="Volver al listado de proveedores"
-                className="w-100"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-            </Col>
-            <Col xs={12} sm={10} xxl={11}>
-              <h1 className="fs-5 my-3 my-lg-0">{supplier.name}</h1>
-            </Col>
-          </Row>
+          <SimplePageHeader
+            goBackTo="/proveedores"
+            goBackTitle="Volver al listado de proveedores"
+            title={supplier.name}
+          />
           <Row>
             <Col xs={12} xl={8}>
               <SupplierInfo supplier={supplier} />
@@ -102,7 +90,7 @@ export const Supplier = () => {
               />
             </Col>
           </Row>
-          
+
           <SuppliersForm
             show={isModalOpen}
             onHide={handleHide}

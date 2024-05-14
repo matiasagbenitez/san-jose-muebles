@@ -237,8 +237,8 @@ export class PurchaseService {
 
             //* 2) VERIFICAR SI LA COMPRA YA TIENE RECEPCIONES
             const itemsPurchase = await PurchaseItem.findAll({ where: { id_purchase: purchase.id } });
-            const receivedItems = itemsPurchase.some(item => item.actual_stocked > 0);
-            if (receivedItems) throw CustomError.badRequest('¡No se puede anular la compra porque ya se ha registrado una recepción!');
+            // const receivedItems = itemsPurchase.some(item => item.actual_stocked > 0);
+            // if (receivedItems) throw CustomError.badRequest('¡No se puede anular la compra porque ya se ha registrado una recepción!');
 
             //* 3) ANULAR LA COMPRA
             await purchase.update({
@@ -255,9 +255,10 @@ export class PurchaseService {
             //* 5) ACTUALIZAR EL STOCK DE LOS PRODUCTOS
             for (const item of itemsPurchase) {
                 try {
-                    const quantity = Number(item.quantity);
+                    const pending = item.quantity - item.actual_stocked;
                     await Product.update({
-                        inc_stock: Sequelize.literal(`inc_stock - ${quantity}`),
+                        actual_stock: Sequelize.literal(`actual_stock - ${item.actual_stocked}`),
+                        inc_stock: Sequelize.literal(`inc_stock - ${pending}`),
                     }, { where: { id: item.id_product }, transaction });
                 } catch (error) {
                     throw CustomError.internalServerError('Ocurrió un error al actualizar el stock a recibir de los productos');

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, SimplePageHeader } from "../../components";
 import { ProductInfo, ProductImage, ProductOptions, ProductPending } from ".";
 import { SweetAlert2 } from "../../utils";
 import { ProductPendingReception } from "./interfaces";
@@ -57,19 +57,12 @@ export const Product = () => {
       {loading && <LoadingSpinner />}
       {product && !loading && productId && (
         <>
+          <SimplePageHeader
+            goBackTo="/productos"
+            goBackTitle="Volver al listado de productos"
+            title={product.name}
+          />
           <Row>
-            <div className="d-flex gap-3 align-items-center mb-3">
-              <Button
-                variant="light border text-muted col-2"
-                size="sm"
-                onClick={() => navigate(`/productos`)}
-                title="Volver al listado de productos"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-              <h1 className="fs-5 my-0">{product.name}</h1>
-            </div>
             <Col lg={9}>
               <ProductInfo product={product} />
               {pendingReceptions.length > 0 && (

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Button, Modal } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, SimplePageHeader } from "../../components";
 import { ItemData, Options, InventoryItemsForm } from "./components";
 
 import { EditableItem } from "./interfaces";
@@ -156,19 +156,13 @@ export const InventoryItem = () => {
         <LoadingSpinner />
       ) : (
         <>
+          <SimplePageHeader
+            goBackTo="/inventario"
+            goBackTitle="Volver al listado de artículos"
+            title={item.data.name}
+          />
+
           <Row>
-            <div className="d-flex gap-3 align-items-center mb-3">
-              <Button
-                variant="light border text-muted"
-                size="sm"
-                onClick={() => navigate(`/inventario`)}
-                title="Volver al inventario de artículos"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-              <h1 className="fs-5 my-0">{item.data.name}</h1>
-            </div>
             <Col lg={9}>
               <ItemData item={item.data} />
             </Col>
@@ -180,7 +174,7 @@ export const InventoryItem = () => {
               />
             </Col>
           </Row>
-          
+
           <InventoryItemsForm
             show={isModalOpen}
             onHide={handleHide}
@@ -203,8 +197,7 @@ export const InventoryItem = () => {
                   handleStatusSubmit(values);
                 }}
                 validationSchema={Yup.object({
-                  status: Yup.string()
-                    .required("El estado es requerido"),
+                  status: Yup.string().required("El estado es requerido"),
 
                   // status: Yup.string()
                   //   .required("El estado es requerido")

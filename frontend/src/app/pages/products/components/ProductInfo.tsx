@@ -8,7 +8,7 @@ export const ProductInfo = ({ product }: any) => {
 
   return (
     <>
-      <Table size="sm" className="small" striped bordered responsive>
+      <Table size="sm" className="small align-middle" striped bordered responsive>
         <tbody className="text-uppercase">
           <tr className="text-center fw-bold text-uppercase">
             <td colSpan={2}>Información del producto</td>
@@ -51,7 +51,7 @@ export const ProductInfo = ({ product }: any) => {
       </Table>
 
       {/* INFORMACIÓN DE STOCK */}
-      <Table size="sm" className="small" striped bordered responsive>
+      <Table size="sm" className="small align-middle" striped bordered responsive>
         <tbody>
           <tr className="text-center fw-bold text-uppercase">
             <td colSpan={12}>Información de stock</td>
@@ -108,7 +108,7 @@ export const ProductInfo = ({ product }: any) => {
       </Table>
 
       {/* INFORMACIÓN DE COMPRA */}
-      <Table size="sm" className="small" striped bordered responsive>
+      <Table size="sm" className="small align-middle" striped bordered responsive>
         <tbody>
           <tr className="text-center fw-bold text-uppercase">
             <td colSpan={8}>Información de compra</td>

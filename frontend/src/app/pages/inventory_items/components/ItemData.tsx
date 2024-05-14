@@ -9,7 +9,7 @@ interface Props {
 export const ItemData = ({ item }: Props) => {
   return (
     <>
-      <Table size="sm" className="small" striped bordered responsive>
+      <Table size="sm" className="small align-middle" striped bordered responsive>
         <tbody className="text-uppercase">
           <tr className="text-center fw-bold">
             <td colSpan={2}>Información del artículo</td>
@@ -70,7 +70,7 @@ export const ItemData = ({ item }: Props) => {
           No se han registrado cambios de estado
         </p>
       ) : (
-        <ListGroup className="small">
+        <ListGroup className="small mb-3">
           {item.evolutions.map((evolution) => (
             <ListGroup.Item key={evolution.id}>
               {evolution.user} marcó el artículo como <b>{evolution.status}</b> el

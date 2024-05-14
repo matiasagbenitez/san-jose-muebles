@@ -19,12 +19,14 @@ export const VisitRequestOptions = ({
 
   const redirectAuditing = () => {
     navigate(`/agenda/${id}/historial`);
-  }
+  };
 
   return (
-    <div>
-      <h2 className="fs-6 mt-3">Menú de opciones</h2>
-      <div className="list-group small" style={{ marginTop: "10px" }}>
+    <>
+      <div className="list-group small">
+        <div className="list-group-item py-1 fw-bold text-muted text-uppercase text-center bg-light">
+          Opciones de la visita
+        </div>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Actualizar estado de la visita"
@@ -58,6 +60,6 @@ export const VisitRequestOptions = ({
           Eliminar registro del sistema
         </button>
       </div>
-    </div>
+    </>
   );
 };

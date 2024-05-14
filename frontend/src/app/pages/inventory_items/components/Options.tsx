@@ -6,8 +6,11 @@ interface Props {
 
 export const Options = ({ handleStatus, handleOpen, handleDelete }: Props) => {
   return (
-    <div>
+    <>
       <div className="list-group small">
+        <div className="list-group-item py-1 fw-bold text-muted text-uppercase text-center bg-light">
+          Opciones del artículo
+        </div>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Actualizar estado del artículo"
@@ -33,6 +36,6 @@ export const Options = ({ handleStatus, handleOpen, handleDelete }: Props) => {
           Eliminar artículo del inventario
         </button>
       </div>
-    </div>
+    </>
   );
 };

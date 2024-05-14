@@ -27,6 +27,7 @@ export const ProductEdit = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<ProductFormInterface>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetch = async () => {
     try {
@@ -45,6 +46,7 @@ export const ProductEdit = () => {
 
   const onSubmit = async (formData: any) => {
     try {
+      setIsSubmitting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de que deseas modificar este producto?"
       );
@@ -54,6 +56,8 @@ export const ProductEdit = () => {
       navigate(`/productos/${data.id}`);
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -64,7 +68,7 @@ export const ProductEdit = () => {
         <>
           <div className="d-flex gap-3 align-items-center mb-3">
             <Button
-              variant="light border text-muted"
+              variant="light border text-muted col-1"
               size="sm"
               onClick={() => navigate(`/productos/${id}`)}
               title="Volver al detalle del producto"
@@ -75,7 +79,12 @@ export const ProductEdit = () => {
             <h1 className="fs-5 my-0">Editar producto</h1>
           </div>
           <hr className="my-3" />
-          <ProductForm onSubmit={onSubmit} initialForm={product} editMode />
+          <ProductForm
+            onSubmit={onSubmit}
+            initialForm={product}
+            editMode
+            isSubmitting={isSubmitting}
+          />
         </>
       )}
     </>

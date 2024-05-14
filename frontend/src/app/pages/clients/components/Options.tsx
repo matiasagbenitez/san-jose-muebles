@@ -6,11 +6,7 @@ interface Props {
   handleDelete: () => Promise<void>;
 }
 
-export const ClientOptions = ({
-  id,
-  setIsModalOpen,
-  handleDelete,
-}: Props) => {
+export const ClientOptions = ({ id, setIsModalOpen, handleDelete }: Props) => {
   const navigate = useNavigate();
 
   const redirectProjects = () => {
@@ -18,16 +14,18 @@ export const ClientOptions = ({
   };
 
   return (
-    <div>
-      <h2 className="fs-6 mt-3">Menú de opciones</h2>
-      <div className="list-group small" style={{ marginTop: "10px" }}>
+    <>
+      <div className="list-group small">
+        <div className="list-group-item py-1 fw-bold text-muted text-uppercase text-center bg-light">
+          Opciones del cliente
+        </div>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Ver proyectos del cliente"
           onClick={redirectProjects}
         >
-          <i className="bi bi-gem me-2 fs-6"></i>
-          Ver proyectos del cliente
+          <i className="bi bi-houses me-2 fs-6"></i>
+          Listado de proyectos del cliente
         </button>
         <button
           className="list-group-item list-group-item-action py-1"
@@ -46,6 +44,6 @@ export const ClientOptions = ({
           Eliminar cliente
         </button>
       </div>
-    </div>
+    </>
   );
 };

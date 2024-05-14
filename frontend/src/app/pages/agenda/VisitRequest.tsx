@@ -5,7 +5,7 @@ import { Row, Col, Button, Modal } from "react-bootstrap";
 import apiSJM from "../../../api/apiSJM";
 import { VisitRequestInterface } from "./interfaces";
 import { VisitRequestInfo, VisitRequestOptions } from "./components";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, SimplePageHeader } from "../../components";
 import { SweetAlert2 } from "../../utils";
 import { MySelect, MyTextArea } from "../../components/forms";
 import { Form, Formik } from "formik";
@@ -28,7 +28,7 @@ export const VisitRequest = () => {
   const [visit, setVisit] = useState<VisitRequestInterface>();
 
   const [form, setForm] = useState(initialForm);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const fetch = async () => {
@@ -71,13 +71,12 @@ export const VisitRequest = () => {
   };
 
   const handleSubmit = async (formData: any) => {
-    const confirmation = await SweetAlert2.confirm(
-      "¿Estás seguro de que quieres actualizar el estado de la visita?"
-    );
-    if (!confirmation.isConfirmed) return;
-
     try {
-      setIsFormSubmitted(true);
+      setIsFormSubmitting(true);
+      const confirmation = await SweetAlert2.confirm(
+        "¿Estás seguro de que quieres actualizar el estado de la visita?"
+      );
+      if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.put(`/visit_requests/${id}/status`, {
         formData,
       });
@@ -88,7 +87,7 @@ export const VisitRequest = () => {
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
     } finally {
-      setIsFormSubmitted(false);
+      setIsFormSubmitting(false);
     }
   };
 
@@ -97,20 +96,13 @@ export const VisitRequest = () => {
       {loading && <LoadingSpinner />}
       {visit && !loading && (
         <>
+          <SimplePageHeader
+            goBackTo="/agenda"
+            goBackTitle="Volver a la agenda de visitas"
+            title="Detalle de visita"
+          />
           <Row>
             <Col lg={9}>
-              <div className="d-flex gap-3 align-items-center mb-3">
-                <Button
-                  variant="light border text-muted"
-                  size="sm"
-                  onClick={() => navigate(`/agenda`)}
-                  title="Volver al listado de visitas"
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Atrás
-                </Button>
-                <h1 className="fs-5 my-0">Detalle de visita</h1>
-              </div>
               <VisitRequestInfo visit={visit} />
             </Col>
             <Col lg={3}>
@@ -158,6 +150,7 @@ export const VisitRequest = () => {
                       name="status"
                       as="select"
                       isInvalid={!!errors.status && touched.status}
+                      disabled={isFormSubmitting}
                     >
                       <option value="PENDIENTE">PENDIENTE</option>
                       <option value="PAUSADA">PAUSADA</option>
@@ -171,6 +164,7 @@ export const VisitRequest = () => {
                       placeholder="Ingrese un comentario"
                       rows={4}
                       isInvalid={!!errors.comment && touched.comment}
+                      disabled={isFormSubmitting}
                     />
 
                     <Button
@@ -178,7 +172,7 @@ export const VisitRequest = () => {
                       variant="primary"
                       className="mt-3 float-end"
                       size="sm"
-                      disabled={isFormSubmitted}
+                      disabled={isFormSubmitting}
                     >
                       <i className="bi bi-floppy me-2"></i>
                       Guardar cambios

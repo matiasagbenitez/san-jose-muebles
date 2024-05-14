@@ -36,11 +36,12 @@ export const CreateVisitRequest = () => {
           size="sm"
           onClick={() => navigate(`/agenda`)}
           title="Volver al listado de visitas"
+          className="col-1"
         >
           <i className="bi bi-arrow-left me-2"></i>
           Atrás
         </Button>
-        <h1 className="fs-5 my-0">Registrar una nueva solicitud de visita</h1>
+        <h1 className="fs-5 my-0">Registrar una nueva visita</h1>
       </div>
       <hr className="my-3" />
       <VisitForm onSubmit={handleSubmit} submitting={isFormSubmitting} />

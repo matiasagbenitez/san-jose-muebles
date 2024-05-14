@@ -11,6 +11,8 @@ interface PageHeaderProps {
   actionButtonText?: string;
   actionButtonIcon?: string;
   actionButtonVariant?: string;
+  hr?: boolean;
+  className?: string;
 }
 
 export const PageHeader = ({
@@ -21,6 +23,8 @@ export const PageHeader = ({
   actionButtonText,
   actionButtonIcon,
   actionButtonVariant = "success",
+  hr = true,
+  className,
 }: PageHeaderProps) => {
   const navigate = useNavigate();
 
@@ -29,7 +33,7 @@ export const PageHeader = ({
   };
 
   return (
-    <>
+    <div className={className}>
       <Row className="d-flex align-items-center">
         <Col xs={6} lg={2} xl={1}>
           <Button
@@ -63,7 +67,7 @@ export const PageHeader = ({
         </Col>
       </Row>
 
-      <hr className="mt-0 mt-lg-3" />
-    </>
+      {hr && <hr className="mt-0 mt-lg-3" />}
+    </div>
   );
 };

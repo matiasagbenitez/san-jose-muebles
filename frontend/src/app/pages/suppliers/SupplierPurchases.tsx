@@ -1,8 +1,8 @@
 import { useState, useEffect, useReducer } from "react";
-import { Badge, Button } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 
 import {
   Datatable,
@@ -157,24 +157,15 @@ export const SupplierPurchases = () => {
       {loading && <LoadingSpinner />}
       {!loading && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex gap-3 align-items-center">
-              <Button
-                variant="light border text-muted"
-                size="sm"
-                onClick={() => navigate(`/proveedores/${id}`)}
-                title="Volver al detalle del proveedor"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Atrás
-              </Button>
-              <h1 className="fs-5 my-0">Compras realizadas a {supplier}</h1>
-            </div>
-            <Button size="sm" variant="success" onClick={handleCreate}>
-              Nueva compra
-            </Button>
-          </div>
-          <hr />
+          <PageHeader
+            goBackTo={`/proveedores/${id}`}
+            goBackTitle="Volver al detalle del proveedor"
+            title={`Compras realizadas a ${supplier}`}
+            handleAction={handleCreate}
+            actionButtonText="Nueva compra"
+            hr={false}
+            className="mb-3"
+          />
 
           <Datatable
             title="Listado de compras realizadas al proveedor"

@@ -147,7 +147,7 @@ export const ProjectRelatedPersons = () => {
                         <b>Relación/rol:</b> {person.relation}
                       </p>
                       <p className="mb-1">
-                        <b>Observaciones/rol:</b> {person.annotations}
+                        <b>Observaciones:</b> {person.annotations}
                       </p>
                     </Card.Body>
                     <Card.Footer className="d-flex justify-content-end gap-2">

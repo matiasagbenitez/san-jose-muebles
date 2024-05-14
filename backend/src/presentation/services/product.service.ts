@@ -105,19 +105,9 @@ export class ProductService {
         return { product: productEntity };
     }
 
-    public async getProductPendingReceptions(id: number) {
-        try {
-            const purchaseItemService = new PurchaseItemService();
-            const items = await purchaseItemService.getPendingReceptionsByProductId(id);
-            const pendingReceptions = items.map((item: any) => ProductPendingReceptionEntity.fromObject(item));
-            return { items: pendingReceptions };
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-    }
-
     public async adjustProductStock(id_product: number, dto: AdjustProductStockDto, id_user: number) {
         const { op, quantity, comment } = dto;
+
         const product = await Product.findByPk(id_product);
         if (!product) throw CustomError.notFound('Producto no encontrado');
 
@@ -195,68 +185,14 @@ export class ProductService {
         try {
             await product.destroy();
             return { message: 'Producto eliminado correctamente' };
-        } catch (error) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-    }
-
-    // ACTUALIZAR PRODUCTO POR COMPRA REGISTRADA
-    public async updateProductByPurchase(id: number, id_currency: number, quantity: number, last_price: number): Promise<void> {
-        try {
-            await Product.update({
-                inc_stock: Sequelize.literal(`inc_stock + ${quantity}`),
-                last_price,
-                id_currency,
-            }, { where: { id } });
         } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-    }
+            const errorMessages: Record<string, string> = {
+                SequelizeDatabaseError: 'Ocurrió un error de BASE DE DATOS al intentar eliminar el producto',
+                SequelizeForeignKeyConstraintError: '¡No se puede eliminar el producto porque tiene registros asociados!',
+            };
 
-
-    // ACTUALIZAR STOCK POR RECEPCIÓN DEL PRODUCTO COMPRADO
-    public async updateStockByReception(id: number, received: number): Promise<void> {
-        try {
-            await Product.update({
-                inc_stock: Sequelize.literal(`inc_stock - ${received}`),
-                actual_stock: Sequelize.literal(`actual_stock + ${received}`),
-            }, { where: { id } });
-        } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-    }
-
-
-    public async decreaseIncomingStock(id: number, quantity: number): Promise<void> {
-        try {
-            await Product.decrement('inc_stock', { by: quantity, where: { id } });
-        } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
-        }
-    }
-
-    public async decreaseIncomingStockInBulk(updates: { id_product: number; quantity: number }[]): Promise<void> {
-        try {
-            // Obtener los valores actuales de inc_stock para cada producto
-            const currentStocks = await Promise.all(
-                updates.map(async (update) => {
-                    const product = await Product.findByPk(update.id_product);
-                    if (!product) throw CustomError.notFound('Producto no encontrado');
-                    return { id: product.id, currentStock: product.inc_stock };
-                })
-            );
-
-            // Realizar la actualización en bloque
-            await Promise.all(
-                currentStocks.map(async ({ id, currentStock }) => {
-                    const update = updates.find((update) => update.id_product === id);
-                    const quantity = update ? update.quantity : 0; // Si update es undefined, asigna 0 a quantity
-                    const newStock = currentStock - quantity;
-                    await Product.update({ inc_stock: newStock }, { where: { id } });
-                })
-            );
-        } catch (error: any) {
-            throw CustomError.internalServerError(`${error}`);
+            const errorMessage = errorMessages[error.name] || 'Ocurrió un error desconocido al intentar eliminar el producto';
+            throw CustomError.internalServerError(errorMessage);
         }
     }
 

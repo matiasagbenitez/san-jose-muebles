@@ -71,19 +71,6 @@ export class ProductController {
             });
     }
 
-    getPendingReceptions = async (req: Request, res: Response) => {
-        const id = req.params.id;
-        if (!id) return res.status(400).json({ message: 'Missing id' });
-
-        this.productService.getProductPendingReceptions(parseInt(id))
-            .then((data) => {
-                res.json(data);
-            })
-            .catch((error) => {
-                this.handleError(error, res);
-            });
-    }
-
     adjustProductStock = async (req: Request, res: Response) => {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: 'Missing id' });

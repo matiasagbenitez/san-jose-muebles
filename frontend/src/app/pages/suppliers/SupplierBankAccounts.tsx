@@ -4,7 +4,7 @@ import { TableColumn } from "react-data-table-component";
 
 import apiSJM from "../../../api/apiSJM";
 import { SweetAlert2 } from "../../utils";
-import { LoadingSpinner } from "../../components";
+import { LoadingSpinner, PageHeader } from "../../components";
 import { ActionButtons, DatatableNoPagination } from "../../shared";
 import { Button } from "react-bootstrap";
 import { SupplierBankAccountForm } from "./components";
@@ -105,16 +105,25 @@ export const SupplierBankAccounts = () => {
 
   const handleSubmit = async (values: BankAccountFormInterface) => {
     try {
-
       if (editingId) {
-        const confirmation = await SweetAlert2.confirm("¿Actualizar cuenta bancaria?");
+        const confirmation = await SweetAlert2.confirm(
+          "¿Actualizar cuenta bancaria?"
+        );
         if (!confirmation.isConfirmed) return;
-        const { data } = await apiSJM.put(`/bank_accounts/${editingId}`, values);
+        const { data } = await apiSJM.put(
+          `/bank_accounts/${editingId}`,
+          values
+        );
         SweetAlert2.successToast(data.message);
       } else {
-        const confirmation = await SweetAlert2.confirm("¿Agregar cuenta bancaria?");
+        const confirmation = await SweetAlert2.confirm(
+          "¿Agregar cuenta bancaria?"
+        );
         if (!confirmation.isConfirmed) return;
-        const { data } = await apiSJM.post("/bank_accounts", { ...values, id_supplier: id });
+        const { data } = await apiSJM.post("/bank_accounts", {
+          ...values,
+          id_supplier: id,
+        });
         SweetAlert2.successToast(data.message);
       }
       handleHide();
@@ -150,11 +159,12 @@ export const SupplierBankAccounts = () => {
       name: "BANCO",
       selector: (row: DataRow) => row.bank,
       wrap: true,
+      maxWidth: "180px",
     },
     {
       name: "TITULAR CUENTA",
       selector: (row: DataRow) => row.account_owner,
-      wrap: true,
+      maxWidth: "180px",
     },
     {
       name: "CBU/CVU",
@@ -199,6 +209,7 @@ export const SupplierBankAccounts = () => {
           )}
         </>
       ),
+      maxWidth: "180px",
     },
     {
       name: "N° DE CUENTA",
@@ -225,6 +236,7 @@ export const SupplierBankAccounts = () => {
     {
       name: "ACCIONES",
       button: true,
+      width: "150px",
       cell: (row: any) => (
         <>
           <Button
@@ -255,28 +267,20 @@ export const SupplierBankAccounts = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {bankAccounts && !loading && (
+      {bankAccounts && !loading && supplier && (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex gap-3 align-items-center">
-            <Button
-                  variant="light border text-muted"
-                  size="sm"
-                  onClick={() => navigate(`/proveedores/${id}`)}
-                  title="Volver al detalle del proveedor"
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Atrás
-                </Button>
-            <h1 className="fs-5 my-0">Cuentas bancarias: {supplier}</h1>
-            </div>
-            <Button size="sm" variant="success" onClick={handleCreate}>
-              Nueva cuenta
-            </Button>
-          </div>
+          <PageHeader
+            goBackTo={`/proveedores/${id}`}
+            goBackTitle="Volver al detalle del proveedor"
+            title="Listado de cuentas bancarias"
+            handleAction={handleCreate}
+            actionButtonText="Nueva cuenta"
+            hr={false}
+            className="mb-3"
+          />
 
           <DatatableNoPagination
-            title="Cuentas bancarias"
+            title={`Cuentas bancarias del proveedor ${supplier}`}
             columns={columns as TableColumn<DataRow>[]}
             data={bankAccounts}
             loading={loading}

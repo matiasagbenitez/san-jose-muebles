@@ -59,11 +59,12 @@ export const EditVisitRequest = () => {
           size="sm"
           onClick={() => navigate(`/agenda/${id}`)}
           title="Volver al detalle de la visita"
+          className="col-1"
         >
           <i className="bi bi-arrow-left me-2"></i>
           Atrás
         </Button>
-        <h1 className="fs-5 my-0">Editar visita</h1>
+        <h1 className="fs-5 my-0">Modificar datos de la visita</h1>
       </div>
       <hr className="my-3" />
       {loading && <LoadingSpinner />}

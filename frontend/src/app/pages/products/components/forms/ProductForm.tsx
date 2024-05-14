@@ -51,15 +51,15 @@ interface ParamsInterface {
 interface FormProps {
   onSubmit: (values: any) => void;
   initialForm?: ProductFormInterface;
-  isFormSubmitted?: boolean;
   editMode?: boolean;
+  isSubmitting: boolean;
 }
 
 export const ProductForm = ({
   onSubmit,
   initialForm = productForm,
-  isFormSubmitted,
   editMode = false,
+  isSubmitting,
 }: FormProps) => {
   const [brands, setBrands] = useState<ParamsInterface[]>([]);
   const [categories, setCategories] = useState<ParamsInterface[]>([]);
@@ -110,6 +110,7 @@ export const ProductForm = ({
                       name="id_category"
                       as="select"
                       isInvalid={!!errors.id_category && touched.id_category}
+                      disabled={isSubmitting}
                     >
                       <option value="">Seleccione una opción</option>
                       {categories &&
@@ -126,6 +127,7 @@ export const ProductForm = ({
                       name="id_brand"
                       as="select"
                       isInvalid={!!errors.id_brand && touched.id_brand}
+                      disabled={isSubmitting}
                     >
                       <option value="">Seleccione una opción</option>
                       {brands &&
@@ -143,12 +145,14 @@ export const ProductForm = ({
                   name="code"
                   placeholder="Ingrese código"
                   isInvalid={!!errors.code && touched.code}
+                  disabled={isSubmitting}
                 />
                 <MyTextInput
                   label="Nombre *"
                   name="name"
                   placeholder="Ingrese nombre"
                   isInvalid={!!errors.name && touched.name}
+                  disabled={isSubmitting}
                 />
                 <MyTextArea
                   label="Descripción"
@@ -156,6 +160,7 @@ export const ProductForm = ({
                   placeholder="Ingrese una descripción adicional (opcional)"
                   rows={4}
                   isInvalid={!!errors.description && touched.description}
+                  disabled={isSubmitting}
                 />
               </Col>
               <Col lg={6}>
@@ -167,6 +172,7 @@ export const ProductForm = ({
                       name="id_unit"
                       as="select"
                       isInvalid={!!errors.id_unit && touched.id_unit}
+                      disabled={isSubmitting}
                     >
                       <option value="">Seleccione una opción</option>
                       {unitsOfMeasure &&
@@ -183,6 +189,7 @@ export const ProductForm = ({
                       name="id_currency"
                       as="select"
                       isInvalid={!!errors.id_currency && touched.id_currency}
+                      disabled={isSubmitting}
                     >
                       <option value="">Seleccione una opción</option>
                       {currencies &&
@@ -199,6 +206,7 @@ export const ProductForm = ({
                   name="last_price"
                   placeholder="Ingrese costo actual"
                   isInvalid={!!errors.last_price && touched.last_price}
+                  disabled={isSubmitting}
                 />
                 <h2 className="fs-6 mt-5">Información de stock</h2>
                 <Row>
@@ -208,7 +216,7 @@ export const ProductForm = ({
                       name="actual_stock"
                       placeholder="Ingrese stock actual"
                       isInvalid={!!errors.actual_stock && touched.actual_stock}
-                      disabled={editMode}
+                      disabled={editMode || isSubmitting}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -226,6 +234,7 @@ export const ProductForm = ({
                       name="min_stock"
                       placeholder="Ingrese stock mínimo"
                       isInvalid={!!errors.min_stock && touched.min_stock}
+                      disabled={isSubmitting}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -244,6 +253,7 @@ export const ProductForm = ({
                       name="ideal_stock"
                       placeholder="Ingrese stock ideal"
                       isInvalid={!!errors.ideal_stock && touched.ideal_stock}
+                      disabled={isSubmitting}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -264,9 +274,10 @@ export const ProductForm = ({
               variant="primary"
               className="mt-3 float-end"
               size="sm"
-              disabled={isFormSubmitted}
+              disabled={isSubmitting}
             >
-              Guardar
+              <i className="bi bi-floppy me-2"></i>
+              {editMode ? "Guardar cambios" : "Registrar producto"}
             </Button>
           </Form>
         )}

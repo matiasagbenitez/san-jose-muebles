@@ -4,7 +4,7 @@ import {
   VisitStatuses,
   VisitPriorities,
 } from "../interfaces";
-import { DayJsAdapter } from "../../../../helpers";
+import { DateFormatter } from "../../../helpers";
 
 interface Props {
   visit: VisitRequestInterface;
@@ -23,10 +23,10 @@ export const VisitRequestInfo = ({ visit }: Props) => {
               <span>
                 {visit.schedule === "NOT_SCHEDULED" && "No programada"}
                 {visit.schedule === "PARTIAL_SCHEDULED" && (
-                  <>{DayJsAdapter.toDateString(visit.start as Date)} </>
+                  <>{DateFormatter.toWDMYText(visit.start as Date)} </>
                 )}
                 {visit.schedule === "FULL_SCHEDULED" && (
-                  <>{DayJsAdapter.toDatetimeString(visit.start as Date)} </>
+                  <>{DateFormatter.toWDMYHText(visit.start as Date)} </>
                 )}
               </span>
               {visit.overdue && visit.status === "PENDIENTE" && (
@@ -112,7 +112,7 @@ export const VisitRequestInfo = ({ visit }: Props) => {
 
       <small className="text-muted fst-italic">
         Solicitud de visita registrada por {visit.createdBy} (
-        {DayJsAdapter.toDayMonthYearHour(visit.createdAt)})
+        {DateFormatter.toDMYH(visit.createdAt)})
       </small>
 
       <h6 className="my-3">
@@ -127,13 +127,13 @@ export const VisitRequestInfo = ({ visit }: Props) => {
           No se han registrado cambios de estado
         </p>
       ) : (
-        <ListGroup className="small">
+        <ListGroup className="small mb-3">
           {visit.evolutions.map((evolution) => (
             <ListGroup.Item key={evolution.id}>
               {evolution.user} marcó la visita como <b>{evolution.status}</b> el
-              día {DayJsAdapter.toDayMonthYearHour(evolution.createdAt)}.{" "}
+              día {DateFormatter.toDMYH(evolution.createdAt)}.{" "}
               {evolution.comment && (
-                <p className="text-muted fst-italic m-0">
+                <p className="text-muted fst-italic m-0 text-uppercase">
                   <i className="bi bi-chat-right-text me-1 small"></i>{" "}
                   {evolution.comment}
                 </p>
