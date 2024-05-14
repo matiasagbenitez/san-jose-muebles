@@ -164,7 +164,7 @@ export const SupplierPurchases = () => {
             handleAction={handleCreate}
             actionButtonText="Nueva compra"
             hr={false}
-            className="mb-3"
+            className="mb-0 mb-lg-3"
           />
 
           <Datatable

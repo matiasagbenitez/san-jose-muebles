@@ -9,6 +9,8 @@ import { ActionButtons, DatatableNoPagination } from "../../shared";
 import { Button } from "react-bootstrap";
 import { SupplierBankAccountForm } from "./components";
 
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
 interface DataRow {
   id: number;
   id_supplier: string;
@@ -39,7 +41,7 @@ const initialForm: BankAccountFormInterface = {
 enum ClipboardType {
   CBU_CVU = "cbu_cvu",
   ALIAS = "alias",
-  ACCOUNT_NUMBER = "account_number",
+  ALL = "all",
 }
 
 export const SupplierBankAccounts = () => {
@@ -69,29 +71,45 @@ export const SupplierBankAccounts = () => {
     fetch();
   }, [id]);
 
-  const handleClick = (row: DataRow, type?: ClipboardType) => {
+  const showAlert = async (type: ClipboardType) => {
+    let message = "";
     switch (type) {
       case ClipboardType.CBU_CVU:
-        navigator.clipboard.writeText(row.cbu_cvu);
-        SweetAlert2.successToast("CBU/CVU copiado al portapapeles");
+        message = "¡CBU/CVU copiado al portapapeles!";
         break;
       case ClipboardType.ALIAS:
-        navigator.clipboard.writeText(row.alias);
-        SweetAlert2.successToast("Alias copiado al portapapeles");
+        message = "¡Alias copiado al portapapeles!";
         break;
-      case ClipboardType.ACCOUNT_NUMBER:
-        navigator.clipboard.writeText(row.account_number);
-        SweetAlert2.successToast("Número de cuenta copiado al portapapeles");
-        break;
-
-      default:
-        const text = `Banco: ${row.bank}\nTitular: ${row.account_owner}\nCBU/CVU: ${row.cbu_cvu}\nAlias: ${row.alias}\nN° de cuenta: ${row.account_number}`;
-        navigator.clipboard.writeText(text);
-        SweetAlert2.successToast("Datos copiados al portapapeles");
+      case ClipboardType.ALL:
+        message = "¡Datos copiados al portapapeles!";
         break;
     }
+    SweetAlert2.successToast(message);
   };
 
+  const CopyElement = (type: ClipboardType, row: DataRow) => {
+    let text = "";
+    switch (type) {
+      case ClipboardType.CBU_CVU:
+        text = row.cbu_cvu;
+        break;
+      case ClipboardType.ALIAS:
+        text = row.alias;
+        break;
+      case ClipboardType.ALL:
+        text = `Banco: ${row.bank}\nTitular: ${row.account_owner}\nCBU/CVU: ${row.cbu_cvu}\nAlias: ${row.alias}\nN° de cuenta: ${row.account_number}`;
+        break;
+    }
+
+    return (
+      <CopyToClipboard text={text} onCopy={() => showAlert(type)}>
+        <Button size="sm" variant="transparent" className="py-0 px-1">
+          <span>{type === ClipboardType.ALL ? "" : text}</span>
+          <i className="bi bi-clipboard ms-2 small text-muted"></i>
+        </Button>
+      </CopyToClipboard>
+    );
+  };
   const handleCreate = () => {
     setForm(initialForm);
     setIsModalOpen(true);
@@ -170,68 +188,20 @@ export const SupplierBankAccounts = () => {
       name: "CBU/CVU",
       selector: (row: DataRow) => row.cbu_cvu,
       cell: (row: DataRow) => (
-        <>
-          {row.cbu_cvu && (
-            <div className="d-flex align-items-center justify-content-between w-100">
-              <span>{row.cbu_cvu}</span>
-              <Button
-                size="sm"
-                variant="transparent"
-                className="py-0 px-1"
-                onClick={() => handleClick(row, ClipboardType.CBU_CVU)}
-                title="Copiar CBU/CVU al portapapeles"
-              >
-                <i className="bi bi-clipboard"></i>
-              </Button>
-            </div>
-          )}
-        </>
+        <>{row.cbu_cvu && CopyElement(ClipboardType.CBU_CVU, row)}</>
       ),
     },
     {
       name: "ALIAS",
       selector: (row: DataRow) => row.alias,
       cell: (row: DataRow) => (
-        <>
-          {row.alias && (
-            <div className="d-flex align-items-center justify-content-between w-100">
-              <span>{row.alias}</span>
-              <Button
-                size="sm"
-                variant="transparent"
-                className="py-0 px-1"
-                onClick={() => handleClick(row, ClipboardType.ALIAS)}
-                title="Copiar alias al portapapeles"
-              >
-                <i className="bi bi-clipboard"></i>
-              </Button>
-            </div>
-          )}
-        </>
+        <>{row.alias && CopyElement(ClipboardType.ALIAS, row)}</>
       ),
-      maxWidth: "180px",
     },
     {
       name: "N° DE CUENTA",
       selector: (row: DataRow) => row.account_number,
-      cell: (row: DataRow) => (
-        <>
-          {row.account_number && (
-            <div className="d-flex align-items-center justify-content-between w-100">
-              <span>{row.account_number}</span>
-              <Button
-                size="sm"
-                variant="transparent"
-                className="py-0 px-1"
-                onClick={() => handleClick(row, ClipboardType.ALIAS)}
-                title="Copiar número de cuenta al portapapeles"
-              >
-                <i className="bi bi-clipboard"></i>
-              </Button>
-            </div>
-          )}
-        </>
-      ),
+      maxWidth: "180px",
     },
     {
       name: "ACCIONES",
@@ -239,15 +209,7 @@ export const SupplierBankAccounts = () => {
       width: "150px",
       cell: (row: any) => (
         <>
-          <Button
-            size="sm"
-            variant="transparent"
-            className="py-0 px-1"
-            onClick={() => handleClick(row)}
-            title="Copiar datos al portapapeles"
-          >
-            <i className="bi bi-clipboard"></i>
-          </Button>
+          {CopyElement(ClipboardType.ALL, row)}
           <ActionButtons
             row={row}
             handleEdit={handleEdit}
@@ -276,7 +238,7 @@ export const SupplierBankAccounts = () => {
             handleAction={handleCreate}
             actionButtonText="Nueva cuenta"
             hr={false}
-            className="mb-3"
+            className="mb-0 mb-lg-3"
           />
 
           <DatatableNoPagination
