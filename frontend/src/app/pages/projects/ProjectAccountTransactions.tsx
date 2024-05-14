@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Button, Modal, Form, InputGroup, Row, Col } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
 
@@ -111,35 +111,28 @@ export const ProjectAccountTransactions = () => {
     {
       name: "FECHA REGISTRO",
       selector: (row: any) => row.createdAt,
-      format: (row: DataRow) => (
-        <>
-          {DateFormatter.toDMYH(row.createdAt)}
-        </>
-      ),
+      format: (row: DataRow) => <>{DateFormatter.toDMYH(row.createdAt)}</>,
       maxWidth: "140px",
       center: true,
     },
     {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
+      wrap: true,
       format: (row: DataRow) => (
-        <div className="text-wrap">
+        <>
           {row.supplier && (
             <>
-              PAGO A PROVEEDOR ({row.supplier.supplier} | ID PAGO{" "}
-              {row.supplier.id_movement})
-              <Button
-                size="sm"
-                variant="link"
-                onClick={() => handleRedirectSupplierPayment(row.supplier!)}
-                className="p-0 ps-2 text-start"
-              >
-                <small>Ver cuenta</small>
-              </Button>
+              PAGO A PROVEEDOR (
+              <Link to={`/cuentas-proveedores/${row.supplier.id_account}`}>
+                {row.supplier.supplier}
+              </Link>
+              {" | "}
+              N° {row.supplier.id_movement})
             </>
           )}
           {!row.supplier && row.description && <span>{row.description}</span>}
-        </div>
+        </>
       ),
     },
     {
@@ -163,7 +156,7 @@ export const ProjectAccountTransactions = () => {
           </div>
         );
       },
-      maxWidth: "180px",
+      maxWidth: "185px",
     },
     {
       name: "IMPORTE",
@@ -324,10 +317,6 @@ export const ProjectAccountTransactions = () => {
     }
   };
 
-  const handleRedirectSupplierPayment = (supplier: any) => {
-    navigate(`/cuentas-proveedores/${supplier.id_account}`);
-  };
-
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -342,24 +331,19 @@ export const ProjectAccountTransactions = () => {
           />
 
           {/* PROJECT ACCOUNT INFO */}
-          <Row className="mb-3">
+          <Row>
             <Col xs={12} xl={4}>
               <p className="text-muted">
                 Cliente: <span className="fw-bold">{account.client}</span>
               </p>
             </Col>
-            <Col xs={12} xl={5}>
+            <Col xs={12} xl={8}>
               <p className="text-muted">
                 Proyecto:{" "}
                 <span className="fw-bold">
                   {account.title || "Sin título especificado"} (
                   {account.locality})
                 </span>
-              </p>
-            </Col>
-            <Col xs={12} xl={3}>
-              <p className="text-muted">
-                Estado proyecto:{" "}
                 <span
                   className="badge rounded-pill ms-1"
                   style={{

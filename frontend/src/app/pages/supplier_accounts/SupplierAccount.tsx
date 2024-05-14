@@ -9,7 +9,7 @@ import {
   Popover,
   OverlayTrigger,
 } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
 
@@ -171,13 +171,13 @@ export const SupplierAccount = () => {
       format: (row: DataRow) => (
         <>
           {DateFormatter.toDMYH(row.createdAt)}
-          <i
+          {/* <i
             className="bi bi-person ms-2"
             title={`Movimiento registrado por ${row.user}`}
-          ></i>
+          ></i> */}
         </>
       ),
-      maxWidth: "160px",
+      maxWidth: "140px",
       center: true,
     },
     {
@@ -190,36 +190,39 @@ export const SupplierAccount = () => {
     {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
+      wrap: true,
       format: (row: DataRow) => (
-        <div className="text-wrap">
+        <>
           {row.id_purchase && (
-            <Button
-              size="sm"
-              variant="link"
-              onClick={() => handleRedirectPurchase(row.id_purchase!)}
-              className="p-0 text-start"
-            >
-              <small>{row.description}</small>
-            </Button>
-          )}
-          {row.project && (
             <>
-              PAGO DE CLIENTE ({row.project.client} | ID PAGO {row.project.id_movement}){" "}
+              {row.description}
               <Button
                 size="sm"
                 variant="link"
-                onClick={() => handleRedirectClientPayment(row.project!)}
-                className="p-0 ps-1 text-start"
-                title="Ver detalle del movimiento en cuenta del cliente"
+                onClick={() => handleRedirectPurchase(row.id_purchase!)}
+                className="p-0 ms-1"
+                title="Ver detalle de compra"
               >
-                <small>Ver cuenta</small>
+                <small>Ver detalle</small>
               </Button>
             </>
           )}
-          {!row.id_purchase && !row.project && row.description && (
-            <span>{row.description}</span>
+          {row.project && (
+            <>
+              PAGO DE CLIENTE (
+              <Link
+                to={`/proyectos/${row.project.id_project}/cuentas/${row.project.id_account}}`}
+              >
+                {row.project.client}
+              </Link>
+              {" | "}
+              N° {row.project.id_movement})
+            </>
           )}
-        </div>
+          {!row.id_purchase && !row.project && row.description && (
+            <>{row.description}</>
+          )}
+        </>
       ),
     },
     {
@@ -279,13 +282,7 @@ export const SupplierAccount = () => {
   const handleRedirectPurchase = (id_purchase: number) => {
     navigate(`/compras/${id_purchase}`);
   };
-
-  const handleRedirectClientPayment = (project: ProjectInterface) => {
-    navigate(
-      `/proyectos/${project.id_project}/cuentas/${project.id_account}}`
-    );
-  };
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

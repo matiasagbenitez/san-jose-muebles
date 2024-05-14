@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Table, Button } from "react-bootstrap";
+import { Row, Col, Table } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
 import { Movements } from "./interfaces";
 import { DateFormatter } from "../../helpers/date.formatter";
 import { NumberFormatter } from "../../helpers";
-import { SweetAlert2 } from "../../utils";
 
 interface CurrencyInterface {
   name: string;
@@ -99,12 +98,12 @@ export const ProjectAccountTransaction = () => {
                 <hr className="my-2" />
                 <h3 className="fs-6 text-muted">Información del cliente</h3>
                 <Row>
-                  <Col xs={12} md={6}>
+                  <Col xs={12}>
                     <span className="small">
                       <b>Cliente:</b> {transaction.account.project.client}
                     </span>
                   </Col>
-                  <Col xs={12} md={6}>
+                  <Col xs={12}>
                     <span className="small">
                       <b>Proyecto:</b>{" "}
                       {transaction.account.project.title || "Sin título"} (
