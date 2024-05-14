@@ -16,6 +16,8 @@ export class ProjectAccountTransactionRoutes {
 
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getTransaction);
 
+        router.post('/nullify/:id', [AuthMiddleware.validateJWT], controller.deleteSupplierPayment);
+
         return router;
     }
 

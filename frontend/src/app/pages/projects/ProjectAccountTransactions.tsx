@@ -114,32 +114,29 @@ export const ProjectAccountTransactions = () => {
       format: (row: DataRow) => (
         <>
           {DateFormatter.toDMYH(row.createdAt)}
-          <i
-            className="bi bi-person ms-2"
-            title={`Movimiento registrado por ${row.user}`}
-          ></i>
         </>
       ),
-      maxWidth: "160px",
+      maxWidth: "140px",
       center: true,
     },
     {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
       format: (row: DataRow) => (
-        <div className="text-break" style={{ maxWidth: "500px" }}>
+        <div className="text-wrap">
           {row.supplier && (
-            <Button
-              size="sm"
-              variant="link"
-              onClick={() => handleRedirectSupplierPayment(row.supplier!)}
-              className="p-0 text-start"
-            >
-              <small>
-                PAGO A PROVEEDOR N° {row.supplier.id_movement} -{" "}
-                {row.supplier.supplier}
-              </small>
-            </Button>
+            <>
+              PAGO A PROVEEDOR ({row.supplier.supplier} | ID PAGO{" "}
+              {row.supplier.id_movement})
+              <Button
+                size="sm"
+                variant="link"
+                onClick={() => handleRedirectSupplierPayment(row.supplier!)}
+                className="p-0 ps-2 text-start"
+              >
+                <small>Ver cuenta</small>
+              </Button>
+            </>
           )}
           {!row.supplier && row.description && <span>{row.description}</span>}
         </div>
@@ -166,7 +163,7 @@ export const ProjectAccountTransactions = () => {
           </div>
         );
       },
-      maxWidth: "200px",
+      maxWidth: "180px",
     },
     {
       name: "IMPORTE",
@@ -328,11 +325,7 @@ export const ProjectAccountTransactions = () => {
   };
 
   const handleRedirectSupplierPayment = (supplier: any) => {
-    const url = `/cuentas-proveedores/${supplier.id_account}/movimiento/${supplier.id_movement}`;
-    console.log(url);
-    navigate(
-      `/cuentas-proveedores/${supplier.id_account}/movimiento/${supplier.id_movement}`
-    );
+    navigate(`/cuentas-proveedores/${supplier.id_account}`);
   };
 
   return (

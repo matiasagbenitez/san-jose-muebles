@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class ProjectAccountTransaction extends Model {
     public id!: number;
     public id_project_account!: number;
-    public type!: 'NEW_PAYMENT' | 'POS_ADJ' | 'NEG_ADJ' | 'NEW_SUPPLIER_PAYMENT' | 'DEL_SUPPLIER_PAYMENT';
+    public type!: 'NEW_PAYMENT' | 'POS_ADJ' | 'NEG_ADJ' | 'NEW_SUPPLIER_PAYMENT';
     public description!: string;
     public received_amount!: number;
     public id_currency!: number;
@@ -30,7 +30,7 @@ export const initProjectAccountTransactionModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             type: {
-                type: DataTypes.ENUM('NEW_PAYMENT', 'POS_ADJ', 'NEG_ADJ', 'NEW_SUPPLIER_PAYMENT', 'DEL_SUPPLIER_PAYMENT'),
+                type: DataTypes.ENUM('NEW_PAYMENT', 'POS_ADJ', 'NEG_ADJ', 'NEW_SUPPLIER_PAYMENT'),
                 allowNull: false,
             },
             description: {

@@ -71,7 +71,7 @@ export const SupplierAccounts = () => {
         const formData = { ...form, id_supplier: id };
         const { data } = await apiSJM.post("/supplier_accounts", formData);
         SweetAlert2.successToast(data.message || "¡Cuenta creada!");
-        setAccounts([...accounts, data.account]);
+        fetch();
         handleClose();
       }
     } catch (error: any) {

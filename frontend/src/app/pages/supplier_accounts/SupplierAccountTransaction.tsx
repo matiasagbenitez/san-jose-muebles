@@ -93,13 +93,8 @@ export const SupplierAccountTransaction = () => {
             <Col xs={12} lg={2}></Col>
             <Col xs={12} lg={8} className="shadow-sm border rounded-2 p-3">
               <Row className="px-3">
-                <Col xs={12} md={6}>
-                  <h2 className="fs-5">Comprobante de movimiento</h2>
-                </Col>
-                <Col xs={12} md={6} className="text-md-end">
-                  <span className="font-monospace small">
-                    ID_MOVIMIENTO: {id_transaction}
-                  </span>
+                <Col xs={12}>
+                  <h2 className="fs-5">Comprobante de pago a proveedor</h2>
                 </Col>
               </Row>
               <div className="px-3">
@@ -184,19 +179,12 @@ export const SupplierAccountTransaction = () => {
                   </tbody>
                 </Table>
 
-                <Row>
-                  <Col xs={12} md={6}>
-                    <span className="small">
-                      Fecha registro:{" "}
-                      {DateFormatter.toDMYH(transaction.createdAt)}
-                    </span>
-                  </Col>
-                  <Col xs={12} md={6}>
-                    <span className="small">
-                      Usuario responsable: {transaction.user}
-                    </span>
-                  </Col>
-                </Row>
+                <span className="small fst-italic">
+                  ID #{id_transaction} - Fecha:{" "}
+                  {DateFormatter.toDMYH(transaction.createdAt)} (
+                  {transaction.user})
+                </span>
+                
               </div>
             </Col>
             <Col xs={12} lg={2}></Col>

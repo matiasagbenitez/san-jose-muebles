@@ -45,6 +45,7 @@ enum MovementType {
   DEL_PURCHASE = "DEL_PURCHASE",
   NEW_PAYMENT = "NEW_PAYMENT",
   NEW_CLIENT_PAYMENT = "NEW_CLIENT_PAYMENT",
+  DEL_CLIENT_PAYMENT = "DEL_CLIENT_PAYMENT",
   POS_ADJ = "POS_ADJ",
   NEG_ADJ = "NEG_ADJ",
 }
@@ -72,6 +73,11 @@ const types: Record<
     label: "PAGO DE CLIENTE",
     icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
     title: "Disminuye la deuda con el proveedor",
+  },
+  [MovementType.DEL_CLIENT_PAYMENT]: {
+    label: "PAGO DE CLIENTE ANULADO",
+    icon: "bi bi-x-circle-fill fs-6 text-secondary",
+    title: "Aumenta la deuda con el proveedor",
   },
   [MovementType.POS_ADJ]: {
     label: "AJUSTE A FAVOR",
@@ -185,7 +191,7 @@ export const SupplierAccount = () => {
       name: "DESCRIPCIÓN",
       selector: (row: DataRow) => row.description,
       format: (row: DataRow) => (
-        <div className="text-break" style={{ maxWidth: "300px" }}>
+        <div className="text-wrap">
           {row.id_purchase && (
             <Button
               size="sm"
@@ -197,16 +203,18 @@ export const SupplierAccount = () => {
             </Button>
           )}
           {row.project && (
-            <Button
-              size="sm"
-              variant="link"
-              onClick={() => handleRedirectClientPayment(row.project!)}
-              className="p-0 text-start"
-            >
-              <small>
-                {row.description} - {row.project.client}
-              </small>
-            </Button>
+            <>
+              PAGO DE CLIENTE ({row.project.client} | ID PAGO {row.project.id_movement}){" "}
+              <Button
+                size="sm"
+                variant="link"
+                onClick={() => handleRedirectClientPayment(row.project!)}
+                className="p-0 ps-1 text-start"
+                title="Ver detalle del movimiento en cuenta del cliente"
+              >
+                <small>Ver cuenta</small>
+              </Button>
+            </>
           )}
           {!row.id_purchase && !row.project && row.description && (
             <span>{row.description}</span>
@@ -274,7 +282,7 @@ export const SupplierAccount = () => {
 
   const handleRedirectClientPayment = (project: ProjectInterface) => {
     navigate(
-      `/proyectos/${project.id_project}/cuentas/${project.id_account}/movimiento/${project.id_movement}`
+      `/proyectos/${project.id_project}/cuentas/${project.id_account}}`
     );
   };
 

@@ -9,7 +9,7 @@ export class ProjectAccountTransactionEntity {
         public id: string,
         public createdAt: Date,
         public user: string,
-        public type: 'NEW_PAYMENT' | 'POS_ADJ' | 'NEG_ADJ' | 'NEW_SUPPLIER_PAYMENT' | 'DEL_SUPPLIER_PAYMENT',
+        public type: 'NEW_PAYMENT' | 'POS_ADJ' | 'NEG_ADJ' | 'NEW_SUPPLIER_PAYMENT',
         public description: string,
         public received_amount: number,
         public currency: string,

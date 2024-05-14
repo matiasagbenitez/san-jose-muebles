@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Table } from "react-bootstrap";
+import { Row, Col, Table, Button } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
 import { Movements } from "./interfaces";
 import { DateFormatter } from "../../helpers/date.formatter";
 import { NumberFormatter } from "../../helpers";
+import { SweetAlert2 } from "../../utils";
 
 interface CurrencyInterface {
   name: string;
@@ -30,12 +31,7 @@ interface AccountInterface {
 interface ProjectTransactionDetailEntityInterface {
   id: string;
   account: AccountInterface;
-  type:
-    | "NEW_PAYMENT"
-    | "POS_ADJ"
-    | "NEG_ADJ"
-    | "NEW_SUPPLIER_PAYMENT"
-    | "DEL_SUPPLIER_PAYMENT";
+  type: "NEW_PAYMENT" | "POS_ADJ" | "NEG_ADJ" | "NEW_SUPPLIER_PAYMENT";
   description: string;
   received_amount: number;
   received_currency: CurrencyInterface;
@@ -75,10 +71,6 @@ export const ProjectAccountTransaction = () => {
     fetch();
   }, [id_transaction]);
 
-  const handleExportPDF = () => {
-    console.log("Exporting PDF...");
-  };
-
   return (
     <div>
       {loading && <LoadingSpinner />}
@@ -88,7 +80,6 @@ export const ProjectAccountTransaction = () => {
             goBackTo={`/proyectos/${transaction.account.project.id}/cuentas/${transaction.account.id}`}
             goBackTitle="Volver al listado de movimientos"
             title="Detalle de movimiento"
-            handleAction={handleExportPDF}
             actionButtonText="Descargar en PDF"
             actionButtonVariant="danger"
             actionButtonIcon="bi-file-earmark-pdf"
@@ -96,15 +87,12 @@ export const ProjectAccountTransaction = () => {
 
           <Row className="mx-0">
             <Col xs={12} lg={2}></Col>
-            <Col xs={12} lg={8} className="shadow-sm border rounded-2 p-3">
+            <Col xs={12} lg={8} className="shadow-sm border rounded-2 p-4">
               <Row className="px-3">
                 <Col xs={12} md={6}>
-                  <h2 className="fs-5">Comprobante de movimiento</h2>
-                </Col>
-                <Col xs={12} md={6} className="text-md-end">
-                  <span className="font-monospace small">
-                    ID_MOVIMIENTO: {id_transaction}
-                  </span>
+                  <h2 className="fs-5 text-uppercase">
+                    Comprobante de pago de cliente
+                  </h2>
                 </Col>
               </Row>
               <div className="px-3">
@@ -216,19 +204,11 @@ export const ProjectAccountTransaction = () => {
                     transaction.received_currency.name
                   }`}
                 </p>
-                <Row>
-                  <Col xs={12} md={6}>
-                    <span className="small">
-                      Fecha registro:{" "}
-                      {DateFormatter.toDMYH(transaction.createdAt)}
-                    </span>
-                  </Col>
-                  <Col xs={12} md={6}>
-                    <span className="small">
-                      Usuario responsable: {transaction.user}
-                    </span>
-                  </Col>
-                </Row>
+                <span className="small fst-italic">
+                  ID #{id_transaction} - Fecha:{" "}
+                  {DateFormatter.toDMYH(transaction.createdAt)} (
+                  {transaction.user})
+                </span>
               </div>
             </Col>
             <Col xs={12} lg={2}></Col>

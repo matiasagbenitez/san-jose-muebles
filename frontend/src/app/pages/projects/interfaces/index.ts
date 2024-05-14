@@ -102,8 +102,7 @@ export interface TransactionDataRow {
     | "NEW_PAYMENT"
     | "POS_ADJ"
     | "NEG_ADJ"
-    | "NEW_SUPPLIER_PAYMENT"
-    | "DEL_SUPPLIER_PAYMENT";
+    | "NEW_SUPPLIER_PAYMENT";
     description: string;
     received_amount: number;
     currency: string;
@@ -130,7 +129,6 @@ export enum Movements {
     POS_ADJ = "AJUSTE A FAVOR",
     NEG_ADJ = "AJUSTE EN CONTRA",
     NEW_SUPPLIER_PAYMENT = "PAGO A PROVEEDOR",
-    DEL_SUPPLIER_PAYMENT = "ELIMINACIÓN DE PAGO AL PROVEEDOR",
 }
 
 export const types: Record<

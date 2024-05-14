@@ -111,11 +111,8 @@ export class SupplierAccountService {
 
     public async createAccount(createSupplierAccountDto: SupplierAccountDto) {
         try {
-            const item = await SupplierAccount.create({ ...createSupplierAccountDto });
-            const rec = await SupplierAccount.findByPk(item.id, { include: 'currency' });
-            if (!rec) throw CustomError.internalServerError('¡Error al crear la cuenta corriente!');
-            const { ...account } = SupplierAccountListEntity.fromObject(rec);
-            return { account: account, message: '¡Cuenta corriente creada correctamente!' };
+            await SupplierAccount.create({ ...createSupplierAccountDto });
+            return { message: '¡Cuenta corriente creada correctamente!' };
         } catch (error: any) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('¡El proveedor ya tiene una cuenta corriente en esa moneda!');
