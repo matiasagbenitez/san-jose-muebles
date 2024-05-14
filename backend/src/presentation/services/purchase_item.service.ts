@@ -10,8 +10,8 @@ export class PurchaseItemService {
                 include: [
                     {
                         association: 'purchase',
-                        attributes: ['id', 'date', 'nullified'],
-                        where: { nullified: false },
+                        attributes: ['id', 'date'],
+                        where: { status: 'VALIDA' },
                         include: [
                             {
                                 association: 'supplier',

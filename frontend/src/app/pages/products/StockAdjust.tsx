@@ -14,6 +14,7 @@ import apiSJM from "../../../api/apiSJM";
 import { Button, Col, Form, InputGroup, Modal, Row } from "react-bootstrap";
 import { SweetAlert2 } from "../../utils";
 import { DateFormatter } from "../../helpers";
+import { PageHeader } from "../../components";
 
 interface DataRow {
   id: number;
@@ -42,6 +43,7 @@ export const StockAdjust = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState(initialForm);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
   const endpoint = `/stock_adjusts/by-product/${id}`;
 
@@ -110,6 +112,11 @@ export const StockAdjust = () => {
     {
       name: "COMENTARIO",
       selector: (row: DataRow) => row.comment,
+      cell: (row: DataRow) => (
+        <div className="text-break" style={{ maxWidth: "550px" }}>
+          {row.comment}
+        </div>
+      ),
     },
     {
       name: "STOCK ANTERIOR",
@@ -144,6 +151,7 @@ export const StockAdjust = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      setIsFormSubmitting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de realizar esta operación?"
       );
@@ -156,6 +164,8 @@ export const StockAdjust = () => {
     } catch (error: any) {
       console.log(error);
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -163,42 +173,28 @@ export const StockAdjust = () => {
     <>
       {!loading && product && (
         <>
-          <div className="d-flex gap-3 align-items-center mb-3">
-            <Button
-              variant="light border text-muted"
-              size="sm"
-              onClick={() => navigate(`/productos/${id}`)}
-              title="Volver al detalle del producto"
-            >
-              <i className="bi bi-arrow-left me-2"></i>
-              Atrás
-            </Button>
-            <h1 className="fs-5 my-0">Ajustar stock de un producto</h1>
-          </div>
-
-          <hr className="my-3" />
+          <PageHeader
+            goBackTo={`/productos/${id}`}
+            goBackTitle="Volver al detalle del producto"
+            title="Ajustar stock de un producto"
+            handleAction={handleOpen}
+            actionButtonText="Nuevo ajuste de stock"
+          />
 
           <Row>
-            <Col lg={8}>
+            <Col lg={9}>
               <p>
                 <b>Producto: </b>
                 {product.name} ({product.brand} - x {product.unit})
               </p>
             </Col>
-            <Col lg={2}>
-              <p>
+            <Col lg={3}>
+              <p className="text-start text-lg-end">
                 <b>Stock actual: </b>
-                {actualStock} {product.unit_symbol}
+                <span className="badge rounded-pill bg-secondary fs-6">
+                  {actualStock} {product.unit_symbol}
+                </span>
               </p>
-            </Col>
-
-            <Col
-              lg={2}
-              className="d-flex justify-content-end align-items-center mb-3"
-            >
-              <Button size="sm" variant="success" onClick={() => handleOpen()}>
-                Nuevo ajuste de stock
-              </Button>
             </Col>
           </Row>
 
@@ -228,6 +224,7 @@ export const StockAdjust = () => {
                         onChange={(e) =>
                           setForm({ ...form, op: e.target.value })
                         }
+                        disabled={isFormSubmitting}
                       >
                         <option value="sub">Decrementar stock</option>
                         <option value="add">Incrementar stock</option>
@@ -247,6 +244,7 @@ export const StockAdjust = () => {
                         required
                         step={0.1}
                         min={0.1}
+                        disabled={isFormSubmitting}
                       />
                     </InputGroup>
                   </Col>
@@ -260,6 +258,7 @@ export const StockAdjust = () => {
                         onChange={(e) =>
                           setForm({ ...form, comment: e.target.value })
                         }
+                        disabled={isFormSubmitting}
                       />
                     </InputGroup>
                   </Col>
@@ -268,8 +267,9 @@ export const StockAdjust = () => {
                   <Button size="sm" variant="secondary" onClick={handleClose}>
                     Cerrar
                   </Button>
-                  <Button size="sm" variant="primary" type="submit">
-                    Guardar
+                  <Button size="sm" variant="primary" type="submit" disabled={isFormSubmitting}>
+                    <i className="bi bi-floppy me-2" />
+                    Ajustar stock
                   </Button>
                 </div>
               </Form>
