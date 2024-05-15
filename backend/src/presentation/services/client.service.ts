@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
-import { Client } from "../../database/mysql/models";
-import { CustomError, ClientCreateUpdateDto, ClientDetailEntity, ClientListEntity, PaginationDto, Select2ItemEntity, ClientSelectEntity } from "../../domain";
+import { Client, Project } from "../../database/mysql/models";
+import { CustomError, ClientCreateUpdateDto, ClientDetailEntity, ClientListEntity, PaginationDto, Select2ItemEntity, ClientSelectEntity, ClientProjectEntity } from "../../domain";
 
 export interface ClientFilters {
     name: string;
@@ -73,6 +73,23 @@ export class ClientService {
         if (!client) throw CustomError.notFound('Cliente no encontrado');
         const { ...clientEntity } = ClientDetailEntity.fromObject(client);
         return { client: clientEntity };
+    }
+
+    public async getClientProjects(id: number) {
+        const [client, projects] = await Promise.all([
+            Client.findByPk(id, { attributes: ['id', 'name', 'last_name'] }),
+            Project.findAll({
+                where: { id_client: id },
+                include: [{
+                    association: 'locality', include: [{
+                        association: 'province',
+                    }]
+                }]
+            })
+        ]);
+        if (!client) throw CustomError.notFound('Cliente no encontrado');
+        const projectsEntities = projects.map(project => ClientProjectEntity.fromObject(project));
+        return { client, projects: projectsEntities };
     }
 
     public async createClient(createDto: ClientCreateUpdateDto) {
