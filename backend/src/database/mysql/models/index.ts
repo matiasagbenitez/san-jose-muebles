@@ -49,6 +49,10 @@ import { GroupMember, initGroupMemberModel } from './GroupMember.model';
 
 import { RelatedPerson, initRelatedPersonModel } from './RelatedPerson.model';
 
+import { Estimate, initEstimateModel } from './Estimate.model';
+import { EstimateEvolution, initEstimateEvolutionModel } from './EstimateEvolution.model';
+import { EstimateItem, initEstimateItemModel } from './EstimateItem.model';
+
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -102,6 +106,11 @@ export const initializeModels = (sequelize: Sequelize) => {
   initMemberModel(sequelize);
   initGroupModel(sequelize);
   initGroupMemberModel(sequelize);
+
+  // PROYECTO
+  initEstimateModel(sequelize);
+  initEstimateEvolutionModel(sequelize);
+  initEstimateItemModel(sequelize);
 };
 
 export {
@@ -155,4 +164,9 @@ export {
   Group,
   Member,
   GroupMember,
+
+  // PROYECTO
+  Estimate,
+  EstimateEvolution,
+  EstimateItem,
 };

@@ -34,9 +34,9 @@ export const Options = ({ id }: Props) => {
           Personas relacionadas al proyecto
         </button>
         <button
-          hidden
           className="list-group-item list-group-item-action py-1"
           title="Presupuestos del proyecto"
+          onClick={() => navigate(`/proyectos/${id}/presupuestos`)}
         >
           <i className="bi bi-journals me-2 fs-6"></i>
           Presupuestos del proyecto

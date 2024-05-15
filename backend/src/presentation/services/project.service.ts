@@ -1,6 +1,6 @@
 import { Op, Order } from "sequelize";
 import { Project } from "../../database/mysql/models";
-import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity } from "../../domain";
+import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity, ProjectBasicDataEntity } from "../../domain";
 
 export interface ProjectFilters {
     id_client?: number;
@@ -73,6 +73,19 @@ export class ProjectService {
         });
         if (!project) throw CustomError.notFound('Proyecto no encontrado');
         const { ...entity } = ProjectDetailEntity.fromObject(project);
+        return { item: entity };
+    }
+
+    public async getProjectBasic(id: number) {
+        const project = await Project.findByPk(id, {
+            attributes: ['id', 'title', 'status'],
+            include: [
+                { association: 'client', attributes: ['name', 'last_name'] },
+                { association: 'locality', attributes: ['name'] },
+            ]
+        });
+        if (!project) throw CustomError.notFound('¡Proyecto no encontrado!');
+        const { ...entity } = ProjectBasicDataEntity.fromObject(project);
         return { item: entity };
     }
 

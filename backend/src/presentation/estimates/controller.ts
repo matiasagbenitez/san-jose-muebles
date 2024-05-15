@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { CustomError, CreateProjectDTO, PaginationDto } from "../../domain";
-import { ProjectService, ProjectFilters } from '../services/project.service';
+import { CustomError, PaginationDto, CreateEstimateDTO } from "../../domain";
+import { EstimateService, EstimateFilters } from '../services/estimate.service';
 
-export class ProjectController {
+export class EstimateController {
 
-    protected projectService: ProjectService = new ProjectService();
+    protected service: EstimateService = new EstimateService();
 
     private handleError(error: unknown, res: Response) {
         if (error instanceof CustomError) {
@@ -16,7 +16,7 @@ export class ProjectController {
 
     // Métodos de la clase
     getAll = async (req: Request, res: Response) => {
-        this.projectService.getProjects()
+        this.service.getEstimates()
             .then((data) => {
                 res.json(data);
             })
@@ -30,13 +30,11 @@ export class ProjectController {
         const [error, paginationDto] = PaginationDto.create(+page, +limit);
         if (error) return res.status(400).json({ message: error });
 
-        let filters = {};
-        if (req.query.id_client) filters = { ...filters, id_client: req.query.id_client };
-        if (req.query.id_locality) filters = { ...filters, id_locality: req.query.id_locality };
-        if (req.query.status) filters = { ...filters, status: req.query.status };
-        if (req.query.priority) filters = { ...filters, priority: req.query.priority };
+        let filters: EstimateFilters = {};
+        if (req.query.text) filters.text = req.query.text as string;
+        if (req.query.status) filters.status = req.query.status as string;
 
-        this.projectService.getProjectsPaginated(paginationDto!, filters as ProjectFilters)
+        this.service.getEstimatesPaginated(paginationDto!, filters)
             .then((data) => {
                 res.json(data);
             })
@@ -49,7 +47,7 @@ export class ProjectController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
 
-        this.projectService.getProject(parseInt(id))
+        this.service.getEstimate(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -58,11 +56,11 @@ export class ProjectController {
             });
     }
 
-    getByIdBasic = async (req: Request, res: Response) => {
+    getByProject = async (req: Request, res: Response) => {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
 
-        this.projectService.getProjectBasic(parseInt(id))
+        this.service.getEstimatesByProject(parseInt(id))
             .then((data) => {
                 res.json(data);
             })
@@ -77,31 +75,10 @@ export class ProjectController {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
         }
-        const [error, createDto] = CreateProjectDTO.create(req.body);
+        const [error, dto] = CreateEstimateDTO.create(req.body);
         if (error) return res.status(400).json({ message: error });
 
-        this.projectService.createProject(createDto!)
-            .then((data) => {
-                res.json(data);
-            })
-            .catch((error) => {
-                this.handleError(error, res);
-            });
-    }
-
-    update = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
-        if (!id) return res.status(400).json({ message: 'Missing id' });
-
-        for (let key in req.body) {
-            if (typeof req.body[key] === 'string') {
-                req.body[key] = req.body[key].toUpperCase().trim();
-            }
-        }
-        const [error, updateDto] = CreateProjectDTO.create(req.body);
-        if (error) return res.status(400).json({ message: error });
-
-        this.projectService.updateProject(id, updateDto!)
+        this.service.createEstimate(dto!)
             .then((data) => {
                 res.json(data);
             })
@@ -114,7 +91,7 @@ export class ProjectController {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
 
-        this.projectService.deleteProject(parseInt(id))
+        this.service.deleteEstimate(parseInt(id))
             .then((data) => {
                 res.json(data);
             })

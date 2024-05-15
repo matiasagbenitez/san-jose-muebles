@@ -33,6 +33,8 @@ import { ProjectAccountTransactionRoutes } from './project_account_transactions/
 import { MemberRoutes } from './members/routes';
 import { RelatedPersonRoutes } from './related_persons/routes';
 
+import { EstimateRoutes } from './estimates/routes';
+
 export class AppRoutes {
 
     static get routes(): Router {
@@ -83,6 +85,8 @@ export class AppRoutes {
 
         router.use('/api/members', MemberRoutes.routes);
         router.use('/api/related_persons', RelatedPersonRoutes.routes);
+
+        router.use('/api/estimates', EstimateRoutes.routes);
 
         return router;
     }

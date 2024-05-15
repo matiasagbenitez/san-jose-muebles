@@ -40,6 +40,10 @@ import {
     PurchaseNullation,
     ProjectSupplierTransaction,
     RelatedPerson,
+
+    Estimate,
+    EstimateEvolution,
+    EstimateItem
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -208,4 +212,21 @@ export const initializeAssociations = () => {
     Member.belongsToMany(Group, { through: GroupMember, foreignKey: 'id_member', otherKey: 'id_group', as: 'groups', onDelete: 'RESTRICT' });
     Group.belongsToMany(Member, { through: GroupMember, foreignKey: 'id_group', otherKey: 'id_member', as: 'members', onDelete: 'RESTRICT' });
 
+
+    // ESTIMATIONS
+    Project.hasMany(Estimate, { foreignKey: 'id_project', as: 'estimates', onDelete: 'RESTRICT' });
+    Estimate.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
+
+    Currency.hasMany(Estimate, { foreignKey: 'id_currency', as: 'estimates', onDelete: 'RESTRICT' });
+    Estimate.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    Estimate.hasMany(EstimateItem, { foreignKey: 'id_estimate', as: 'items', onDelete: 'RESTRICT' });
+    EstimateItem.belongsTo(Estimate, { foreignKey: 'id_estimate', as: 'estimate' });
+
+    Estimate.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    Estimate.hasMany(EstimateEvolution, { foreignKey: 'id_estimate', as: 'evolutions', onDelete: 'RESTRICT' });
+    EstimateEvolution.belongsTo(Estimate, { foreignKey: 'id_estimate', as: 'estimate' });
+
+    EstimateEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 };

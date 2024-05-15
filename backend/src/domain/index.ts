@@ -80,3 +80,7 @@ export * from './entities/project_account_transactions';
 // GROUPS
 export * from './dtos/groups';
 export * from './entities/groups';
+
+// ESTIMATES
+export * from './dtos/estimates';
+export * from './entities/estimates';
