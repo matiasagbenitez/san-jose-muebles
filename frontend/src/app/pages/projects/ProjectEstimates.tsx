@@ -78,6 +78,10 @@ export const ProjectEstimates = () => {
     }
   };
 
+  const handleRedirectDetail = (id_estimate: number) => {
+    navigate(`/proyectos/${id}/presupuestos/${id_estimate}`);
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -138,7 +142,7 @@ export const ProjectEstimates = () => {
                             </span>
                           </span>
                         </Col>
-                        <Col xs={12} className="mb-2">
+                        <Col xs={12}>
                           <span>
                             Total presupuesto:{" "}
                             {estimate.total > 0 ? (
@@ -155,18 +159,6 @@ export const ProjectEstimates = () => {
                               </span>
                             )}
                           </span>
-                        </Col>
-                        <Col xs={12} className="mb-2">
-                          <div
-                            className="text-break"
-                            style={{ height: "100px" }}
-                          >
-                            Descripción:
-                            <br />
-                            <span className="text-muted">
-                              {estimate.description}
-                            </span>
-                          </div>
                         </Col>
                       </Row>
                     </Card.Body>
@@ -193,7 +185,11 @@ export const ProjectEstimates = () => {
                               Eliminar presupuesto
                             </Dropdown.Item>
                           </DropdownButton>
-                          <Button size="sm" variant="primary">
+                          <Button
+                            size="sm"
+                            variant="primary"
+                            onClick={() => handleRedirectDetail(estimate.id)}
+                          >
                             <i className="bi bi-eye-fill me-2"></i>
                             <small>Ver detalle</small>
                           </Button>

@@ -6,3 +6,4 @@ export * from './ProjectAccountTransaction';
 export * from './ProjectRelatedPersons';
 export * from './ProjectEstimates';
 export * from './ProjectCreateEstimate';
+export * from './ProjectEstimate';

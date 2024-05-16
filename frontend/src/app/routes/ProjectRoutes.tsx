@@ -11,6 +11,7 @@ import {
   ProjectRelatedPersons,
   ProjectEstimates,
   ProjectCreateEstimate,
+  ProjectEstimate,
 } from "../pages/projects";
 
 const ProjectRoutes = () => {
@@ -28,6 +29,7 @@ const ProjectRoutes = () => {
           <Route path="/:id/personas-relacionadas" element={<ProjectRelatedPersons />} />
           <Route path="/:id/presupuestos" element={<ProjectEstimates />} />
           <Route path="/:id/presupuestos/nuevo" element={<ProjectCreateEstimate />} />
+          <Route path="/:id/presupuestos/:id_estimate" element={<ProjectEstimate />} />
         </>
       )}
 

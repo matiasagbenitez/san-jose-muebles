@@ -44,10 +44,10 @@ export class EstimateController {
     }
 
     getById = async (req: Request, res: Response) => {
-        const id = req.params.id;
-        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+        const { id, id_project } = req.params;
+        if (!id || !id_project) return res.status(400).json({ message: '¡Falta el ID!' });
 
-        this.service.getEstimate(parseInt(id))
+        this.service.getEstimate(parseInt(id), parseInt(id_project))
             .then((data) => {
                 res.json(data);
             })

@@ -2,7 +2,7 @@ import { Op, Order } from "sequelize";
 import { Estimate, EstimateItem } from "../../database/mysql/models";
 import {
     CustomError, PaginationDto,
-    CreateEstimateDTO, EstimatesListEntity, EstimatesByProjectListEntity,
+    CreateEstimateDTO, EstimatesListEntity, EstimatesByProjectListEntity, EstimateDetailEntity,
 } from "../../domain";
 
 export interface EstimateFilters {
@@ -61,16 +61,18 @@ export class EstimateService {
         return { items: entities, total_items: total };
     }
 
-    public async getEstimate(id: number) {
-        const estimate = await Estimate.findByPk(id, {
+    public async getEstimate(id: number, id_project: number) {
+        const estimate = await Estimate.findOne({
+            where: { id, id_project },
             include: [
-                { association: 'project', include: [{ association: 'client', attributes: ['id', 'name', 'last_name'] }] },
+                { association: 'items' },
+                { association: 'project', include: [{ association: 'client', attributes: ['id', 'name', 'last_name'] }, { association: 'locality', attributes: ['name'] }] },
                 { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
                 { association: 'user', attributes: ['name'] }
             ],
         });
         if (!estimate) throw CustomError.notFound('¡Presupuesto no encontrado!');
-        const { ...entity } = estimate.toJSON();
+        const { ...entity } = EstimateDetailEntity.fromObject(estimate);
         return { item: entity };
     }
 
