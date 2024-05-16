@@ -3,12 +3,13 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class Estimate extends Model {
     public id!: number;
     public id_project!: number;
-    public status!: 'VALIDO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO' | 'ANULADO' ;
+    public status!: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO';
     public gen_date!: Date;
     public val_date!: Date;
 
     public client_name!: string;
     public title!: string;
+    public description!: string;
 
     public id_currency!: number;
     public subtotal!: number;
@@ -38,8 +39,9 @@ export const initEstimateModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('VALIDO', 'ANULADO', 'ACEPTADO', 'RECHAZADO'),
+                type: DataTypes.ENUM('ACEPTADO', 'PENDIENTE', 'RECHAZADO'),
                 allowNull: false,
+                defaultValue: 'PENDIENTE'
             },
             gen_date: {
                 type: DataTypes.DATEONLY,
@@ -47,7 +49,7 @@ export const initEstimateModel = (sequelize: Sequelize) => {
             },
             val_date: {
                 type: DataTypes.DATEONLY,
-                allowNull: false,
+                allowNull: true,
             },
             client_name: {
                 type: DataTypes.STRING(255),
@@ -57,6 +59,9 @@ export const initEstimateModel = (sequelize: Sequelize) => {
                 type: DataTypes.STRING(255),
                 allowNull: false,
             },
+            description: {
+                type: DataTypes.TEXT,
+            },
             id_currency: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
@@ -64,26 +69,29 @@ export const initEstimateModel = (sequelize: Sequelize) => {
             subtotal: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
+                defaultValue: 0,
             },
             discount: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
+                defaultValue: 0,
             },
             fees: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
+                defaultValue: 0,
             },
             total: {
                 type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
+                defaultValue: 0,
             },
             guarantee: {
                 type: DataTypes.STRING(255),
                 allowNull: false,
             },
             annotations: {
-                type: DataTypes.TEXT,
-                allowNull: false,
+                type: DataTypes.STRING(255),
             },
             id_user: {
                 type: DataTypes.INTEGER.UNSIGNED,

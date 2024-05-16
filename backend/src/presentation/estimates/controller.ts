@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, CreateEstimateDTO } from "../../domain";
+import { CustomError, PaginationDto, CreateEstimateDTO, LoggedUserIdDto } from "../../domain";
 import { EstimateService, EstimateFilters } from '../services/estimate.service';
 
 export class EstimateController {
@@ -74,8 +74,11 @@ export class EstimateController {
             if (typeof req.body[key] === 'string') {
                 req.body[key] = req.body[key].toUpperCase().trim();
             }
-        }
-        const [error, dto] = CreateEstimateDTO.create(req.body);
+        }  const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+        const id_user = loggedUserIdDto!.id_user;
+
+        const [error, dto] = CreateEstimateDTO.create({ ...req.body, id_user });
         if (error) return res.status(400).json({ message: error });
 
         this.service.createEstimate(dto!)

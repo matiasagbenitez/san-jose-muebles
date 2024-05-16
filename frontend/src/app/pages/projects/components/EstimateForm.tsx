@@ -53,6 +53,9 @@ export const EstimateForm = ({
         subtotal: 0,
       },
     ],
+
+    percent_discount: 0,
+    percent_fees: 0,
   };
 
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyInterface>();
@@ -88,25 +91,12 @@ export const EstimateForm = ({
         discount: Yup.number().min(0, "Revisar").required("Revisar"),
         fees: Yup.number().min(0, "Revisar").required("Revisar"),
         total: Yup.number().required("Revisar"),
-
-        items: Yup.array()
-          .of(
-            Yup.object().shape({
-              quantity: Yup.number().required("La cantidad es requerida"),
-              description: Yup.string().required(
-                "La descripción del item es requerida"
-              ),
-              price: Yup.number().required("El precio es requerido"),
-              subtotal: Yup.number().required("El subtotal es requerido"),
-            })
-          )
-          .min(1, "Debe agregar al menos un item"),
       })}
     >
       {({ values, errors, touched, setFieldValue }) => (
         <Form id="form">
           <Row>
-            <Col xs={12} md={6} xl={3}>
+            <Col xs={12} md={4} xl={3}>
               <CustomInput.Date
                 label="Fecha de emisión"
                 name="gen_date"
@@ -115,7 +105,7 @@ export const EstimateForm = ({
                 isInvalid={!!errors.gen_date && touched.gen_date}
               />
             </Col>
-            <Col xs={12} md={6} xl={3}>
+            <Col xs={12} md={4} xl={3}>
               <CustomInput.Date
                 label="Fecha de validez"
                 name="val_date"
@@ -123,7 +113,7 @@ export const EstimateForm = ({
                 isInvalid={!!errors.val_date && touched.val_date}
               />
             </Col>
-            <Col xs={12} md={6}>
+            <Col xs={12} md={4} xl={6}>
               <CustomInput.Select
                 label="Moneda del presupuesto"
                 name="id_currency"
@@ -202,38 +192,47 @@ export const EstimateForm = ({
                 const subtotal = price * quantity;
                 setFieldValue(`items.${index}.subtotal`, subtotal);
               };
-
               return (
                 <>
                   {values.items.map((_, index) => (
                     <Row key={index}>
                       <Col xs={12} md={2}>
-                        <div className="d-flex gap-2">
-                          <Button
-                            size="sm"
-                            className="px-2 mb-2"
-                            variant="danger"
-                            onClick={() => remove(index)}
-                            disabled={isFormSubmitting}
-                            style={{ height: "31px", alignSelf: "flex-end" }}
-                          >
-                            <i className="bi bi-x-circle-fill" />
-                          </Button>
-                          <CustomInput.Number
-                            label={index === 0 ? "Cantidad" : ""}
-                            className="text-center"
-                            name={`items.${index}.quantity`}
-                            value={values.items[index].quantity}
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              const quantity = parseFloat(e.target.value);
-                              handleQuantityChange(index, quantity);
-                            }}
-                            disabled={isFormSubmitting}
-                            isRequired
-                          />
-                        </div>
+                        <Row>
+                          <Col xs={6}>
+                            {index === 0 && (
+                              <label className="small mb-1 text-white">
+                                Eliminar
+                              </label>
+                            )}
+                            <Button
+                              size="sm"
+                              className="px-2 mb-2 w-100"
+                              variant="danger"
+                              onClick={() => remove(index)}
+                              disabled={isFormSubmitting}
+                              style={{ height: "31px" }}
+                            >
+                              <i className="bi bi-x-circle-fill" />
+                            </Button>
+                          </Col>
+                          <Col xs={6}>
+                            <CustomInput.Number
+                              label={index === 0 ? "Cant" : ""}
+                              className="text-center"
+                              name={`items.${index}.quantity`}
+                              value={values.items[index].quantity}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                              ) => {
+                                const quantity = parseFloat(e.target.value);
+                                handleQuantityChange(index, quantity);
+                              }}
+                              disabled={isFormSubmitting}
+                              isRequired
+                              required
+                            />
+                          </Col>
+                        </Row>
                       </Col>
                       <Col xs={12} md={6}>
                         <CustomInput.TextArea
@@ -242,6 +241,7 @@ export const EstimateForm = ({
                           disabled={isFormSubmitting}
                           isRequired
                           rows={1}
+                          required
                         />
                       </Col>
 
@@ -257,6 +257,7 @@ export const EstimateForm = ({
                           disabled={isFormSubmitting}
                           isRequired
                           prefix={prefix}
+                          required
                         />
                       </Col>
 
@@ -268,6 +269,7 @@ export const EstimateForm = ({
                           isRequired
                           disabled
                           prefix={prefix}
+                          required
                         />
                       </Col>
                     </Row>
@@ -280,7 +282,7 @@ export const EstimateForm = ({
                         variant="success"
                         onClick={() => push(newItem)}
                         disabled={isFormSubmitting}
-                        className="w-100"
+                        className="w-100 mb-2"
                       >
                         <i className="bi bi-plus-circle"></i>
                         &ensp; Agregar item
@@ -305,10 +307,11 @@ export const EstimateForm = ({
                             disabled
                             isRequired
                             prefix={prefix}
+                            required
                           />
                         </Col>
-                        <Col xs={12} md={6} lg={7} xl={8}></Col>
-                        <Col xs={12} md={4} lg={3} xl={2}>
+                        <Col xs={12} md={6} lg={7}></Col>
+                        <Col xs={12} md={4} lg={3}>
                           <Row>
                             <Col xs={6}>
                               <p className="mt-1 mb-0 small text-start text-md-end">
@@ -319,24 +322,29 @@ export const EstimateForm = ({
                               <CustomInput.Number
                                 className="text-center"
                                 name="percent_discount"
+                                value={values.percent_discount}
                                 onChange={(
                                   e: React.ChangeEvent<HTMLInputElement>
                                 ) => {
-                                  if (!isNaN(parseFloat(e.target.value))) {
-                                    const percent = parseFloat(e.target.value);
-                                    const discount = Math.abs(
-                                      (values.subtotal * percent) / 100
+                                  if (
+                                    !isNaN(parseFloat(e.target.value)) &&
+                                    parseFloat(e.target.value) >= 0 &&
+                                    parseFloat(e.target.value) <= 100
+                                  ) {
+                                    const percent = Math.abs(
+                                      parseFloat(e.target.value)
                                     );
-                                    setFieldValue("discount", discount * -1);
+                                    setFieldValue("percent_discount", percent);
                                   } else {
-                                    setFieldValue("discount", 0);
+                                    setFieldValue("percent_discount", 0);
                                   }
                                 }}
                                 disabled={isFormSubmitting}
                                 isRequired
                                 min={0}
+                                step={0.1}
                                 max={100}
-                                prefix={prefix}
+                                required
                               />
                             </Col>
                           </Row>
@@ -344,14 +352,20 @@ export const EstimateForm = ({
                         <Col xs={12} md={2}>
                           <CustomInput.Decimal
                             name="discount"
-                            value={values.discount}
+                            value={
+                              (values.discount =
+                                (values.subtotal * values.percent_discount) /
+                                100)
+                            }
                             disabled
                             isRequired
-                            prefix={prefix}
+                            prefix={`${prefix} - `}
+                            required
                           />
                         </Col>
-                        <Col xs={12} md={6} lg={7} xl={8}></Col>
-                        <Col xs={12} md={4} lg={3} xl={2}>
+
+                        <Col xs={12} md={6} lg={7}></Col>
+                        <Col xs={12} md={4} lg={3}>
                           <Row>
                             <Col xs={6}>
                               <p className="mt-1 mb-0 small text-start text-md-end">
@@ -362,23 +376,29 @@ export const EstimateForm = ({
                               <CustomInput.Number
                                 className="text-center"
                                 name="percent_fees"
+                                value={values.percent_fees}
                                 onChange={(
                                   e: React.ChangeEvent<HTMLInputElement>
                                 ) => {
-                                  if (!isNaN(parseFloat(e.target.value))) {
-                                    const percent = parseFloat(e.target.value);
-                                    const fees = Math.abs(
-                                      (values.subtotal * percent) / 100
+                                  if (
+                                    !isNaN(parseFloat(e.target.value)) &&
+                                    parseFloat(e.target.value) >= 0 &&
+                                    parseFloat(e.target.value) <= 100
+                                  ) {
+                                    const percent = Math.abs(
+                                      parseFloat(e.target.value)
                                     );
-                                    setFieldValue("fees", fees);
+                                    setFieldValue("percent_fees", percent);
                                   } else {
-                                    setFieldValue("fees", 0);
+                                    setFieldValue("percent_fees", 0);
                                   }
                                 }}
                                 disabled={isFormSubmitting}
                                 isRequired
                                 min={0}
+                                step={0.1}
                                 max={100}
+                                required
                               />
                             </Col>
                           </Row>
@@ -386,10 +406,14 @@ export const EstimateForm = ({
                         <Col xs={12} md={2}>
                           <CustomInput.Decimal
                             name="fees"
-                            value={values.fees}
+                            value={
+                              (values.fees =
+                                (values.subtotal * values.percent_fees) / 100)
+                            }
                             disabled
                             isRequired
                             prefix={prefix}
+                            required
                           />
                         </Col>
                         <Col xs={12} md={10}>
@@ -402,12 +426,13 @@ export const EstimateForm = ({
                             name="total"
                             value={
                               (values.total =
-                                values.subtotal + values.discount + values.fees)
+                                values.subtotal - values.discount + values.fees)
                             }
                             disabled
                             isRequired
                             style={{ fontWeight: "bold" }}
                             prefix={prefix}
+                            required
                           />
                         </Col>
                       </>
@@ -449,9 +474,15 @@ export const EstimateForm = ({
                   setFieldValue("discount", 0);
                   setFieldValue("fees", 0);
                   setFieldValue("total", 0);
-                  setFieldValue("guarantee", "GARANTÍA POR 5 AÑOS Y MANTENIMIENTO SIN COSTO POR TIEMPO ILIMITADO");
+                  setFieldValue(
+                    "guarantee",
+                    "GARANTÍA POR 5 AÑOS Y MANTENIMIENTO SIN COSTO POR TIEMPO ILIMITADO"
+                  );
                   setFieldValue("annotations", "");
-                  setFieldValue("gen_date", new Date().toISOString().split("T")[0]);
+                  setFieldValue(
+                    "gen_date",
+                    new Date().toISOString().split("T")[0]
+                  );
                   setFieldValue("val_date", "");
                   setFieldValue("client_name", project.client);
                   setFieldValue("title", `PRESUPUESTO ${project.title}`);

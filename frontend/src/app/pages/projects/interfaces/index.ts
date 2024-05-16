@@ -181,6 +181,15 @@ export interface EstimateFormInterface {
     guarantee: string;
     observations: string;
     items: EstimateItemInterface[];
+
+    percent_discount: number;
+    percent_fees: number;
+}
+
+export enum EstimateStatuses {
+    ACEPTADO = "#5A965A",
+    PENDIENTE = "#FFD966",
+    RECHAZADO = "#CC3333",
 }
 
 export interface ProyectBasicData {

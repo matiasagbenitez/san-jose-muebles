@@ -220,12 +220,12 @@ export const initializeAssociations = () => {
     Currency.hasMany(Estimate, { foreignKey: 'id_currency', as: 'estimates', onDelete: 'RESTRICT' });
     Estimate.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
 
-    Estimate.hasMany(EstimateItem, { foreignKey: 'id_estimate', as: 'items', onDelete: 'RESTRICT' });
+    Estimate.hasMany(EstimateItem, { foreignKey: 'id_estimate', as: 'items', onDelete: 'CASCADE' });
     EstimateItem.belongsTo(Estimate, { foreignKey: 'id_estimate', as: 'estimate' });
 
-    Estimate.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+    Estimate.belongsTo(User, { foreignKey: 'id_user', as: 'user' }); 
 
-    Estimate.hasMany(EstimateEvolution, { foreignKey: 'id_estimate', as: 'evolutions', onDelete: 'RESTRICT' });
+    Estimate.hasMany(EstimateEvolution, { foreignKey: 'id_estimate', as: 'evolutions', onDelete: 'CASCADE' });
     EstimateEvolution.belongsTo(Estimate, { foreignKey: 'id_estimate', as: 'estimate' });
 
     EstimateEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });

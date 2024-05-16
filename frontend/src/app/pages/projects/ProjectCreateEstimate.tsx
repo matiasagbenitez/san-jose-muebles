@@ -5,7 +5,12 @@ import apiSJM from "../../../api/apiSJM";
 
 import { ProjectHeader, EstimateForm } from "./components";
 import { LoadingSpinner, PageHeader } from "../../components";
-import { CurrencyInterface, EstimateFormInterface, ProyectBasicData } from "./interfaces";
+import {
+  CurrencyInterface,
+  EstimateFormInterface,
+  ProyectBasicData,
+} from "./interfaces";
+import { SweetAlert2 } from "../../utils";
 
 export const ProjectCreateEstimate = () => {
   const { id } = useParams();
@@ -38,9 +43,24 @@ export const ProjectCreateEstimate = () => {
   }, []);
 
   const submitForm = async (formData: EstimateFormInterface) => {
-    setIsFormSubmitting(true);
-    console.log(formData);
-    setIsFormSubmitting(false);
+    try {
+      const confirmation = await SweetAlert2.confirm(
+        "¿Estás seguro de crear este presupuesto?"
+      );
+      if (!confirmation.isConfirmed) return;
+      setIsFormSubmitting(true);
+      const { data } = await apiSJM.post("/estimates", {
+        ...formData,
+        id_project: id,
+      });
+      SweetAlert2.successToast(data.message);
+      navigate(`/proyectos/${id}/presupuestos`);
+    } catch (error: any) {
+      console.log(error);
+      SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
+    }
   };
 
   return (

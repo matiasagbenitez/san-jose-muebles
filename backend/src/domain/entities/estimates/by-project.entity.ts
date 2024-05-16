@@ -3,7 +3,9 @@ import { CustomError } from '../../errors/custom.error';
 export class EstimatesByProjectListEntity {
     constructor(
         public id: number,
-        public status: 'VALIDO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO' | 'ANULADO',
+        public title: string,
+        public description: string,
+        public status: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO',
         public created_at: Date,
         public currency: {
             name: string,
@@ -14,9 +16,10 @@ export class EstimatesByProjectListEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): EstimatesByProjectListEntity {
-        const { id, status, createdAt, currency, total } = object;
+        const { id, title, description, status, createdAt, currency, total } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
+        if (!title) throw CustomError.badRequest('Falta el título');
         if (!status) throw CustomError.badRequest('Falta el estado');
         if (!createdAt) throw CustomError.badRequest('Falta la fecha de creación');
         if (!currency) throw CustomError.badRequest('Falta la moneda');
@@ -25,6 +28,8 @@ export class EstimatesByProjectListEntity {
 
         return new EstimatesByProjectListEntity(
             id,
+            title,
+            description,
             status,
             createdAt,
             {

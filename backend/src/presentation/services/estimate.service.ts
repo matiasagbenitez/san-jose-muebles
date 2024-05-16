@@ -1,5 +1,5 @@
 import { Op, Order } from "sequelize";
-import { Estimate } from "../../database/mysql/models";
+import { Estimate, EstimateItem } from "../../database/mysql/models";
 import {
     CustomError, PaginationDto,
     CreateEstimateDTO, EstimatesListEntity, EstimatesByProjectListEntity,
@@ -25,24 +25,19 @@ export class EstimateService {
         if (filters.text) { where = { ...where, title: { [Op.like]: `%${filters.text}%` } }; }
         if (filters.status) {
             switch (filters.status) {
-                case 'VALIDO':
-                    where = { ...where, status: 'VALIDO' };
-                    break;
-                case 'ENVIADO':
-                    where = { ...where, status: 'ENVIADO' };
-                    break;
                 case 'ACEPTADO':
                     where = { ...where, status: 'ACEPTADO' };
+                    break;
+                case 'PENDIENTE':
+                    where = { ...where, status: 'PENDIENTE' };
                     break;
                 case 'RECHAZADO':
                     where = { ...where, status: 'RECHAZADO' };
                     break;
-                case 'ANULADO':
-                    where = { ...where, status: 'ANULADO' };
                 case 'ALL':
                     break;
                 default:
-                    where = { ...where, status: 'ENVIADO' };
+                    where = { ...where, status: 'PENDIENTE' };
                     break;
             }
         }
@@ -93,10 +88,18 @@ export class EstimateService {
     }
 
     public async createEstimate(dto: CreateEstimateDTO) {
+        const transaction = await Estimate.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!')
+
         try {
-            const { id } = await Estimate.create({ ...dto });
+            const { items, ...rest } = dto;
+            const { id } = await Estimate.create({ ...rest }, { transaction });
+            const items_to_bulk = items.map(item => ({ ...item, id_estimate: id }));
+            await EstimateItem.bulkCreate(items_to_bulk, { transaction });
+            await transaction.commit();
             return { id, message: '¡Presupuesto creado correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }
     }
