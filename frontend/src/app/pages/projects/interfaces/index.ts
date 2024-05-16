@@ -161,3 +161,39 @@ export interface ParamsInterface {
     id: number;
     name: string;
 }
+
+export interface EstimateItemInterface {
+    quantity: number;
+    description: string;
+    price: number;
+    subtotal: number;
+}
+export interface EstimateFormInterface {
+    gen_date: string | Date;
+    val_date?: string | Date;
+    client_name: string;
+    title: string;
+    id_currency: string;
+    subtotal: number;
+    discount: number;
+    fees: number;
+    total: number;
+    guarantee: string;
+    observations: string;
+    items: EstimateItemInterface[];
+}
+
+export interface ProyectBasicData {
+    id: number;
+    title: string;
+    status: "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
+    client: string;
+    locality: string;
+}
+
+export interface CurrencyInterface {
+    id: string;
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
+}
