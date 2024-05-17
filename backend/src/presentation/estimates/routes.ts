@@ -15,6 +15,7 @@ export class EstimateRoutes {
         router.get('/:id/project/:id_project', [AuthMiddleware.validateJWT], controller.getById);
         router.get('/by-project/:id', [AuthMiddleware.validateJWT], controller.getByProject);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
+        router.put('/:id/update-status', [AuthMiddleware.validateJWT], controller.updateStatus);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);
 
         return router;

@@ -15,6 +15,13 @@ interface EstimateItem {
     subtotal: number,
 }
 
+interface EstimateEvolution {
+    status: 'NO_ENVIADO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO',
+    comment: string,
+    user: string,
+    created_at: Date,
+}
+
 export class EstimateDetailEntity {
     constructor(
         public id: number,
@@ -46,10 +53,12 @@ export class EstimateDetailEntity {
 
         public created_at: Date,
         public user: string,
+
+        public evolutions?: EstimateEvolution[],
     ) { }
 
     static fromObject(object: { [key: string]: any }): EstimateDetailEntity {
-        const { id, project, gen_date, val_date, client_name, title, description, status, currency, items, subtotal, discount, fees, total, guarantee, observations, createdAt, user } = object;
+        const { id, project, gen_date, val_date, client_name, title, description, status, currency, items, subtotal, discount, fees, total, guarantee, observations, createdAt, user, evolutions } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!project) throw CustomError.badRequest('Falta el proyecto');
@@ -75,6 +84,15 @@ export class EstimateDetailEntity {
                 description: item.description,
                 price: item.price,
                 subtotal: item.subtotal,
+            };
+        });
+
+        const formatted_evolutions: EstimateEvolution[] = evolutions.map((evolution: any) => {
+            return {
+                status: evolution.status,
+                comment: evolution.comment,
+                user: evolution.user.name,
+                created_at: evolution.createdAt,
             };
         });
 
@@ -107,7 +125,8 @@ export class EstimateDetailEntity {
             guarantee,
             observations,
             createdAt,
-            user.name
+            user.name,
+            formatted_evolutions,
         );
 
     }

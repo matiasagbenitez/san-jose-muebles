@@ -1,8 +1,8 @@
 import { Op, Order } from "sequelize";
-import { Estimate, EstimateItem } from "../../database/mysql/models";
+import { Estimate, EstimateEvolution, EstimateItem } from "../../database/mysql/models";
 import {
     CustomError, PaginationDto,
-    CreateEstimateDTO, EstimatesListEntity, EstimatesByProjectListEntity, EstimateDetailEntity,
+    CreateEstimateDTO, EstimatesListEntity, EstimatesByProjectListEntity, EstimateDetailEntity, UpdateEstimateStatusDTO,
 } from "../../domain";
 
 export interface EstimateFilters {
@@ -69,10 +69,12 @@ export class EstimateService {
             where: { id, id_project },
             include: [
                 { association: 'items' },
+                { association: 'evolutions', include: [{ association: 'user', attributes: ['name'] }] },
                 { association: 'project', include: [{ association: 'client', attributes: ['id', 'name', 'last_name'] }, { association: 'locality', attributes: ['name'] }] },
                 { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
                 { association: 'user', attributes: ['name'] }
             ],
+            order: [[{ model: EstimateEvolution, as: 'evolutions' }, 'createdAt', 'DESC']]
         });
         if (!estimate) throw CustomError.notFound('¡Presupuesto no encontrado!');
         const { ...entity } = EstimateDetailEntity.fromObject(estimate);
@@ -104,6 +106,27 @@ export class EstimateService {
             await transaction.commit();
             return { id, message: '¡Presupuesto creado correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateEstimateStatus(id: number, dto: UpdateEstimateStatusDTO) {
+        const estimate = await Estimate.findByPk(id);
+        if (!estimate) throw CustomError.notFound('¡Presupuesto no encontrado!');
+
+        const transaction = await Estimate.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!')
+
+        try {
+            await estimate.update({ status: dto.status }, { transaction });
+            await EstimateEvolution.create({
+                id_estimate: id,
+                ...dto,
+            }, { transaction });
+            await transaction.commit();
+            return { message: '¡Estado del presupuesto actualizado correctamente!' };
+        } catch (error) {
             await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
         }

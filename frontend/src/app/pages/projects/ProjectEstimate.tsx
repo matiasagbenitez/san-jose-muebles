@@ -8,13 +8,19 @@ import {
   Col,
   Dropdown,
   DropdownButton,
+  ListGroup,
   Row,
   Table,
 } from "react-bootstrap";
 import { LoadingSpinner } from "../../components";
 import { DateFormatter, NumberFormatter } from "../../helpers";
-import { CurrencyInterface, ProyectBasicData } from "./interfaces";
-import { ProjectHeader } from "./components";
+import {
+  CurrencyInterface,
+  EstimateStatuses,
+  EstimateStatusesText,
+  ProyectBasicData,
+} from "./interfaces";
+import { EstimateStatusForm, ProjectHeader } from "./components";
 import { SweetAlert2 } from "../../utils";
 
 interface Project {
@@ -30,6 +36,13 @@ interface EstimateItem {
   description: string;
   price: number;
   subtotal: number;
+}
+
+interface EstimateEvolution {
+  status: "NO_ENVIADO" | "ENVIADO" | "ACEPTADO" | "RECHAZADO";
+  comment: string;
+  user: string;
+  created_at: Date;
 }
 
 interface ProjectEstimate {
@@ -57,7 +70,19 @@ interface ProjectEstimate {
 
   created_at: Date;
   user: string;
+
+  evolutions: EstimateEvolution[];
 }
+
+export interface InitialStatusFormInterface {
+  status: "NO_ENVIADO" | "ENVIADO" | "ACEPTADO" | "RECHAZADO";
+  comment: string;
+}
+
+const initialStatusForm: InitialStatusFormInterface = {
+  status: "NO_ENVIADO",
+  comment: "",
+};
 
 export const ProjectEstimate = () => {
   const { id, id_estimate } = useParams();
@@ -68,6 +93,11 @@ export const ProjectEstimate = () => {
   const [estimate, setEstimate] = useState<ProjectEstimate>();
   const [currency, setCurrency] = useState<CurrencyInterface>();
   const [items, setItems] = useState<EstimateItem[]>([]);
+  const [evolutions, setEvolutions] = useState<EstimateEvolution[]>([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+  const [form, setForm] = useState(initialStatusForm);
 
   const fetch = async () => {
     try {
@@ -79,7 +109,9 @@ export const ProjectEstimate = () => {
       setProject(data.item.project);
       setCurrency(data.item.currency);
       setItems(data.item.items);
+      setEvolutions(data.item.evolutions);
       setLoading(false);
+      setForm({ status: data.item.status, comment: "" });
     } catch (error) {
       console.error(error);
       navigate(`/proyectos/${id}/presupuestos`);
@@ -90,7 +122,7 @@ export const ProjectEstimate = () => {
     fetch();
   }, [id]);
 
-  const exportPDF = () => {
+  const handleExportPDF = () => {
     alert("Exportar PDF");
   };
 
@@ -106,6 +138,36 @@ export const ProjectEstimate = () => {
     } catch (error: any) {
       console.error(error);
       SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handleUpdateStatus = async (formData: InitialStatusFormInterface) => {
+    try {
+      setIsFormSubmitting(true);
+      const confirmation = await SweetAlert2.confirm(
+        "¿Estás seguro de actualizar el estado del presupuesto?"
+      );
+      if (!confirmation.isConfirmed) return;
+      const { data } = await apiSJM.put(
+        `/estimates/${id_estimate}/update-status`,
+        formData
+      );
+      SweetAlert2.successToast(data.message);
+      fetch();
+      closeModal();
+    } catch (error: any) {
+      console.error(error);
+      SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitting(false);
     }
   };
 
@@ -135,8 +197,11 @@ export const ProjectEstimate = () => {
                 className="float-end"
                 title="Opciones presupuesto"
               >
-                <Dropdown.Item className="small" onClick={exportPDF}>
+                <Dropdown.Item className="small" onClick={handleExportPDF}>
                   Exportar en PDF
+                </Dropdown.Item>
+                <Dropdown.Item className="small" onClick={openModal}>
+                  Actualizar estado
                 </Dropdown.Item>
                 <Dropdown.Item className="small" onClick={handleDeleteEstimate}>
                   Eliminar presupuesto
@@ -208,6 +273,26 @@ export const ProjectEstimate = () => {
                 className="small align-middle"
               >
                 <tbody className="text-uppercase">
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Estado presupuesto
+                    </th>
+                    <td className="col-10 px-2">
+                      <span
+                        className="badge rounded-pill"
+                        style={{
+                          fontSize: ".9em",
+                          color: "black",
+                          backgroundColor: EstimateStatuses[estimate.status],
+                        }}
+                      >
+                        {EstimateStatusesText[estimate.status]}
+                      </span>
+                    </td>
+                  </tr>
                   <tr>
                     <th
                       className="col-2 px-2"
@@ -379,6 +464,44 @@ export const ProjectEstimate = () => {
                 {DateFormatter.toDMYH(estimate.created_at)}.
               </small>
             </>
+          )}
+
+          <EstimateStatusForm
+            showModal={showModal}
+            closeModal={closeModal}
+            form={form}
+            isFormSubmitting={isFormSubmitting}
+            handleUpdateStatus={handleUpdateStatus}
+            estimateStatus={estimate.status}
+          />
+
+          <h6 className="my-3">
+            Historial de cambios de estado
+            <span className="small mx-1 fw-normal fst-italic">
+              (más recientes primero)
+            </span>
+          </h6>
+
+          {evolutions.length === 0 ? (
+            <p className="text-muted fst-italic small">
+              No se han registrado cambios de estado
+            </p>
+          ) : (
+            <ListGroup className="small mb-3">
+              {evolutions.map((status, index) => (
+                <ListGroup.Item key={index}>
+                  {status.user} marcó el presupuesto como{" "}
+                  <b>{EstimateStatusesText[status.status]}</b> el día{" "}
+                  {DateFormatter.toDMYH(status.created_at)}.{" "}
+                  {status.comment && (
+                    <p className="text-muted fst-italic m-0 text-uppercase">
+                      <i className="bi bi-chat-right-text me-1 small"></i>{" "}
+                      {status.comment}
+                    </p>
+                  )}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
           )}
         </>
       )}

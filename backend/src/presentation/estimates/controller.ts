@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, CreateEstimateDTO, LoggedUserIdDto } from "../../domain";
+import { CustomError, PaginationDto, CreateEstimateDTO, LoggedUserIdDto, UpdateEstimateStatusDTO } from "../../domain";
 import { EstimateService, EstimateFilters } from '../services/estimate.service';
 
 export class EstimateController {
@@ -93,6 +93,32 @@ export class EstimateController {
         if (error) return res.status(400).json({ message: error });
 
         this.service.createEstimate(dto!)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+    updateStatus = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (id_error) return res.status(400).json({ message: id_error });
+        const id_user = loggedUserIdDto!.id_user;
+
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase().trim();
+            }
+        }
+
+        const [error, dto] = UpdateEstimateStatusDTO.create({ ...req.body, id_user });
+        if (error) return res.status(400).json({ message: error });
+
+        this.service.updateEstimateStatus(parseInt(id), dto!)
             .then((data) => {
                 res.json(data);
             })

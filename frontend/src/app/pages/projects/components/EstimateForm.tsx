@@ -111,6 +111,7 @@ export const EstimateForm = ({
                 name="valid_period"
                 disabled={isFormSubmitting}
                 isInvalid={!!errors.valid_period && touched.valid_period}
+                isRequired
               >
                 <option value="0">Sin periodo de validez (ilimitado)</option>
                 <option value="15">15 días</option>
@@ -298,6 +299,7 @@ export const EstimateForm = ({
                           isRequired
                           prefix={prefix}
                           required
+                          min={1}
                         />
                       </Col>
 
