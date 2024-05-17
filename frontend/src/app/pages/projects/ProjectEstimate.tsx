@@ -2,11 +2,20 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import apiSJM from "../../../api/apiSJM";
-import { Row, Col, Table, Image } from "react-bootstrap";
-import { LoadingSpinner, PageHeader } from "../../components";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Dropdown,
+  DropdownButton,
+  Row,
+  Table,
+} from "react-bootstrap";
+import { LoadingSpinner } from "../../components";
 import { DateFormatter, NumberFormatter } from "../../helpers";
 import { CurrencyInterface, ProyectBasicData } from "./interfaces";
 import { ProjectHeader } from "./components";
+import { SweetAlert2 } from "../../utils";
 
 interface Project {
   id: string;
@@ -85,202 +94,291 @@ export const ProjectEstimate = () => {
     alert("Exportar PDF");
   };
 
+  const handleDeleteEstimate = async () => {
+    try {
+      const confirmation = await SweetAlert2.confirm(
+        "¿Estás seguro de eliminar el presupuesto?"
+      );
+      if (!confirmation.isConfirmed) return;
+      const { data } = await apiSJM.delete(`/estimates/${id_estimate}`);
+      SweetAlert2.successToast(data.message);
+      navigate(`/proyectos/${id}/presupuestos`);
+    } catch (error: any) {
+      console.error(error);
+      SweetAlert2.errorAlert(error.response.data.message);
+    }
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && (
+      {!loading && estimate && (
         <>
-          <PageHeader
-            goBackTo={`/proyectos/${id}/presupuestos`}
-            goBackTitle="Volver al listado de presupuestos"
-            title="Presupuesto"
-            handleAction={exportPDF}
-            actionButtonText="Exportar PDF"
-            actionButtonVariant="danger"
-            actionButtonIcon="bi-file-pdf"
-          />
+          <Row className="d-flex align-items-center">
+            <Col xs={6} lg={2} xl={1}>
+              <Button
+                variant="light border text-muted w-100"
+                size="sm"
+                onClick={() => navigate(`/proyectos/${id}/presupuestos`)}
+                title={"Volver al proyecto"}
+              >
+                <i className="bi bi-arrow-left me-2"></i>
+                Atrás
+              </Button>
+            </Col>
 
-          {project && <ProjectHeader project={project} showStatus={false} />}
+            <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, offset: 1 }}>
+              <DropdownButton
+                as={ButtonGroup}
+                variant="secondary"
+                size="sm"
+                className="float-end"
+                title="Opciones presupuesto"
+              >
+                <Dropdown.Item className="small" onClick={exportPDF}>
+                  Exportar en PDF
+                </Dropdown.Item>
+                <Dropdown.Item className="small" onClick={handleDeleteEstimate}>
+                  Eliminar presupuesto
+                </Dropdown.Item>
+              </DropdownButton>
+            </Col>
+
+            <Col xs={{ span: 12, order: 2 }} lg={{ span: 7, order: 0 }} xl={8}>
+              <h1 className="fs-5 my-3 my-lg-0">Detalle de presupuesto</h1>
+            </Col>
+          </Row>
+
+          <hr className="mt-0 mt-lg-3" />
+
+          {project && (<ProjectHeader project={project} showStatus={false} />)}
 
           {project && estimate && currency && (
-            <Row className="border rounded mx-0 p-3 border-2 shadow-sm">
-              <Col xs={12} md={6} className="d-flex align-items-center gap-4">
-                <Image
-                  src="/logos/logo-transparent.png"
-                  alt="Imagen del proyecto"
-                  height={90}
-                />
-                <div>
-                  <h1 className="fs-4 mb-0">SAN JOSÉ MUEBLES</h1>
-                  <h5 className="text-muted fst-italic fs-6 mb-0">
-                    Nuestra calidad su confianza
-                  </h5>
-                  <small className="small">
-                    25 de Mayo (CP 3363), Misiones, ARG
-                  </small>
-                </div>
-              </Col>
-              <Col xs={12} md={6}>
-                <div className="d-flex justify-content-center align-items-center h-100">
-                  <h2 className="text-uppercase mb-0">Presupuesto</h2>
-                </div>
-              </Col>
-              <Col xs={12} lg={9}></Col>
-              <Col xs={12} className="px-3">
-                <hr className="my-3" />
-                <Row>
-                  <Col xs={12}>
-                    {estimate.val_date ? (
-                      <p className="text-muted">
-                        Presupuesto válido desde el{" "}
-                        <b>{DateFormatter.toDMY(estimate.gen_date)}</b> hasta el{" "}
-                        <b>{DateFormatter.toDMY(estimate.val_date)}</b>. Valores
-                        expresados en{" "}
-                        <b>
-                          {currency.name} ({currency.symbol}).
-                        </b>
-                      </p>
-                    ) : (
-                      <p className="text-muted">
-                        Presupuesto emitido el{" "}
-                        <b>{DateFormatter.toDMY(estimate.gen_date)}</b>. Valores
-                        expresados en{" "}
-                        <b>
-                          {currency.name} ({currency.symbol}).
-                        </b>
-                      </p>
-                    )}
-                  </Col>
-                  <Col xs={12} md={6}>
-                    <b>Cliente: </b> {project.client}
-                  </Col>
-                  <Col xs={12} md={6}>
-                    <b>Localidad proyecto: </b> {project.locality}
-                  </Col>
-                </Row>
-                <br />
-                <Row>
-                  <Col xs={12}>
-                    <b>{estimate.title || "Sin título especificado"}</b>
-                  </Col>
-                  <Col xs={12}>
-                    <small>{estimate.description || "Sin descripción"}</small>
-                  </Col>
-                </Row>
-                <br />
-                {items.length > 0 ? (
-                  <Table
-                    striped
-                    bordered
-                    responsive
-                    size="sm"
-                    className="small align-middle"
-                  >
-                    <thead>
-                      <tr className="text-center text-uppercase">
-                        <th className="col-1">Cant.</th>
-                        <th className="col-5">Descripción</th>
-                        <th className="col-3">Precio unitario</th>
-                        <th className="col-3">Subtotal</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((item, index) => (
-                        <tr key={index}>
-                          <td className="text-center">{item.quantity}</td>
-                          <td className="px-2">{item.description}</td>
-                          <td className="px-2 text-end">
-                            {currency.symbol}{" "}
-                            {NumberFormatter.formatNotsignedCurrency(
-                              estimate.currency.is_monetary,
-                              item.price
-                            )}
-                          </td>
-                          <td className="px-2 text-end">
-                            {currency.symbol}{" "}
-                            {NumberFormatter.formatNotsignedCurrency(
-                              estimate.currency.is_monetary,
-                              item.subtotal
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                      <tr>
-                        <td colSpan={3} className="text-end px-2">
-                          Subtotal
-                        </td>
-                        <td className="text-end px-2">
+            <>
+              <Table
+                bordered
+                responsive
+                size="sm"
+                className="small align-middle"
+              >
+                <tbody className="text-uppercase">
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Fecha emisión
+                    </th>
+                    <td className="col-4 px-2">
+                      {DateFormatter.toDMY(estimate.gen_date)}
+                    </td>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Fecha vencimiento
+                    </th>
+                    <td className="col-4 px-2">
+                      {estimate.val_date &&
+                        DateFormatter.toDMY(estimate.val_date)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Cliente
+                    </th>
+                    <td className="col-4 px-2">{project.client}</td>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Localidad proyecto
+                    </th>
+                    <td className="col-4 px-2">{project.locality}</td>
+                  </tr>
+                </tbody>
+              </Table>
+              <Table
+                bordered
+                responsive
+                size="sm"
+                className="small align-middle"
+              >
+                <tbody className="text-uppercase">
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Presupuesto
+                    </th>
+                    <td className="col-10 px-2">{estimate.title}</td>
+                  </tr>
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Moneda
+                    </th>
+                    <td className="col-10 px-2">
+                      {currency.name} ({currency.symbol})
+                    </td>
+                  </tr>
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Total final
+                    </th>
+                    <td className="col-10 px-2 fw-bold">
+                      {currency.symbol}{" "}
+                      {NumberFormatter.formatNotsignedCurrency(
+                        estimate.currency.is_monetary,
+                        estimate.total
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Descripción
+                    </th>
+                    <td className="col-10 px-2">{estimate.description}</td>
+                  </tr>
+                </tbody>
+              </Table>
+              {items.length > 0 && (
+                <Table
+                  striped
+                  bordered
+                  responsive
+                  size="sm"
+                  className="small align-middle"
+                >
+                  <thead>
+                    <tr className="text-center text-uppercase">
+                      <th className="col-1">Cant.</th>
+                      <th className="col-5">Descripción</th>
+                      <th className="col-3">Precio unitario</th>
+                      <th className="col-3">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => (
+                      <tr key={index}>
+                        <td className="text-center">{item.quantity}</td>
+                        <td className="px-2">{item.description}</td>
+                        <td className="px-2 text-end">
                           {currency.symbol}{" "}
                           {NumberFormatter.formatNotsignedCurrency(
                             estimate.currency.is_monetary,
-                            estimate.subtotal
+                            item.price
                           )}
                         </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={3} className="text-end px-2">
-                          Descuento
-                        </td>
-                        <td className="text-end px-2">
-                          {currency.symbol}
-                          {" -"}
-                          {NumberFormatter.formatNotsignedCurrency(
-                            estimate.currency.is_monetary,
-                            estimate.discount
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={3} className="text-end px-2">
-                          Impuestos
-                        </td>
-                        <td className="text-end px-2">
+                        <td className="px-2 text-end">
                           {currency.symbol}{" "}
                           {NumberFormatter.formatNotsignedCurrency(
                             estimate.currency.is_monetary,
-                            estimate.fees
+                            item.subtotal
                           )}
                         </td>
                       </tr>
-                      <tr className="fw-bold">
-                        <td colSpan={3} className="text-end px-2">
-                          TOTAL FINAL
-                        </td>
-                        <td className="text-end px-2">
-                          {currency.symbol}{" "}
-                          {NumberFormatter.formatNotsignedCurrency(
-                            estimate.currency.is_monetary,
-                            estimate.total
-                          )}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                ) : (
-                  <p className="fw-bold">
-                    TOTAL FINAL: {currency.symbol}{" "}
-                    {NumberFormatter.formatNotsignedCurrency(
-                      estimate.currency.is_monetary,
-                      estimate.total
-                    )}{" "}
-                    ({currency.name})
-                  </p>
-                )}
-                <p className="small text-center fst-italic text-muted">
-                  {estimate.guarantee}
-                </p>
-                <p className="small mb-0">
-                  <b>Observaciones: </b>
-                  {estimate.observations || "Sin observaciones"}
-                </p>
-                <hr />
-                <small className="text-muted fst-italic">
-                  Presupuesto con código interno #{estimate.id} emitido por{" "}
-                  {estimate.user || "Usuario no especificado"} el{" "}
-                  {DateFormatter.toDMY(estimate.created_at)}
-                </small>
-              </Col>
-            </Row>
+                    ))}
+                    <tr>
+                      <td colSpan={3} className="text-end px-2">
+                        Subtotal
+                      </td>
+                      <td className="text-end px-2">
+                        {currency.symbol}{" "}
+                        {NumberFormatter.formatNotsignedCurrency(
+                          estimate.currency.is_monetary,
+                          estimate.subtotal
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan={3} className="text-end px-2">
+                        Descuento
+                      </td>
+                      <td className="text-end px-2">
+                        {currency.symbol}
+                        {" -"}
+                        {NumberFormatter.formatNotsignedCurrency(
+                          estimate.currency.is_monetary,
+                          estimate.discount
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan={3} className="text-end px-2">
+                        Impuestos
+                      </td>
+                      <td className="text-end px-2">
+                        {currency.symbol}{" "}
+                        {NumberFormatter.formatNotsignedCurrency(
+                          estimate.currency.is_monetary,
+                          estimate.fees
+                        )}
+                      </td>
+                    </tr>
+                    <tr className="fw-bold">
+                      <td colSpan={3} className="text-end px-2">
+                        TOTAL FINAL
+                      </td>
+                      <td className="text-end px-2">
+                        {currency.symbol}{" "}
+                        {NumberFormatter.formatNotsignedCurrency(
+                          estimate.currency.is_monetary,
+                          estimate.total
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
+              <Table
+                bordered
+                responsive
+                size="sm"
+                className="small align-middle"
+              >
+                <tbody className="text-uppercase">
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Garantía
+                    </th>
+                    <td className="col-10 px-2">{estimate.guarantee}</td>
+                  </tr>
+                  <tr>
+                    <th
+                      className="col-2 px-2"
+                      style={{ backgroundColor: "#F2F2F2" }}
+                    >
+                      Observaciones
+                    </th>
+                    <td className="col-10 px-2">
+                      {estimate.observations || ""}
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+              <small className="text-muted">
+                <i className="bi bi-clock me-2"></i>
+                Presupuesto con ID {estimate.id} generado por{" "}
+                {estimate.user || "Usuario no especificado"} el{" "}
+                {DateFormatter.toDMYH(estimate.created_at)}.
+              </small>
+            </>
           )}
         </>
       )}

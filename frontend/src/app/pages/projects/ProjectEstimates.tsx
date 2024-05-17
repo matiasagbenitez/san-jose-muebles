@@ -63,21 +63,6 @@ export const ProjectEstimates = () => {
     navigate(`/proyectos/${id}/presupuestos/nuevo`);
   };
 
-  const handleDeleteEstimate = async (id_estimate: number) => {
-    try {
-      const confirmation = await SweetAlert2.confirm(
-        "¿Estás seguro de eliminar el presupuesto?"
-      );
-      if (!confirmation.isConfirmed) return;
-      const { data } = await apiSJM.delete(`/estimates/${id_estimate}`);
-      SweetAlert2.successToast(data.message);
-      fetch();
-    } catch (error: any) {
-      console.error(error);
-      SweetAlert2.errorAlert(error.response.data.message);
-    }
-  };
-
   const handleRedirectDetail = (id_estimate: number) => {
     navigate(`/proyectos/${id}/presupuestos/${id_estimate}`);
   };
@@ -165,39 +150,18 @@ export const ProjectEstimates = () => {
                     <Card.Footer>
                       <div className="d-flex align-items-center justify-content-between">
                         <small className="text-muted">
-                          <i className="bi bi-calendar me-2"></i>
+                          <i className="bi bi-clock me-2"></i>
                           {DateFormatter.toDMYH(estimate.created_at)}
                         </small>
-                        <ButtonGroup>
-                          <DropdownButton
-                            size="sm"
-                            variant="secondary"
-                            as={ButtonGroup}
-                            title={<small>Opciones</small>}
-                          >
-                            <Dropdown.Item
-                              eventKey="1"
-                              style={{ fontSize: "0.9em" }}
-                            >
-                              Cambiar estado
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              eventKey="2"
-                              style={{ fontSize: "0.9em" }}
-                              onClick={() => handleDeleteEstimate(estimate.id)}
-                            >
-                              Eliminar presupuesto
-                            </Dropdown.Item>
-                          </DropdownButton>
-                          <Button
-                            size="sm"
-                            variant="primary"
-                            onClick={() => handleRedirectDetail(estimate.id)}
-                          >
-                            <i className="bi bi-eye-fill me-2"></i>
-                            <small>Detalle</small>
-                          </Button>
-                        </ButtonGroup>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          title="Ver presupuesto"
+                          onClick={() => handleRedirectDetail(estimate.id)}
+                        >
+                          <i className="bi bi-eye-fill me-2"></i>
+                          <small className="fw-bold">Ver presupuesto</small>
+                        </Button>
                       </div>
                     </Card.Footer>
                   </Card>

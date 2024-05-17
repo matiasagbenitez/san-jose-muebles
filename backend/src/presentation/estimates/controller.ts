@@ -73,8 +73,19 @@ export class EstimateController {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {
                 req.body[key] = req.body[key].toUpperCase().trim();
+            } else if (Array.isArray(req.body[key])) {
+                req.body[key].forEach((item: any) => {
+                    for (let subKey in item) {
+                        if (typeof item[subKey] === 'string') {
+                            item[subKey] = item[subKey].toUpperCase().trim();
+                        }
+                    }
+                });
             }
-        }  const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        }
+
+
+        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
         if (id_error) return res.status(400).json({ message: id_error });
         const id_user = loggedUserIdDto!.id_user;
 
