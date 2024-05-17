@@ -90,7 +90,7 @@ export const EstimateForm = ({
         subtotal: Yup.number().required("Revisar"),
         discount: Yup.number().min(0, "Revisar").required("Revisar"),
         fees: Yup.number().min(0, "Revisar").required("Revisar"),
-        total: Yup.number().required("Revisar"),
+        // total: Yup.number().required("Revisar"),
       })}
     >
       {({ values, errors, touched, setFieldValue }) => (
@@ -165,12 +165,44 @@ export const EstimateForm = ({
                 rows={3}
               />
             </Col>
+            <Col xs={12} md={6}>
+              <h5 className="my-3">Detalle del presupuesto</h5>
+            </Col>
+            {values.items.length === 0 && (
+              <Col
+                xs={12}
+                md={6}
+                className="d-flex align-items-center gap-3 justify-content-start justify-content-md-end"
+              >
+                <b>TOTAL PRESUPUESTO</b>
+                <CustomInput.Decimal
+                  name="total"
+                  value={values.total}
+                  onValueChange={(valuesLocal: any) => {
+                    setFieldValue("total", valuesLocal.floatValue || 0);
+                  }}
+                  style={{ fontWeight: "bold" }}
+                  prefix={prefix}
+                  required
+                />
+              </Col>
+            )}
           </Row>
-
-          <h6 className="my-3">Detalle del presupuesto</h6>
 
           <FieldArray name="items">
             {({ push, remove }) => {
+              const handleRemove = (index: number) => {
+                if (values.items.length === 1) {
+                  setFieldValue("subtotal", 0);
+                  setFieldValue("percent_discount", 0);
+                  setFieldValue("discount", 0);
+                  setFieldValue("percent_fees", 0);
+                  setFieldValue("fees", 0);
+                  setFieldValue("total", 0);
+                }
+                remove(index);
+              };
+
               const handleQuantityChange = (
                 index: number,
                 quantity: number
@@ -208,7 +240,7 @@ export const EstimateForm = ({
                               size="sm"
                               className="px-2 mb-2 w-100"
                               variant="danger"
-                              onClick={() => remove(index)}
+                              onClick={() => handleRemove(index)}
                               disabled={isFormSubmitting}
                               style={{ height: "31px" }}
                             >

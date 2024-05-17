@@ -164,6 +164,10 @@ export const ProjectEstimates = () => {
                     </Card.Body>
                     <Card.Footer>
                       <div className="d-flex align-items-center justify-content-between">
+                        <small className="text-muted">
+                          <i className="bi bi-calendar me-2"></i>
+                          {DateFormatter.toDMYH(estimate.created_at)}
+                        </small>
                         <ButtonGroup>
                           <DropdownButton
                             size="sm"
@@ -191,13 +195,9 @@ export const ProjectEstimates = () => {
                             onClick={() => handleRedirectDetail(estimate.id)}
                           >
                             <i className="bi bi-eye-fill me-2"></i>
-                            <small>Ver detalle</small>
+                            <small>Detalle</small>
                           </Button>
                         </ButtonGroup>
-                        <small className="text-muted">
-                          <i className="bi bi-calendar me-2"></i>
-                          {DateFormatter.toDMYH(estimate.created_at)}
-                        </small>
                       </div>
                     </Card.Footer>
                   </Card>

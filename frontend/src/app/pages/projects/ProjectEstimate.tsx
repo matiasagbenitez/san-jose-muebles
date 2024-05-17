@@ -103,7 +103,7 @@ export const ProjectEstimate = () => {
           {project && <ProjectHeader project={project} showStatus={false} />}
 
           {project && estimate && currency && (
-            <Row className="border rounded mx-0 p-3 border-2">
+            <Row className="border rounded mx-0 p-3 border-2 shadow-sm">
               <Col xs={12} md={6} className="d-flex align-items-center gap-4">
                 <Image
                   src="/logos/logo-transparent.png"
@@ -133,9 +133,9 @@ export const ProjectEstimate = () => {
                     {estimate.val_date ? (
                       <p className="text-muted">
                         Presupuesto válido desde el{" "}
-                        <b>{DateFormatter.toDMY(estimate.gen_date)}</b>
-                        hasta el <b>{DateFormatter.toDMY(estimate.val_date)}</b>
-                        . Valores expresados en{" "}
+                        <b>{DateFormatter.toDMY(estimate.gen_date)}</b> hasta el{" "}
+                        <b>{DateFormatter.toDMY(estimate.val_date)}</b>. Valores
+                        expresados en{" "}
                         <b>
                           {currency.name} ({currency.symbol}).
                         </b>
@@ -155,13 +155,7 @@ export const ProjectEstimate = () => {
                     <b>Cliente: </b> {project.client}
                   </Col>
                   <Col xs={12} md={6}>
-                    <b>DNI/CUIT: </b>
-                  </Col>
-                  <Col xs={12} md={6}>
-                    <b>Dirección: </b>
-                  </Col>
-                  <Col xs={12} md={6}>
-                    <b>Localidad: </b> {project.locality}
+                    <b>Localidad proyecto: </b> {project.locality}
                   </Col>
                 </Row>
                 <br />
@@ -169,10 +163,12 @@ export const ProjectEstimate = () => {
                   <Col xs={12}>
                     <b>{estimate.title || "Sin título especificado"}</b>
                   </Col>
-                  <Col xs={12}><small>{estimate.description || "Sin descripción"}</small></Col>
+                  <Col xs={12}>
+                    <small>{estimate.description || "Sin descripción"}</small>
+                  </Col>
                 </Row>
                 <br />
-                {items.length > 0 && (
+                {items.length > 0 ? (
                   <Table
                     striped
                     bordered
@@ -260,6 +256,15 @@ export const ProjectEstimate = () => {
                       </tr>
                     </tbody>
                   </Table>
+                ) : (
+                  <p className="fw-bold">
+                    TOTAL FINAL: {currency.symbol}{" "}
+                    {NumberFormatter.formatNotsignedCurrency(
+                      estimate.currency.is_monetary,
+                      estimate.total
+                    )}{" "}
+                    ({currency.name})
+                  </p>
                 )}
                 <p className="small text-center fst-italic text-muted">
                   {estimate.guarantee}
