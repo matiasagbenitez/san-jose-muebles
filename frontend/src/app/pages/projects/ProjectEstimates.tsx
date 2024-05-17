@@ -2,26 +2,21 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import apiSJM from "../../../api/apiSJM";
-import {
-  Card,
-  Row,
-  Col,
-  ButtonGroup,
-  Button,
-  DropdownButton,
-  Dropdown,
-} from "react-bootstrap";
+import { Card, Row, Col, Button } from "react-bootstrap";
 import { LoadingSpinner, PageHeader } from "../../components";
 import { DateFormatter, NumberFormatter } from "../../helpers";
-import { EstimateStatuses, ProyectBasicData } from "./interfaces";
+import {
+  EstimateStatuses,
+  EstimateStatusesText,
+  ProyectBasicData,
+} from "./interfaces";
 import { ProjectHeader } from "./components";
-import { SweetAlert2 } from "../../utils";
 
 interface ProjectEstimateInterface {
   id: number;
   title: string;
   description: string;
-  status: "ACEPTADO" | "PENDIENTE" | "RECHAZADO";
+  status: "NO_ENVIADO" | "ENVIADO" | "ACEPTADO" | "RECHAZADO";
   created_at: Date;
   currency: {
     name: string;
@@ -106,10 +101,10 @@ export const ProjectEstimates = () => {
                                 fontSize: ".9em",
                                 color: "black",
                                 backgroundColor:
-                                  EstimateStatuses[estimate.status] || "gray",
+                                  EstimateStatuses[estimate.status],
                               }}
                             >
-                              {estimate.status}
+                              {EstimateStatusesText[estimate.status]}
                             </span>
                           </span>
                         </Col>

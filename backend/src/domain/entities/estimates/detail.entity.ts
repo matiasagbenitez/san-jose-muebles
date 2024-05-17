@@ -25,7 +25,7 @@ export class EstimateDetailEntity {
         public client_name: string,
         public title: string,
         public description: string,
-        public status: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO',
+        public status: 'NO_ENVIADO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO',
 
         public currency: {
             id: string,

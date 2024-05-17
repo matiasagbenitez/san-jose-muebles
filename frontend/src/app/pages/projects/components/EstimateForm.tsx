@@ -32,9 +32,10 @@ export const EstimateForm = ({
   isFormSubmitting,
   onSubmit,
 }: Props) => {
+
   const initialForm: EstimateFormInterface = {
     gen_date: new Date().toISOString().split("T")[0],
-    val_date: "",
+    valid_period: "",
     client_name: project.client,
     title: `PRESUPUESTO ${project.title}`,
     id_currency: "",
@@ -79,7 +80,7 @@ export const EstimateForm = ({
       }}
       validationSchema={Yup.object({
         gen_date: Yup.date().required("La fecha de emisión es requerida"),
-        val_date: Yup.date(),
+        valid_period: Yup.string(),
         client_name: Yup.string().required(
           "El nombre del cliente es requerido"
         ),
@@ -90,7 +91,6 @@ export const EstimateForm = ({
         subtotal: Yup.number().required("Revisar"),
         discount: Yup.number().min(0, "Revisar").required("Revisar"),
         fees: Yup.number().min(0, "Revisar").required("Revisar"),
-        // total: Yup.number().required("Revisar"),
       })}
     >
       {({ values, errors, touched, setFieldValue }) => (
@@ -106,12 +106,20 @@ export const EstimateForm = ({
               />
             </Col>
             <Col xs={12} md={4} xl={3}>
-              <CustomInput.Date
-                label="Fecha de validez"
-                name="val_date"
+              <CustomInput.Select
+                label="Período de validez"
+                name="valid_period"
                 disabled={isFormSubmitting}
-                isInvalid={!!errors.val_date && touched.val_date}
-              />
+                isInvalid={!!errors.valid_period && touched.valid_period}
+              >
+                <option value="0">Sin periodo de validez (ilimitado)</option>
+                <option value="15">15 días</option>
+                <option value="30">30 días</option>
+                <option value="60">60 días</option>
+                <option value="90">90 días</option>
+                <option value="120">120 días</option>
+                <option value="180">180 días</option>
+              </CustomInput.Select>
             </Col>
             <Col xs={12} md={4} xl={6}>
               <CustomInput.Select
@@ -515,7 +523,7 @@ export const EstimateForm = ({
                     "gen_date",
                     new Date().toISOString().split("T")[0]
                   );
-                  setFieldValue("val_date", "");
+                  setFieldValue("valid_period", "");
                   setFieldValue("client_name", project.client);
                   setFieldValue("title", `PRESUPUESTO ${project.title}`);
                   setFieldValue("id_currency", "");

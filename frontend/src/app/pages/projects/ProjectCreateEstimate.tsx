@@ -44,7 +44,6 @@ export const ProjectCreateEstimate = () => {
 
   const submitForm = async (formData: EstimateFormInterface) => {
     try {
-      console.log(formData);
       const confirmation = await SweetAlert2.confirm(
         "¿Estás seguro de crear este presupuesto?"
       );

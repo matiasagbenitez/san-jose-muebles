@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class Estimate extends Model {
     public id!: number;
     public id_project!: number;
-    public status!: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO';
+    public status!: 'NO_ENVIADO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO';
     public gen_date!: Date;
     public val_date!: Date;
 
@@ -39,9 +39,9 @@ export const initEstimateModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('ACEPTADO', 'PENDIENTE', 'RECHAZADO'),
+                type: DataTypes.ENUM('NO_ENVIADO', 'ENVIADO', 'ACEPTADO', 'RECHAZADO'),
                 allowNull: false,
-                defaultValue: 'PENDIENTE'
+                defaultValue: 'NO_ENVIADO'
             },
             gen_date: {
                 type: DataTypes.DATEONLY,

@@ -4,7 +4,7 @@ export class EstimateEvolution extends Model {
     public id!: number;
 
     public id_estimate!: number;
-    public status!: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO';
+    public status!: 'NO_ENVIADO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO';
     public comment!: string;
 
     public id_user!: number;
@@ -26,7 +26,7 @@ export const initEstimateEvolutionModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('ACEPTADO', 'PENDIENTE', 'RECHAZADO'),
+                type: DataTypes.ENUM('NO_ENVIADO', 'ENVIADO', 'ACEPTADO', 'RECHAZADO'),
                 allowNull: false,
             },
             comment: {

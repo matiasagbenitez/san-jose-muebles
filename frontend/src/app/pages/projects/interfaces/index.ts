@@ -170,7 +170,7 @@ export interface EstimateItemInterface {
 }
 export interface EstimateFormInterface {
     gen_date: string | Date;
-    val_date?: string | Date;
+    valid_period: number | string;
     client_name: string;
     title: string;
     id_currency: string;
@@ -187,11 +187,18 @@ export interface EstimateFormInterface {
 }
 
 export enum EstimateStatuses {
+    NO_ENVIADO = "#FFD966",
+    ENVIADO = "#4F81BD",
     ACEPTADO = "#5A965A",
-    PENDIENTE = "#FFD966",
     RECHAZADO = "#CC3333",
 }
 
+export enum EstimateStatusesText {
+    NO_ENVIADO = "NO ENVIADO",
+    ENVIADO = "ENVIADO",
+    ACEPTADO = "ACEPTADO",
+    RECHAZADO = "RECHAZADO",
+}
 export interface ProyectBasicData {
     id: number;
     title: string;

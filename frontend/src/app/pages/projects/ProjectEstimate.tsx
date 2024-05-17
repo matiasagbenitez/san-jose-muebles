@@ -41,7 +41,7 @@ interface ProjectEstimate {
   client_name: string;
   title: string;
   description: string | null;
-  status: "ACEPTADO" | "PENDIENTE" | "RECHAZADO";
+  status: "NO_ENVIADO" | "ENVIADO" | "ACEPTADO" | "RECHAZADO";
 
   currency: CurrencyInterface;
 
@@ -151,7 +151,7 @@ export const ProjectEstimate = () => {
 
           <hr className="mt-0 mt-lg-3" />
 
-          {project && (<ProjectHeader project={project} showStatus={false} />)}
+          {project && <ProjectHeader project={project} showStatus={false} />}
 
           {project && estimate && currency && (
             <>
@@ -167,7 +167,7 @@ export const ProjectEstimate = () => {
                       className="col-2 px-2"
                       style={{ backgroundColor: "#F2F2F2" }}
                     >
-                      Fecha emisión
+                      Válido desde
                     </th>
                     <td className="col-4 px-2">
                       {DateFormatter.toDMY(estimate.gen_date)}
@@ -176,7 +176,7 @@ export const ProjectEstimate = () => {
                       className="col-2 px-2"
                       style={{ backgroundColor: "#F2F2F2" }}
                     >
-                      Fecha vencimiento
+                      Válido hasta
                     </th>
                     <td className="col-4 px-2">
                       {estimate.val_date &&

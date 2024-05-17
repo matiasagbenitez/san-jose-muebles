@@ -30,7 +30,7 @@ export class CreateEstimateDTO {
     ) { }
 
     static create(object: { [key: string]: any }): [string?, CreateEstimateDTO?] {
-        const { id_project, gen_date, val_date, client_name, title, description, id_currency, subtotal, discount, fees, total, guarantee, observations, items, id_user } = object;
+        const { id_project, gen_date, valid_period, client_name, title, description, id_currency, subtotal, discount, fees, total, guarantee, observations, items, id_user } = object;
 
         if (!id_project) return ['El id del proyecto es requerido'];
         if (!gen_date) return ['La fecha de generación es requerida'];
@@ -67,11 +67,15 @@ export class CreateEstimateDTO {
             if (local_total !== total) return ['El total no coincide con el cálculo de los subtotales, descuento e impuestos'];
         }
 
+        const gen = new Date(gen_date);
+        const period = parseInt(valid_period);      // 0, 15, 30, 45, 60, 90, 120, 180 días
+        const val_date = period > 0 ? new Date(gen.getTime() + period * 24 * 60 * 60 * 1000) : null;
+
         return [undefined, new CreateEstimateDTO(
             id_project,
-            'PENDIENTE',
+            'NO_ENVIADO',
             gen_date,
-            val_date ? new Date(val_date) : null,
+            val_date,
             client_name,
             title,
             description,

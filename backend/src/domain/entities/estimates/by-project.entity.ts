@@ -5,7 +5,7 @@ export class EstimatesByProjectListEntity {
         public id: number,
         public title: string,
         public description: string,
-        public status: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO',
+        public status: 'NO_ENVIADO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO',
         public created_at: Date,
         public currency: {
             name: string,

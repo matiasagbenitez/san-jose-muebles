@@ -9,7 +9,7 @@ export class EstimatesListEntity {
             last_name: string,
         },
         public project: string,
-        public status: 'ACEPTADO' | 'PENDIENTE' | 'RECHAZADO',
+        public status: 'NO_ENVIADO' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO',
         public created_at: string,
         public currency: {
             name: string,

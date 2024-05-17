@@ -25,11 +25,14 @@ export class EstimateService {
         if (filters.text) { where = { ...where, title: { [Op.like]: `%${filters.text}%` } }; }
         if (filters.status) {
             switch (filters.status) {
+                case 'NO_ENVIADO':
+                    where = { ...where, status: 'NO_ENVIADO' };
+                    break;
+                case 'ENVIADO':
+                    where = { ...where, status: 'ENVIADO' };
+                    break;
                 case 'ACEPTADO':
                     where = { ...where, status: 'ACEPTADO' };
-                    break;
-                case 'PENDIENTE':
-                    where = { ...where, status: 'PENDIENTE' };
                     break;
                 case 'RECHAZADO':
                     where = { ...where, status: 'RECHAZADO' };
@@ -37,7 +40,7 @@ export class EstimateService {
                 case 'ALL':
                     break;
                 default:
-                    where = { ...where, status: 'PENDIENTE' };
+                    where = { ...where, status: ['NO_ENVIADO', 'ENVIADO'] };
                     break;
             }
         }
