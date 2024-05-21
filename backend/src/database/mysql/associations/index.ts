@@ -43,7 +43,11 @@ import {
 
     Estimate,
     EstimateEvolution,
-    EstimateItem
+    EstimateItem,
+
+    Entity,
+    EntityAccount,
+    EntityAccountTransaction,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -223,10 +227,22 @@ export const initializeAssociations = () => {
     Estimate.hasMany(EstimateItem, { foreignKey: 'id_estimate', as: 'items', onDelete: 'CASCADE' });
     EstimateItem.belongsTo(Estimate, { foreignKey: 'id_estimate', as: 'estimate' });
 
-    Estimate.belongsTo(User, { foreignKey: 'id_user', as: 'user' }); 
+    Estimate.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
     Estimate.hasMany(EstimateEvolution, { foreignKey: 'id_estimate', as: 'evolutions', onDelete: 'CASCADE' });
     EstimateEvolution.belongsTo(Estimate, { foreignKey: 'id_estimate', as: 'estimate' });
 
     EstimateEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    Locality.hasMany(Entity, { foreignKey: 'id_locality', as: 'entities', onDelete: 'RESTRICT' });
+    Entity.belongsTo(Locality, { foreignKey: 'id_locality', as: 'locality' });
+
+    Entity.hasMany(EntityAccount, { foreignKey: 'id_entity', as: 'accounts', onDelete: 'RESTRICT' });
+    EntityAccount.belongsTo(Entity, { foreignKey: 'id_entity', as: 'entity' });
+    EntityAccount.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    EntityAccount.hasMany(EntityAccountTransaction, { foreignKey: 'id_entity_account', as: 'transactions', onDelete: 'RESTRICT' });
+    EntityAccountTransaction.belongsTo(EntityAccount, { foreignKey: 'id_entity_account', as: 'account' });
+    EntityAccountTransaction.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
 };

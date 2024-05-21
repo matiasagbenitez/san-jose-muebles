@@ -34,6 +34,7 @@ import { MemberRoutes } from './members/routes';
 import { RelatedPersonRoutes } from './related_persons/routes';
 
 import { EstimateRoutes } from './estimates/routes';
+import { EntityRoutes } from './entities/routes';
 
 export class AppRoutes {
 
@@ -87,6 +88,9 @@ export class AppRoutes {
         router.use('/api/related_persons', RelatedPersonRoutes.routes);
 
         router.use('/api/estimates', EstimateRoutes.routes);
+
+
+        router.use('/api/entities', EntityRoutes.routes);
 
         return router;
     }

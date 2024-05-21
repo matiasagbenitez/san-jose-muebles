@@ -50,6 +50,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         </MenuItem>
 
         <MenuItem
+          component={<Link to="/entidades" />}
+          title="Entidades"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-person-workspace me-3 fs-6"></i>
+          Entidades
+        </MenuItem>
+
+        <MenuItem
           component={<Link to="/agenda" />}
           title="Agenda de visitas"
           style={{ height: "45px" }}

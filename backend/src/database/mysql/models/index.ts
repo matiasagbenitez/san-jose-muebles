@@ -53,6 +53,10 @@ import { Estimate, initEstimateModel } from './Estimate.model';
 import { EstimateEvolution, initEstimateEvolutionModel } from './EstimateEvolution.model';
 import { EstimateItem, initEstimateItemModel } from './EstimateItem.model';
 
+import { Entity, initEntityModel } from './Entity.model';
+import { EntityAccount, initEntityAccountModel } from './EntityAccount.model';
+import { EntityAccountTransaction, initEntityAccountTransactionModel } from './EntityAccountTransaction.model';
+
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -111,6 +115,11 @@ export const initializeModels = (sequelize: Sequelize) => {
   initEstimateModel(sequelize);
   initEstimateEvolutionModel(sequelize);
   initEstimateItemModel(sequelize);
+
+  // ENTITIES
+  initEntityModel(sequelize);
+  initEntityAccountModel(sequelize);
+  initEntityAccountTransactionModel(sequelize);
 };
 
 export {
@@ -169,4 +178,10 @@ export {
   Estimate,
   EstimateEvolution,
   EstimateItem,
+
+  // ENTITIES
+  Entity,
+  EntityAccount,
+  EntityAccountTransaction,
+
 };

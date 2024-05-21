@@ -84,3 +84,7 @@ export * from './entities/groups';
 // ESTIMATES
 export * from './dtos/estimates';
 export * from './entities/estimates';
+
+// ENTITIES
+export * from './dtos/entities';
+export * from './entities/entities';
