@@ -89,9 +89,18 @@ export const SuppliersAccounts = () => {
       center: true,
     },
     {
+      name: "PROVEEDOR",
+      selector: (row: DataRow) => row.supplier,
+      wrap: true,
+    },
+    {
       name: "CUENTA CORRIENTE",
-      selector: (row: DataRow) =>
-        row.supplier + " - CUENTA CORRIENTE EN " + row.currency.name,
+      selector: (row: DataRow) => row.currency.name,
+      format: (row: DataRow) => (
+        <span className="text-uppercase">
+          CUENTA CORRIENTE EN <b>{row.currency.name}</b>
+        </span>
+      ),
       wrap: true,
     },
     {
@@ -101,7 +110,7 @@ export const SuppliersAccounts = () => {
         <>
           <small className="text-muted me-1">{row.currency.symbol}</small>
           <b
-            style={{ fontSize: "1.1em" }}
+            style={{ fontSize: "1.2em" }}
             className={`text-${
               row.balance > 0
                 ? "success"
@@ -118,12 +127,12 @@ export const SuppliersAccounts = () => {
         </>
       ),
       right: true,
-      maxWidth: "175px",
+      maxWidth: "250px",
       style: { fontWeight: "bold", backgroundColor: "#f0f0f0" },
     },
     {
       name: "ÚLTIMO MOVIMIENTO",
-      maxWidth: "175px",
+      maxWidth: "250px",
       center: true,
       selector: (row: DataRow) => DateFormatter.toDMYH(row.updatedAt),
     },

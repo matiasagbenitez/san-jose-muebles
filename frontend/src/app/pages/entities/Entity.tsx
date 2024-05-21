@@ -20,7 +20,6 @@ export const Entity = () => {
     try {
       setLoading(true);
       const { data } = await apiSJM.get(`/entities/${id}`);
-      console.log(data);
       setEntity(data.item);
       setLoading(false);
     } catch (error) {

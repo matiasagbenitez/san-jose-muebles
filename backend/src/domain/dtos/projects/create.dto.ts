@@ -18,6 +18,7 @@ export class CreateProjectDTO {
         const { id_client, title, status, priority, id_locality, address, requested_deadline, estimated_deadline } = object;
 
         if (!id_client) return ['El ID del cliente es requerido'];
+        if (!title) return ['El título es requerido'];
         if (!priority) return ['La prioridad es requerida'];
         if (!id_locality) return ['La localidad es requerida'];
 

@@ -240,7 +240,7 @@ export class SupplierAccountTransactionService {
                 amount: data.amount * -1,
                 post_balance: post_balance,
                 id_user: id_user,
-            });
+            }, { transaction });
 
             // Actualizar el saldo de la cuenta del proveedor
             await supplierAccount.update({ balance: post_balance }, { transaction });

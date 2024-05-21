@@ -90,7 +90,10 @@ export class EntityService {
         try {
             await row.destroy();
             return { message: '¡Entidad eliminada correctamente!' };
-        } catch (error) {
+        } catch (error: any) {
+            if (error.name === 'SequelizeForeignKeyConstraintError') {
+                throw CustomError.badRequest('¡La entidad que intenta eliminar tiene dependencias!');
+            }
             throw CustomError.internalServerError(`${error}`);
         }
     }

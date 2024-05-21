@@ -1,7 +1,7 @@
 export class CreateEntityTransactionDTO {
     private constructor(
         public id_entity_account: number,
-        public type: 'NEW_PAYMENT' | 'NEW_DEBT' | 'POS_ADJ' | 'NEG_ADJ',
+        public type: 'PAYMENT' | 'DEBT' | 'POS_ADJ' | 'NEG_ADJ',
         public description: string,
         public amount: number,
         public id_user: number

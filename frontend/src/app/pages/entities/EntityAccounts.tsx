@@ -119,6 +119,7 @@ export const EntityAccounts = () => {
             >
               <thead>
                 <tr className="text-uppercase text-center">
+                  <th className="px-4">ID</th>
                   <th className="col-6">Moneda</th>
                   <th className="col-2">Saldo actual</th>
                   <th className="col-2">Último movimiento</th>
@@ -128,11 +129,12 @@ export const EntityAccounts = () => {
               <tbody>
                 {accounts.map((account) => (
                   <tr key={account.id}>
+                    <td className="text-center">{account.id}</td>
                     <td className="px-2">
                       CUENTA CORRIENTE EN <b>{account.currency.name}</b>
                     </td>
                     <td
-                      className={`px-2 text-end fw-bold fs-6 text-${
+                      className={`px-2 text-end fw-bold text-${
                         account.balance < 0
                           ? "danger"
                           : account.balance == 0
@@ -140,7 +142,7 @@ export const EntityAccounts = () => {
                           : "success"
                       } `}
                     >
-                      {account.currency.symbol}{" "}
+                      <span className="text-muted fw-normal">{account.currency.symbol}</span>{" "}
                       {NumberFormatter.formatSignedCurrency(
                         account.currency.is_monetary,
                         account.balance
@@ -194,7 +196,7 @@ export const EntityAccounts = () => {
 
                 <div className="d-flex justify-content-end mt-3 gap-2">
                   <Button size="sm" variant="secondary">
-                    Cerrar
+                    Cancelar
                   </Button>
                   <Button
                     type="submit"
