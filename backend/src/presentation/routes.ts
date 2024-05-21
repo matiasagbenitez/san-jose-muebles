@@ -35,6 +35,7 @@ import { RelatedPersonRoutes } from './related_persons/routes';
 
 import { EstimateRoutes } from './estimates/routes';
 import { EntityRoutes } from './entities/routes';
+import { EntityAccountRoutes } from './entity_accounts/routes';
 
 export class AppRoutes {
 
@@ -91,6 +92,7 @@ export class AppRoutes {
 
 
         router.use('/api/entities', EntityRoutes.routes);
+        router.use('/api/entity_accounts', EntityAccountRoutes.routes);
 
         return router;
     }
