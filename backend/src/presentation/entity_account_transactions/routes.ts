@@ -14,7 +14,7 @@ export class EntityAccountTransactionRoutes {
 
         router.post('/new-movement', [AuthMiddleware.validateJWT], controller.addNewMovement);
 
-        router.get('/:id', [AuthMiddleware.validateJWT], controller.getTransaction);
+        router.get('/:id_entity/:id_entity_account/:id_transaction', [AuthMiddleware.validateJWT], controller.getTransaction);
         
         return router;
     }

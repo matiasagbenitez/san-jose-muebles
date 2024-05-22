@@ -233,7 +233,7 @@ export const EntityAccountTransactions = () => {
 
   const handleRedirect = (row: DataRow) => {
     navigate(
-      `/entidades/${id_entity}/cuentas/${id_entity_account}/movimientos/${row.id}`
+      `/entidades/${id_entity}/cuentas/${id_entity_account}/movimiento/${row.id}`
     );
   };
 

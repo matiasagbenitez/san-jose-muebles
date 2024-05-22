@@ -33,10 +33,12 @@ export class EntityAccountTransactionController {
     }
 
     getTransaction = async (req: Request, res: Response) => {
-        const id = req.params.id;
-        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+        const { id_entity, id_entity_account, id_transaction } = req.params;
+        if (!id_entity || !id_entity_account || !id_transaction) return res.status(400).json({ message: 'Missing parameters' });
 
-        this.service.getTransactionById(parseInt(id))
+        const ids: [number, number, number] = [parseInt(id_entity), parseInt(id_entity_account), parseInt(id_transaction)];
+
+        this.service.getTransactionById(ids)
             .then((data) => {
                 res.json(data);
             })

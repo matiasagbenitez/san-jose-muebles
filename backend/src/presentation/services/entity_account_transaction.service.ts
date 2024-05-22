@@ -32,8 +32,14 @@ export class EntityAccountTransactionService {
 
     // * GET TRANSACTION BY ID *
     // Obtiene una transacción por su ID
-    public async getTransactionById(id: number) {
+    public async getTransactionById(ids: [number, number, number]) {
+        
+        const [id_entity, id_entity_account, id] = ids;
+
         try {
+            const account = await EntityAccount.findOne({ where: { id: id_entity_account, id_entity: id_entity } });
+            if (!account) throw CustomError.notFound('¡La cuenta de la entidad no existe!');
+
             const transaction = await EntityAccountTransaction.findByPk(id, {
                 include: [
                     {
@@ -50,6 +56,8 @@ export class EntityAccountTransactionService {
                 ],
             });
             if (!transaction) throw CustomError.notFound('¡La transacción no existe!');
+            if (transaction.id_entity_account !== id_entity_account) throw CustomError.notFound('¡La transacción no pertenece a la cuenta de la entidad!');
+            
             const entity = EntityTransactionDetailEntity.fromObject(transaction);
 
             return { item: entity }

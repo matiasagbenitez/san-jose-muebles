@@ -68,3 +68,30 @@ export interface AccountInterface {
     };
     balance: number;
 }
+
+export enum Movements {
+    PAYMENT = "PAGO / CANCELACIÓN",
+    DEBT = "DEUDA / OBLIGACIÓN",
+    POS_ADJ = "AJUSTE A FAVOR",
+    NEG_ADJ = "AJUSTE EN CONTRA",
+}
+
+interface CurrencyInterface {
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
+}
+
+export interface EntityTransactionDetailInterface {
+    id: string;
+    entity: EntityBasicInfoInterface;
+    currency: CurrencyInterface;
+    id_entity_account: string;
+    type: 'PAYMENT' | 'DEBT' | 'POS_ADJ' | 'NEG_ADJ';
+    description: string;
+    prev_balance: number;
+    amount: number;
+    post_balance: number;
+    user: string;
+    createdAt: Date;
+}
