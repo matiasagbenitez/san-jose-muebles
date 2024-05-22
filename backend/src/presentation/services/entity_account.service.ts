@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Entity, EntityAccount } from "../../database/mysql/models";
-import { CustomError, PaginationDto, CreateEntityAccountDTO, EntityAccountListEntity, EntityBasicEntity, EntityAccountEntity } from "../../domain";
+import { CustomError, PaginationDto, CreateEntityAccountDTO, EntityAccountListEntity, EntityBasicEntity, EntityAccountEntity, EntityAccountGeneralListEntity } from "../../domain";
 
 export class EntityAccountService {
 
@@ -15,13 +15,14 @@ export class EntityAccountService {
             if (filters.balance === 'zero') where = { ...where, balance: 0 };
         }
         if (filters.id_currency) where = { ...where, id_currency: filters.id_currency };
+        if (filters.id_entity) where = { ...where, id_entity: filters.id_entity };
 
         const [rows, total] = await Promise.all([
             EntityAccount.findAll({
                 where,
                 include: [
                     { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
-                    { association: 'entity', attributes: ['name'] }
+                    { association: 'entity', attributes: ['id', 'name'] }
                 ],
                 order: [['updatedAt', 'DESC']],
                 limit,
@@ -30,7 +31,7 @@ export class EntityAccountService {
             EntityAccount.count({ where })
         ]);
 
-        const entities = rows.map(row => EntityAccountListEntity.fromObject(row));
+        const entities = rows.map(row => EntityAccountGeneralListEntity.fromObject(row));
         return { items: entities, total_items: total };
     }
 

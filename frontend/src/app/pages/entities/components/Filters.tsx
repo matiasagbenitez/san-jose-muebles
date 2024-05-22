@@ -85,7 +85,7 @@ export const Filters = ({
               Reporte
             </Button> */}
             <Button variant="success" onClick={handleCreate}>
-              Nuevo
+              Nueva
             </Button>
           </ButtonGroup>
         </Col>

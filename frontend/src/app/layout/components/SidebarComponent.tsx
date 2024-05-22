@@ -23,24 +23,6 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         </MenuItem>
 
         <MenuItem
-          component={<Link to="/proyectos" />}
-          title="Proyectos"
-          style={{ height: "45px" }}
-        >
-          <i className="bi bi-houses me-3 fs-6"></i>
-          Proyectos
-        </MenuItem>
-
-        <MenuItem
-          component={<Link to="/productos" />}
-          title="Productos"
-          style={{ height: "45px" }}
-        >
-          <i className="bi bi-box-seam me-3 fs-6"></i>
-          Productos
-        </MenuItem>
-
-        <MenuItem
           component={<Link to="/clientes" />}
           title="Clientes"
           style={{ height: "45px" }}
@@ -50,12 +32,12 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         </MenuItem>
 
         <MenuItem
-          component={<Link to="/entidades" />}
-          title="Entidades"
+          component={<Link to="/proyectos" />}
+          title="Proyectos"
           style={{ height: "45px" }}
         >
-          <i className="bi bi-person-workspace me-3 fs-6"></i>
-          Entidades
+          <i className="bi bi-houses me-3 fs-6"></i>
+          Proyectos
         </MenuItem>
 
         <MenuItem
@@ -74,6 +56,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         >
           <i className="bi bi-calendar-date me-3 fs-6"></i>
           Calendario
+        </MenuItem>
+
+        <MenuItem
+          component={<Link to="/productos" />}
+          title="Productos"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-box-seam me-3 fs-6"></i>
+          Productos
         </MenuItem>
 
         <SubMenu
@@ -121,6 +112,30 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
             style={{ height: "45px", marginLeft: "10px" }}
           >
             <small>Registrar nueva compra</small>
+          </MenuItem>
+        </SubMenu>
+
+        <SubMenu
+          prefix={
+            <>
+              <i className="bi bi-inboxes me-3 fs-6"></i>Entidades
+            </>
+          }
+          style={{ height: "45px" }}
+        >
+          <MenuItem
+            component={<Link to="/entidades" />}
+            title="Listado de entidades"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Listado de entidades</small>
+          </MenuItem>
+          <MenuItem
+            component={<Link to="/entidades/cuentas" />}
+            title="Listado de cuentas corrientes"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Cuentas corrientes</small>
           </MenuItem>
         </SubMenu>
 

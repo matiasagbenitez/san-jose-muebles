@@ -381,7 +381,7 @@ export const EntityAccountTransactions = () => {
 
                   <Modal.Footer>
                     <ButtonGroup size="sm">
-                      <Button variant="secondary" disabled={isFormSubmitting}>
+                      <Button variant="secondary" disabled={isFormSubmitting} onClick={handleClose}>
                         Cancelar
                       </Button>
                       <Button
@@ -390,7 +390,7 @@ export const EntityAccountTransactions = () => {
                         disabled={isFormSubmitting}
                       >
                         <i className="bi bi-floppy mx-1"></i>{" "}
-                        {isFormSubmitting ? "Guardando..." : "Guardar"}
+                        {isFormSubmitting ? "Guardando..." : "Registrar movimiento"}
                       </Button>
                     </ButtonGroup>
                   </Modal.Footer>

@@ -8,6 +8,7 @@ import {
   EntityAccounts,
   EntityAccountTransaction,
   EntityAccountTransactions,
+  EntitiesAccounts,
 } from "../pages/entities";
 
 const SuppliersRoutes = () => {
@@ -18,6 +19,7 @@ const SuppliersRoutes = () => {
       {roles.includes("ADMIN") && (
         <>
           <Route path="/" element={<Entities />} />
+          <Route path="/cuentas" element={<EntitiesAccounts />} />
           <Route path="/:id" element={<Entity />} />
           <Route path="/:id/cuentas" element={<EntityAccounts />} />
           <Route path="/:id/cuentas/:id_entity_account" element={<EntityAccountTransactions />} />

@@ -24,6 +24,7 @@ export class EntityAccountController {
         let filters = {};
         if (req.query.balance) filters = { ...filters, balance: req.query.balance };
         if (req.query.id_currency) filters = { ...filters, id_currency: req.query.id_currency };
+        if (req.query.id_entity) filters = { ...filters, id_entity: req.query.id_entity };
 
         this.service.getEntitiesAccountsPaginated(paginationDto!, filters)
             .then((data) => {

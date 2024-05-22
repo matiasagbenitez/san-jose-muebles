@@ -48,6 +48,18 @@ export class EntityService {
         return { items: entities, total_items: total };
     }
 
+    public async getEntitiesSelect() {
+        try {
+            const entities = await Entity.findAll({
+                attributes: ['id', 'name'],
+                order: [['name', 'ASC']]
+            });
+            return { items: entities };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
     public async getEntity(id: number) {
         const row = await Entity.findByPk(id, {
             include: [{

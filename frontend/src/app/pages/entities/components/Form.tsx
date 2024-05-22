@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Button, Col, Modal, Row } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Modal, Row } from "react-bootstrap";
 
 import apiSJM from "../../../../api/apiSJM";
 import { CustomInput } from "../../../components";
@@ -67,24 +67,27 @@ export const EntitiesForm = ({
 
   return (
     <Modal show={show} onHide={onHide} size="lg">
-      <div className="p-4">
-        <h1 className="fs-5">
-          {editMode ? "Modificar entidad" : "Crear entidad"}
-        </h1>
-        <hr className="my-2" />
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {editMode
+            ? "Actualizar información de entidad"
+            : "Registrar nueva entidad"}
+        </Modal.Title>
+      </Modal.Header>
 
-        <Formik
-          initialValues={initialForm}
-          onSubmit={(values) => {
-            onSubmit(values);
-          }}
-          validationSchema={Yup.object({
-            name: Yup.string().required("El nombre es requerido"),
-            id_locality: Yup.string().required("La localidad es requerida"),
-          })}
-        >
-          {({ errors, touched }) => (
-            <Form id="form">
+      <Formik
+        initialValues={initialForm}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+        validationSchema={Yup.object({
+          name: Yup.string().required("El nombre es requerido"),
+          id_locality: Yup.string().required("La localidad es requerida"),
+        })}
+      >
+        {({ errors, touched }) => (
+          <Form id="form">
+            <Modal.Body>
               <Row>
                 <Col lg={6}>
                   <CustomInput.Text
@@ -153,31 +156,39 @@ export const EntitiesForm = ({
                       ))}
                   </CustomInput.Select>
                 </Col>
+                <CustomInput.TextArea
+                  label="Anotaciones"
+                  name="annotations"
+                  placeholder="Ingrese anotaciones adicionales"
+                  rows={4}
+                  isInvalid={!!errors.annotations && touched.annotations}
+                  disabled={isFormSubmitting}
+                />
               </Row>
+            </Modal.Body>
 
-              <CustomInput.TextArea
-                label="Anotaciones"
-                name="annotations"
-                placeholder="Ingrese anotaciones adicionales"
-                rows={4}
-                isInvalid={!!errors.annotations && touched.annotations}
-                disabled={isFormSubmitting}
-              />
-
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-3 float-end"
-                size="sm"
-                disabled={isFormSubmitting}
-              >
-                <i className="bi bi-floppy me-2"></i>
-                {editMode ? "Guardar cambios" : "Crear entidad"}
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </div>
+            <Modal.Footer>
+              <ButtonGroup size="sm">
+                <Button
+                  variant="secondary"
+                  disabled={isFormSubmitting}
+                  onClick={onHide}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isFormSubmitting}
+                >
+                  <i className="bi bi-floppy mx-1"></i>{" "}
+                  {editMode ? "Actualizar información" : "Registrar entidad"}
+                </Button>
+              </ButtonGroup>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };

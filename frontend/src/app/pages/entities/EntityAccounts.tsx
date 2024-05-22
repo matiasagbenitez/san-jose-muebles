@@ -191,7 +191,11 @@ export const EntityAccounts = () => {
 
                   <Modal.Footer>
                     <ButtonGroup size="sm">
-                      <Button variant="secondary" disabled={isFormSubmitting}>
+                      <Button
+                        variant="secondary"
+                        disabled={isFormSubmitting}
+                        onClick={handleClose}
+                      >
                         Cancelar
                       </Button>
                       <Button
