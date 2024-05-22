@@ -15,7 +15,7 @@ export class CreateEntityTransactionDTO {
         if (!type) return ['El tipo de movimiento es requerido'];
         if (!description) return ['La descripción del movimiento es requerida'];
         if (!amount) return ['El monto del movimiento es requerido'];
-        if (amount <= 0) return ['El monto del movimiento debe ser un número mayor a 0'];
+        if (amount <= 0) return ['El monto del movimiento debe ser mayor a 0'];
         if (!id_user) return ['El ID del usuario es requerido'];
 
         return [

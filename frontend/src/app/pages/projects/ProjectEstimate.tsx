@@ -235,7 +235,7 @@ export const ProjectEstimate = () => {
                       Válido desde
                     </th>
                     <td className="col-4 px-2">
-                      {DateFormatter.toDMY(estimate.gen_date)}
+                      {DateFormatter.toDMYYYY(estimate.gen_date)}
                     </td>
                     <th
                       className="col-2 px-2"
@@ -245,7 +245,7 @@ export const ProjectEstimate = () => {
                     </th>
                     <td className="col-4 px-2">
                       {estimate.val_date &&
-                        DateFormatter.toDMY(estimate.val_date)}
+                        DateFormatter.toDMYYYY(estimate.val_date)}
                     </td>
                   </tr>
                   <tr>

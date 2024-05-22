@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Button, Row, Col, Modal, Form, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import { Button, Row, Col, Modal, Form, ListGroup } from "react-bootstrap";
+
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
+import { NumberFormatter } from "../../helpers";
 import { SweetAlert2 } from "../../utils";
+
 import { EntityAccountInterface, EntityBasicInfoInterface } from "./interfaces";
-import { DateFormatter, NumberFormatter } from "../../helpers";
 
 const initialForm = {
   id_currency: "",
@@ -110,64 +112,47 @@ export const EntityAccounts = () => {
               La entidad no tiene cuentas corrientes registradas
             </p>
           ) : (
-            <Table
-              striped
-              bordered
-              responsive
-              size="sm"
-              className="small align-middle"
-            >
-              <thead>
-                <tr className="text-uppercase text-center">
-                  <th className="px-4">ID</th>
-                  <th className="col-6">Moneda</th>
-                  <th className="col-2">Saldo actual</th>
-                  <th className="col-2">Último movimiento</th>
-                  <th className="col-2">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {accounts.map((account) => (
-                  <tr key={account.id}>
-                    <td className="text-center">{account.id}</td>
-                    <td className="px-2">
-                      CUENTA CORRIENTE EN <b>{account.currency.name}</b>
-                    </td>
-                    <td
-                      className={`px-2 text-end fw-bold text-${
-                        account.balance < 0
-                          ? "danger"
-                          : account.balance == 0
-                          ? "muted"
-                          : "success"
-                      } `}
+            <>
+              {accounts.map((account, index) => (
+                <ListGroup key={index} horizontal="lg" className="mb-3 small">
+                  <ListGroup.Item className="col-12 col-md-9 bg-light text-center text-md-start">
+                    CUENTA CORRIENTE EN <b>{account.currency.name}</b>
+                  </ListGroup.Item>
+                  <ListGroup.Item className="col-12 col-md-2">
+                    <div className="d-flex align-items-center justify-content-between">
+                      <span className="fw-bold text-muted">SALDO:</span>
+                      <span
+                        className={`mb-0 text-end fw-bold text-${
+                          account.balance < 0
+                            ? "danger"
+                            : account.balance == 0
+                            ? "muted"
+                            : "success"
+                        } `}
+                      >
+                        <span className="text-muted fw-normal">
+                          {account.currency.symbol}
+                        </span>{" "}
+                        {NumberFormatter.formatSignedCurrency(
+                          account.currency.is_monetary,
+                          account.balance
+                        )}
+                      </span>
+                    </div>
+                  </ListGroup.Item>
+                  <ListGroup.Item className="col-12 col-md-1 p-0">
+                    <Button
+                      size="sm"
+                      variant="light"
+                      onClick={() => handleRedirectAccount(account.id)}
+                      className="w-100 h-100 d-flex align-items-center justify-content-center"
                     >
-                      <span className="text-muted fw-normal">{account.currency.symbol}</span>{" "}
-                      {NumberFormatter.formatSignedCurrency(
-                        account.currency.is_monetary,
-                        account.balance
-                      )}
-                    </td>
-                    <td className="px-2 text-center">
-                      {account.updatedAt &&
-                        DateFormatter.toDMYH(account.updatedAt)}
-                    </td>
-                    <td>
-                      <div className="d-flex align-items-center justify-content-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => handleRedirectAccount(account.id)}
-                          className="px-2 py-0"
-                        >
-                          <small>Ver cuenta</small>
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                      <b>Ir a cuenta</b>
+                    </Button>
+                  </ListGroup.Item>
+                </ListGroup>
+              ))}
+            </>
           )}
 
           <Modal show={showModal} onHide={handleClose}>

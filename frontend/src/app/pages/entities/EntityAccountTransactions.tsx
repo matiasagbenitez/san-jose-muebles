@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Modal,
@@ -6,37 +7,25 @@ import {
   InputGroup,
   Row,
   Col,
-  Table,
 } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import apiSJM from "../../../api/apiSJM";
+
 import { LoadingSpinner, PageHeader } from "../../components";
+import { DateFormatter, NumberFormatter } from "../../helpers";
+import { SweetAlert2 } from "../../utils";
+import apiSJM from "../../../api/apiSJM";
 
 import { NumericFormat } from "react-number-format";
-import { SweetAlert2 } from "../../utils";
-
 import { TableColumn } from "react-data-table-component";
 import {
   Datatable,
   initialState,
   paginationReducer,
   fetchData,
+  ColumnOmitter,
+  ColumnsHiddenInterface,
 } from "../../shared";
 
-import { DateFormatter, NumberFormatter } from "../../helpers";
-import { MovementType, types } from "./interfaces";
-
-interface AccountInterface {
-  id: number;
-  entity: string;
-  locality: string;
-  currency: {
-    name: string;
-    symbol: string;
-    is_monetary: boolean;
-  };
-  balance: number;
-}
+import { MovementType, types, AccountInterface } from "./interfaces";
 
 const initialForm = {
   type: "",
@@ -49,11 +38,21 @@ interface DataRow {
   createdAt: Date;
   user: string;
   description: string;
-  type: string;
+  type: MovementType;
   prev_balance: number;
   amount: number;
   post_balance: number;
 }
+
+const columnsHidden = {
+  id: { name: "ID", omit: false },
+  createdAt: { name: "FECHA", omit: false },
+  prev_balance: { name: "SALDO ANTERIOR", omit: true },
+  amount: { name: "MONTO MOVIMIENTO", omit: false },
+  post_balance: { name: "SALDO POSTERIOR", omit: false },
+  type: { name: "TIPO MOVIMIENTO", omit: false },
+  description: { name: "DESCRIPCIÓN", omit: false },
+};
 
 export const EntityAccountTransactions = () => {
   const { id: id_entity, id_entity_account } = useParams();
@@ -67,10 +66,14 @@ export const EntityAccountTransactions = () => {
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<AccountInterface | null>(null);
 
+  const [omittedColumns, setOmittedColumns] =
+    useState<ColumnsHiddenInterface>(columnsHidden);
+
   const [formData, setFormData] = useState(initialForm);
 
   const fetch = async () => {
     try {
+      setLoading(true);
       const [_, res2] = await Promise.all([
         fetchData(endpoint, 1, state, dispatch),
         apiSJM.get(
@@ -78,6 +81,7 @@ export const EntityAccountTransactions = () => {
         ),
       ]);
       setAccount(res2.data.account);
+      setLoading(false);
     } catch (error) {
       console.error(error);
       navigate(`/entidades/${id_entity}/cuentas`);
@@ -104,97 +108,96 @@ export const EntityAccountTransactions = () => {
     }
   }, [state.error]);
 
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "FECHA REGISTRO",
-      selector: (row: any) => DateFormatter.toDMYH(row.createdAt),
-      maxWidth: "140px",
-      center: true,
-    },
-    {
-      name: "RESPONSABLE",
-      selector: (row: DataRow) => row.user,
-      maxWidth: "140px",
-      center: true,
-      omit: true,
-    },
-    {
-      name: "DESCRIPCIÓN",
-      selector: (row: DataRow) => row.description,
-      wrap: true,
-    },
-    {
-      name: "TIPO MOVIMIENTO",
-      selector: (row: DataRow) => row.type,
-      cell: (row: DataRow) => {
-        if (!(row.type in MovementType)) {
-          throw new Error(`Invalid type: ${row.type}`);
-        }
-
-        return (
-          <div className="d-flex align-items-center">
-            <i
-              className={types[row.type as MovementType].icon}
-              title={types[row.type as MovementType].title}
-            ></i>
-            <span className="ms-2">
-              {types[row.type as MovementType].label}
-            </span>
-          </div>
-        );
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+        omit: omittedColumns.id.omit,
       },
-      maxWidth: "200px",
-    },
-    {
-      name: "SALDO ANTERIOR",
-      selector: (row: DataRow) => row.prev_balance,
-      format: (row: DataRow) => (
-        <>
-          {NumberFormatter.formatSignedCurrency(
+      {
+        name: "FECHA",
+        selector: (row: any) => DateFormatter.toDMYYYY(row.createdAt),
+        maxWidth: "110px",
+        center: true,
+        omit: omittedColumns.createdAt.omit,
+      },
+      {
+        name: "SALDO ANTERIOR",
+        maxWidth: "160px",
+        selector: (row: DataRow) =>
+          NumberFormatter.formatSignedCurrency(
             account?.currency.is_monetary,
             row.prev_balance
-          )}
-        </>
-      ),
-      maxWidth: "145px",
-      right: true,
-    },
-    {
-      name: "MONTO MOVIMIENTO",
-      maxWidth: "145px",
-      selector: (row: DataRow) => row.amount,
-      format: (row: DataRow) => (
-        <>
-          {NumberFormatter.formatSignedCurrency(
+          ),
+        right: true,
+        conditionalCellStyles: [
+          {
+            when: (row: DataRow) => row.prev_balance < 0,
+            style: { color: "red" },
+          },
+        ],
+        omit: omittedColumns.prev_balance.omit,
+      },
+      {
+        name: "MONTO MOVIMIENTO",
+        maxWidth: "160px",
+        selector: (row: DataRow) =>
+          NumberFormatter.formatSignedCurrency(
             account?.currency.is_monetary,
             row.amount
-          )}
-        </>
-      ),
-      right: true,
-      style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1.1em" },
-    },
-    {
-      name: "SALDO POSTERIOR",
-      maxWidth: "145px",
-      selector: (row: DataRow) => row.post_balance,
-      format: (row: DataRow) => (
-        <>
-          {NumberFormatter.formatSignedCurrency(
+          ),
+        right: true,
+        conditionalCellStyles: [
+          { when: (row: DataRow) => row.amount < 0, style: { color: "red" } },
+        ],
+        style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1em" },
+        omit: omittedColumns.amount.omit,
+      },
+      {
+        name: "SALDO POSTERIOR",
+        maxWidth: "160px",
+        selector: (row: DataRow) =>
+          NumberFormatter.formatSignedCurrency(
             account?.currency.is_monetary,
             row.post_balance
-          )}
-        </>
-      ),
-      right: true,
-    },
-  ];
+          ),
+        right: true,
+        conditionalCellStyles: [
+          {
+            when: (row: DataRow) => row.post_balance < 0,
+            style: { color: "red" },
+          },
+        ],
+        omit: omittedColumns.post_balance.omit,
+      },
+      {
+        name: "TIPO MOVIMIENTO",
+        selector: (row: DataRow) => row.type,
+        format: (row: DataRow) => (
+          <>
+            <i
+              className={types[row.type].icon}
+              title={types[row.type].title}
+            ></i>{" "}
+            {types[row.type].label}
+          </>
+        ),
+        maxWidth: "200px",
+        wrap: true,
+        omit: omittedColumns.type.omit,
+      },
+      {
+        name: "DESCRIPCIÓN",
+        selector: (row: DataRow) => row.description,
+        wrap: true,
+        omit: omittedColumns.description.omit,
+      },
+    ],
+    [account, types, omittedColumns]
+  );
 
   const handleCreate = () => {
     setIsModalOpen(true);
@@ -207,18 +210,12 @@ export const EntityAccountTransactions = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
-      if (formData.amount <= 0) {
-        SweetAlert2.errorAlert("¡El monto del movimiento debe ser mayor a 0!");
-        return;
-      }
       setIsFormSubmitting(true);
       const confirmation = await SweetAlert2.confirm(
         "¿Está seguro de registrar el movimiento?"
       );
       if (!confirmation.isConfirmed) return;
-      setLoading(true);
       const { data } = await apiSJM.post(
         "/entity_account_transactions/new-movement",
         { ...formData, id_entity_account: id_entity_account }
@@ -228,19 +225,16 @@ export const EntityAccountTransactions = () => {
       fetch();
     } catch (error: any) {
       console.error(error);
-      // SweetAlert2.errorAlert(error.response.data.message);
-      SweetAlert2.errorAlert(
-        "¡Ocurrió un error al registrar el movimiento! Intente nuevamente."
-      );
+      SweetAlert2.errorAlert(error.response.data.message);
     } finally {
       setIsFormSubmitting(false);
-      setLoading(false);
     }
   };
 
   const handleRedirect = (row: DataRow) => {
-    console.log(row);
-    // navigate(`/cuentas-proveedores/${id_entity_account}/movimiento/${row.id}`);
+    navigate(
+      `/entidades/${id_entity}/cuentas/${id_entity_account}/movimientos/${row.id}`
+    );
   };
 
   return (
@@ -270,9 +264,8 @@ export const EntityAccountTransactions = () => {
               </p>
             </Col>
 
-            <Col xs={12} xl={5}>
+            <Col xs={12} xl={3}>
               <b>SALDO ACTUAL:</b>
-
               <span
                 className={`px-2 text-end fw-bold text-${
                   account.balance < 0
@@ -291,10 +284,16 @@ export const EntityAccountTransactions = () => {
                 )}
               </span>
             </Col>
+            <Col xs={12} xl={2}>
+              <ColumnOmitter
+                omittedColumns={omittedColumns}
+                setOmittedColumns={setOmittedColumns}
+              />
+            </Col>
           </Row>
 
           <Datatable
-            title={`Listado de últimos movimientos`}
+            title="Listado de últimos movimientos"
             columns={columns as TableColumn<DataRow>[]}
             data={state.data}
             loading={state.loading}
@@ -358,6 +357,7 @@ export const EntityAccountTransactions = () => {
                     decimalSeparator=","
                     decimalScale={2}
                     fixedDecimalScale
+                    min={1}
                     className="text-end form-control"
                     value={formData.amount}
                     required

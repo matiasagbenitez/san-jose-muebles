@@ -16,7 +16,7 @@ export const Info = ({ entity }: Props) => {
       <Table size="sm" className="small" striped bordered responsive>
         <tbody className="text-uppercase">
           <tr>
-            <th scope="row" className="px-2 col-2">
+            <th scope="row" className="px-2 col-3">
               Entidad
             </th>
             <td className="px-2">{entity.name}</td>

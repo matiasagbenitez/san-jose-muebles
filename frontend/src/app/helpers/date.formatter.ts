@@ -5,8 +5,12 @@ export class DateFormatter {
     constructor() { }
 
     /** 09/12/2018 */
-    static toDMY(date: Date): string {
+    static toDMYYYY(date: Date): string {
         return dayjs(date).format('DD/MM/YYYY');
+    }
+
+    static toDMYY(date: Date): string {
+        return dayjs(date).format('DD/MM/YY');
     }
 
     /** 09/12/2018 12:00 */
