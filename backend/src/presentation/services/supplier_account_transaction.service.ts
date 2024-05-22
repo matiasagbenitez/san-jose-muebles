@@ -96,7 +96,7 @@ export class SupplierAccountTransactionService {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
                 type: 'NEW_PURCHASE',
-                description: 'COMPRA DE PRODUCTOS N° ' + data.id_purchase,
+                description: 'COMPRA DE PRODUCTOS ID: ' + data.id_purchase,
                 prev_balance: data.prev_balance,
                 amount: data.amount * -1,
                 post_balance: data.post_balance,
@@ -118,7 +118,7 @@ export class SupplierAccountTransactionService {
             const item = await SupplierAccountTransaction.create({
                 id_supplier_account: data.id_supplier_account,
                 type: 'DEL_PURCHASE',
-                description: 'ANULACIÓN DE COMPRA N° ' + data.id_purchase,
+                description: 'ANULACIÓN DE COMPRA ID: ' + data.id_purchase,
                 prev_balance: data.prev_balance,
                 amount: data.amount,
                 post_balance: data.post_balance,

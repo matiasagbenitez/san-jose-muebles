@@ -62,10 +62,10 @@ export class SupplierAccountController {
     }
 
     getDataById = async (req: Request, res: Response) => {
-        const id_supplier_account = parseInt(req.params.id_supplier_account);
-        if (!id_supplier_account) return res.status(400).json({ message: 'Missing id_supplier_account' });
+        const { id_supplier, id_supplier_account } = req.params;
+        if (!id_supplier_account || !id_supplier) return res.status(400).json({ message: '¡Falta el ID del proveedor o de la cuenta!' });
 
-        this.service.getAccountDataById(id_supplier_account)
+        this.service.getAccountDataById(parseInt(id_supplier), parseInt(id_supplier_account))
             .then((data) => {
                 res.json(data);
             })

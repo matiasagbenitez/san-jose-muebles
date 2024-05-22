@@ -8,6 +8,8 @@ import {
   SupplierBankAccounts,
   SupplierAccounts,
   SupplierPurchases,
+  SupplierAccountTransactions,
+  SuppliersAccounts,
 } from "../pages/suppliers";
 
 const SuppliersRoutes = () => {
@@ -18,9 +20,13 @@ const SuppliersRoutes = () => {
       {roles.includes("ADMIN") && (
         <>
           <Route path="/" element={<Suppliers />} />
+          <Route path="/cuentas" element={<SuppliersAccounts />} />
           <Route path="/:id" element={<Supplier />} />
+          <Route path="/:id/cuentas" element={<SupplierAccounts />} />  
+          <Route path="/:id/cuentas/:id_supplier_account" element={<SupplierAccountTransactions />} />
+
+
           <Route path="/:id/cuentas-bancarias" element={<SupplierBankAccounts />} />
-          <Route path="/:id/cuentas" element={<SupplierAccounts />} />
           <Route path="/:id/compras" element={<SupplierPurchases />} />
         </>
       )}

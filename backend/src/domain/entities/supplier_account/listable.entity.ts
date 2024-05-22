@@ -3,7 +3,10 @@ import { CustomError } from '../../errors/custom.error';
 export class SupplierAccountListEntity {
     constructor(
         public id: string,
-        public supplier: string,
+        public supplier: {
+            id: string,
+            name: string,
+        },
         public currency: {
             name: string,
             symbol: string,
@@ -23,7 +26,10 @@ export class SupplierAccountListEntity {
 
         return new SupplierAccountListEntity(
             id,
-            supplier.name,
+            {
+                id: supplier.id,
+                name: supplier.name,
+            },
             {
                 name: currency.name,
                 symbol: currency.symbol,

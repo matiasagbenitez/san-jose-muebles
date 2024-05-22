@@ -83,7 +83,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
             <small>Listado de proveedores</small>
           </MenuItem>
           <MenuItem
-            component={<Link to="/cuentas-proveedores" />}
+            component={<Link to="/proveedores/cuentas" />}
             title="Listado de cuentas corrientes"
             style={{ height: "45px", marginLeft: "10px" }}
           >

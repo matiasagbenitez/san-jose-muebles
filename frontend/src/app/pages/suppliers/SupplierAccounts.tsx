@@ -89,8 +89,8 @@ export const SupplierAccounts = () => {
     }
   };
 
-  const handleRedirectAccount = (id: number) => {
-    navigate(`/cuentas-proveedores/${id}`);
+  const handleRedirectAccount = (id_supplier_account: number) => {
+    navigate(`/proveedores/${id}/cuentas/${id_supplier_account}`);
   };
 
   return (

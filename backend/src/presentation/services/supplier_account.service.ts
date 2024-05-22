@@ -23,7 +23,7 @@ export class SupplierAccountService {
                 where,
                 include: [
                     { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
-                    { association: 'supplier', attributes: ['name'] }
+                    { association: 'supplier', attributes: ['id', 'name'] }
                 ],
                 order: [['updatedAt', 'DESC']],
                 limit,
@@ -47,9 +47,10 @@ export class SupplierAccountService {
         }
     }
 
-    public async getAccountDataById(id: number) {
+    public async getAccountDataById(id_supplier: number, id_supplier_account: number) {
         try {
-            const account = await SupplierAccount.findByPk(id, {
+            const account = await SupplierAccount.findOne({
+                where: { id: id_supplier_account, id_supplier },
                 include: [
                     { association: 'currency', attributes: ['name', 'symbol', 'is_monetary'] },
                     {
