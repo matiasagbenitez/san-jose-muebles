@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Button, Modal } from "react-bootstrap";
+import { Row, Col, Button, Modal, ButtonGroup } from "react-bootstrap";
 
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner, SimplePageHeader } from "../../components";
+import {
+  CustomInput,
+  LoadingSpinner,
+  SimplePageHeader,
+} from "../../components";
 import { ItemData, Options, InventoryItemsForm } from "./components";
 
 import { EditableItem } from "./interfaces";
 import { SweetAlert2 } from "../../utils";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { MySelect, MyTextArea } from "../../components/forms";
 
 interface InitialStatusFormInterface {
   status: "RESERVADO" | "OPERATIVO" | "RETIRADO" | "DESCARTADO";
@@ -190,48 +193,39 @@ export const InventoryItem = () => {
             <Modal.Header closeButton>
               <Modal.Title>Actualizar estado del artículo</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              <Formik
-                initialValues={statusForm}
-                onSubmit={(values) => {
-                  handleStatusSubmit(values);
-                }}
-                validationSchema={Yup.object({
-                  status: Yup.string().required("El estado es requerido"),
-
-                  // status: Yup.string()
-                  //   .required("El estado es requerido")
-                  //   .test(
-                  //     "is-different",
-                  //     "El estado debe ser diferente al actual",
-                  //     (value) => value !== item.data.status
-                  //   ),
-
-                  comment: Yup.string()
-                    .required("El comentario es requerido")
-                    .min(5, "El comentario debe tener al menos 5 caracteres")
-                    .max(
-                      255,
-                      "El comentario debe tener como máximo 255 caracteres"
-                    ),
-                })}
-              >
-                {({ errors, touched }) => (
-                  <Form id="form">
-                    <MySelect
+            <Formik
+              initialValues={statusForm}
+              onSubmit={(values) => {
+                handleStatusSubmit(values);
+              }}
+              validationSchema={Yup.object({
+                status: Yup.string().required("El estado es requerido"),
+                comment: Yup.string()
+                  .required("El comentario es requerido")
+                  .min(5, "El comentario debe tener al menos 5 caracteres")
+                  .max(
+                    255,
+                    "El comentario debe tener como máximo 255 caracteres"
+                  ),
+              })}
+            >
+              {({ errors, touched }) => (
+                <Form id="form">
+                  <Modal.Body>
+                    <CustomInput.Select
                       label="Estado del artículo"
                       name="status"
-                      as="select"
                       isInvalid={!!errors.status && touched.status}
                       disabled={isFormSubmitting}
+                      isRequired
                     >
                       <option value="RESERVADO">RESERVADO</option>
                       <option value="OPERATIVO">OPERATIVO</option>
                       <option value="RETIRADO">RETIRADO</option>
                       <option value="DESCARTADO">DESCARTADO</option>
-                    </MySelect>
+                    </CustomInput.Select>
 
-                    <MyTextArea
+                    <CustomInput.TextArea
                       label="Comentarios"
                       name="comment"
                       placeholder="Ingrese un comentario"
@@ -239,21 +233,28 @@ export const InventoryItem = () => {
                       isInvalid={!!errors.comment && touched.comment}
                       disabled={isFormSubmitting}
                     />
-
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      className="mt-3 float-end"
-                      size="sm"
-                      disabled={isFormSubmitting}
-                    >
-                      <i className="bi bi-floppy me-1"></i>
-                      Guardar cambios
-                    </Button>
-                  </Form>
-                )}
-              </Formik>
-            </Modal.Body>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <ButtonGroup size="sm">
+                      <Button
+                        variant="secondary"
+                        disabled={isFormSubmitting}
+                        onClick={closeStatusModal}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={isFormSubmitting}
+                      >
+                        <i className="bi bi-floppy mx-1"></i> Guardar cambios
+                      </Button>
+                    </ButtonGroup>
+                  </Modal.Footer>
+                </Form>
+              )}
+            </Formik>
           </Modal>
         </>
       )}

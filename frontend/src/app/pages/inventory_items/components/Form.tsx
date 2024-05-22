@@ -1,8 +1,8 @@
-import { Button, Modal } from "react-bootstrap";
+import { Button, ButtonGroup, Modal } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import { MySelect, MyTextInput } from "../../../components/forms";
+import { CustomInput } from "../../../components";
 
 interface FormInterface {
   id_inventory_categ: string;
@@ -41,38 +41,39 @@ export const InventoryItemsForm = ({
 }: FormProps) => {
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="p-4">
-        <h1 className="fs-5">
-          {editMode ? "Modificar artículo" : "Crear artículo"}
-        </h1>
-        <hr className="my-2" />
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {editMode ? "Modificar artículo" : "Registrar artículo"}
+        </Modal.Title>
+      </Modal.Header>
 
-        <Formik
-          initialValues={initialForm}
-          onSubmit={(values) => {
-            onSubmit(values);
-          }}
-          validationSchema={Yup.object({
-            id_inventory_categ: Yup.string().required(
-              "La categoría del artículo es requerida"
-            ),
-            id_inventory_brand: Yup.string().required(
-              "La marca del artículo es requerida"
-            ),
-            name: Yup.string().required("El nombre del artículo es requerido"),
-          })}
-        >
-          {({ errors, touched }) => (
-            <Form id="form">
-              <MySelect
+      <Formik
+        initialValues={initialForm}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+        validationSchema={Yup.object({
+          id_inventory_categ: Yup.string().required(
+            "La categoría del artículo es requerida"
+          ),
+          id_inventory_brand: Yup.string().required(
+            "La marca del artículo es requerida"
+          ),
+          name: Yup.string().required("El nombre del artículo es requerido"),
+        })}
+      >
+        {({ errors, touched }) => (
+          <Form id="form">
+            <Modal.Body>
+              <CustomInput.Select
                 label="Categoria"
                 name="id_inventory_categ"
-                as="select"
                 placeholder="Seleccione una categoría"
                 isInvalid={
                   !!errors.id_inventory_categ && touched.id_inventory_categ
                 }
                 disabled={isFormSubmitting}
+                isRequired
               >
                 <option value="">Seleccione una categoría</option>
                 {categories &&
@@ -81,17 +82,17 @@ export const InventoryItemsForm = ({
                       {category.name}
                     </option>
                   ))}
-              </MySelect>
+              </CustomInput.Select>
 
-              <MySelect
+              <CustomInput.Select
                 label="Marca"
                 name="id_inventory_brand"
-                as="select"
                 placeholder="Seleccione una marca"
                 isInvalid={
                   !!errors.id_inventory_brand && touched.id_inventory_brand
                 }
                 disabled={isFormSubmitting}
+                isRequired
               >
                 <option value="">Seleccione una marca</option>
                 {brands &&
@@ -100,47 +101,56 @@ export const InventoryItemsForm = ({
                       {brand.name}
                     </option>
                   ))}
-              </MySelect>
+              </CustomInput.Select>
 
-              <MyTextInput
+              <CustomInput.Text
                 label="Nombre del artículo"
                 name="name"
-                type="text"
                 placeholder="Ejemplo: TALADRADOR PERCUTOR MAKITA HP1630"
                 isInvalid={!!errors.name && touched.name}
                 disabled={isFormSubmitting}
+                isRequired
               />
 
               {!editMode && (
-                <MySelect
+                <CustomInput.Select
                   label="Estado"
                   name="status"
-                  as="select"
                   placeholder="Seleccione un estado"
                   isInvalid={!!errors.status && touched.status}
                   disabled={isFormSubmitting}
+                  isRequired
                 >
                   <option value="OPERATIVO">OPERATIVO</option>
                   <option value="RESERVADO">RESERVADO</option>
                   <option value="RETIRADO">RETIRADO</option>
                   <option value="DESCARTADO">DESCARTADO</option>
-                </MySelect>
+                </CustomInput.Select>
               )}
+            </Modal.Body>
 
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-3 float-end"
-                size="sm"
-                disabled={isFormSubmitting}
-              >
-                <i className="bi bi-floppy me-1"></i>
-                Guardar
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </div>
+            <Modal.Footer>
+              <ButtonGroup size="sm">
+                <Button
+                  variant="secondary"
+                  disabled={isFormSubmitting}
+                  onClick={onHide}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isFormSubmitting}
+                >
+                  <i className="bi bi-floppy mx-1"></i>{" "}
+                  {editMode ? "Guardar cambios" : "Registrar artículo"}
+                </Button>
+              </ButtonGroup>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };

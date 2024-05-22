@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
@@ -87,55 +87,58 @@ export const InventoryItems = () => {
   }, [state.error]);
 
   // COLUMNAS Y RENDERIZADO
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "CATEGORÍA",
-      selector: (row: DataRow) => row.category,
-      maxWidth: "180px",
-      wrap: true,
-    },
-    {
-      name: "MARCA",
-      selector: (row: DataRow) => row.brand,
-      maxWidth: "180px",
-      wrap: true,
-    },
-    {
-      name: "ARTÍCULO",
-      selector: (row: DataRow) => row.name,
-      wrap: true,
-    },
-    {
-      name: "CÓDIGO INTERNO",
-      maxWidth: "180px",
-      selector: (row: DataRow) => row.code,
-      center: true,
-    },
-    {
-      name: "ESTADO",
-      selector: (row: DataRow) => row.status,
-      cell: (row: DataRow) => (
-        <span
-          style={{
-            fontSize: ".9em",
-            backgroundColor: InventoryStatus[row.status] || "gray",
-            color: "black",
-          }}
-          className="badge rounded-pill"
-        >
-          {row.status}
-        </span>
-      ),
-      maxWidth: "180px",
-      center: true,
-    },
-  ];
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+      },
+      {
+        name: "CATEGORÍA",
+        selector: (row: DataRow) => row.category,
+        maxWidth: "180px",
+        wrap: true,
+      },
+      {
+        name: "MARCA",
+        selector: (row: DataRow) => row.brand,
+        maxWidth: "180px",
+        wrap: true,
+      },
+      {
+        name: "ARTÍCULO",
+        selector: (row: DataRow) => row.name,
+        wrap: true,
+      },
+      {
+        name: "CÓDIGO INTERNO",
+        maxWidth: "180px",
+        selector: (row: DataRow) => row.code,
+        center: true,
+      },
+      {
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        cell: (row: DataRow) => (
+          <span
+            style={{
+              fontSize: ".9em",
+              backgroundColor: InventoryStatus[row.status] || "gray",
+              color: "black",
+            }}
+            className="badge rounded-pill"
+          >
+            {row.status}
+          </span>
+        ),
+        maxWidth: "180px",
+        center: true,
+      },
+    ],
+    []
+  );
 
   const handleClick = (row: DataRow) => {
     navigate(`/inventario/${row.id}`);
@@ -151,7 +154,9 @@ export const InventoryItems = () => {
 
   const handleSubmit = async (formData: any) => {
     const name = (formData.name as string).toUpperCase();
-    const confirm = await SweetAlert2.confirm("¿Desea crear el artículo " + name + "?");
+    const confirm = await SweetAlert2.confirm(
+      "¿Desea crear el artículo " + name + "?"
+    );
     if (!confirm.isConfirmed) return;
     try {
       setIsFormSubmitting(true);
