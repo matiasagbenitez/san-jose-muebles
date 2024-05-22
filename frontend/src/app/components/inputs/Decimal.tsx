@@ -17,6 +17,7 @@ interface Props {
 
 export const Decimal = ({
   label,
+  isInvalid,
   isRequired,
   onValueChange,
   ...props
@@ -41,6 +42,7 @@ export const Decimal = ({
         prefix={props.prefix}
         {...props}
         onValueChange={onValueChange}
+        style={{ border: isInvalid ? "1px solid red" : "" }}
       />
 
       <ErrorMessage

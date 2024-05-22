@@ -114,13 +114,19 @@ export const EntityAccounts = () => {
           ) : (
             <>
               {accounts.map((account, index) => (
-                <ListGroup key={index} horizontal="lg" className="mb-3 small">
-                  <ListGroup.Item className="col-12 col-md-9 bg-light text-center text-md-start">
+                <ListGroup
+                  key={index}
+                  horizontal="lg"
+                  className="mb-3 small w-100 border-0 p-0"
+                  as={"button"}
+                  onClick={() => handleRedirectAccount(account.id)}
+                >
+                  <ListGroup.Item className="col-12 col-lg-8 bg-light text-center text-lg-start">
                     CUENTA CORRIENTE EN <b>{account.currency.name}</b>
                   </ListGroup.Item>
-                  <ListGroup.Item className="col-12 col-md-2">
+                  <ListGroup.Item className="col-12 col-lg-4">
                     <div className="d-flex align-items-center justify-content-between">
-                      <span className="fw-bold text-muted">SALDO:</span>
+                      <span className="fw-bold text-muted">SALDO</span>
                       <span
                         className={`mb-0 text-end fw-bold text-${
                           account.balance < 0
@@ -139,16 +145,6 @@ export const EntityAccounts = () => {
                         )}
                       </span>
                     </div>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="col-12 col-md-1 p-0">
-                    <Button
-                      size="sm"
-                      variant="light"
-                      onClick={() => handleRedirectAccount(account.id)}
-                      className="w-100 h-100 d-flex align-items-center justify-content-center"
-                    >
-                      <b>Ir a cuenta</b>
-                    </Button>
                   </ListGroup.Item>
                 </ListGroup>
               ))}

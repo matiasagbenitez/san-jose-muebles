@@ -1,20 +1,14 @@
-import React, { useState, useEffect, useReducer, useMemo } from "react";
+import { useState, useEffect, useReducer, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Button,
-  Modal,
-  Form as FormRB,
-  InputGroup,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { Button, Modal, Row, Col, ButtonGroup } from "react-bootstrap";
 
-import { LoadingSpinner, PageHeader } from "../../components";
+import { LoadingSpinner, PageHeader, CustomInput } from "../../components";
 import { DateFormatter, NumberFormatter } from "../../helpers";
 import { SweetAlert2 } from "../../utils";
 import apiSJM from "../../../api/apiSJM";
 
-import { NumericFormat } from "react-number-format";
 import { TableColumn } from "react-data-table-component";
 import {
   Datatable,
@@ -25,9 +19,15 @@ import {
   ColumnsHiddenInterface,
 } from "../../shared";
 
-import { MovementType, types, AccountInterface } from "./interfaces";
+import {
+  MovementType,
+  types,
+  AccountInterface,
+  InitialFormInterface,
+  Movements,
+} from "./interfaces";
 
-const initialForm = {
+const initialForm: InitialFormInterface = {
   type: "",
   description: "",
   amount: 0,
@@ -65,11 +65,10 @@ export const EntityAccountTransactions = () => {
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<AccountInterface | null>(null);
+  const [prefix, setPrefix] = useState("");
 
   const [omittedColumns, setOmittedColumns] =
     useState<ColumnsHiddenInterface>(columnsHidden);
-
-  const [formData, setFormData] = useState(initialForm);
 
   const fetch = async () => {
     try {
@@ -91,6 +90,16 @@ export const EntityAccountTransactions = () => {
   useEffect(() => {
     fetch();
   }, []);
+
+  useEffect(() => {
+    if (account) {
+      const { currency } = account;
+      const aux = currency.is_monetary
+        ? `${currency.symbol} $`
+        : `${currency.symbol} `;
+      setPrefix(aux);
+    }
+  }, [account]);
 
   const handlePageChange = async (page: number) => {
     dispatch({ type: "PAGE_CHANGE", page });
@@ -205,20 +214,25 @@ export const EntityAccountTransactions = () => {
 
   const handleClose = () => {
     setIsModalOpen(false);
-    setFormData(initialForm);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleRedirect = (row: DataRow) => {
+    navigate(
+      `/entidades/${id_entity}/cuentas/${id_entity_account}/movimiento/${row.id}`
+    );
+  };
+
+  const handleSubmit = async (values: InitialFormInterface) => {
     try {
-      setIsFormSubmitting(true);
-      const confirmation = await SweetAlert2.confirm(
-        "¿Está seguro de registrar el movimiento?"
-      );
+      const amount = NumberFormatter.toDecimal(values.amount);
+      const type = Movements[values.type as keyof typeof Movements];
+      const message = `¿Registrar un movimiento ${type} por un monto de ${prefix}${amount}?`;
+      const confirmation = await SweetAlert2.confirm(message);
       if (!confirmation.isConfirmed) return;
+      setIsFormSubmitting(true);
       const { data } = await apiSJM.post(
         "/entity_account_transactions/new-movement",
-        { ...formData, id_entity_account: id_entity_account }
+        { ...values, id_entity_account }
       );
       SweetAlert2.successAlert(data.message);
       handleClose();
@@ -229,12 +243,6 @@ export const EntityAccountTransactions = () => {
     } finally {
       setIsFormSubmitting(false);
     }
-  };
-
-  const handleRedirect = (row: DataRow) => {
-    navigate(
-      `/entidades/${id_entity}/cuentas/${id_entity_account}/movimiento/${row.id}`
-    );
   };
 
   return (
@@ -304,86 +312,91 @@ export const EntityAccountTransactions = () => {
             onRowClicked={handleRedirect}
           />
 
-          <Modal show={isModalOpen} onHide={() => handleClose()}>
-            <div className="p-3">
-              <h5>Nuevo movimiento</h5>
-              <hr />
+          <Modal show={isModalOpen} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Nuevo movimiento</Modal.Title>
+            </Modal.Header>
 
-              <FormRB onSubmit={handleSubmit}>
-                {/* TIPO DE MOVIMIENTO */}
-                <InputGroup size="sm">
-                  <InputGroup.Text>Tipo de movimiento</InputGroup.Text>
-                  <FormRB.Select
-                    required
-                    name="type"
-                    onChange={(e: any) =>
-                      setFormData({ ...formData, type: e.target.value })
-                    }
-                    disabled={isFormSubmitting}
-                  >
-                    <option value="">Seleccione una opción</option>
-                    <option value="PAYMENT">Pago / Abono</option>
-                    <option value="DEBT">Deuda / Cargo</option>
-                    <option value="POS_ADJ">
-                      Ajuste a favor (disminuye deuda)
-                    </option>
-                    <option value="NEG_ADJ">
-                      Ajuste en contra (aumenta deuda)
-                    </option>
-                  </FormRB.Select>
-                </InputGroup>
-                {/* DESCRIPCIÓN */}
-                <InputGroup className="mt-2 mb-3" size="sm">
-                  <InputGroup.Text>Descripción</InputGroup.Text>
-                  <FormRB.Control
-                    as="textarea"
-                    rows={1}
-                    required
-                    onChange={(e: any) =>
-                      setFormData({
-                        ...formData,
-                        description: e.target.value,
-                      })
-                    }
-                    disabled={isFormSubmitting}
-                  />
-                </InputGroup>
-                {/* MONTO */}
-                <InputGroup className="mb-3" size="sm">
-                  <InputGroup.Text>Monto movimiento</InputGroup.Text>
-                  <NumericFormat
-                    prefix="$"
-                    thousandSeparator="."
-                    decimalSeparator=","
-                    decimalScale={2}
-                    fixedDecimalScale
-                    min={1}
-                    className="text-end form-control"
-                    value={formData.amount}
-                    required
-                    onValueChange={(values) => {
-                      const { floatValue } = values;
-                      setFormData({ ...formData, amount: floatValue || 1 });
-                    }}
-                    disabled={isFormSubmitting}
-                  />
-                </InputGroup>
-                <div className="d-flex gap-2 justify-content-end">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setIsModalOpen(false)}
-                    disabled={isFormSubmitting}
-                  >
-                    Cerrar
-                  </Button>
-                  <Button size="sm" variant="primary" type="submit">
-                    <i className="bi bi-floppy me-2"></i>
-                    Registrar movimiento
-                  </Button>
-                </div>
-              </FormRB>
-            </div>
+            <Formik
+              initialValues={initialForm}
+              onSubmit={(values) => {
+                handleSubmit(values);
+              }}
+              validationSchema={Yup.object({
+                type: Yup.string().required(
+                  "El tipo de movimiento es requerido"
+                ),
+                description: Yup.string().required(
+                  "La descripción es requerida"
+                ),
+                amount: Yup.number()
+                  .required("El monto es requerido")
+                  .min(1, "El monto debe ser mayor a 0"),
+              })}
+            >
+              {({ errors, touched, values, setFieldValue }) => (
+                <Form id="form">
+                  <Modal.Body>
+                    <CustomInput.Select
+                      label="Tipo de movimiento"
+                      name="type"
+                      isInvalid={!!errors.type && touched.type}
+                      disabled={isFormSubmitting}
+                      isRequired
+                    >
+                      <option value="">Seleccione un tipo de movimiento</option>
+                      <option value="PAYMENT">Pago o cancelación</option>
+                      <option value="DEBT">Deuda u obligación</option>
+                      <option value="POS_ADJ">
+                        Ajuste a favor (disminuye deuda)
+                      </option>
+                      <option value="NEG_ADJ">
+                        Ajuste en contra (aumenta deuda)
+                      </option>
+                    </CustomInput.Select>
+
+                    <CustomInput.Text
+                      label="Descripción"
+                      name="description"
+                      placeholder="Ingrese la descripción del movimiento"
+                      isInvalid={!!errors.description && touched.description}
+                      disabled={isFormSubmitting}
+                      isRequired
+                    />
+
+                    <CustomInput.Decimal
+                      label="Monto movimiento"
+                      name="amount"
+                      value={values.amount}
+                      onValueChange={(value) => {
+                        setFieldValue("amount", value.floatValue || 0);
+                      }}
+                      isInvalid={!!errors.amount && touched.amount}
+                      min={1}
+                      disabled={isFormSubmitting}
+                      isRequired
+                      prefix={prefix}
+                    />
+                  </Modal.Body>
+
+                  <Modal.Footer>
+                    <ButtonGroup size="sm">
+                      <Button variant="secondary" disabled={isFormSubmitting}>
+                        Cancelar
+                      </Button>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={isFormSubmitting}
+                      >
+                        <i className="bi bi-floppy mx-1"></i>{" "}
+                        {isFormSubmitting ? "Guardando..." : "Guardar"}
+                      </Button>
+                    </ButtonGroup>
+                  </Modal.Footer>
+                </Form>
+              )}
+            </Formik>
           </Modal>
         </>
       )}

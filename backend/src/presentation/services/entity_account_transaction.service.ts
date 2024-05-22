@@ -98,7 +98,7 @@ export class EntityAccountTransactionService {
 
             await transaction.commit();
 
-            return { message: '¡Movimento tipo PAGO/ABONO registrado correctamente!' };
+            return { message: '¡Movimento tipo PAGO/CANCELACIÓN registrado correctamente!' };
         } catch (error: any) {
             await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
@@ -136,7 +136,7 @@ export class EntityAccountTransactionService {
 
             await transaction.commit();
 
-            return { message: '¡Movimento tipo DEUDA/CARGO registrado correctamente!' };
+            return { message: '¡Movimento tipo DEUDA/OBLIGACIÓN registrado correctamente!' };
         } catch (error: any) {
             await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);

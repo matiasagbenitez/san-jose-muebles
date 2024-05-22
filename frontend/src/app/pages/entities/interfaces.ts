@@ -21,6 +21,12 @@ export interface EntityAccountInterface {
     updatedAt: Date;
 }
 
+export interface InitialFormInterface {
+    type: 'PAYMENT' | 'DEBT' | 'POS_ADJ' | 'NEG_ADJ' | '';
+    description: string;
+    amount: number;
+}
+
 export interface EntityBasicInfoInterface {
     id: number;
     name: string;
