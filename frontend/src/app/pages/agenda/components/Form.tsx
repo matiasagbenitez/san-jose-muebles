@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { Button, Col, Row } from "react-bootstrap";
 import apiSJM from "../../../../api/apiSJM";
 
-import { MySelect, MyTextInput } from "../../../components/forms";
 import { VisitRequestFormInterface } from "../interfaces";
 
 // import ReactDatePicker from "react-datepicker";
@@ -12,7 +11,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { addHours } from "date-fns";
-import { LoadingSpinner } from "../../../components";
+import { CustomInput, LoadingSpinner } from "../../../components";
 import { useNavigate } from "react-router-dom";
 registerLocale("es", es as any);
 
@@ -106,111 +105,110 @@ export const VisitForm = ({
         >
           {({ errors, touched, values, setFieldValue }) => (
             <Form id="form">
-              <p className="fs-6 text-muted fw-bold mb-2">
-                Información de la visita
-              </p>
               <Row>
-                <Col lg={4}>
-                  <MySelect
-                    label="Cliente a visitar"
-                    name="id_client"
-                    as="select"
-                    isInvalid={!!errors.id_client && touched.id_client}
-                    disabled={editMode || submitting}
-                  >
-                    <option value="">Seleccione un cliente</option>
-                    {clients &&
-                      clients.map((client) => (
-                        <option key={client.id} value={client.id}>
-                          {client.label}
-                        </option>
-                      ))}
-                  </MySelect>
-                </Col>
-                <Col lg={4}>
-                  <MySelect
-                    label="Motivo de visita"
-                    name="id_visit_reason"
-                    as="select"
-                    isInvalid={
-                      !!errors.id_visit_reason && touched.id_visit_reason
-                    }
-                    disabled={submitting}
-                  >
-                    <option value="">Seleccione un motivo de visita</option>
-                    {visitReasons &&
-                      visitReasons.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.label}
-                        </option>
-                      ))}
-                  </MySelect>
+                <Col xs={12} xl={8}>
+                  <p className="fs-6 text-muted fw-bold mb-2">
+                    Información de la visita
+                  </p>
+                  <Row>
+                    <Col xl={4}>
+                      <CustomInput.Select
+                        label="Cliente a visitar"
+                        name="id_client"
+                        isInvalid={!!errors.id_client && touched.id_client}
+                        disabled={editMode || submitting}
+                        isRequired
+                      >
+                        <option value="">Seleccione un cliente</option>
+                        {clients &&
+                          clients.map((client) => (
+                            <option key={client.id} value={client.id}>
+                              {client.label}
+                            </option>
+                          ))}
+                      </CustomInput.Select>
+                    </Col>
+                    <Col xl={4}>
+                      <CustomInput.Select
+                        label="Motivo de visita"
+                        name="id_visit_reason"
+                        isInvalid={
+                          !!errors.id_visit_reason && touched.id_visit_reason
+                        }
+                        disabled={submitting}
+                        isRequired
+                      >
+                        <option value="">Seleccione un motivo de visita</option>
+                        {visitReasons &&
+                          visitReasons.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {item.label}
+                            </option>
+                          ))}
+                      </CustomInput.Select>
+                    </Col>
+                    <Col xl={4}>
+                      <CustomInput.Select
+                        label="Prioridad"
+                        name="priority"
+                        isInvalid={!!errors.priority && touched.priority}
+                        disabled={submitting}
+                        isRequired
+                      >
+                        <option value="BAJA">BAJA</option>
+                        <option value="MEDIA">MEDIA</option>
+                        <option value="ALTA">ALTA</option>
+                        <option value="URGENTE">URGENTE</option>
+                      </CustomInput.Select>
+                    </Col>
+                    <Col xl={4}>
+                      <CustomInput.Select
+                        label="Localidad a visitar"
+                        name="id_locality"
+                        isInvalid={!!errors.id_locality && touched.id_locality}
+                        disabled={submitting}
+                        isRequired
+                      >
+                        <option value="">Seleccione una localidad</option>
+                        {localities &&
+                          localities.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {item.label}
+                            </option>
+                          ))}
+                      </CustomInput.Select>
+                    </Col>
+                    <Col xl={8}>
+                      <CustomInput.Text
+                        label="Dirección (opcional)"
+                        name="address"
+                        placeholder="Ingrese la dirección"
+                        isInvalid={!!errors.address && touched.address}
+                        disabled={submitting}
+                      />
+                    </Col>
+                    <Col>
+                      <CustomInput.Text
+                        label="Notas adicionales (opcional)"
+                        name="notes"
+                        placeholder="Ingrese notas adicionales"
+                        isInvalid={!!errors.notes && touched.notes}
+                        disabled={submitting}
+                      />
+                    </Col>
+                  </Row>
                 </Col>
 
-                <Col lg={4}>
-                  <MySelect
-                    label="Prioridad"
-                    name="priority"
-                    as="select"
-                    isInvalid={!!errors.priority && touched.priority}
-                    disabled={submitting}
-                  >
-                    <option value="BAJA">BAJA</option>
-                    <option value="MEDIA">MEDIA</option>
-                    <option value="ALTA">ALTA</option>
-                    <option value="URGENTE">URGENTE</option>
-                  </MySelect>
-                </Col>
-
-                <Col lg={4}>
-                  <MySelect
-                    label="Localidad a visitar"
-                    name="id_locality"
-                    as="select"
-                    isInvalid={!!errors.id_locality && touched.id_locality}
-                    disabled={submitting}
-                  >
-                    <option value="">Seleccione una localidad</option>
-                    {localities &&
-                      localities.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.label}
-                        </option>
-                      ))}
-                  </MySelect>
-                </Col>
-
-                <Col lg={8}>
-                  <MyTextInput
-                    label="Dirección (opcional)"
-                    name="address"
-                    type="text"
-                    placeholder="Ingrese la dirección"
-                    isInvalid={!!errors.address && touched.address}
-                    disabled={submitting}
-                  />
-                </Col>
-                <Col>
-                  <MyTextInput
-                    label="Notas adicionales (opcional)"
-                    name="notes"
-                    type="text"
-                    placeholder="Ingrese notas adicionales"
-                    isInvalid={!!errors.notes && touched.notes}
-                    disabled={submitting}
-                  />
-                </Col>
-              </Row>
-
-              <br />
-
-              <p className="fs-6 text-muted fw-bold mb-2">Horario de visita</p>
-              <Row>
-                <Col lg={4}>
-                  <MySelect
+                <Col xs={12} xl={4}>
+                  <p className="fs-6 text-muted fw-bold mb-2">
+                    Horario de visita
+                  </p>
+                  <CustomInput.Select
+                    label="Horario de visita"
                     name="schedule"
                     isInvalid={!!errors.schedule && touched.schedule}
                     disabled={submitting}
+                    isRequired
                   >
                     <option value="NOT_SCHEDULED">
                       No definir día ni hora de visita
@@ -221,17 +219,17 @@ export const VisitForm = ({
                     <option value="FULL_SCHEDULED">
                       Definir día y horario de visita
                     </option>
-                  </MySelect>
+                  </CustomInput.Select>
 
                   {values.schedule === "PARTIAL_SCHEDULED" && (
-                    <div className="py-3 d-flex flex-column">
-                      <label htmlFor="ps_start" className="small fw-bold">
-                        Día de visita
+                    <div className="mt-1 mb-2 d-flex flex-column">
+                      <label htmlFor="ps_start" className="small fw-bold mb-1">
+                        Horario de inicio (desde)
                       </label>
                       <DatePicker
                         id="ps_start"
                         name="start"
-                        className="form-control w-100"
+                        className="form-control form-control-sm"
                         selected={values.start || new Date()}
                         onChange={(date: Date) => setFieldValue("start", date)}
                         dateFormat="dd/MM/yyyy"
@@ -246,14 +244,17 @@ export const VisitForm = ({
                   {values.schedule === "FULL_SCHEDULED" && (
                     <Row>
                       <Col xs={12}>
-                        <div className="py-3 d-flex flex-column">
-                          <label htmlFor="fs_start" className="small fw-bold">
+                        <div className="mt-1 mb-2 d-flex flex-column">
+                          <label
+                            htmlFor="fs_start"
+                            className="small fw-bold mb-1"
+                          >
                             Horario de inicio (desde)
                           </label>
                           <DatePicker
                             id="fs_start"
                             name="start"
-                            className="form-control"
+                            className="form-control form-control-sm"
                             selected={
                               values.start === null
                                 ? new Date()
@@ -277,13 +278,16 @@ export const VisitForm = ({
                       </Col>
                       <Col xs={12}>
                         <div className="pb-2 d-flex flex-column">
-                          <label htmlFor="fs_end" className="small fw-bold">
+                          <label
+                            htmlFor="fs_end"
+                            className="small fw-bold mb-1"
+                          >
                             Horario de fin (hasta)
                           </label>
                           <DatePicker
                             id="fs_end"
                             name="end"
-                            className="form-control"
+                            className="form-control form-control-sm"
                             selected={
                               values.end === null
                                 ? addHours(new Date(), 1)
@@ -313,7 +317,7 @@ export const VisitForm = ({
               <Button
                 type="submit"
                 variant="primary"
-                className="mt-3 float-end"
+                className="mt-3 px-3 float-end"
                 size="sm"
                 disabled={submitting}
               >

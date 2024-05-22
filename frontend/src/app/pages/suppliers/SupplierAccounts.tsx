@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
-import { Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import {
+  Button,
+  Row,
+  Col,
+  Modal,
+  ListGroup,
+  ButtonGroup,
+} from "react-bootstrap";
 import apiSJM from "../../../api/apiSJM";
-import { LoadingSpinner, PageHeader } from "../../components";
+import { LoadingSpinner, PageHeader, CustomInput } from "../../components";
 import { SweetAlert2 } from "../../utils";
-import { DateFormatter, NumberFormatter } from "../../helpers";
+import { NumberFormatter } from "../../helpers";
+import { SupplierBasicInfo } from "./interfaces";
 interface SupplierAccount {
   id: number;
   currency: {
@@ -25,11 +35,12 @@ export const SupplierAccounts = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false); // [1]
-  const [supplier, setSupplier] = useState<any>(""); // [1]
+  const [supplier, setSupplier] = useState<SupplierBasicInfo | null>(null);
   const [accounts, setAccounts] = useState<SupplierAccount[]>([]);
   const [currencies, setCurrencies] = useState([]);
   const [showModal, setShowModal] = useState(false); // [1]
-  const [form, setForm] = useState(initialForm);
+
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const fetch = async () => {
     try {
@@ -58,24 +69,23 @@ export const SupplierAccounts = () => {
 
   const handleClose = () => {
     setShowModal(false);
-    setForm(initialForm);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: any) => {
+    const confirmation = await SweetAlert2.confirm(
+      "¿Registrar nueva cuenta corriente?"
+    );
+    if (!confirmation.isConfirmed) return;
     try {
-      const confirmation = await SweetAlert2.confirm(
-        "¿Estás seguro de crear una nueva cuenta corriente?"
-      );
-      if (confirmation.isConfirmed) {
-        const formData = { ...form, id_supplier: id };
-        const { data } = await apiSJM.post("/supplier_accounts", formData);
-        SweetAlert2.successToast(data.message || "¡Cuenta creada!");
-        fetch();
-        handleClose();
-      }
+      const formData = { ...values, id_supplier: id };
+      const { data } = await apiSJM.post("/supplier_accounts", formData);
+      SweetAlert2.successToast(data.message || "¡Cuenta creada!");
+      fetch();
+      handleClose();
     } catch (error: any) {
       SweetAlert2.errorAlert(error.response.data.message);
+    } finally {
+      setIsFormSubmitted(false);
     }
   };
 
@@ -86,12 +96,12 @@ export const SupplierAccounts = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && (
+      {!loading && supplier && accounts && (
         <>
           <PageHeader
             goBackTo={`/proveedores/${id}`}
             goBackTitle="Volver al detalle del proveedor"
-            title="Cuentas corrientes del proveedor"
+            title="Listado de cuentas corrientes"
             handleAction={handleCreate}
             actionButtonText="Nueva cuenta"
           />
@@ -115,91 +125,99 @@ export const SupplierAccounts = () => {
               El proveedor no tiene cuentas corrientes registradas
             </p>
           ) : (
-            <Row>
-              {accounts.map(
-                (
-                  { id, currency, balance, updatedAt }: SupplierAccount,
-                  index
-                ) => (
-                  <Col key={index} xs={12} md={6} lg={4} className="mb-3">
-                    <Card className="text-center small">
-                      <Card.Header>CUENTA CORRIENTE PROVEEDOR</Card.Header>
-                      <Card.Body>
-                        <Card.Title>
-                          {currency.name} ({currency.symbol})
-                        </Card.Title>
-                        <Card.Subtitle
-                          className={`my-3 text-${
-                            balance < 0
-                              ? "danger"
-                              : balance == 0
-                              ? "muted"
-                              : "success"
-                          }`}
-                        >
-                          <span>{currency.symbol} </span>
-                          <span>
-                            {NumberFormatter.formatSignedCurrency(
-                              currency.is_monetary,
-                              balance
-                            )}
-                          </span>
-                        </Card.Subtitle>
-
-                        <Button
-                          variant="primary"
-                          size="sm"
-                          onClick={() => handleRedirectAccount(id)}
-                        >
-                          Ir a cuenta
-                        </Button>
-                      </Card.Body>
-                      <Card.Footer className="text-muted">
-                        <span>
-                          Última actualización:{" "}
-                          {DateFormatter.toDMYH(updatedAt)}
-                        </span>
-                      </Card.Footer>
-                    </Card>
-                  </Col>
-                )
-              )}
-            </Row>
+            <>
+              {accounts.map((account, index) => (
+                <ListGroup
+                  key={index}
+                  horizontal="lg"
+                  className="mb-3 small w-100 border-0 p-0"
+                  as={"button"}
+                  onClick={() => handleRedirectAccount(account.id)}
+                >
+                  <ListGroup.Item className="col-12 col-lg-8 bg-light text-center text-lg-start">
+                    CUENTA CORRIENTE EN <b>{account.currency.name}</b>
+                  </ListGroup.Item>
+                  <ListGroup.Item className="col-12 col-lg-4">
+                    <div className="d-flex align-items-center justify-content-between">
+                      <span className="fw-bold text-muted">SALDO</span>
+                      <span
+                        className={`mb-0 text-end fw-bold text-${
+                          account.balance < 0
+                            ? "danger"
+                            : account.balance == 0
+                            ? "muted"
+                            : "success"
+                        } `}
+                      >
+                        <span className="text-muted fw-normal">
+                          {account.currency.symbol}
+                        </span>{" "}
+                        {NumberFormatter.formatSignedCurrency(
+                          account.currency.is_monetary,
+                          account.balance
+                        )}
+                      </span>
+                    </div>
+                  </ListGroup.Item>
+                </ListGroup>
+              ))}
+            </>
           )}
 
           <Modal show={showModal} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title className="fs-5">Crear cuenta corriente</Modal.Title>
+              <Modal.Title>Nueva cuenta corriente</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              <Form onSubmit={handleSubmit}>
-                <label className="form-label">Moneda de la cuenta</label>
-                <Form.Select
-                  name="id_currency"
-                  size="sm"
-                  required
-                  onChange={(e) =>
-                    setForm({ ...form, id_currency: e.target.value })
-                  }
-                >
-                  <option value="">Seleccione una moneda</option>
-                  {currencies.map((currency: any) => (
-                    <option key={currency.id} value={currency.id}>
-                      {currency.name}
-                    </option>
-                  ))}
-                </Form.Select>
+            <Formik
+              initialValues={initialForm}
+              onSubmit={(values) => {
+                handleSubmit(values);
+              }}
+              validationSchema={Yup.object({
+                id_currency: Yup.string().required("La moneda es requerida"),
+              })}
+            >
+              {({ errors, touched }) => (
+                <Form id="form">
+                  <Modal.Body>
+                    <CustomInput.Select
+                      label="Moneda de la cuenta corriente"
+                      name="id_currency"
+                      isInvalid={!!errors.id_currency && touched.id_currency}
+                      disabled={isFormSubmitted}
+                      isRequired
+                    >
+                      <option value="">Seleccione una moneda</option>
+                      {currencies.map((currency: any) => (
+                        <option key={currency.id} value={currency.id}>
+                          {currency.name}
+                        </option>
+                      ))}
+                    </CustomInput.Select>
+                  </Modal.Body>
 
-                <div className="d-flex justify-content-end mt-3 gap-2">
-                  <Button size="sm" variant="secondary">
-                    Cerrar
-                  </Button>
-                  <Button type="submit" size="sm" variant="primary">
-                    Guardar
-                  </Button>
-                </div>
-              </Form>
-            </Modal.Body>
+                  <Modal.Footer>
+                    <ButtonGroup size="sm">
+                      <Button
+                        variant="secondary"
+                        disabled={isFormSubmitted}
+                        onClick={handleClose}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        disabled={isFormSubmitted}
+                      >
+                        <i className="bi bi-floppy mx-1"></i>{" "}
+                        {isFormSubmitted ? "Guardando..." : "Guardar"}
+                      </Button>
+                    </ButtonGroup>
+                  </Modal.Footer>
+                </Form>
+              )}
+            </Formik>
           </Modal>
         </>
       )}

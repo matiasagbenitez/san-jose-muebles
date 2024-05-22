@@ -14,11 +14,19 @@ export class BankAccountService {
     }
 
     public async getBankAccountsBySupplier(id_supplier: number) {
-        const supplier = await Supplier.findByPk(id_supplier, { attributes: ['id', 'name'] });
+        const supplier = await Supplier.findByPk(id_supplier, { attributes: ['id', 'name'], include: [{ association: 'locality', attributes: ['name'], include: [{ association: 'province', attributes: ['name'] }] }] });
         if (!supplier) throw CustomError.notFound('Proveedor no encontrado');
+        
         const bankAccounts = await BankAccount.findAll({ where: { id_supplier }, include: [{ model: Bank, as: 'bank' }] });
         const bankAccountsEntities = bankAccounts.map(item => BankAccountEntity.listableBankAccounts(item));
-        return { items: bankAccountsEntities, supplier: supplier.name };
+
+        const supplierData = {
+            id: supplier.id,
+            name: supplier.name,
+            locality: supplier.locality.name + ', ' + supplier.locality.province.name,
+        }
+
+        return { items: bankAccountsEntities, supplier: supplierData };
     }
 
     public async getBankAccount(id: number) {
@@ -32,7 +40,7 @@ export class BankAccountService {
         try {
             const bank = await BankAccount.create({
                 ...createBankAccountDto,
-            }); 
+            });
             const { ...bankEntity } = BankAccountEntity.fromObject(bank);
             return { bank: bankEntity, message: 'Cuenta de banco creada correctamente' };
         } catch (error: any) {

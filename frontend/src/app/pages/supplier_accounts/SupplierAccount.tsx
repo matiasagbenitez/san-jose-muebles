@@ -340,7 +340,7 @@ export const SupplierAccount = () => {
       {!loading && account && (
         <>
           <PageHeader
-            goBackTo={`/proveedores/${account.supplier.id}/cuentas-proveedores`}
+            goBackTo={`/proveedores/${account.supplier.id}/cuentas`}
             goBackTitle="Volver al listado de cuentas corrientes"
             title="Detalle de cuenta corriente proveedor"
             handleAction={handleCreate}

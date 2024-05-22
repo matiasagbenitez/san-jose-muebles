@@ -20,7 +20,7 @@ const SuppliersRoutes = () => {
           <Route path="/" element={<Suppliers />} />
           <Route path="/:id" element={<Supplier />} />
           <Route path="/:id/cuentas-bancarias" element={<SupplierBankAccounts />} />
-          <Route path="/:id/cuentas-proveedores" element={<SupplierAccounts />} />
+          <Route path="/:id/cuentas" element={<SupplierAccounts />} />
           <Route path="/:id/compras" element={<SupplierPurchases />} />
         </>
       )}

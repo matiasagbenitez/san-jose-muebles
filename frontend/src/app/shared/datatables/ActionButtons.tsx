@@ -10,13 +10,13 @@ export const ActionButtons = ({
   handleDelete,
 }: FiltersParamsProps) => {
   return (
-    <div className="d-flex justify-content-center">
+    <div className="d-flex justify-content-center align-items-center">
       <button
         title="Modificar"
         className="btn btn-transparent py-0 px-1"
         onClick={() => handleEdit(row)}
       >
-        <i className="bi bi-pencil-fill text-secondary-emphasis"></i>
+        <i className="bi bi-pencil-square text-secondary-emphasis"></i>
       </button>
       <button
         title="Eliminar"

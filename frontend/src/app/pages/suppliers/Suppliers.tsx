@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
@@ -72,7 +72,9 @@ export const Suppliers = () => {
   const handleSubmit = async (formData: any) => {
     try {
       setIsFormSubmitting(true);
-      const confirmation = await SweetAlert2.confirm("¿Desea crear el proveedor?");
+      const confirmation = await SweetAlert2.confirm(
+        "¿Desea crear el proveedor?"
+      );
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);
@@ -86,36 +88,39 @@ export const Suppliers = () => {
   };
 
   // COLUMNAS Y RENDERIZADO
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "PROVEEDOR",
-      selector: (row: DataRow) => row.name,
-    },
-    {
-      name: "DNI/CUIT",
-      selector: (row: DataRow) => row.dni_cuit,
-      center: true,
-    },
-    {
-      name: "TELÉFONO",
-      selector: (row: DataRow) => row.phone,
-      center: true,
-    },
-    {
-      name: "LOCALIDAD",
-      selector: (row: DataRow) => row.locality,
-    },
-    {
-      name: "PROVINCIA / ESTADO",
-      selector: (row: DataRow) => row.province,
-    },
-  ];
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+      },
+      {
+        name: "PROVEEDOR",
+        selector: (row: DataRow) => row.name,
+      },
+      {
+        name: "DNI/CUIT",
+        selector: (row: DataRow) => row.dni_cuit,
+        center: true,
+      },
+      {
+        name: "TELÉFONO",
+        selector: (row: DataRow) => row.phone,
+        center: true,
+      },
+      {
+        name: "LOCALIDAD",
+        selector: (row: DataRow) => row.locality,
+      },
+      {
+        name: "PROVINCIA / ESTADO",
+        selector: (row: DataRow) => row.province,
+      },
+    ],
+    []
+  );
 
   // MODAL
   const handleHide = () => {

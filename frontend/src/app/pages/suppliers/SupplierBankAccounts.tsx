@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
@@ -6,10 +6,11 @@ import apiSJM from "../../../api/apiSJM";
 import { SweetAlert2 } from "../../utils";
 import { LoadingSpinner, PageHeader } from "../../components";
 import { ActionButtons, DatatableNoPagination } from "../../shared";
-import { Button } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { SupplierBankAccountForm } from "./components";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { SupplierBasicInfo } from "./interfaces";
 
 interface DataRow {
   id: number;
@@ -51,7 +52,7 @@ export const SupplierBankAccounts = () => {
   const [form, setForm] = useState<BankAccountFormInterface>(initialForm);
 
   const [loading, setLoading] = useState(false);
-  const [supplier, setSupplier] = useState(null);
+  const [supplier, setSupplier] = useState<SupplierBasicInfo | null>(null);
   const [bankAccounts, setBankAccounts] = useState([]);
   const navigate = useNavigate();
 
@@ -102,12 +103,14 @@ export const SupplierBankAccounts = () => {
     }
 
     return (
-      <CopyToClipboard text={text} onCopy={() => showAlert(type)}>
-        <Button size="sm" variant="transparent" className="py-0 px-1">
-          <span>{type === ClipboardType.ALL ? "" : text}</span>
-          <i className="bi bi-clipboard ms-2 small text-muted"></i>
-        </Button>
-      </CopyToClipboard>
+      <>
+        <span className="mx-1">{type === ClipboardType.ALL ? "" : text}</span>
+        <CopyToClipboard text={text} onCopy={() => showAlert(type)}>
+          <Button variant="transparent" className="py-0 px-1 cursor-pointer">
+            <i className="bi bi-clipboard small text-muted fs-6"></i>
+          </Button>
+        </CopyToClipboard>
+      </>
     );
   };
   const handleCreate = () => {
@@ -166,59 +169,62 @@ export const SupplierBankAccounts = () => {
     }
   };
 
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "BANCO",
-      selector: (row: DataRow) => row.bank,
-      wrap: true,
-      maxWidth: "180px",
-    },
-    {
-      name: "TITULAR CUENTA",
-      selector: (row: DataRow) => row.account_owner,
-      maxWidth: "180px",
-    },
-    {
-      name: "CBU/CVU",
-      selector: (row: DataRow) => row.cbu_cvu,
-      cell: (row: DataRow) => (
-        <>{row.cbu_cvu && CopyElement(ClipboardType.CBU_CVU, row)}</>
-      ),
-    },
-    {
-      name: "ALIAS",
-      selector: (row: DataRow) => row.alias,
-      cell: (row: DataRow) => (
-        <>{row.alias && CopyElement(ClipboardType.ALIAS, row)}</>
-      ),
-    },
-    {
-      name: "N° DE CUENTA",
-      selector: (row: DataRow) => row.account_number,
-      maxWidth: "180px",
-    },
-    {
-      name: "ACCIONES",
-      button: true,
-      width: "150px",
-      cell: (row: any) => (
-        <>
-          {CopyElement(ClipboardType.ALL, row)}
-          <ActionButtons
-            row={row}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        </>
-      ),
-    },
-  ];
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+      },
+      {
+        name: "BANCO",
+        selector: (row: DataRow) => row.bank,
+        wrap: true,
+        maxWidth: "180px",
+      },
+      {
+        name: "TITULAR CUENTA",
+        selector: (row: DataRow) => row.account_owner,
+        maxWidth: "180px",
+      },
+      {
+        name: "CBU/CVU",
+        selector: (row: DataRow) => row.cbu_cvu,
+        cell: (row: DataRow) => (
+          <>{row.cbu_cvu && CopyElement(ClipboardType.CBU_CVU, row)}</>
+        ),
+      },
+      {
+        name: "ALIAS",
+        selector: (row: DataRow) => row.alias,
+        cell: (row: DataRow) => (
+          <>{row.alias && CopyElement(ClipboardType.ALIAS, row)}</>
+        ),
+      },
+      {
+        name: "N° DE CUENTA",
+        selector: (row: DataRow) => row.account_number,
+        maxWidth: "180px",
+      },
+      {
+        name: "ACCIONES",
+        button: true,
+        width: "150px",
+        cell: (row: any) => (
+          <>
+            {CopyElement(ClipboardType.ALL, row)}
+            <ActionButtons
+              row={row}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          </>
+        ),
+      },
+    ],
+    []
+  );
 
   const handleHide = () => {
     setIsModalOpen(false);
@@ -237,12 +243,24 @@ export const SupplierBankAccounts = () => {
             title="Listado de cuentas bancarias"
             handleAction={handleCreate}
             actionButtonText="Nueva cuenta"
-            hr={false}
             className="mb-0 mb-lg-3"
           />
 
+          <Row>
+            <Col xs={12} md={6}>
+              <p className="text-muted">
+                Proveedor: <span className="fw-bold">{supplier.name}</span>
+              </p>
+            </Col>
+            <Col xs={12} md={6}>
+              <p className="text-muted">
+                Localidad: <span className="fw-bold">{supplier.locality}</span>
+              </p>
+            </Col>
+          </Row>
+
           <DatatableNoPagination
-            title={`Cuentas bancarias del proveedor ${supplier}`}
+            title={`Listado de cuentas bancarias del proveedor`}
             columns={columns as TableColumn<DataRow>[]}
             data={bankAccounts}
             loading={loading}

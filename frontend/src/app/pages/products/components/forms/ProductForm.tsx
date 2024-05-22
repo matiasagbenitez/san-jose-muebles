@@ -4,12 +4,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import apiSJM from "../../../../../api/apiSJM";
-import {
-  MySelect,
-  MyTextArea,
-  MyTextInput,
-  MyNumberInput,
-} from "../../../../components/forms";
+import { CustomInput } from "../../../../components";
 
 interface ProductFormInterface {
   code?: string;
@@ -96,21 +91,27 @@ export const ProductForm = ({
           id_category: Yup.string().required("La categoría es requerida"),
           id_unit: Yup.string().required("La unidad de compra es requerida"),
           id_currency: Yup.string().required("La moneda es requerida"),
+
+          last_price: Yup.number().required("El valor debe ser un número (así sea 0)").min(0, "El costo debe ser mayor o igual a 0"),
+
+          actual_stock: Yup.number().required("El valor debe ser un número (así sea 0)").min(0, "El stock actual debe ser mayor o igual a 0"),
+          min_stock: Yup.number().required("El valor debe ser un número (así sea 0)").min(0, "El stock mínimo debe ser mayor o igual a 0"),
+          ideal_stock: Yup.number().required("El valor debe ser un número (así sea 0)").min(0, "El stock ideal debe ser mayor o igual a 0"),
         })}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, values, setFieldValue }) => (
           <Form id="form">
             <Row>
-              <Col lg={6}>
+              <Col xl={6}>
                 <h2 className="fs-6">Información del producto</h2>
                 <Row>
-                  <Col xs={6}>
-                    <MySelect
-                      label="Categoría *"
+                  <Col xs={12} lg={6}>
+                    <CustomInput.Select
+                      label="Categoría "
                       name="id_category"
-                      as="select"
                       isInvalid={!!errors.id_category && touched.id_category}
                       disabled={isSubmitting}
+                      isRequired
                     >
                       <option value="">Seleccione una opción</option>
                       {categories &&
@@ -119,15 +120,16 @@ export const ProductForm = ({
                             {category.name}
                           </option>
                         ))}
-                    </MySelect>
+                    </CustomInput.Select>
                   </Col>
-                  <Col xs={6}>
-                    <MySelect
-                      label="Marca *"
+                  <Col xs={12} lg={6}>
+                    <CustomInput.Select
+                      label="Marca"
                       name="id_brand"
                       as="select"
                       isInvalid={!!errors.id_brand && touched.id_brand}
                       disabled={isSubmitting}
+                      isRequired
                     >
                       <option value="">Seleccione una opción</option>
                       {brands &&
@@ -136,25 +138,28 @@ export const ProductForm = ({
                             {brand.name}
                           </option>
                         ))}
-                    </MySelect>
+                    </CustomInput.Select>
                   </Col>
                 </Row>
 
-                <MyTextInput
+                <CustomInput.Text
                   label="Código"
                   name="code"
                   placeholder="Ingrese código"
                   isInvalid={!!errors.code && touched.code}
                   disabled={isSubmitting}
                 />
-                <MyTextInput
-                  label="Nombre *"
+
+                <CustomInput.Text
+                  label="Nombre"
                   name="name"
                   placeholder="Ingrese nombre"
                   isInvalid={!!errors.name && touched.name}
                   disabled={isSubmitting}
+                  isRequired
                 />
-                <MyTextArea
+
+                <CustomInput.TextArea
                   label="Descripción"
                   name="description"
                   placeholder="Ingrese una descripción adicional (opcional)"
@@ -163,16 +168,16 @@ export const ProductForm = ({
                   disabled={isSubmitting}
                 />
               </Col>
-              <Col lg={6}>
+              <Col xl={6}>
                 <h2 className="fs-6 mt-5 mt-lg-0">Información de compra</h2>
                 <Row>
-                  <Col lg={6}>
-                    <MySelect
-                      label="Unidad de compra *"
+                  <Col xs={12} lg={6}>
+                    <CustomInput.Select
+                      label="Unidad de compra"
                       name="id_unit"
-                      as="select"
                       isInvalid={!!errors.id_unit && touched.id_unit}
                       disabled={isSubmitting}
+                      isRequired
                     >
                       <option value="">Seleccione una opción</option>
                       {unitsOfMeasure &&
@@ -181,15 +186,15 @@ export const ProductForm = ({
                             {unit.name}
                           </option>
                         ))}
-                    </MySelect>
+                    </CustomInput.Select>
                   </Col>
-                  <Col lg={6}>
-                    <MySelect
-                      label="Moneda de compra *"
+                  <Col xs={12} lg={6}>
+                    <CustomInput.Select
+                      label="Moneda de compra"
                       name="id_currency"
-                      as="select"
                       isInvalid={!!errors.id_currency && touched.id_currency}
                       disabled={isSubmitting}
+                      isRequired
                     >
                       <option value="">Seleccione una opción</option>
                       {currencies &&
@@ -198,25 +203,37 @@ export const ProductForm = ({
                             {currency.name}
                           </option>
                         ))}
-                    </MySelect>
+                    </CustomInput.Select>
                   </Col>
                 </Row>
-                <MyNumberInput
+                <CustomInput.Decimal
                   label="Costo / unidad de compra"
                   name="last_price"
                   placeholder="Ingrese costo actual"
                   isInvalid={!!errors.last_price && touched.last_price}
                   disabled={isSubmitting}
+                  value={values.last_price}
+                  onValueChange={(value) => {
+                    setFieldValue("last_price", value.floatValue || 0);
+                  }}
+                  prefix={
+                    values.id_currency
+                      ? currencies.find(
+                          (c) => c.id == Number(values.id_currency)
+                        )?.symbol + " $"
+                      : ""
+                  }
                 />
                 <h2 className="fs-6 mt-5">Información de stock</h2>
                 <Row>
                   <Col lg={4}>
-                    <MyNumberInput
+                    <CustomInput.Number
                       label="Stock actual"
                       name="actual_stock"
                       placeholder="Ingrese stock actual"
                       isInvalid={!!errors.actual_stock && touched.actual_stock}
                       disabled={editMode || isSubmitting}
+                      min={0}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -229,12 +246,13 @@ export const ProductForm = ({
                   </Col>
 
                   <Col lg={4}>
-                    <MyNumberInput
+                    <CustomInput.Number
                       label="Stock mínimo"
                       name="min_stock"
                       placeholder="Ingrese stock mínimo"
                       isInvalid={!!errors.min_stock && touched.min_stock}
                       disabled={isSubmitting}
+                      min={0}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -248,12 +266,13 @@ export const ProductForm = ({
                   </Col>
 
                   <Col lg={4}>
-                    <MyNumberInput
+                    <CustomInput.Number
                       label="Stock ideal"
                       name="ideal_stock"
                       placeholder="Ingrese stock ideal"
                       isInvalid={!!errors.ideal_stock && touched.ideal_stock}
                       disabled={isSubmitting}
+                      min={0}
                     />
                     <p className="text-muted text-justify small lh-1">
                       <small>
@@ -272,7 +291,7 @@ export const ProductForm = ({
             <Button
               type="submit"
               variant="primary"
-              className="mt-3 float-end"
+              className="my-3 px-3 float-end"
               size="sm"
               disabled={isSubmitting}
             >

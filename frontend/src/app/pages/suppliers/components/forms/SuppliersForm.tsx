@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button, Col, Modal, Row } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Modal, Row } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import apiSJM from "../../../../../api/apiSJM";
-import {
-  MySelect,
-  MyTextArea,
-  MyTextInput,
-} from "../../../../components/forms";
+import { CustomInput } from "../../../../components";
 
 interface SupplierFormInterface {
   name: string;
@@ -65,60 +61,56 @@ export const SuppliersForm = ({
 
   return (
     <Modal show={show} onHide={onHide} size="lg">
-      <div className="p-4">
-        <h1 className="fs-5">
-          {editMode ? "Modificar proveedor" : "Crear proveedor"}
-        </h1>
-        <hr className="my-2" />
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {editMode ? "Actualizar proveedor" : "Registrar nuevo proveedor"}
+        </Modal.Title>
+      </Modal.Header>
 
-        <Formik
-          initialValues={initialForm}
-          onSubmit={(values) => {
-            onSubmit(values);
-          }}
-          validationSchema={Yup.object({
-            name: Yup.string().required("El nombre es requerido"),
-            id_locality: Yup.string().required("La localidad es requerida"),
-          })}
-        >
-          {({ errors, touched }) => (
-            <Form id="form">
+      <Formik
+        initialValues={initialForm}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+        validationSchema={Yup.object({
+          name: Yup.string().required("El nombre es requerido"),
+          id_locality: Yup.string().required("La localidad es requerida"),
+        })}
+      >
+        {({ errors, touched }) => (
+          <Form id="form">
+            <Modal.Body>
               <Row>
                 <Col md={6}>
-                  <MyTextInput
+                  <CustomInput.Text
                     label="Nombre del proveedor"
                     name="name"
-                    type="text"
                     placeholder="Ingrese el nombre del proveedor"
                     isInvalid={!!errors.name && touched.name}
                     disabled={isFormSubmitting}
+                    isRequired
                   />
                 </Col>
                 <Col md={6}>
-                  <MyTextInput
+                  <CustomInput.Text
                     label="DNI/CUIT"
                     name="dni_cuit"
-                    type="text"
                     placeholder="DNI/CUIT del proveedor"
                     isInvalid={!!errors.dni_cuit && touched.dni_cuit}
                     disabled={isFormSubmitting}
                   />
                 </Col>
-              </Row>
-
-              <Row>
                 <Col md={6}>
-                  <MyTextInput
+                  <CustomInput.Text
                     label="Teléfono"
                     name="phone"
-                    type="text"
                     placeholder="Ingrese el teléfono del proveedor"
                     isInvalid={!!errors.phone && touched.phone}
                     disabled={isFormSubmitting}
                   />
                 </Col>
                 <Col md={6}>
-                  <MyTextInput
+                  <CustomInput.Text
                     label="Email"
                     name="email"
                     type="email"
@@ -127,14 +119,10 @@ export const SuppliersForm = ({
                     disabled={isFormSubmitting}
                   />
                 </Col>
-              </Row>
-
-              <Row>
                 <Col md={6}>
-                  <MyTextInput
+                  <CustomInput.Text
                     label="Dirección"
                     name="address"
-                    type="text"
                     placeholder="Ingrese la dirección"
                     isInvalid={!!errors.address && touched.address}
                     disabled={isFormSubmitting}
@@ -142,13 +130,13 @@ export const SuppliersForm = ({
                 </Col>
 
                 <Col md={6}>
-                  <MySelect
+                  <CustomInput.Select
                     label="Localidad"
                     name="id_locality"
-                    as="select"
                     placeholder="Seleccione una localidad"
                     isInvalid={!!errors.id_locality && touched.id_locality}
                     disabled={isFormSubmitting}
+                    isRequired
                   >
                     <option value="">Seleccione una localidad</option>
                     {localities &&
@@ -157,33 +145,42 @@ export const SuppliersForm = ({
                           {locality.name}
                         </option>
                       ))}
-                  </MySelect>
+                  </CustomInput.Select>
                 </Col>
+
+                <CustomInput.TextArea
+                  label="Anotaciones"
+                  name="annotations"
+                  placeholder="Ingrese anotaciones adicionales"
+                  rows={4}
+                  isInvalid={!!errors.annotations && touched.annotations}
+                  disabled={isFormSubmitting}
+                />
               </Row>
+            </Modal.Body>
 
-              <MyTextArea
-                label="Anotaciones"
-                name="annotations"
-                placeholder="Ingrese anotaciones adicionales"
-                rows={4}
-                isInvalid={!!errors.annotations && touched.annotations}
-                disabled={isFormSubmitting}
-              />
-
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-3 float-end"
-                size="sm"
-                disabled={isFormSubmitting}
-              >
-                <i className="bi bi-floppy me-2"></i>
-                {editMode ? "Guardar cambios" : "Crear proveedor"}
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </div>
+            <Modal.Footer>
+              <ButtonGroup size="sm">
+                <Button
+                  variant="secondary"
+                  disabled={isFormSubmitting}
+                  onClick={onHide}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isFormSubmitting}
+                >
+                  <i className="bi bi-floppy mx-1"></i>{" "}
+                  {editMode ? "Actualizar información" : "Registrar proveedor"}
+                </Button>
+              </ButtonGroup>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };
