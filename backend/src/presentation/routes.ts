@@ -20,7 +20,10 @@ import { ProductRoutes } from './products/routes';
 import { PurchaseRoutes } from './purchases/routes';
 import { SupplierAccountRoutes } from './supplier_accounts/routes';
 import { SupplierAccountTransactionRoutes } from './supplier_account_transactions/routes';
+
+import { StockLotRoutes } from './stock_lot/routes';
 import { StockAdjustRoutes } from './stock_adjust/routes';
+
 import { InventoryBrandRoutes } from './inventory_brands/routes';
 import { InventoryCategoryRoutes } from './inventory_categories/routes';
 import { InventoryItemRoutes } from './inventory_items/routes';
@@ -73,6 +76,7 @@ export class AppRoutes {
         router.use('/api/supplier_accounts', SupplierAccountRoutes.routes);
         router.use('/api/supplier_account_transactions', SupplierAccountTransactionRoutes.routes);
 
+        router.use('/api/stock_lots', StockLotRoutes.routes);
         router.use('/api/stock_adjusts', StockAdjustRoutes.routes);
 
         router.use('/api/inventory_brands', InventoryBrandRoutes.routes);

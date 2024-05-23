@@ -2,6 +2,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class StockAdjust extends Model {
     public id!: number;
+    public id_stock_lot!: string;
     public id_product!: string;
     public prev_stock!: number;
     public quantity!: number;
@@ -19,6 +20,10 @@ export const initStockAdjustModel = (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
+            id_stock_lot: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
             id_product: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
@@ -33,14 +38,6 @@ export const initStockAdjustModel = (sequelize: Sequelize) => {
             },
             post_stock: {
                 type: DataTypes.DECIMAL(10, 2),
-                allowNull: false,
-            },
-            comment: {
-                type: DataTypes.STRING,
-                allowNull: true,
-            },
-            id_user: {
-                type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
         },

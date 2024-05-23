@@ -19,6 +19,7 @@ import {
     SupplierAccountTransaction,
     PurchaseTransaction,
 
+    StockLot,
     StockAdjust,
     InventoryBrand,
     InventoryCategory,
@@ -130,11 +131,14 @@ export const initializeAssociations = () => {
     PurchaseTransaction.belongsTo(SupplierAccountTransaction, { foreignKey: 'id_supplier_account_transaction', as: 'supplier_account_transaction' });
     PurchaseTransaction.belongsTo(Purchase, { foreignKey: 'id_purchase', as: 'purchase' });
 
-    // STOCK ADJUST
-    Product.hasMany(StockAdjust, { foreignKey: 'id_product', as: 'adjustments', onDelete: 'RESTRICT' });
-    StockAdjust.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
-    StockAdjust.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
+    // STOCK ADJUST
+    StockLot.hasMany(StockAdjust, { foreignKey: 'id_stock_lot', as: 'adjustments', onDelete: 'RESTRICT' });
+    StockAdjust.belongsTo(StockLot, { foreignKey: 'id_stock_lot', as: 'lot' });
+    StockAdjust.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
+    Product.hasMany(StockAdjust, { foreignKey: 'id_product', as: 'adjustments', onDelete: 'RESTRICT' });
+
+    
     // INVENTORY
     InventoryBrand.hasMany(InventoryItem, { foreignKey: 'id_inventory_brand', as: 'items', onDelete: 'RESTRICT' });
     InventoryItem.belongsTo(InventoryBrand, { foreignKey: 'id_inventory_brand', as: 'brand' });
@@ -147,7 +151,6 @@ export const initializeAssociations = () => {
     InventoryItem.hasMany(InventoryItemEvolution, { foreignKey: 'id_inventory_item', as: 'evolutions', onDelete: 'RESTRICT' });
     InventoryItemEvolution.belongsTo(InventoryItem, { foreignKey: 'id_inventory_item', as: 'item' });
     InventoryItemEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
-
 
     // CLIENT
     Locality.hasMany(Client, { foreignKey: 'id_locality', as: 'clients', onDelete: 'RESTRICT' });

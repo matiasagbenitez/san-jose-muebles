@@ -27,6 +27,7 @@ import { SupplierAccount, initSupplierAccountModel } from './SupplierAccount.mod
 import { SupplierAccountTransaction, initSupplierAccountTransactionModel } from './SupplierAccountTransaction.model';
 import { PurchaseTransaction, initPurchaseTransactionModel } from './PurchaseTransaction.model';
 
+import { StockLot, initStockLotModel } from './StockLot.model';
 import { StockAdjust, initStockAdjustModel } from './StockAdjust.model';
 import { InventoryBrand, initInventoryBrandModel } from './InventoryBrand.model';
 import { InventoryCategory, initInventoryCategoryModel } from './InventoryCategory.model';
@@ -88,6 +89,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initSupplierAccountTransactionModel(sequelize);
   initPurchaseTransactionModel(sequelize);
 
+  initStockLotModel(sequelize);
   initStockAdjustModel(sequelize);
   initInventoryBrandModel(sequelize);
   initInventoryCategoryModel(sequelize);
@@ -150,6 +152,7 @@ export {
   SupplierAccountTransaction,
   PurchaseTransaction,
 
+  StockLot,
   StockAdjust,
 
   InventoryBrand,
