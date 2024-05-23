@@ -7,6 +7,7 @@ export class CreateStockLotDTO {
     private constructor(
         public type: 'INCREMENT' | 'DECREMENT',
         public description: string,
+        public total_items: number,
         public id_user: number,
         public stock_list: StockItem[] = [],
     ) { }
@@ -33,9 +34,12 @@ export class CreateStockLotDTO {
             if (item.quantity <= 0) return ['La cantidad debe ser mayor a 0'];
         }
 
+        const total_items = stock_list.length;
+
         return [undefined, new CreateStockLotDTO(
             type,
             description,
+            total_items,
             id_user,
             stock_list,
         )];

@@ -58,14 +58,29 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           Calendario
         </MenuItem>
 
-        <MenuItem
-          component={<Link to="/productos" />}
-          title="Productos"
+        <SubMenu
+          prefix={
+            <>
+              <i className="bi bi-box-seam me-3 fs-6"></i>Productos
+            </>
+          }
           style={{ height: "45px" }}
         >
-          <i className="bi bi-box-seam me-3 fs-6"></i>
-          Productos
-        </MenuItem>
+          <MenuItem
+            component={<Link to="/productos" />}
+            title="Listado de productos"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Listado de productos</small>
+          </MenuItem>
+          <MenuItem
+            component={<Link to="/productos/ajustes" />}
+            title="Gestionar stock de productos"
+            style={{ height: "45px", marginLeft: "10px" }}
+          >
+            <small>Control de stock</small>
+          </MenuItem>
+        </SubMenu>
 
         <SubMenu
           prefix={

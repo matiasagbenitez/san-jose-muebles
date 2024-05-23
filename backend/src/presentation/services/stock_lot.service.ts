@@ -1,15 +1,64 @@
+import { Op } from "sequelize";
 import { StockLot, StockAdjust, Product } from "../../database/mysql/models";
-import { CustomError, PaginationDto, CreateStockLotDTO } from "../../domain";
-
-interface StockAdjustInterface {
-    id_product: number,
-    id_stock_lot: number,
-    prev_stock: number,
-    quantity: number,
-    post_stock: number,
-}
-
+import { CustomError, PaginationDto, CreateStockLotDTO, StockLotListEntity, StockLotItemEntity } from "../../domain";
 export class StockLotService {
+
+    public async getStockLots(paginationDto: PaginationDto, filters: any) {
+        const { page, limit } = paginationDto;
+
+        // FILTERS
+        let where = {};
+        if (filters.description) where = { ...where, description: { [Op.like]: `%${filters.description}%` } };
+        if (filters.type && ['INCREMENT', 'DECREMENT'].includes(filters.type)) where = { ...where, type: filters.type };
+
+        const [rows, total] = await Promise.all([
+            StockLot.findAll({
+                where,
+                include: [{
+                    association: 'user',
+                    attributes: ['name']
+                }],
+                offset: (page - 1) * limit,
+                limit,
+                order: [['createdAt', 'DESC']]
+            }),
+            StockLot.count({ where })
+        ]);
+        const entities = rows.map(row => StockLotListEntity.fromObject(row));
+        return { items: entities, total_items: total };
+
+    }
+
+    public async getLotBasic(id: number) {
+
+        const row = await StockLot.findByPk(id, {
+            include: [{
+                association: 'user',
+                attributes: ['name']
+            }],
+        });
+        if (!row) throw CustomError.notFound('No se encontró el lote de stock');
+        const entity = StockLotListEntity.fromObject(row);
+
+        return { item: entity };
+    }
+
+    public async getStockLot(id_stock_lot: number, paginationDto: PaginationDto) {
+        const { page, limit } = paginationDto;
+
+        const [rows, total] = await Promise.all([
+            StockAdjust.findAll({
+                where: { id_stock_lot },
+                include: [{ association: 'product', attributes: ['name'] }],
+                offset: (page - 1) * limit,
+                limit,
+            }),
+            StockAdjust.count({ where: { id_stock_lot } })
+        ]);
+        const entities = rows.map(row => StockLotItemEntity.fromObject(row));
+        
+        return { items: entities, total_items: total };
+    }
 
     public async createStockLot(dto: CreateStockLotDTO) {
         const transaction = await StockLot.sequelize!.transaction();
@@ -19,6 +68,7 @@ export class StockLotService {
             const stock_lot = await StockLot.create({
                 type: dto.type,
                 description: dto.description,
+                total_items: dto.total_items,
                 id_user: dto.id_user,
             }, { transaction, returning: true });
             if (!stock_lot) throw CustomError.internalServerError('No se pudo crear el ajuste de stock');
@@ -48,8 +98,8 @@ export class StockLotService {
                 list.push({
                     id_stock_lot: stock_lot.id,
                     id_product: item.id_product,
-                    prev_stock: prev_stock, 
-                    quantity: new_quantity,
+                    prev_stock: prev_stock,
+                    quantity: dto.type === 'INCREMENT' ? new_quantity : -new_quantity,
                     post_stock: post_stock,
                 });
             }

@@ -47,7 +47,7 @@ export * from './entities/supplier_account_transactions';
 
 // STOCK_LOT
 export * from './dtos/stock_lot';
-// export * from './entities/stock_lot';
+export * from './entities/stock_lot';
 
 // STOCK_ADJUST
 export * from './dtos/stock_adjust';

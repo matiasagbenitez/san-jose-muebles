@@ -41,7 +41,7 @@ export const SimplePageHeader = ({
         </Col>
       </Row>
 
-      {hr && <hr className="mt-0 mt-lg-3" />}
+      {hr && <hr className="mt-3 " />}
     </div>
   );
 };

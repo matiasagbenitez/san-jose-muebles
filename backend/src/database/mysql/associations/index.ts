@@ -137,6 +137,7 @@ export const initializeAssociations = () => {
     StockAdjust.belongsTo(StockLot, { foreignKey: 'id_stock_lot', as: 'lot' });
     StockAdjust.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
     Product.hasMany(StockAdjust, { foreignKey: 'id_product', as: 'adjustments', onDelete: 'RESTRICT' });
+    StockLot.belongsTo(User, { foreignKey: 'id_user', as: 'user' }); 
 
     
     // INVENTORY
