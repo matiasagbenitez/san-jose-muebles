@@ -5,7 +5,6 @@ import ParametersRoutes from "./ParametersRoutes";
 import SuppliersRoutes from "./SupplierRoutes";
 import ProductRoutes from "./ProductRoutes";
 import PurchaseRoutes from "./PurchaseRoutes";
-import SupplierAccountRoutes from "./SupplierAccountRoutes";
 import InventoryItemsRoutes from "./InventoryItemsRoutes";
 import ClientRoutes from "./ClientRoutes";
 import AgendaRoutes from "./AgendaRoutes";
@@ -22,7 +21,6 @@ const AppRoutes = () => {
         <Route path="/proveedores/*" element={<SuppliersRoutes />} />
         <Route path="/productos/*" element={<ProductRoutes />} />
         <Route path="/compras/*" element={<PurchaseRoutes />} />
-        <Route path="/cuentas-proveedores/*" element={<SupplierAccountRoutes />} />
         <Route path="/inventario/*" element={<InventoryItemsRoutes />} />
         <Route path="/clientes/*" element={<ClientRoutes />} />
         <Route path="/agenda/*" element={<AgendaRoutes />} />

@@ -105,3 +105,23 @@ export interface InitialFormInterface {
     description: string;
     amount: number;
 }
+
+interface CurrencyInterface {
+    name: string;
+    symbol: string;
+    is_monetary: boolean;
+}
+
+export interface SupplierTransactionDetailInterface {
+    id: string;
+    supplier: SupplierBasicInfo;
+    currency: CurrencyInterface;
+    id_supplier_account: string;
+    type: 'NEW_PURCHASE' | 'DEL_PURCHASE' | 'NEW_PAYMENT' | 'NEW_CLIENT_PAYMENT' | 'DEL_CLIENT_PAYMENT' | 'POS_ADJ' | 'NEG_ADJ';
+    description: string;
+    prev_balance: number;
+    amount: number;
+    post_balance: number;
+    user: string;
+    createdAt: Date;
+}

@@ -7,6 +7,7 @@ interface CurrencyInterface {
 }
 
 interface SupplierInterface {
+    id: number;
     name: string;
     locality: string;
 }
@@ -69,6 +70,7 @@ export class SupplierTransactionDetailEntity {
         };
 
         const supplierData: SupplierInterface = {
+            id: account.supplier.id,
             name: account.supplier.name,
             locality: account.supplier.locality.name + ' - ' + account.supplier.locality.province.name,
         };

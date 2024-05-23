@@ -1,6 +1,7 @@
 export * from './Suppliers';
 export * from './Supplier';
 export * from './SupplierAccountTransactions';
+export * from './SupplierAccountTransaction';
 export * from './components';
 export * from './SupplierBankAccounts';
 export * from './SupplierAccounts';

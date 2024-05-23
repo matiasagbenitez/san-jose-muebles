@@ -5,21 +5,21 @@ import { Table } from "react-bootstrap";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
 import { NumberFormatter, DateFormatter } from "../../helpers";
-import { EntityTransactionDetailInterface, Movements } from "./interfaces";
+import { SupplierTransactionDetailInterface, Movements } from "./interfaces";
 
-export const EntityAccountTransaction = () => {
-  const { id: id_entity, id_entity_account, id_transaction } = useParams();
+export const SupplierAccountTransaction = () => {
+  const { id: id_supplier, id_supplier_account, id_transaction } = useParams();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [transaction, setTransaction] =
-    useState<EntityTransactionDetailInterface>();
+    useState<SupplierTransactionDetailInterface>();
 
   const fetch = async () => {
     try {
       setLoading(true);
       const { data } = await apiSJM.get(
-        `/entity_account_transactions/${id_entity}/${id_entity_account}/${id_transaction}`
+        `/supplier_account_transactions/${id_supplier}/${id_supplier_account}/${id_transaction}`
       );
       setTransaction(data.item);
       setLoading(false);
@@ -42,7 +42,7 @@ export const EntityAccountTransaction = () => {
       {!loading && transaction && (
         <>
           <PageHeader
-            goBackTo={`/entidades/${id_entity}/cuentas/${id_entity_account}`}
+            goBackTo={`/proveedores/${id_supplier}/cuentas/${id_supplier_account}`}
             goBackTitle="Volver al listado de movimientos"
             title="Detalle de movimiento"
             handleAction={handleExportPDF}
@@ -87,7 +87,7 @@ export const EntityAccountTransaction = () => {
                   Entidad
                 </th>
                 <td className="col-4 px-2 fw-bold">
-                  {transaction.entity.name}
+                  {transaction.supplier.name}
                 </td>
                 <th
                   className="col-2 px-2"
@@ -95,7 +95,7 @@ export const EntityAccountTransaction = () => {
                 >
                   Localidad
                 </th>
-                <td className="col-4 px-2">{transaction.entity.locality}</td>
+                <td className="col-4 px-2">{transaction.supplier.locality}</td>
               </tr>
               <tr>
                 <th

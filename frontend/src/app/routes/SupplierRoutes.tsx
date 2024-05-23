@@ -10,6 +10,7 @@ import {
   SupplierPurchases,
   SupplierAccountTransactions,
   SuppliersAccounts,
+  SupplierAccountTransaction,
 } from "../pages/suppliers";
 
 const SuppliersRoutes = () => {
@@ -24,6 +25,7 @@ const SuppliersRoutes = () => {
           <Route path="/:id" element={<Supplier />} />
           <Route path="/:id/cuentas" element={<SupplierAccounts />} />  
           <Route path="/:id/cuentas/:id_supplier_account" element={<SupplierAccountTransactions />} />
+          <Route path="/:id/cuentas/:id_supplier_account/movimiento/:id_transaction" element={<SupplierAccountTransaction />} />
 
 
           <Route path="/:id/cuentas-bancarias" element={<SupplierBankAccounts />} />

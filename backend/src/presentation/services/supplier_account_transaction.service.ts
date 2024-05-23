@@ -62,8 +62,13 @@ export class SupplierAccountTransactionService {
 
     // * GET TRANSACTION BY ID *
     // Obtiene una transacción por su ID
-    public async getTransactionById(id: number) {
+    public async getTransactionById(ids: [number, number, number]) {
+        const [id_supplier, id_supplier_account, id] = ids;
         try {
+
+            const account = await SupplierAccount.findOne({ where: { id: id_supplier_account, id_supplier: id_supplier } });
+            if (!account) throw CustomError.notFound('¡La cuenta del proveedor no existe!');
+
             const transaction = await SupplierAccountTransaction.findByPk(id, {
                 include: [
                     {
@@ -80,6 +85,8 @@ export class SupplierAccountTransactionService {
                 ],
             });
             if (!transaction) throw CustomError.notFound('¡La transacción no existe!');
+            if (transaction.id_supplier_account !== id_supplier_account) throw CustomError.notFound('¡La transacción no pertenece a la cuenta del proveedor!');
+
             const entity = SupplierTransactionDetailEntity.fromObject(transaction);
 
             return { item: entity }
