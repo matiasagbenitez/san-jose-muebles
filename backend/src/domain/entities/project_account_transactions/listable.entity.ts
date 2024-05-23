@@ -1,8 +1,9 @@
 import { CustomError } from '../../errors/custom.error';
 interface SupplierInterface {
+    id: number;
+    supplier: string;
     id_account: number;
     id_movement: number;
-    supplier: string;
 }
 export class ProjectAccountTransactionEntity {
     constructor(
@@ -37,9 +38,10 @@ export class ProjectAccountTransactionEntity {
         let supplier_data: SupplierInterface | undefined = undefined;
         if (project_supplier_transaction) {
             supplier_data = {
+                id: project_supplier_transaction.supplier_transaction.account.supplier.id,
+                supplier: project_supplier_transaction.supplier_transaction.account.supplier.name,
                 id_account: project_supplier_transaction.supplier_transaction.account.id,
                 id_movement: project_supplier_transaction.id_supplier_account_transaction,
-                supplier: project_supplier_transaction.supplier_transaction.account.supplier.name,
             };
         }
 

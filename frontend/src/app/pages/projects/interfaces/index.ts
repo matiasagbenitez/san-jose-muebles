@@ -111,6 +111,7 @@ export interface TransactionDataRow {
     equivalent_amount: number;
     post_balance: number;
     supplier?: {
+        id: number;
         id_account: number;
         id_movement: number;
         supplier: string;
@@ -137,22 +138,22 @@ export const types: Record<
 > = {
     [MovementType.NEW_PAYMENT]: {
         label: "PAGO DEL CLIENTE",
-        icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+        icon: "bi bi-arrow-up-circle-fill fs-6 me-1 text-success",
         title: "Disminuye la deuda del cliente",
     },
     [MovementType.NEW_SUPPLIER_PAYMENT]: {
         label: "PAGO A PROVEEDOR",
-        icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+        icon: "bi bi-arrow-up-circle-fill fs-6 me-1 text-success",
         title: "Disminuye la deuda del cliente",
     },
     [MovementType.POS_ADJ]: {
         label: "AJUSTE A FAVOR",
-        icon: "bi bi-arrow-up-circle-fill fs-6 text-success",
+        icon: "bi bi-arrow-up-circle-fill fs-6 me-1 text-success",
         title: "Disminuye la deuda del cliente",
     },
     [MovementType.NEG_ADJ]: {
         label: "AJUSTE EN CONTRA",
-        icon: "bi bi-arrow-down-circle-fill fs-6 text-danger",
+        icon: "bi bi-arrow-down-circle-fill fs-6 me-1 text-danger",
         title: "Aumenta la deuda del cliente",
     },
 };
@@ -212,4 +213,13 @@ export interface CurrencyInterface {
     name: string;
     symbol: string;
     is_monetary: boolean;
+}
+
+export interface InitialForm {
+    type: string;
+    description: string;
+    amount: number;
+    id_currency: string;
+    equivalent_amount: number;
+    id_supplier_account?: string;
 }

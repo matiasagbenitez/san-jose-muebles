@@ -22,7 +22,7 @@ export class ProjectAccountTransactionService {
                                     {
                                         association: 'account', include: [
                                             {
-                                                association: 'supplier', attributes: ['name']
+                                                association: 'supplier', attributes: ['id', 'name']
                                             }
                                         ]
                                     }

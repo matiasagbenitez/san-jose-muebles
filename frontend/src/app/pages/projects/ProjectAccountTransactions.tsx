@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useMemo } from "react";
 import { Button, Modal, Form, InputGroup, Row, Col } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
@@ -13,26 +13,19 @@ import {
   initialState,
   paginationReducer,
   fetchData,
+  ColumnOmitter,
+  ColumnsHiddenInterface,
 } from "../../shared";
+
 import {
-  Statuses,
   AccountInterface,
   TransactionDataRow as DataRow,
-  MovementType,
   types,
   AccountCurrency,
   ParamsInterface,
+  InitialForm,
 } from "./interfaces";
 import { DateFormatter, NumberFormatter } from "../../helpers";
-
-interface InitialForm {
-  type: string;
-  description: string;
-  amount: number;
-  id_currency: string;
-  equivalent_amount: number;
-  id_supplier_account?: string;
-}
 
 const initialForm: InitialForm = {
   type: "",
@@ -40,6 +33,17 @@ const initialForm: InitialForm = {
   amount: 0,
   id_currency: "",
   equivalent_amount: 0,
+};
+
+const columnsHidden = {
+  id: { name: "ID", omit: false },
+  createdAt: { name: "FECHA", omit: false },
+  received_amount: { name: "IMPORTE", omit: true },
+  prev_balance: { name: "SALDO ANTERIOR", omit: true },
+  equivalent_amount: { name: "IMPORTE REAL", omit: false },
+  post_balance: { name: "SALDO POSTERIOR", omit: false },
+  type: { name: "TIPO MOVIMIENTO", omit: false },
+  description: { name: "DESCRIPCIÓN", omit: false },
 };
 
 export const ProjectAccountTransactions = () => {
@@ -59,6 +63,9 @@ export const ProjectAccountTransactions = () => {
   const [currencies, setCurrencies] = useState<ParamsInterface[]>([]);
   const [formData, setFormData] = useState(initialForm);
   const [supplierAccounts, setSupplierAccounts] = useState([]);
+
+  const [omittedColumns, setOmittedColumns] =
+    useState<ColumnsHiddenInterface>(columnsHidden);
 
   const fetch = async () => {
     try {
@@ -101,137 +108,145 @@ export const ProjectAccountTransactions = () => {
     }
   }, [state.error]);
 
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "FECHA REGISTRO",
-      selector: (row: any) => row.createdAt,
-      format: (row: DataRow) => <>{DateFormatter.toDMYH(row.createdAt)}</>,
-      maxWidth: "140px",
-      center: true,
-    },
-    {
-      name: "DESCRIPCIÓN",
-      selector: (row: DataRow) => row.description,
-      wrap: true,
-      format: (row: DataRow) => (
-        <>
-          {row.supplier && (
-            <>
-              PAGO A PROVEEDOR (
-              <Link to={`/cuentas-proveedores/${row.supplier.id_account}`}>
-                {row.supplier.supplier}
-              </Link>
-              {" | "}
-              N° {row.supplier.id_movement})
-            </>
-          )}
-          {!row.supplier && row.description && <span>{row.description}</span>}
-        </>
-      ),
-    },
-    {
-      name: "TIPO MOVIMIENTO",
-      // hide: "lg" as Media, // import from 'react-data-table-component'
-      selector: (row: DataRow) => row.type,
-      cell: (row: DataRow) => {
-        if (!(row.type in MovementType)) {
-          throw new Error(`Invalid type: ${row.type}`);
-        }
-
-        return (
-          <div className="d-flex align-items-center">
-            <i
-              className={types[row.type as MovementType].icon}
-              title={types[row.type as MovementType].title}
-            ></i>
-            <span className="ms-2">
-              {types[row.type as MovementType].label}
-            </span>
-          </div>
-        );
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+        omit: omittedColumns.id.omit,
       },
-      maxWidth: "185px",
-    },
-    {
-      name: "IMPORTE",
-      selector: (row: DataRow) => row.received_amount,
-      format: (row: DataRow) => (
-        <>
-          <small className="text-muted">{`${row.currency} `}</small>
-          {NumberFormatter.formatNotsignedCurrency(
-            row.is_monetary === true,
-            row.received_amount
-          )}
-        </>
-      ),
-      maxWidth: "145px",
-      right: true,
-    },
-    {
-      name: "SALDO ANTERIOR",
-      selector: (row: DataRow) => row.prev_balance,
-      format: (row: DataRow) => {
-        return (
+      {
+        name: "FECHA",
+        selector: (row: any) => DateFormatter.toDMYYYY(row.createdAt),
+        maxWidth: "110px",
+        center: true,
+        omit: omittedColumns.createdAt.omit,
+      },
+      {
+        name: "IMPORTE",
+        selector: (row: DataRow) => row.received_amount,
+        format: (row: DataRow) => (
           <>
-            <small className="text-muted">{`${
-              accountCurrency!.symbol
-            } `}</small>
+            <small className="text-muted">{`${row.currency} `}</small>
+            {NumberFormatter.formatNotsignedCurrency(
+              row.is_monetary === true,
+              row.received_amount
+            )}
+          </>
+        ),
+        maxWidth: "145px",
+        right: true,
+        omit: omittedColumns.received_amount.omit,
+      },
+      {
+        name: "SALDO ANTERIOR",
+        maxWidth: "160px",
+        selector: (row: DataRow) => row.prev_balance,
+        format: (row: DataRow) => (
+          <>
+            <small className="text-muted">{`${accountCurrency?.symbol} `}</small>
             {NumberFormatter.formatSignedCurrency(
-              accountCurrency!.is_monetary,
+              row.is_monetary === true,
               row.prev_balance
             )}
           </>
-        );
+        ),
+        right: true,
+        conditionalCellStyles: [
+          {
+            when: (row: DataRow) => row.prev_balance < 0,
+            style: { color: "red" },
+          },
+        ],
+        omit: omittedColumns.prev_balance.omit,
       },
-      maxWidth: "145px",
-      right: true,
-    },
-    {
-      name: `IMPORTE REAL (${accountCurrency?.symbol})`,
-      maxWidth: "160px",
-      selector: (row: DataRow) => row.equivalent_amount,
-      format: (row: DataRow) => {
-        return (
+      {
+        name: `IMPORTE REAL (${accountCurrency?.symbol})`,
+        maxWidth: "160px",
+        selector: (row: DataRow) => row.equivalent_amount,
+        format: (row: DataRow) => (
           <>
-            <small className="text-muted">{`${
-              accountCurrency!.symbol
-            } `}</small>
+            <small className="text-muted">{`${accountCurrency?.symbol} `}</small>
             {NumberFormatter.formatSignedCurrency(
-              accountCurrency!.is_monetary,
+              row.is_monetary === true,
               row.equivalent_amount
             )}
           </>
-        );
+        ),
+        right: true,
+        conditionalCellStyles: [
+          {
+            when: (row: DataRow) => row.equivalent_amount < 0,
+            style: { color: "red" },
+          },
+        ],
+        style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1em" },
+        omit: omittedColumns.equivalent_amount.omit,
       },
-      right: true,
-      style: { fontWeight: "bold", background: "#f0f0f0", fontSize: "1.1em" },
-    },
-    {
-      name: "SALDO POSTERIOR",
-      maxWidth: "145px",
-      selector: (row: DataRow) => row.post_balance,
-      format: (row: DataRow) => {
-        return (
+      {
+        name: "SALDO POSTERIOR",
+        maxWidth: "160px",
+        selector: (row: DataRow) => row.post_balance,
+        format: (row: DataRow) => (
           <>
-            <small className="text-muted">{`${
-              accountCurrency!.symbol
-            } `}</small>
+            <small className="text-muted">{`${accountCurrency?.symbol} `}</small>
             {NumberFormatter.formatSignedCurrency(
-              accountCurrency!.is_monetary,
+              row.is_monetary === true,
               row.post_balance
             )}
           </>
-        );
+        ),
+        right: true,
+        conditionalCellStyles: [
+          {
+            when: (row: DataRow) => row.post_balance < 0,
+            style: { color: "red" },
+          },
+        ],
+        omit: omittedColumns.post_balance.omit,
       },
-      right: true,
-    },
-  ];
+      {
+        name: "TIPO MOVIMIENTO",
+        selector: (row: DataRow) => row.type,
+        format: (row: DataRow) => (
+          <>
+            <i
+              className={types[row.type].icon}
+              title={types[row.type].title}
+            ></i>{" "}
+            {types[row.type].label}
+          </>
+        ),
+        maxWidth: "200px",
+        wrap: true,
+        omit: omittedColumns.type.omit,
+      },
+      {
+        name: "DESCRIPCIÓN",
+        selector: (row: DataRow) => row.description,
+        wrap: true,
+        format: (row: DataRow) => (
+          <>
+            {row.supplier && (
+              <>
+                PAGO A PROVEEDOR (
+                <Link to={`/proveedores/${row.supplier.id}/cuentas/${row.supplier.id_account}`}>
+                  {row.supplier.supplier}
+                </Link>
+                {" | "}
+                N° {row.supplier.id_movement})
+              </>
+            )}
+            {!row.supplier && row.description && <span>{row.description}</span>}
+          </>
+        ),
+        omit: omittedColumns.description.omit,
+      },
+    ],
+    [accountCurrency, omittedColumns]
+  );
 
   const handleCreate = () => {
     setIsModalOpen(true);
@@ -331,62 +346,50 @@ export const ProjectAccountTransactions = () => {
           />
 
           {/* PROJECT ACCOUNT INFO */}
-          <Row>
-            <Col xs={12} xl={4}>
-              <p className="text-muted">
-                Cliente: <span className="fw-bold">{account.client}</span>
-              </p>
-            </Col>
-            <Col xs={12} xl={8}>
-              <p className="text-muted">
-                Proyecto:{" "}
-                <span className="fw-bold">
+          <Row className="mb-3 mb-xl-0">
+            <Col xs={12} xl={7}>
+              <p className="fw-bold">
+                <span className="text-muted">{account.client}</span>
+                {" - "}
+                <span>
                   {account.title || "Sin título especificado"} (
                   {account.locality})
                 </span>
-                <span
-                  className="badge rounded-pill ms-1"
-                  style={{
-                    fontSize: ".9em",
-                    color: "black",
-                    backgroundColor: Statuses[account.status],
-                  }}
-                >
-                  {account.status}
-                </span>
               </p>
             </Col>
-            <Col xs={12} xl={4}>
-              <p className="text-muted">
-                Moneda:{" "}
-                <span className="fw-bold">
-                  {account.currency.name} ({account.currency.symbol})
-                </span>
-              </p>
-            </Col>
-            <Col xs={12} xl={5}>
-              <span className="text-muted">Saldo cuenta: </span>
+
+            <Col xs={12} xl={3}>
+              <b>SALDO ACTUAL:</b>
               <span
-                className={`my-0 text-center bg-${
+                className={`px-2 text-end fw-bold text-${
                   account.balance < 0
                     ? "danger"
                     : account.balance == 0
-                    ? "secondary"
+                    ? "muted"
                     : "success"
-                } badge rounded-pill fs-6`}
+                }`}
               >
-                {account.currency.symbol}{" "}
+                <span className="text-dark fw-normal me-1">
+                  {account.currency.symbol}
+                </span>
                 {NumberFormatter.formatSignedCurrency(
                   account.currency.is_monetary,
                   account.balance
                 )}
               </span>
             </Col>
+
+            <Col xs={12} xl={2}>
+              <ColumnOmitter
+                omittedColumns={omittedColumns}
+                setOmittedColumns={setOmittedColumns}
+              />
+            </Col>
           </Row>
 
           {/* DATATABLE */}
           <Datatable
-            title="Listado de últimos movimientos"
+            title={`Listado de últimos movimientos en ${account.currency.name} (${accountCurrency.symbol})`}    
             columns={columns as TableColumn<DataRow>[]}
             data={state.data}
             loading={state.loading}

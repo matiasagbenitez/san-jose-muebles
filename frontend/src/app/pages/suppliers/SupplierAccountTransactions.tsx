@@ -341,6 +341,7 @@ export const SupplierAccountTransactions = () => {
                 )}
               </span>
             </Col>
+            
             <Col xs={12} xl={2}>
               <ColumnOmitter
                 omittedColumns={omittedColumns}
