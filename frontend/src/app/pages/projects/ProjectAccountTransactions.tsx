@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useReducer, useMemo } from "react";
-import { Button, Modal, Form, InputGroup, Row, Col } from "react-bootstrap";
+import {
+  Button,
+  Modal,
+  Form,
+  InputGroup,
+  Row,
+  Col,
+  ButtonGroup,
+} from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, PageHeader } from "../../components";
@@ -232,7 +240,9 @@ export const ProjectAccountTransactions = () => {
             {row.supplier && (
               <>
                 PAGO A PROVEEDOR (
-                <Link to={`/proveedores/${row.supplier.id}/cuentas/${row.supplier.id_account}`}>
+                <Link
+                  to={`/proveedores/${row.supplier.id}/cuentas/${row.supplier.id_account}`}
+                >
                   {row.supplier.supplier}
                 </Link>
                 {" | "}
@@ -389,7 +399,7 @@ export const ProjectAccountTransactions = () => {
 
           {/* DATATABLE */}
           <Datatable
-            title={`Listado de últimos movimientos en ${account.currency.name} (${accountCurrency.symbol})`}    
+            title={`Listado de últimos movimientos en ${account.currency.name} (${accountCurrency.symbol})`}
             columns={columns as TableColumn<DataRow>[]}
             data={state.data}
             loading={state.loading}
@@ -402,11 +412,11 @@ export const ProjectAccountTransactions = () => {
 
           {/* FORMULARIO NUEVO MOVIMIENTO */}
           <Modal show={isModalOpen} onHide={() => handleClose()} size="lg">
-            <div className="p-3">
-              <h5>Nuevo movimiento</h5>
-              <hr />
-
-              <Form onSubmit={handleSubmit}>
+            <Modal.Header closeButton>
+              <Modal.Title>Registrar nuevo movimiento</Modal.Title>
+            </Modal.Header>
+            <Form onSubmit={handleSubmit}>
+              <Modal.Body>
                 {/* TIPO DE MOVIMIENTO */}
                 <InputGroup className="mb-3" size="sm">
                   <InputGroup.Text>Tipo de movimiento</InputGroup.Text>
@@ -547,27 +557,28 @@ export const ProjectAccountTransactions = () => {
                   />
                   <InputGroup.Text>{accountCurrency.name}</InputGroup.Text>
                 </InputGroup>
+              </Modal.Body>
 
-                <div className="d-flex gap-2 justify-content-end">
+              <Modal.Footer>
+                <ButtonGroup size="sm">
                   <Button
-                    size="sm"
                     variant="secondary"
-                    onClick={() => setIsModalOpen(false)}
+                    disabled={isFormSubmiting}
+                    onClick={handleClose}
                   >
-                    Cerrar
+                    Cancelar
                   </Button>
                   <Button
-                    size="sm"
                     variant="primary"
                     type="submit"
                     disabled={isFormSubmiting}
                   >
-                    <i className="bi bi-floppy me-2"></i>
-                    Registrar movimiento
+                    <i className="bi bi-floppy mx-1"></i>{" "}
+                    {isFormSubmiting ? "Guardando..." : "Registrar movimiento"}
                   </Button>
-                </div>
-              </Form>
-            </div>
+                </ButtonGroup>
+              </Modal.Footer>
+            </Form>
           </Modal>
         </>
       )}

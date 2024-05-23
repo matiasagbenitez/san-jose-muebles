@@ -109,7 +109,7 @@ export const SupplierAccountTransaction = () => {
                   className="col-2 px-2"
                   style={{ backgroundColor: "#F2F2F2" }}
                 >
-                  Moneda:
+                  Moneda
                 </th>
                 <td className="col-4 px-2">
                   {transaction.currency.name} ({transaction.currency.symbol})
@@ -144,6 +144,7 @@ export const SupplierAccountTransaction = () => {
               </tr>
             </tbody>
           </Table>
+          <h6>Resumen del movimiento</h6>
           <Table
             responsive
             bordered

@@ -46,8 +46,12 @@ export class ProjectAccountTransactionService {
 
     // * GET TRANSACTION BY ID *
     // Obtiene una transacción por su ID
-    public async getTransactionById(id: number) {
+    public async getTransactionById(ids: [number, number, number]) {
+        const [id_project, id_project_account, id] = ids;
         try {
+            const account = await ProjectAccount.findOne({ where: { id: id_project_account, id_project: id_project } });
+            if (!account) throw CustomError.notFound('¡La cuenta del proyecto no existe!');
+
             const transaction = await ProjectAccountTransaction.findByPk(id, {
                 include: [
                     {
@@ -66,6 +70,8 @@ export class ProjectAccountTransactionService {
                 ],
             });
             if (!transaction) throw CustomError.notFound('¡La transacción no existe!');
+            if (transaction.id_project_account !== id_project_account) throw CustomError.forbidden('¡La transacción no pertenece a la cuenta del proyecto!');
+            
             const entity = ProjectTransactionDetailEntity.fromObject(transaction);
 
             return { item: entity }
