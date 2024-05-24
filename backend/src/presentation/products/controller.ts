@@ -81,33 +81,6 @@ export class ProductController {
             });
     }
 
-    adjustProductStock = async (req: Request, res: Response) => {
-        const id = req.params.id;
-        if (!id) return res.status(400).json({ message: 'Missing id' });
-
-        for (let key in req.body) {
-            if (typeof req.body[key] === 'string' && key !== 'op') {
-                req.body[key] = req.body[key].toUpperCase().trim();
-            }
-        }
-
-        const [error, adjustProductStockDto] = AdjustProductStockDto.create(req.body);
-        if (error) return res.status(400).json({ message: error });
-
-        const [id_error, loggedUserIdDto] = LoggedUserIdDto.create(req);
-        if (id_error) return res.status(400).json({ message: id_error });
-
-        if (adjustProductStockDto && loggedUserIdDto) {
-            this.productService.adjustProductStock(parseInt(id), adjustProductStockDto, loggedUserIdDto.id_user!)
-                .then((data) => {
-                    res.json(data);
-                })
-                .catch((error) => {
-                    this.handleError(error, res);
-                });
-        }
-    }
-
     create = async (req: Request, res: Response) => {
         for (let key in req.body) {
             if (typeof req.body[key] === 'string') {

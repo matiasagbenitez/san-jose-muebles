@@ -50,7 +50,6 @@ export * from './dtos/stock_lot';
 export * from './entities/stock_lot';
 
 // STOCK_ADJUST
-export * from './dtos/stock_adjust';
 export * from './entities/stock_adjust';
 
 // INVENTORY ITEMS

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, PaginationDto, StockAdjustDto } from "../../domain";
+import { CustomError, PaginationDto } from "../../domain";
 import { StockAdjustService } from "../services/stock_adjust.service";
 
 export class StockAdjustController {

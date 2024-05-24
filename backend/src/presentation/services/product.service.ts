@@ -1,9 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Product, PurchaseItem } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity, AdjustProductStockDto, StockAdjustDto, ProductSelect2Entity } from "../../domain";
-import { PurchaseItemService } from "./purchase_item.service";
-import { StockAdjustService } from "./stock_adjust.service";
-import { mysqlSingleton } from "../../database";
+import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity, ProductSelect2Entity } from "../../domain";
 
 export interface ProductFilters {
     text: string | undefined;
@@ -17,7 +14,7 @@ export class ProductService {
     public async getProductsSelect2() {
         const products = await Product.findAll({
             include: [
-                { association: 'brand' }, { association: 'unit'}
+                { association: 'brand' }, { association: 'unit' }
             ],
         });
         const productsEntities = products.map(product => ProductSelect2Entity.fromObject(product));
@@ -114,54 +111,6 @@ export class ProductService {
         const { ...productEntity } = ProductEditableEntity.fromObject(product);
         return { product: productEntity };
     }
-
-    public async adjustProductStock(id_product: number, dto: AdjustProductStockDto, id_user: number) {
-        const { op, quantity, comment } = dto;
-
-        const product = await Product.findByPk(id_product);
-        if (!product) throw CustomError.notFound('Producto no encontrado');
-
-        const actual_stock = Number(product.actual_stock);
-
-        if (op === 'sub' && actual_stock < quantity) {
-            throw CustomError.badRequest('No hay suficiente stock para realizar la operación');
-        }
-
-        const stockAdjustService = new StockAdjustService();
-        const [error, adjustDto] = StockAdjustDto.create({
-            id_product,
-            actual_stock,
-            op,
-            quantity,
-            id_user,
-            comment
-        });
-        if (error) throw CustomError.badRequest(error);
-
-        const sequelize = mysqlSingleton.sequelize;
-        if (!sequelize) throw CustomError.internalServerError('No se pudo establecer conexión con la base de datos');
-        const t = await sequelize.transaction();
-
-        try {
-            let new_stock = op === 'add' ? actual_stock + quantity : actual_stock - quantity;
-            await Product.update({
-                actual_stock: new_stock,
-            }, {
-                where: { id: id_product },
-                transaction: t
-            });
-
-            await stockAdjustService.createStockAdjust(adjustDto!, t);
-
-            await t.commit();
-
-            return { new_stock, message: '¡Stock ajustado correctamente!' };
-        } catch (error) {
-            await t.rollback();
-            throw CustomError.internalServerError('Error al ajustar el stock');
-        }
-    }
-
 
     public async createProduct(createProductDto: ProductDto) {
         try {

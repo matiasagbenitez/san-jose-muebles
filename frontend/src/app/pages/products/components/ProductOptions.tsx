@@ -13,7 +13,7 @@ export const ProductOptions = ({ id, handleDelete }: Props) => {
   };
 
   const redirectUpdateStock = () => {
-    navigate(`/productos/${id}/ajuste-stock`);
+    navigate(`/productos/${id}/ajustes`);
   };
 
   return (
@@ -31,11 +31,11 @@ export const ProductOptions = ({ id, handleDelete }: Props) => {
       </button>
       <button
         className="list-group-item list-group-item-action py-1"
-        title="Ajustar stock del producto"
+        title="Flujo de stock del producto"
         onClick={redirectUpdateStock}
       >
-        <i className="bi bi-box-arrow-in-down me-2 fs-6"></i>
-        Ajustar stock del producto
+        <i className="bi bi-list-ul me-2 fs-6"></i>
+        Flujo de stock del producto
       </button>
       <button
         className="list-group-item list-group-item-action py-1 text-danger"
