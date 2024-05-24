@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Product, PurchaseItem } from "../../database/mysql/models";
-import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity, AdjustProductStockDto, StockAdjustDto } from "../../domain";
+import { CustomError, ProductDto, ProductEntity, ProductPendingReceptionEntity, ProductListEntity, PaginationDto, ProductInfoDto, ProductStockDto, ProductPriceDto, ProductEditableEntity, ProductSelectEntity, AdjustProductStockDto, StockAdjustDto, ProductSelect2Entity } from "../../domain";
 import { PurchaseItemService } from "./purchase_item.service";
 import { StockAdjustService } from "./stock_adjust.service";
 import { mysqlSingleton } from "../../database";
@@ -13,6 +13,16 @@ export interface ProductFilters {
 }
 
 export class ProductService {
+
+    public async getProductsSelect2() {
+        const products = await Product.findAll({
+            include: [
+                { association: 'brand' }, { association: 'unit'}
+            ],
+        });
+        const productsEntities = products.map(product => ProductSelect2Entity.fromObject(product));
+        return { items: productsEntities };
+    }
 
     public async getProducts() {
         const products = await Product.findAll({

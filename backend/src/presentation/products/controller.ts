@@ -15,6 +15,16 @@ export class ProductController {
     }
 
     // Métodos de la clase
+    getSelect2 = async (req: Request, res: Response) => {
+        this.productService.getProductsSelect2()
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getAll = async (req: Request, res: Response) => {
         this.productService.getProducts()
             .then((data) => {

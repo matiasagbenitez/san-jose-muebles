@@ -10,6 +10,7 @@ export class ProductRoutes {
 
         const controller = new ProductController();
 
+        router.get('/select2', [AuthMiddleware.validateJWT], controller.getSelect2);
         router.get('/', [AuthMiddleware.validateJWT], controller.getAll);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);

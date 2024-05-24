@@ -56,7 +56,7 @@ export class StockLotService {
             StockAdjust.count({ where: { id_stock_lot } })
         ]);
         const entities = rows.map(row => StockLotItemEntity.fromObject(row));
-        
+
         return { items: entities, total_items: total };
     }
 
@@ -108,7 +108,8 @@ export class StockLotService {
             await StockAdjust.bulkCreate(list, { transaction });
 
             await transaction.commit();
-            return { message: '¡Lote creado con éxito!' };
+
+            return { id: stock_lot.id, message: '¡Lote creado con éxito!' };
         } catch (error) {
             await transaction.rollback();
             throw CustomError.internalServerError(`${error}`);
