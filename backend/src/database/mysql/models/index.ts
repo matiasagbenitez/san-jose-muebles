@@ -58,6 +58,9 @@ import { Entity, initEntityModel } from './Entity.model';
 import { EntityAccount, initEntityAccountModel } from './EntityAccount.model';
 import { EntityAccountTransaction, initEntityAccountTransactionModel } from './EntityAccountTransaction.model';
 
+// ENVIRONMENTS
+import { Environment, initEnvironmentModel } from './Environment.model';
+
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -122,6 +125,9 @@ export const initializeModels = (sequelize: Sequelize) => {
   initEntityModel(sequelize);
   initEntityAccountModel(sequelize);
   initEntityAccountTransactionModel(sequelize);
+
+  // ENVIRONMENTS
+  initEnvironmentModel(sequelize);
 };
 
 export {
@@ -186,5 +192,8 @@ export {
   Entity,
   EntityAccount,
   EntityAccountTransaction,
+
+  // ENVIRONMENTS
+  Environment,
 
 };

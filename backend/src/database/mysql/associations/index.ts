@@ -49,6 +49,9 @@ import {
     Entity,
     EntityAccount,
     EntityAccountTransaction,
+
+    Environment,
+    TypeOfEnvironment,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -137,9 +140,9 @@ export const initializeAssociations = () => {
     StockAdjust.belongsTo(StockLot, { foreignKey: 'id_stock_lot', as: 'lot' });
     StockAdjust.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
     Product.hasMany(StockAdjust, { foreignKey: 'id_product', as: 'adjustments', onDelete: 'RESTRICT' });
-    StockLot.belongsTo(User, { foreignKey: 'id_user', as: 'user' }); 
+    StockLot.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
-    
+
     // INVENTORY
     InventoryBrand.hasMany(InventoryItem, { foreignKey: 'id_inventory_brand', as: 'items', onDelete: 'RESTRICT' });
     InventoryItem.belongsTo(InventoryBrand, { foreignKey: 'id_inventory_brand', as: 'brand' });
@@ -248,5 +251,12 @@ export const initializeAssociations = () => {
     EntityAccount.hasMany(EntityAccountTransaction, { foreignKey: 'id_entity_account', as: 'transactions', onDelete: 'RESTRICT' });
     EntityAccountTransaction.belongsTo(EntityAccount, { foreignKey: 'id_entity_account', as: 'account' });
     EntityAccountTransaction.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    // ENVIRONMENT
+    Project.hasMany(Environment, { foreignKey: 'id_project', as: 'environments', onDelete: 'RESTRICT' });
+    Environment.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
+
+    TypeOfEnvironment.hasMany(Environment, { foreignKey: 'id_type_of_environment', as: 'environments', onDelete: 'RESTRICT' });
+    Environment.belongsTo(TypeOfEnvironment, { foreignKey: 'id_type_of_environment', as: 'type' });
 
 };

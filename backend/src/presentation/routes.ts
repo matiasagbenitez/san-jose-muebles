@@ -41,6 +41,9 @@ import { EntityRoutes } from './entities/routes';
 import { EntityAccountRoutes } from './entity_accounts/routes';
 import { EntityAccountTransactionRoutes } from './entity_account_transactions/routes';
 
+// AMBIENTES
+import { EnvironmentRoutes } from './environments/routes';
+
 export class AppRoutes {
 
     static get routes(): Router {
@@ -99,6 +102,9 @@ export class AppRoutes {
         router.use('/api/entities', EntityRoutes.routes);
         router.use('/api/entity_accounts', EntityAccountRoutes.routes);
         router.use('/api/entity_account_transactions', EntityAccountTransactionRoutes.routes);
+
+        // AMBIENTES
+        router.use('/api/environments', EnvironmentRoutes.routes);
 
         return router;
     }

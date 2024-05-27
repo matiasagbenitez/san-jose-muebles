@@ -8,3 +8,4 @@ export * from './ProjectEstimates';
 export * from './ProjectCreateEstimate';
 export * from './ProjectEstimate';
 export * from './UpdateProject';
+export * from './ProjectEnvironments';

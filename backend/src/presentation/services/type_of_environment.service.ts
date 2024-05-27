@@ -8,7 +8,7 @@ export interface TypeOfEnvironmentFilters {
 export class TypeOfEnvironmentService {
 
     public async getTypeOfEnvironments() {
-        const typeOfEnvironments = await TypeOfEnvironment.findAll();
+        const typeOfEnvironments = await TypeOfEnvironment.findAll({ order: [['name', 'ASC']] });
         const typeOfEnvironmentsEntities = typeOfEnvironments.map(typeOfEnvironment => TypeOfEnvironmentEntity.fromObject(typeOfEnvironment));
         return { items: typeOfEnvironmentsEntities };
     }

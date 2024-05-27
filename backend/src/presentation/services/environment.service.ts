@@ -1,0 +1,85 @@
+import { Environment } from "../../database/mysql/models";
+import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto } from "../../domain";
+
+export interface EnvironmentFilters {
+    status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
+}
+
+export class EnvironmentService {
+
+    public async getEnvironmentsByProjectPaginated(id_project: number, paginationDto: PaginationDto) {
+        const { page, limit } = paginationDto;
+
+        const [rows, total] = await Promise.all([
+            Environment.findAll({ where: { id_project }, include: [{ association: 'type' }], offset: (page - 1) * limit, limit }),
+            Environment.count({ where: { id_project } })
+        ]);
+        const entities = rows.map(row => EnvironmentsByProjectEntity.fromObject(row));
+        return { items: entities, total_items: total };
+    }
+
+    public async getAllPaginated(paginationDto: PaginationDto, filters: EnvironmentFilters) {
+        const { page, limit } = paginationDto;
+
+        // FILTERS
+        let where = {};
+        if (filters.status) where = { ...where, status: filters.status };
+
+        const [rows, total] = await Promise.all([
+            Environment.findAll({ where, include: [{ association: 'type' }], offset: (page - 1) * limit, limit }),
+            Environment.count({ where })
+        ]);
+        const entities = rows.map(row => EnvironmentsByProjectEntity.fromObject(row));
+        return { items: entities, total_items: total };
+    }
+
+    public async getEnvironment(id: number) {
+        const row = await Environment.findByPk(id);
+        if (!row) throw CustomError.notFound('¡El ambiente solicitado no existe!');
+        return { row };
+    }
+
+    public async createEnvironment(dto: CreateEnvironmentDTO) {
+        try {
+            await Environment.create({ ...dto });
+            return { message: '¡El ambiente se creó correctamente!' };
+        } catch (error: any) {
+            console.log(error);
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw CustomError.badRequest('¡El ambiente que intenta crear ya existe!');
+            }
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateEnvironment(id: number, dto: CreateEnvironmentDTO) {
+        try {
+            await Environment.update({ ...dto }, { where: { id } });
+            return { message: '¡El ambiente se actualizó correctamente!' };
+        } catch (error: any) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw CustomError.badRequest('¡El ambiente que intenta actualizar ya existe!');
+            }
+            if (error.name === 'SequelizeDatabaseError') {
+                throw CustomError.badRequest('¡El ambiente que intenta actualizar no existe!');
+            }
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async deleteEnvironment(id: number) {
+        try {
+            await Environment.destroy({ where: { id } });
+            return { message: '¡El ambiente se eliminó correctamente!' };
+        } catch (error: any) {
+            if (error.name === 'SequelizeForeignKeyConstraintError') {
+                throw CustomError.badRequest('¡El ambiente que intenta eliminar está relacionado con otros registros!');
+            }
+            if (error.name === 'SequelizeDatabaseError') {
+                throw CustomError.badRequest('¡El ambiente que intenta eliminar no existe!');
+            }
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+}

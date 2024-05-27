@@ -13,6 +13,7 @@ import {
   ProjectCreateEstimate,
   ProjectEstimate,
   UpdateProject,
+  ProjectEnvironments,
 } from "../pages/projects";
 
 const ProjectRoutes = () => {
@@ -26,6 +27,7 @@ const ProjectRoutes = () => {
           <Route path="/:id" element={<Project />} />
           <Route path="/:id/editar" element={<UpdateProject />} />
           <Route path="/:id/cuentas" element={<ProjectAccounts />} />
+          <Route path="/:id/ambientes" element={<ProjectEnvironments />} />
           <Route path="/:id/cuentas/:id_project_account" element={<ProjectAccountTransactions />} />
           <Route path="/:id/cuentas/:id_project_account/movimiento/:id_transaction" element={<ProjectAccountTransaction />} />
           <Route path="/:id/personas-relacionadas" element={<ProjectRelatedPersons />} />

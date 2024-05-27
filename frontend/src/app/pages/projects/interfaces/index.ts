@@ -232,3 +232,12 @@ export interface InitialForm {
     equivalent_amount: number;
     id_supplier_account?: string;
 }
+
+export type Status = "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
+export enum StatusColor {
+    PENDIENTE = "#FFD966",
+    PROCESO = "#B5D6A7",
+    PAUSADO = "#CCCCCC",
+    FINALIZADO = "#5A965A",
+    CANCELADO = "#CC3333",
+}
