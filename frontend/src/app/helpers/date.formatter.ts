@@ -44,14 +44,17 @@ export class DateFormatter {
 
     /** jueves, 9 de diciembre de 2018 */
     static toWDMYText(date: Date): string {
-        const new_date = new Date(date);
-        const formatted = new_date.toLocaleDateString('es-ES', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
+        dayjs.extend(updateLocale);
+        dayjs.updateLocale('en', {
+            days: [
+                'domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'
+            ],
+            months: [
+                'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+            ]
         });
-        return formatted;
+        return dayjs(date, 'DD-MMM-YYYY').format('dddd, DD [de] MMMM [de] YYYY');
     }
 
     /** jueves, 9 de diciembre de 2018, 12:00 */

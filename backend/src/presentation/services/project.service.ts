@@ -89,6 +89,22 @@ export class ProjectService {
         return { item: entity };
     }
 
+    public async getProjectEditable(id: number) {
+        const [basic, initialForm] = await Promise.all([
+            Project.findByPk(id, {
+                include: [
+                    { association: 'client', attributes: ['name', 'last_name'] },
+                    { association: 'locality', attributes: ['name'] },
+                ]
+            }),
+            Project.findByPk(id)
+        ]);
+        if (!basic || !initialForm) throw CustomError.notFound('Proyecto no encontrado');
+        const { ...entity } = ProjectBasicDataEntity.fromObject(basic);
+
+        return { basic: entity, initialForm };
+    }
+
     public async createProject(dto: CreateProjectDTO) {
         try {
             const { id } = await Project.create({ ...dto });

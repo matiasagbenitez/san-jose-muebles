@@ -14,6 +14,7 @@ export class ProjectRoutes {
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.get('/:id/basic', [AuthMiddleware.validateJWT], controller.getByIdBasic);
+        router.get('/:id/editable', [AuthMiddleware.validateJWT], controller.getByIdEditable);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
         router.put('/:id', [AuthMiddleware.validateJWT], controller.update);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);

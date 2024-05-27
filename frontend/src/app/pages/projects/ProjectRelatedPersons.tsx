@@ -39,6 +39,7 @@ export const ProjectRelatedPersons = () => {
     try {
       setLoading(true);
       const { data } = await apiSJM.get(`/related_persons/project/${id}`);
+      console.log(data.items);
       setPersons(data.items);
       setLoading(false);
     } catch (error) {

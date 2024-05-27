@@ -1,4 +1,4 @@
-import { RelatedPerson } from "../../database/mysql/models";
+import { Project, RelatedPerson } from "../../database/mysql/models";
 import { CustomError, RelatedPersonDTO, RelatedPersonEntity } from "../../domain";
 
 export class RelatedPersonService {
@@ -10,6 +10,11 @@ export class RelatedPersonService {
     }
 
     public async getProjectRelatedPersons(id_project: number) {
+        const projectExists = await Project.findByPk(id_project);
+        if (!projectExists) {
+            throw CustomError.badRequest('¡El proyecto al que intenta asociar la persona no existe!');
+        }
+
         const rows = await RelatedPerson.findAll({ where: { id_project } });
         const entities = rows.map(row => RelatedPersonEntity.fromObject(row));
         return { items: entities };

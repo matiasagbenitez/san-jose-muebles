@@ -11,6 +11,22 @@ export const Options = ({ id }: Props) => {
     navigate(`/proyectos/${id}/cuentas`);
   };
 
+  const redirectUpdate = () => {
+    navigate(`/proyectos/${id}/editar`);
+  };
+
+  const redirectEstimates = () => {
+    navigate(`/proyectos/${id}/presupuestos`);
+  };
+
+  const redirectRelatedPersons = () => {
+    navigate(`/proyectos/${id}/personas-relacionadas`);
+  };
+
+  const redirectEnvironments = () => {
+    navigate(`/proyectos/${id}/ambientes`);
+  };
+
   return (
     <>
       <div className="list-group small">
@@ -19,16 +35,25 @@ export const Options = ({ id }: Props) => {
         </div>
         <button
           className="list-group-item list-group-item-action py-1"
+          title="Gestionar ambientes del proyecto"
+          onClick={redirectEnvironments}
+        >
+          <i className="bi bi-card-list me-2 fs-6"></i>
+          Ambientes del proyecto
+        </button>
+
+        <button
+          className="list-group-item list-group-item-action py-1"
           title="Cuentas corrientes del proyecto"
           onClick={redirectAccounts}
         >
           <i className="bi bi-wallet2 me-2 fs-6"></i>
-          Gestionar cuentas corrientes
+          Cuentas corrientes del proyecto
         </button>
         <button
           className="list-group-item list-group-item-action py-1"
           title="Personas relacionadas al proyecto"
-          onClick={() => navigate(`/proyectos/${id}/personas-relacionadas`)}
+          onClick={redirectRelatedPersons}
         >
           <i className="bi bi-person-lines-fill me-2 fs-6"></i>
           Personas relacionadas al proyecto
@@ -36,28 +61,20 @@ export const Options = ({ id }: Props) => {
         <button
           className="list-group-item list-group-item-action py-1"
           title="Presupuestos del proyecto"
-          onClick={() => navigate(`/proyectos/${id}/presupuestos`)}
+          onClick={redirectEstimates}
         >
           <i className="bi bi-journals me-2 fs-6"></i>
           Presupuestos del proyecto
         </button>
-
         <button
-          hidden
           className="list-group-item list-group-item-action py-1"
           title="Modificar información del proyecto"
+          onClick={redirectUpdate}
         >
           <i className="bi bi-pencil me-2 fs-6"></i>
           Modificar información del proyecto
         </button>
-        <button
-          hidden
-          className="list-group-item list-group-item-action py-1"
-          title="Gestionar ambientes del proyecto"
-        >
-          <i className="bi bi-card-list me-2 fs-6"></i>
-          Gestionar ambientes del proyecto
-        </button>
+
         <button
           hidden
           className="list-group-item list-group-item-action py-1"

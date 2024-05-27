@@ -7,3 +7,4 @@ export * from './ProjectRelatedPersons';
 export * from './ProjectEstimates';
 export * from './ProjectCreateEstimate';
 export * from './ProjectEstimate';
+export * from './UpdateProject';

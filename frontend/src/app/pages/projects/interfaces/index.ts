@@ -34,6 +34,15 @@ export interface ProjectFormInterface {
     estimated_deadline: Date | null;
 }
 
+export interface UpdateProjectFormInterface {
+    title: string;
+    priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
+    id_locality: string;
+    address: string;
+    requested_deadline: Date | null;
+    estimated_deadline: Date | null;
+}
+
 export interface ProjectDetailInterface {
     id: number;
     title: string;
