@@ -1,10 +1,20 @@
 import { Link } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { useAuthStore } from "../../../hooks";
+import { SweetAlert2 } from "../../utils";
 interface SidebarComponentProps {
   collapsed: boolean;
 }
 
 export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
+  const { startLogout } = useAuthStore();
+
+  const handleLogout = async () => {
+    const confirm = await SweetAlert2.confirm("¿Está seguro de cerrar sesión?");
+    if (!confirm.isConfirmed) return;
+    startLogout();
+  };
+
   return (
     <Sidebar
       width="230px"
@@ -170,6 +180,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         >
           <i className="bi bi-gear-wide-connected me-3 fs-6"></i>
           Parámetros
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleLogout}
+          title="Cerrar sesión"
+          style={{ height: "45px" }}
+        >
+          <i className="bi bi-box-arrow-in-right me-3 fs-6"></i>
+          Cerrar sesión
         </MenuItem>
       </Menu>
     </Sidebar>

@@ -1,5 +1,6 @@
 import { Button, Container, Navbar } from "react-bootstrap";
 import { useAuthStore } from "../../../hooks";
+import { SweetAlert2 } from "../../utils";
 
 interface NavbarComponentProps {
   handleSidebarCollapse: () => void;
@@ -10,7 +11,9 @@ export const NavbarComponent = ({
 }: NavbarComponentProps) => {
   const { startLogout } = useAuthStore();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const confirm = await SweetAlert2.confirm("¿Está seguro de cerrar sesión?");
+    if (!confirm.isConfirmed) return;
     startLogout();
   };
 
