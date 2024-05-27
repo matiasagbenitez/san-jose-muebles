@@ -7,6 +7,7 @@ interface SidebarComponentProps {
 }
 
 export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
+  
   const { startLogout } = useAuthStore();
 
   const handleLogout = async () => {
@@ -26,6 +27,12 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         minHeight: "100vh",
       }}
     >
+      {/* <Link to="/" className="text-decoration-none">
+        <div className="d-flex align-items-center justify-content-center mt-2">
+          <img src="/logos/sidebar.svg" alt="logo" height={100} />
+        </div>
+      </Link> */}
+
       <Menu style={{ marginLeft: "5px", fontSize: "14px" }}>
         <MenuItem component={<Link to="/" />} title="Inicio">
           <i className="bi bi-columns me-3 fs-6"></i>

@@ -1,6 +1,7 @@
 import { Button, Container, Navbar } from "react-bootstrap";
 import { useAuthStore } from "../../../hooks";
 import { SweetAlert2 } from "../../utils";
+import { Link } from "react-router-dom";
 
 interface NavbarComponentProps {
   handleSidebarCollapse: () => void;
@@ -32,12 +33,16 @@ export const NavbarComponent = ({
           <i className="bi bi-list fs-5"></i>
         </Button>
 
-        <div className="d-flex align-items-center gap-3 px-3">
-          <img src="/logos/logo-transparent.png" alt="logo" height={35} />
-          <span style={{ fontSize: "15px" }}>
-            <b>SAN JOSÉ</b> MUEBLES
+        <Link to="/" className="text-decoration-none text-dark">
+          <span
+            style={{ fontSize: "18px" }}
+            className="cursor-pointer"
+            role="button"
+            title="Ir a la página principal"
+          >
+            <b>SAN JOSÉ</b> Muebles
           </span>
-        </div>
+        </Link>
 
         <div className="d-flex align-items-center">
           <Button
