@@ -19,6 +19,7 @@ export const Purchase = () => {
   const [loading, setLoading] = useState(true);
 
   const [purchaseId, setPurchaseId] = useState<number>();
+  const [supplierId, setSupplierId] = useState<number>();
   const [status, setStatus] = useState<"VALIDA" | "ANULADA">("VALIDA");
   const [isFullyStocked, setIsFullyStocked] = useState<boolean>(false);
 
@@ -40,6 +41,7 @@ export const Purchase = () => {
       setStatus(data.purchase.status);
       setIsFullyStocked(data.purchase.fully_stocked);
       setResume(data.purchase.resume);
+      setSupplierId(data.purchase.resume.supplier.id);
       setItems(data.purchase.items);
       setTotals(data.purchase.totals);
       setNullation(data.purchase.nullation);
@@ -67,12 +69,9 @@ export const Purchase = () => {
         "¿Está seguro de anular la compra?"
       );
       if (!confirmation.isConfirmed) return;
-      const { data } = await apiSJM.post(
-        `/purchases/${purchaseId}/nullify`,
-        {
-          reason,
-        }
-      );
+      const { data } = await apiSJM.post(`/purchases/${purchaseId}/nullify`, {
+        reason,
+      });
       fetch();
       SweetAlert2.successToast(data.message);
     } catch (error: any) {
@@ -146,7 +145,8 @@ export const Purchase = () => {
         totals &&
         status &&
         !loading &&
-        supplierAccountId && (
+        supplierAccountId &&
+        supplierId && (
           <>
             <Row>
               {status === "ANULADA" && (
@@ -202,6 +202,7 @@ export const Purchase = () => {
                   nullifyPurchase={nullifyPurchase}
                   updatePurchaseFullStock={updatePurchaseFullStock}
                   accountId={supplierAccountId}
+                  supplierId={supplierId}
                 />
               </Col>
               <Col xs={12}>

@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 import { toMoney, DayJsAdapter } from "../../../helpers";
@@ -13,6 +13,7 @@ import {
 import apiSJM from "../../../api/apiSJM";
 import { Badge } from "react-bootstrap";
 import { Filters } from "./components";
+import { DateFormatter } from "../../helpers";
 
 interface ParamsInterface {
   id: string;
@@ -80,83 +81,87 @@ export const Purchases = () => {
   }, [state.error]);
 
   // COLUMNAS Y RENDERIZADO
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "FECHA REGISTRO",
-      selector: (row: DataRow) => row.created_at as any,
-      format: (row: DataRow) => DayJsAdapter.toDayMonthYearHour(row.created_at),
-      maxWidth: "150px",
-      center: true,
-    },
-    {
-      name: "FECHA COMPRA",
-      selector: (row: DataRow) => row.date as any,
-      format: (row: DataRow) => DayJsAdapter.toDayMonthYear(row.date),
-      maxWidth: "150px",
-      center: true,
-    },
-    {
-      name: "PROVEEDOR",
-      selector: (row: DataRow) => row.supplier,
-      wrap: true,
-    },
-    {
-      name: "TOTAL COMPRA",
-      selector: (row: DataRow) => row.total,
-      format: (row: DataRow) => (
-        <>
-          <small className="text-muted">{row.currency.symbol}</small>
-          {row.currency.is_monetary && " $"}
-          {toMoney(row.total)}
-        </>
-      ),
-      maxWidth: "175px",
-      wrap: true,
-      right: true,
-    },
-    {
-      name: "STOCK",
-      selector: (row: DataRow) => row.fully_stocked,
-      format: (row: DataRow) => (
-        <>
-          {row.status === "VALIDA" && (
-            <Badge
-              bg={row.fully_stocked ? "success" : "warning"}
-              className="rounded-pill"
-              style={{ fontSize: ".9em" }}
-            >
-              {row.fully_stocked ? "COMPLETO" : "PENDIENTE"}
-            </Badge>
-          )}
-        </>
-      ),
-      maxWidth: "175px",
-      center: true,
-    },
-    {
-      name: "ESTADO",
-      selector: (row: DataRow) => row.status,
-      format: (row: DataRow) => (
-        <Badge
-          bg={row.status === "ANULADA" ? "danger" : "success"}
-          className="rounded-pill"
-          style={{
-            fontSize: ".9em",
-          }}
-        >
-          {row.status}
-        </Badge>
-      ),
-      maxWidth: "175px",
-      center: true,
-    },
-  ];
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+      },
+      {
+        name: "FECHA REGISTRO",
+        selector: (row: DataRow) => row.created_at as any,
+        format: (row: DataRow) =>
+          DayJsAdapter.toDayMonthYearHour(row.created_at),
+        maxWidth: "150px",
+        center: true,
+      },
+      {
+        name: "FECHA COMPRA",
+        selector: (row: DataRow) => row.date,
+        format: (row: DataRow) => DateFormatter.toDMYYYY(row.date),
+        maxWidth: "150px",
+        center: true,
+      },
+      {
+        name: "PROVEEDOR",
+        selector: (row: DataRow) => row.supplier,
+        wrap: true,
+      },
+      {
+        name: "TOTAL COMPRA",
+        selector: (row: DataRow) => row.total,
+        format: (row: DataRow) => (
+          <>
+            <small className="text-muted">{row.currency.symbol}</small>
+            {row.currency.is_monetary && " $"}
+            {toMoney(row.total)}
+          </>
+        ),
+        maxWidth: "175px",
+        wrap: true,
+        right: true,
+      },
+      {
+        name: "STOCK",
+        selector: (row: DataRow) => row.fully_stocked,
+        format: (row: DataRow) => (
+          <>
+            {row.status === "VALIDA" && (
+              <Badge
+                bg={row.fully_stocked ? "success" : "warning"}
+                className="rounded-pill"
+                style={{ fontSize: ".9em" }}
+              >
+                {row.fully_stocked ? "COMPLETO" : "PENDIENTE"}
+              </Badge>
+            )}
+          </>
+        ),
+        maxWidth: "175px",
+        center: true,
+      },
+      {
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        format: (row: DataRow) => (
+          <Badge
+            bg={row.status === "ANULADA" ? "danger" : "success"}
+            className="rounded-pill"
+            style={{
+              fontSize: ".9em",
+            }}
+          >
+            {row.status}
+          </Badge>
+        ),
+        maxWidth: "175px",
+        center: true,
+      },
+    ],
+    []
+  );
 
   const handleClick = (row: DataRow) => {
     navigate(`/compras/${row.id}`);

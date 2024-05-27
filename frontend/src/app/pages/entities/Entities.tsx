@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
@@ -106,31 +106,34 @@ export const Entities = () => {
   };
 
   // COLUMNAS Y RENDERIZADO
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "ENTIDAD",
-      selector: (row: DataRow) => row.name,
-    },
-    {
-      name: "TELÉFONO",
-      selector: (row: DataRow) => row.phone,
-      center: true,
-    },
-    {
-      name: "LOCALIDAD",
-      selector: (row: DataRow) => row.locality,
-    },
-    {
-      name: "PROVINCIA",
-      selector: (row: DataRow) => row.province,
-    },
-  ];
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+      },
+      {
+        name: "ENTIDAD",
+        selector: (row: DataRow) => row.name,
+      },
+      {
+        name: "TELÉFONO",
+        selector: (row: DataRow) => row.phone,
+        center: true,
+      },
+      {
+        name: "LOCALIDAD",
+        selector: (row: DataRow) => row.locality,
+      },
+      {
+        name: "PROVINCIA",
+        selector: (row: DataRow) => row.province,
+      },
+    ],
+    []
+  );
 
   // MODAL
   const handleHide = () => {

@@ -7,6 +7,7 @@ export const PurchaseOptions = ({
   status,
   updatePurchaseFullStock,
   accountId,
+  supplierId,
 }: {
   id: number;
   isFullyStocked: boolean;
@@ -14,6 +15,7 @@ export const PurchaseOptions = ({
   status: "VALIDA" | "ANULADA";
   updatePurchaseFullStock: () => void;
   accountId: number;
+  supplierId: number;
 }) => {
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ export const PurchaseOptions = ({
   };
 
   const handleRedirectAccount = () => {
-    navigate(`/cuentas-proveedores/${accountId}`);
+    navigate(`/proveedores/${supplierId}/cuentas/${accountId}`);
   };
 
   return (
