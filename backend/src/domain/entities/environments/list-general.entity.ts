@@ -6,13 +6,17 @@ export class EnvironmentsListEntity {
         public project: string,
         public client: string,
         public type: string,
-        public des_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
+        public difficulty: 'BAJA' | 'MEDIA' | 'ALTA',
+        public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
+        public des_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO',
         public fab_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
         public ins_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
+        public req_deadline?: Date | null,
+        public est_deadline?: Date | null,
     ) { }
 
     static fromObject(object: { [key: string]: any }): EnvironmentsListEntity {
-        const { id, project, type, des_status, fab_status, ins_status } = object;
+        const { id, project, type, difficulty, priority, des_status, fab_status, ins_status, req_deadline, est_deadline } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!type) throw CustomError.badRequest('Falta el tipo');
@@ -27,9 +31,13 @@ export class EnvironmentsListEntity {
             project.title,
             project.client.last_name + ' ' + project.client.name,
             type.name,
+            difficulty,
+            priority,
             des_status,
             fab_status,
             ins_status,
+            req_deadline,
+            est_deadline,
         );
 
     }

@@ -1,12 +1,17 @@
+import { Op } from "sequelize";
 import { Environment } from "../../database/mysql/models";
 import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto, EnvironmentsListEntity } from "../../domain";
 
 type Status = "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
+type Difficulty = "BAJA" | "MEDIA" | "ALTA";
+type Priority = "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
 export interface EnvironmentFilters {
     des_status: Status;
     fab_status: Status;
     ins_status: Status;
     id_client: number;
+    difficulty: Difficulty;
+    priority: Priority;
 }
 
 export class EnvironmentService {
@@ -15,7 +20,7 @@ export class EnvironmentService {
         const { page, limit } = paginationDto;
 
         const [rows, total] = await Promise.all([
-            Environment.findAll({ where: { id_project }, include: [{ association: 'type' }], offset: (page - 1) * limit, limit }),
+            Environment.findAll({ where: { id_project }, include: [{ association: 'type' }], offset: (page - 1) * limit, limit, order: [['priority', 'DESC']] }),
             Environment.count({ where: { id_project } })
         ]);
         const entities = rows.map(row => EnvironmentsByProjectEntity.fromObject(row));
@@ -30,6 +35,17 @@ export class EnvironmentService {
         if (filters.des_status) where = { ...where, des_status: filters.des_status };
         if (filters.fab_status) where = { ...where, fab_status: filters.fab_status };
         if (filters.ins_status) where = { ...where, ins_status: filters.ins_status };
+        if (filters.difficulty) where = { ...where, difficulty: filters.difficulty };
+        if (filters.priority) where = { ...where, priority: filters.priority };
+
+        if (!filters.des_status && !filters.fab_status && !filters.ins_status) {
+            where = {
+                ...where,
+                des_status: { [Op.not]: 'CANCELADO' },
+                fab_status: { [Op.not]: 'CANCELADO' },
+                ins_status: { [Op.not]: 'CANCELADO' }
+            };
+        }
 
         const include = [
             { association: 'type', attributes: ['id', 'name'] },
@@ -46,7 +62,8 @@ export class EnvironmentService {
                 where,
                 include,
                 offset: (page - 1) * limit,
-                limit
+                limit,
+                order: [['priority', 'DESC'], ['difficulty', 'ASC']]
             }),
             Environment.count({
                 where,

@@ -114,20 +114,6 @@ export const ProjectsList = () => {
         maxWidth: "160px",
       },
       {
-        name: "CLIENTE",
-        selector: (row: DataRow) => row.client,
-        maxWidth: "250px",
-      },
-      {
-        name: "DESCRIPCIÓN",
-        selector: (row: DataRow) => row.title || "",
-      },
-      {
-        name: "LOCALIDAD",
-        selector: (row: DataRow) => row.locality,
-        maxWidth: "250px",
-      },
-      {
         name: "PRIORIDAD",
         selector: (row: DataRow) => row.priority,
         cell: (row: DataRow) => (
@@ -144,6 +130,20 @@ export const ProjectsList = () => {
         ),
         center: true,
         maxWidth: "160px",
+      },
+      {
+        name: "CLIENTE",
+        selector: (row: DataRow) => row.client,
+        maxWidth: "250px",
+      },
+      {
+        name: "LOCALIDAD",
+        selector: (row: DataRow) => row.locality,
+        maxWidth: "250px",
+      },
+      {
+        name: "DESCRIPCIÓN",
+        selector: (row: DataRow) => row.title || "",
       },
     ],
     []

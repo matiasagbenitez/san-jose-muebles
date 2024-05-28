@@ -7,14 +7,12 @@ import {
   initialState,
   paginationReducer,
   fetchData,
+  ColumnOmitter,
+  ColumnsHiddenInterface,
 } from "../../shared";
 import { LoadingSpinner } from "../../components";
 
-import {
-  EnvironmentListInterface as DataRow,
-  DesignStatusColor,
-  StatusColor,
-} from "./interfaces";
+import { EnvironmentListInterface as DataRow } from "./interfaces";
 
 import {
   Form,
@@ -25,6 +23,26 @@ import {
   Button,
 } from "react-bootstrap";
 import apiSJM from "../../../api/apiSJM";
+import {
+  DesignStatusBadge,
+  StatusBadge,
+  PriorityBadge,
+  DifficultyBadge,
+} from "./components";
+import { DateFormatter } from "../../helpers";
+
+const columnsHidden = {
+  id: { name: "ID", omit: false },
+  client: { name: "CLIENTE", omit: false },
+  type: { name: "AMBIENTE", omit: false },
+  des_status: { name: "DISEÑO", omit: false },
+  fab_status: { name: "FABRICACIÓN", omit: false },
+  ins_status: { name: "INSTALACIÓN", omit: false },
+  difficulty: { name: "DIFICULTAD", omit: true },
+  priority: { name: "PRIORIDAD", omit: false },
+  req_deadline: { name: "ENTREGA SOLICITADA", omit: true },
+  est_deadline: { name: "ENTREGA ESTIMADA", omit: true },
+};
 
 export const Environments = () => {
   const navigate = useNavigate();
@@ -33,6 +51,9 @@ export const Environments = () => {
   const [state, dispatch] = useReducer(paginationReducer, initialState);
   const [typesOfEnvironments, setTypesOfEnvironments] = useState([]);
   const endpoint = "/environments";
+
+  const [omittedColumns, setOmittedColumns] =
+    useState<ColumnsHiddenInterface>(columnsHidden);
 
   // DATOS Y PAGINACIÓN
   const fetch = async () => {
@@ -90,76 +111,86 @@ export const Environments = () => {
         selector: (row: DataRow) => row.id,
         width: "80px",
         center: true,
+        omit: omittedColumns.id.omit,
       },
       {
         name: "CLIENTE",
         selector: (row: DataRow) => row.client,
         maxWidth: "250px",
+        wrap: true,
+        omit: omittedColumns.client.omit,
       },
       {
-        name: "PROYECTO",
-        selector: (row: DataRow) => row.project,
-      },
-      {
-        name: "TIPO AMBIENTE",
+        name: "AMBIENTE",
         selector: (row: DataRow) => row.type,
+        cell: (row: DataRow) => (
+          <span>
+            <b>{row.type}</b>
+            {", "}
+            {row.project}
+          </span>
+        ),
+        wrap: true,
+        omit: omittedColumns.type.omit,
       },
       {
         name: "DISEÑO",
         selector: (row: DataRow) => row.des_status,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: DesignStatusColor[row.des_status],
-            }}
-          >
-            {row.des_status}
-          </span>
-        ),
+        cell: (row: DataRow) => <DesignStatusBadge status={row.des_status} />,
         center: true,
-        maxWidth: "160px",
+        maxWidth: "140px",
+        omit: omittedColumns.des_status.omit,
       },
       {
         name: "FABRICACIÓN",
         selector: (row: DataRow) => row.fab_status,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: StatusColor[row.fab_status],
-            }}
-          >
-            {row.fab_status}
-          </span>
-        ),
+        cell: (row: DataRow) => <StatusBadge status={row.fab_status} />,
         center: true,
-        maxWidth: "160px",
+        maxWidth: "140px",
+        omit: omittedColumns.fab_status.omit,
       },
       {
         name: "INSTALACIÓN",
         selector: (row: DataRow) => row.ins_status,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: StatusColor[row.ins_status],
-            }}
-          >
-            {row.ins_status}
-          </span>
-        ),
+        cell: (row: DataRow) => <StatusBadge status={row.ins_status} />,
         center: true,
+        maxWidth: "140px",
+        omit: omittedColumns.ins_status.omit,
+      },
+      {
+        name: "DIFICULTAD",
+        selector: (row: DataRow) => row.difficulty,
+        cell: (row: DataRow) => <DifficultyBadge status={row.difficulty} />,
+        center: true,
+        maxWidth: "140px",
+        omit: omittedColumns.difficulty.omit,
+      },
+      {
+        name: "PRIORIDAD",
+        selector: (row: DataRow) => row.priority,
+        cell: (row: DataRow) => <PriorityBadge status={row.priority} />,
+        center: true,
+        maxWidth: "140px",
+        omit: omittedColumns.priority.omit,
+      },
+      {
+        name: "ENTREGA SOLICITADA",
+        selector: (row: DataRow) =>
+          row.req_deadline ? DateFormatter.toDMYYYY(row.req_deadline) : "",
         maxWidth: "160px",
+        center: true,
+        omit: omittedColumns.req_deadline.omit,
+      },
+      {
+        name: "ENTREGA ESTIMADA",
+        selector: (row: DataRow) =>
+          row.est_deadline ? DateFormatter.toDMYYYY(row.est_deadline) : "",
+        maxWidth: "160px",
+        center: true,
+        omit: omittedColumns.est_deadline.omit,
       },
     ],
-    []
+    [omittedColumns]
   );
 
   const handleClick = (row: DataRow) => {
@@ -174,128 +205,204 @@ export const Environments = () => {
         <>
           <Form onSubmit={(e) => handleFiltersChange(e)} autoComplete="off">
             <Row>
-              <Col xl={9}>
-                <Row>
-                  <Col xl={3}>
-                    <InputGroup size="sm" className="mb-3">
-                      <InputGroup.Text id="from">Cliente</InputGroup.Text>
-                      <Form.Select
-                        name="id_client"
-                        size="sm"
-                        value={state.filters.id_client || ""}
-                        onChange={(e) =>
-                          dispatch({
-                            type: "FILTERS_CHANGE",
-                            newFilters: {
-                              ...state.filters,
-                              id_client: e.target.value,
-                            },
-                          })
-                        }
-                      >
-                        <option value="">Todos</option>
-                        {typesOfEnvironments.map((type: any) => (
-                          <option key={type.id} value={type.id}>
-                            {type.label}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </InputGroup>
-                  </Col>
-
-                  <Col xl={3}>
-                    <InputGroup size="sm" className="mb-3">
-                      <InputGroup.Text id="from">
-                        Diseño
-                      </InputGroup.Text>
-                      <Form.Select
-                        name="des_status"
-                        size="sm"
-                        value={state.filters.des_status || ""}
-                        onChange={(e) =>
-                          dispatch({
-                            type: "FILTERS_CHANGE",
-                            newFilters: {
-                              ...state.filters,
-                              des_status: e.target.value,
-                            },
-                          })
-                        }
-                      >
-                        <option value="">Todos</option>
-                        <option value="PENDIENTE">PENDIENTE</option>
-                        <option value="PROCESO">EN PROCESO</option>
-                        <option value="PAUSADO">EN PAUSA</option>
-                        <option value="PRESENTADO">
-                          PRESENTADO AL CLIENTE
-                        </option>
-                        <option value="MODIFICANDO">MODIFICANDO</option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="CANCELADO">CANCELADO</option>
-                      </Form.Select>
-                    </InputGroup>
-                  </Col>
-
-                  <Col xl={3}>
-                    <InputGroup size="sm" className="mb-3">
-                      <InputGroup.Text id="from">
-                        Fabricación
-                      </InputGroup.Text>
-                      <Form.Select
-                        name="fab_status"
-                        size="sm"
-                        value={state.filters.fab_status || ""}
-                        onChange={(e) =>
-                          dispatch({
-                            type: "FILTERS_CHANGE",
-                            newFilters: {
-                              ...state.filters,
-                              fab_status: e.target.value,
-                            },
-                          })
-                        }
-                      >
-                        <option value="">Todos</option>
-                        <option value="PENDIENTE">PENDIENTE</option>
-                        <option value="PROCESO">EN PROCESO</option>
-                        <option value="PAUSADO">PAUSADO</option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="CANCELADO">CANCELADO</option>
-                      </Form.Select>
-                    </InputGroup>
-                  </Col>
-
-                  <Col xl={3}>
-                    <InputGroup size="sm" className="mb-3">
-                      <InputGroup.Text id="from">
-                        Instalación
-                      </InputGroup.Text>
-                      <Form.Select
-                        name="ins_status"
-                        size="sm"
-                        value={state.filters.ins_status || ""}
-                        onChange={(e) =>
-                          dispatch({
-                            type: "FILTERS_CHANGE",
-                            newFilters: {
-                              ...state.filters,
-                              ins_status: e.target.value,
-                            },
-                          })
-                        }
-                      >
-                        <option value="">Todos</option>
-                        <option value="PENDIENTE">PENDIENTE</option>
-                        <option value="PROCESO">EN PROCESO</option>
-                        <option value="PAUSADO">PAUSADO</option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="CANCELADO">CANCELADO</option>
-                      </Form.Select>
-                    </InputGroup>
-                  </Col>
-                </Row>
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">Cliente</InputGroup.Text>
+                  <Form.Select
+                    name="id_client"
+                    size="sm"
+                    value={state.filters.id_client || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          id_client: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Todos los clientes</option>
+                    {typesOfEnvironments.map((type: any) => (
+                      <option key={type.id} value={type.id}>
+                        {type.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
               </Col>
 
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">Estado diseño</InputGroup.Text>
+                  <Form.Select
+                    name="des_status"
+                    size="sm"
+                    value={state.filters.des_status || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          des_status: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">PENDIENTE</option>
+                    <option value="PROCESO">EN PROCESO</option>
+                    <option value="PAUSADO">EN PAUSA</option>
+                    <option value="PRESENTADO">PRESENTADO AL CLIENTE</option>
+                    <option value="CAMBIOS">REALIZANDO CAMBIOS</option>
+                    <option value="FINALIZADO">FINALIZADO</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">
+                    Estado fabricación
+                  </InputGroup.Text>
+                  <Form.Select
+                    name="fab_status"
+                    size="sm"
+                    value={state.filters.fab_status || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          fab_status: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">PENDIENTE</option>
+                    <option value="PROCESO">EN PROCESO</option>
+                    <option value="PAUSADO">PAUSADO</option>
+                    <option value="FINALIZADO">FINALIZADO</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">
+                    Estado instalación
+                  </InputGroup.Text>
+                  <Form.Select
+                    name="ins_status"
+                    size="sm"
+                    value={state.filters.ins_status || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          ins_status: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">PENDIENTE</option>
+                    <option value="PROCESO">EN PROCESO</option>
+                    <option value="PAUSADO">PAUSADO</option>
+                    <option value="FINALIZADO">FINALIZADO</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">Nivel dificultad</InputGroup.Text>
+                  <Form.Select
+                    name="difficulty"
+                    size="sm"
+                    value={state.filters.difficulty || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          difficulty: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Todos los niveles</option>
+                    <option value="BAJA">BAJA</option>
+                    <option value="MEDIA">MEDIA</option>
+                    <option value="ALTA">ALTA</option>
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">Nivel prioridad</InputGroup.Text>
+                  <Form.Select
+                    name="priority"
+                    size="sm"
+                    value={state.filters.priority || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          priority: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Todos los niveles</option>
+                    <option value="BAJA">BAJA</option>
+                    <option value="MEDIA">MEDIA</option>
+                    <option value="ALTA">ALTA</option>
+                    <option value="URGENTE">URGENTE</option>
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+              <Col xl={3}>
+                <InputGroup size="sm" className="mb-3">
+                  <InputGroup.Text id="from">
+                    Criterio ordenación
+                  </InputGroup.Text>
+                  <Form.Select
+                    name="order_by"
+                    size="sm"
+                    value={state.filters.order_by || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "FILTERS_CHANGE",
+                        newFilters: {
+                          ...state.filters,
+                          order_by: e.target.value,
+                        },
+                      })
+                    }
+                  >
+                    <option value="">Seleccione una opción</option>
+                    <option value="req_deadline_soon">
+                      Entrega solicitada (más próxima)
+                    </option>
+                    <option value="req_deadline_late">
+                      Entrega solicitada (más lejana)
+                    </option>
+                    <option value="est_deadline_soon">
+                      Entrega estimada (más próxima)
+                    </option>
+                    <option value="est_deadline_late">
+                      Entrega estimada (más lejana)
+                    </option>
+                  </Form.Select>
+                </InputGroup>
+              </Col>
               <Col xl={3} className="mb-3">
                 <ButtonGroup size="sm" className="d-flex">
                   <Button variant="primary" type="submit">
@@ -304,6 +411,12 @@ export const Environments = () => {
                   <Button variant="secondary" onClick={handleResetFilters}>
                     Limpiar
                   </Button>
+                  <ColumnOmitter
+                    omittedColumns={omittedColumns}
+                    setOmittedColumns={setOmittedColumns}
+                    py
+                    icon={false}
+                  />
                 </ButtonGroup>
               </Col>
             </Row>

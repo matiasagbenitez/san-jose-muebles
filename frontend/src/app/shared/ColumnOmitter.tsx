@@ -15,9 +15,16 @@ interface Props {
   setOmittedColumns: (
     value: React.SetStateAction<ColumnsHiddenInterface>
   ) => void;
+  py?: boolean;
+  icon?: boolean;
 }
 
-export const ColumnOmitter = ({ omittedColumns, setOmittedColumns }: Props) => {
+export const ColumnOmitter = ({
+  omittedColumns,
+  setOmittedColumns,
+  py,
+  icon = true,
+}: Props) => {
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = event.target;
     setOmittedColumns((prev) => ({
@@ -34,9 +41,9 @@ export const ColumnOmitter = ({ omittedColumns, setOmittedColumns }: Props) => {
       <Dropdown.Toggle
         size="sm"
         variant="light"
-        className="py-1 py-xl-0 border w-100 mt-3 mt-xl-0"
+        className={`py-1 border w-100 mt-xl-0 ${py ? "" : "py-xl-0 mt-3"}`}
       >
-        <i className="bi bi-eye"></i>
+        {icon && <i className="bi bi-eye"></i>}
         <span className="mx-3">Columnas</span>
       </Dropdown.Toggle>
 

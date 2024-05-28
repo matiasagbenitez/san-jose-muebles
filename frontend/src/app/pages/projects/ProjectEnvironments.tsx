@@ -16,23 +16,28 @@ import { SweetAlert2 } from "../../utils";
 import { DateFormatter } from "../../helpers";
 import { CustomInput, LoadingSpinner, PageHeader } from "../../components";
 
-import { ProjectBasicData, Status, StatusColor } from "./interfaces";
+import { ProjectBasicData } from "./interfaces";
 import { ProjectHeader } from "./components";
+import { DesignStatus, Difficulty, Priority, Status } from "../environments/interfaces";
+import { StatusBadge, DesignStatusBadge, DifficultyBadge, PriorityBadge } from '../environments/components';
 
 interface DataRow {
   id: number;
   type: string;
   req_deadline: Date | null;
   est_deadline: Date | null;
-  des_status: Status;
+  des_status: DesignStatus;
   fab_status: Status;
   ins_status: Status;
+  difficulty: Difficulty;
+  priority: Priority;
 }
 
 const initialForm = {
   id_type_of_environment: "",
-  status: "PENDIENTE",
   description: "",
+  difficulty: "BAJA",
+  priority: "BAJA",
   req_deadline: null,
   est_deadline: null,
 };
@@ -125,75 +130,50 @@ export const ProjectEnvironments = () => {
         center: true,
       },
       {
-        name: "TIPO DE AMBIENTE",
+        name: "AMBIENTE",
         selector: (row: DataRow) => row.type,
       },
       {
-        name: "ESTADO DE DISEÑO",
+        name: "DISEÑO",
         selector: (row: DataRow) => row.des_status,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: StatusColor[row.des_status],
-            }}
-          >
-            {row.des_status}
-          </span>
-        ),
+        cell: (row: DataRow) => <DesignStatusBadge status={row.des_status} />,
         center: true,
       },
       {
-        name: "ESTADO DE FABRICACIÓN",
+        name: "FABRICACIÓN",
         selector: (row: DataRow) => row.fab_status,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: StatusColor[row.fab_status],
-            }}
-          >
-            {row.fab_status}
-          </span>
-        ),
+        cell: (row: DataRow) => <StatusBadge status={row.fab_status} />,
         center: true,
       },
       {
-        name: "ESTADO DE INSTALACIÓN",
+        name: "INSTALACIÓN",
         selector: (row: DataRow) => row.ins_status,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: StatusColor[row.ins_status],
-            }}
-          >
-            {row.ins_status}
-          </span>
-        ),
+        cell: (row: DataRow) => <StatusBadge status={row.ins_status} />,
         center: true,
       },
       {
-        name: "FECHA ENTREGA SOLICITADA",
+        name: "DIFICULTAD",
+        selector: (row: DataRow) => row.difficulty,
+        cell: (row: DataRow) => <DifficultyBadge status={row.difficulty} />,
+        center: true,
+      },
+      {
+        name: "PRIORIDAD",
+        selector: (row: DataRow) => row.priority,
+        cell: (row: DataRow) => <PriorityBadge status={row.priority} />,
+        center: true,
+      },
+      {
+        name: "ENTREGA SOLICITADA",
         selector: (row: DataRow) =>
-          row.req_deadline
-            ? DateFormatter.toDMYYYY(row.req_deadline)
-            : "",
+          row.req_deadline ? DateFormatter.toDMYYYY(row.req_deadline) : "",
         maxWidth: "200px",
         center: true,
       },
       {
-        name: "FECHA ENTREGA ESTIMADA",
+        name: "ENTREGA ESTIMADA",
         selector: (row: DataRow) =>
-          row.est_deadline
-            ? DateFormatter.toDMYYYY(row.est_deadline)
-            : "",
+          row.est_deadline ? DateFormatter.toDMYYYY(row.est_deadline) : "",
         maxWidth: "200px",
         center: true,
       },
@@ -249,7 +229,8 @@ export const ProjectEnvironments = () => {
                 id_type_of_environment: Yup.string().required(
                   "El tipo de ambiente es requerido"
                 ),
-                status: Yup.string().required("El estado es requerido"),
+                difficulty: Yup.string().required("La dificultad es requerida"),
+                priority: Yup.string().required("La prioridad es requerida"),
                 description: Yup.string().required(
                   "La descripción es requerida"
                 ),
@@ -261,11 +242,10 @@ export const ProjectEnvironments = () => {
                 <Form id="form">
                   <Modal.Body>
                     <Row>
-                      <Col xs={6}>
+                      <Col xs={12} lg={4}>
                         <CustomInput.Select
                           label="Tipo de ambiente"
                           name="id_type_of_environment"
-                          placeholder="Seleccione un tipo de ambiente"
                           isInvalid={
                             !!errors.id_type_of_environment &&
                             touched.id_type_of_environment
@@ -273,9 +253,7 @@ export const ProjectEnvironments = () => {
                           disabled={isFormSubmitting}
                           isRequired
                         >
-                          <option value="">
-                            Seleccione un tipo de ambiente
-                          </option>
+                          <option value="">Seleccione una opción</option>
                           {typesOfEnvironments.map((type: any) => (
                             <option key={type.id} value={type.id}>
                               {type.name}
@@ -283,21 +261,33 @@ export const ProjectEnvironments = () => {
                           ))}
                         </CustomInput.Select>
                       </Col>
-                      <Col xs={6}>
+                      <Col xs={12} lg={4}>
                         <CustomInput.Select
-                          label="Estado del ambiente"
-                          name="status"
-                          placeholder="Seleccione un tipo de ambiente"
-                          isInvalid={!!errors.status && touched.status}
+                          label="Nivel de dificultad"
+                          name="difficulty"
+                          isInvalid={!!errors.difficulty && touched.difficulty}
                           disabled={isFormSubmitting}
                           isRequired
                         >
-                          <option value="">Seleccione un estado</option>
-                          <option value="PENDIENTE">PENDIENTE</option>
-                          <option value="PROCESO">PROCESO</option>
-                          <option value="PAUSADO">PAUSADO</option>
-                          <option value="FINALIZADO">FINALIZADO</option>
-                          <option value="CANCELADO">CANCELADO</option>
+                          <option value="">Seleccione una opción</option>
+                          <option value="BAJA">Baja</option>
+                          <option value="MEDIA">Media</option>
+                          <option value="ALTA">Alta</option>
+                        </CustomInput.Select>
+                      </Col>
+                      <Col xs={12} lg={4}>
+                        <CustomInput.Select
+                          label="Nivel de prioridad"
+                          name="priority"
+                          isInvalid={!!errors.priority && touched.priority}
+                          disabled={isFormSubmitting}
+                          isRequired
+                        >
+                          <option value="">Seleccione una opción</option>
+                          <option value="BAJA">Baja</option>
+                          <option value="MEDIA">Media</option>
+                          <option value="ALTA">Alta</option>
+                          <option value="URGENTE">Urgente</option>
                         </CustomInput.Select>
                       </Col>
                       <Col xs={12}>

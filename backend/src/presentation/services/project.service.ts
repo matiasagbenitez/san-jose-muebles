@@ -56,7 +56,7 @@ export class ProjectService {
                 offset: (page - 1) * limit,
                 limit,
                 // ORDER = PROCESO, PENDIENTE, PAUSADO, FINALIZADO, CANCELADO
-                order: [['status', 'ASC']],
+                order: [['status', 'ASC'], ['priority', 'DESC']]
             }),
             Project.count({ where })
         ]);

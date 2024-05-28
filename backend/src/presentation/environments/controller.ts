@@ -42,6 +42,8 @@ export class EnvironmentController {
         if (req.query.fab_status) filters = { ...filters, fab_status: req.query.fab_status };
         if (req.query.ins_status) filters = { ...filters, ins_status: req.query.ins_status };
         if (req.query.id_client) filters = { ...filters, id_client: req.query.id_client };
+        if (req.query.difficulty) filters = { ...filters, difficulty: req.query.difficulty };
+        if (req.query.priority) filters = { ...filters, priority: req.query.priority };
 
         this.service.getAllPaginated(paginationDto!, filters as EnvironmentFilters)
             .then((data) => {

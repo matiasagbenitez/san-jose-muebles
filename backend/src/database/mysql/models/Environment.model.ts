@@ -5,13 +5,14 @@ export class Environment extends Model {
     public id_project!: number;
     public id_type_of_environment!: number;
 
-    public status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
+    public difficulty!: 'BAJA' | 'MEDIA' | 'ALTA';
+    public priority!: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE';
     public description!: string;
 
     public req_deadline!: Date;
     public est_deadline!: Date;
 
-    public des_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
+    public des_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO';
     public fab_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
     public ins_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
 
@@ -35,8 +36,12 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
-            status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
+            difficulty: {
+                type: DataTypes.ENUM('BAJA', 'MEDIA', 'ALTA'),
+                allowNull: false,
+            },
+            priority: {
+                type: DataTypes.ENUM('BAJA', 'MEDIA', 'ALTA', 'URGENTE'),
                 allowNull: false,
             },
             description: {
@@ -50,7 +55,7 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
                 type: DataTypes.DATEONLY, 
             },
             des_status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'MODIFICANDO', 'FINALIZADO', 'CANCELADO'),
+                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'CAMBIOS', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
             },
             fab_status: {
