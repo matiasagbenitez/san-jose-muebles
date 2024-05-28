@@ -1,8 +1,12 @@
 import { Environment } from "../../database/mysql/models";
-import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto } from "../../domain";
+import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto, EnvironmentsListEntity } from "../../domain";
 
+type Status = "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
 export interface EnvironmentFilters {
-    status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
+    des_status: Status;
+    fab_status: Status;
+    ins_status: Status;
+    id_client: number;
 }
 
 export class EnvironmentService {
@@ -23,13 +27,39 @@ export class EnvironmentService {
 
         // FILTERS
         let where = {};
-        if (filters.status) where = { ...where, status: filters.status };
+        if (filters.des_status) where = { ...where, des_status: filters.des_status };
+        if (filters.fab_status) where = { ...where, fab_status: filters.fab_status };
+        if (filters.ins_status) where = { ...where, ins_status: filters.ins_status };
+
+        const include = [
+            { association: 'type', attributes: ['id', 'name'] },
+            {
+                association: 'project',
+                attributes: ['id', 'title'],
+                where: filters.id_client ? { id_client: filters.id_client } : undefined,
+                include: [{ association: 'client', attributes: ['id', 'name', 'last_name'] }]
+            }
+        ];
 
         const [rows, total] = await Promise.all([
-            Environment.findAll({ where, include: [{ association: 'type' }], offset: (page - 1) * limit, limit }),
-            Environment.count({ where })
+            Environment.findAll({
+                where,
+                include,
+                offset: (page - 1) * limit,
+                limit
+            }),
+            Environment.count({
+                where,
+                include: [
+                    {
+                        association: 'project',
+                        where: filters.id_client ? { id_client: filters.id_client } : undefined
+                    }
+                ]
+            })
         ]);
-        const entities = rows.map(row => EnvironmentsByProjectEntity.fromObject(row));
+
+        const entities = rows.map(row => EnvironmentsListEntity.fromObject(row));
         return { items: entities, total_items: total };
     }
 

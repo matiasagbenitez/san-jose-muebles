@@ -11,6 +11,7 @@ import AgendaRoutes from "./AgendaRoutes";
 import ProjectRoutes from "./ProjectRoutes";
 import GroupRoutes from './GroupRoutes';
 import EntityRoutes from "./EntityRoutes";
+import EnvironmentRoutes from "./EnvironmentRoutes";
 
 const AppRoutes = () => {
   return (
@@ -27,6 +28,7 @@ const AppRoutes = () => {
         <Route path="/proyectos/*" element={<ProjectRoutes />} />
         <Route path="/grupos/*" element={<GroupRoutes />} />
         <Route path="/entidades/*" element={<EntityRoutes />} />
+        <Route path="/ambientes/*" element={<EnvironmentRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />

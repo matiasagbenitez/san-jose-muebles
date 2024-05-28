@@ -38,7 +38,10 @@ export class EnvironmentController {
         if (error) return res.status(400).json({ message: error });
 
         let filters = {};
-        if (req.query.status) filters = { ...filters, status: req.query.status };
+        if (req.query.des_status) filters = { ...filters, des_status: req.query.des_status };
+        if (req.query.fab_status) filters = { ...filters, fab_status: req.query.fab_status };
+        if (req.query.ins_status) filters = { ...filters, ins_status: req.query.ins_status };
+        if (req.query.id_client) filters = { ...filters, id_client: req.query.id_client };
 
         this.service.getAllPaginated(paginationDto!, filters as EnvironmentFilters)
             .then((data) => {

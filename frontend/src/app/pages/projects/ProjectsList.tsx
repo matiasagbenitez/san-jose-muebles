@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableColumn } from "react-data-table-component";
 
@@ -87,64 +87,67 @@ export const ProjectsList = () => {
   };
 
   // COLUMNAS Y RENDERIZADO
-  const columns: TableColumn<DataRow>[] = [
-    {
-      name: "ID",
-      selector: (row: DataRow) => row.id,
-      width: "80px",
-      center: true,
-    },
-    {
-      name: "ESTADO",
-      selector: (row: DataRow) => row.status,
-      cell: (row: DataRow) => (
-        <span
-          className="badge rounded-pill"
-          style={{
-            fontSize: ".9em",
-            color: "black",
-            backgroundColor: Statuses[row.status] || "gray",
-          }}
-        >
-          {row.status}
-        </span>
-      ),
-      center: true,
-      maxWidth: "160px",
-    },
-    {
-      name: "CLIENTE",
-      selector: (row: DataRow) => row.client,
-      maxWidth: "250px",
-    },
-    {
-      name: "DESCRIPCIÓN",
-      selector: (row: DataRow) => row.title || "",
-    },
-    {
-      name: "LOCALIDAD",
-      selector: (row: DataRow) => row.locality,
-      maxWidth: "250px",
-    },
-    {
-      name: "PRIORIDAD",
-      selector: (row: DataRow) => row.priority,
-      cell: (row: DataRow) => (
-        <span
-          className="badge rounded-pill"
-          style={{
-            fontSize: ".9em",
-            color: "black",
-            backgroundColor: Priorities[row.priority] || "gray",
-          }}
-        >
-          {row.priority}
-        </span>
-      ),
-      center: true,
-      maxWidth: "160px",
-    },
-  ];
+  const columns: TableColumn<DataRow>[] = useMemo(
+    () => [
+      {
+        name: "ID",
+        selector: (row: DataRow) => row.id,
+        width: "80px",
+        center: true,
+      },
+      {
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        cell: (row: DataRow) => (
+          <span
+            className="badge rounded-pill"
+            style={{
+              fontSize: ".9em",
+              color: "black",
+              backgroundColor: Statuses[row.status] || "gray",
+            }}
+          >
+            {row.status}
+          </span>
+        ),
+        center: true,
+        maxWidth: "160px",
+      },
+      {
+        name: "CLIENTE",
+        selector: (row: DataRow) => row.client,
+        maxWidth: "250px",
+      },
+      {
+        name: "DESCRIPCIÓN",
+        selector: (row: DataRow) => row.title || "",
+      },
+      {
+        name: "LOCALIDAD",
+        selector: (row: DataRow) => row.locality,
+        maxWidth: "250px",
+      },
+      {
+        name: "PRIORIDAD",
+        selector: (row: DataRow) => row.priority,
+        cell: (row: DataRow) => (
+          <span
+            className="badge rounded-pill"
+            style={{
+              fontSize: ".9em",
+              color: "black",
+              backgroundColor: Priorities[row.priority] || "gray",
+            }}
+          >
+            {row.priority}
+          </span>
+        ),
+        center: true,
+        maxWidth: "160px",
+      },
+    ],
+    []
+  );
 
   const handleClick = (row: DataRow) => {
     navigate(`/proyectos/${row.id}`);
@@ -161,7 +164,9 @@ export const ProjectsList = () => {
   const handleSumit = async (formData: ProjectFormInterface) => {
     setIsFormSubmitting(true);
     try {
-      const confirmation = await SweetAlert2.confirm("¿Desea crear el proyecto?");
+      const confirmation = await SweetAlert2.confirm(
+        "¿Desea crear el proyecto?"
+      );
       if (!confirmation.isConfirmed) return;
       const { data } = await apiSJM.post(endpoint, formData);
       SweetAlert2.successToast(data.message);

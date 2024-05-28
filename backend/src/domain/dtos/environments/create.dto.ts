@@ -6,7 +6,7 @@ export class CreateEnvironmentDTO {
         public description: string,
         public req_deadline: Date | null,
         public est_deadline: Date | null,
-        public des_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO' = 'PENDIENTE',
+        public des_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'MODIFICANDO' | 'FINALIZADO' | 'CANCELADO' = 'PENDIENTE',
         public fab_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO' = 'PENDIENTE',
         public ins_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO' = 'PENDIENTE',
     ) { }

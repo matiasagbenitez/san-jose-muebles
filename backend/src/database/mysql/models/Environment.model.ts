@@ -50,7 +50,7 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
                 type: DataTypes.DATEONLY, 
             },
             des_status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
+                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'MODIFICANDO', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
             },
             fab_status: {

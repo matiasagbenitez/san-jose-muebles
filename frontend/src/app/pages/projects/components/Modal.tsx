@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
-import { Button, Modal } from "react-bootstrap";
+import { Button, ButtonGroup, Modal } from "react-bootstrap";
 
 import { ProjectFormInterface } from "../interfaces";
 import { CustomInput } from "../../../components";
@@ -39,24 +39,25 @@ export const CreateProjectModal = ({
 }: FormProps) => {
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="p-4">
-        <h1 className="fs-5">Registrar un nuevo proyecto</h1>
-        <hr className="my-2" />
+      <Modal.Header closeButton>
+        <Modal.Title>Crear proyecto</Modal.Title>
+      </Modal.Header>
 
-        <Formik
-          initialValues={initialForm}
-          onSubmit={(values) => {
-            onSubmit(values);
-          }}
-          validationSchema={Yup.object({
-            id_client: Yup.string().required("El cliente es requerido"),
-            title: Yup.string().required("La descripción es requerida"),
-            priority: Yup.string().required("La prioridad es requerida"),
-            id_locality: Yup.string().required("La localidad es requerida"),
-          })}
-        >
-          {({ errors, touched }) => (
-            <Form id="form">
+      <Formik
+        initialValues={initialForm}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+        validationSchema={Yup.object({
+          id_client: Yup.string().required("El cliente es requerido"),
+          title: Yup.string().required("La descripción es requerida"),
+          priority: Yup.string().required("La prioridad es requerida"),
+          id_locality: Yup.string().required("La localidad es requerida"),
+        })}
+      >
+        {({ errors, touched }) => (
+          <Form id="form">
+            <Modal.Body>
               <CustomInput.Select
                 label="Cliente"
                 name="id_client"
@@ -119,21 +120,30 @@ export const CreateProjectModal = ({
                 <option value="ALTA">ALTA</option>
                 <option value="URGENTE">URGENTE</option>
               </CustomInput.Select>
+            </Modal.Body>
 
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-3 float-end"
-                size="sm"
-                disabled={isFormSubmitting}
-              >
-                <i className="bi bi-floppy me-2"></i>
-                Guardar
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </div>
+            <Modal.Footer>
+              <ButtonGroup size="sm">
+                <Button
+                  variant="secondary"
+                  disabled={isFormSubmitting}
+                  onClick={onHide}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isFormSubmitting}
+                >
+                  <i className="bi bi-floppy mx-1"></i>{" "}
+                  {isFormSubmitting ? "Guardando..." : "Guardar"}
+                </Button>
+              </ButtonGroup>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };

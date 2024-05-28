@@ -37,7 +37,6 @@ export const UpdateProject = () => {
       setProject(res1.data.basic);
       setInitialForm(res1.data.initialForm);
       setLocalities(res2.data.localities);
-      console.log(res2.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -83,110 +82,124 @@ export const UpdateProject = () => {
               id_locality: Yup.string().required("La localidad es requerida"),
             })}
           >
-            {({ errors, touched }) => (
-              <Form id="form">
-                <Row>
-                  <Col lg={4}>
-                    <CustomInput.Text
-                      label="Cliente"
-                      name="client"
-                      value={`${project.client}`}
-                      disabled
-                    />
-                  </Col>
+            {({ errors, touched, setFieldValue }) => {
+              const handleRequestDateChange = (e: any) => {
+                setFieldValue("requested_deadline", e.target.value);
+                setFieldValue("estimated_deadline", e.target.value);
+              };
 
-                  <Col lg={8}>
-                    <CustomInput.Text
-                      label="Título del proyecto"
-                      name="title"
-                      placeholder="Ejemplo: Cocina completa con isla y barra"
-                      isInvalid={!!errors.title && touched.title}
-                      disabled={isFormSubmitting}
-                      isRequired
-                    />
-                  </Col>
+              return (
+                <>
+                  <Form id="form">
+                    <Row>
+                      <Col lg={4}>
+                        <CustomInput.Text
+                          label="Cliente"
+                          name="client"
+                          value={`${project.client}`}
+                          disabled
+                        />
+                      </Col>
 
-                  <Col lg={4}>
-                    <CustomInput.Select
-                      label="Localidad del proyecto"
-                      name="id_locality"
-                      placeholder="Seleccione una localidad"
-                      isInvalid={!!errors.id_locality && touched.id_locality}
+                      <Col lg={8}>
+                        <CustomInput.Text
+                          label="Título del proyecto"
+                          name="title"
+                          placeholder="Ejemplo: Cocina completa con isla y barra"
+                          isInvalid={!!errors.title && touched.title}
+                          disabled={isFormSubmitting}
+                          isRequired
+                        />
+                      </Col>
+
+                      <Col lg={4}>
+                        <CustomInput.Select
+                          label="Localidad del proyecto"
+                          name="id_locality"
+                          placeholder="Seleccione una localidad"
+                          isInvalid={
+                            !!errors.id_locality && touched.id_locality
+                          }
+                          disabled={isFormSubmitting}
+                          isRequired
+                        >
+                          <option value="">Seleccione una localidad</option>
+                          {localities.map((locality: any) => (
+                            <option key={locality.id} value={locality.id}>
+                              {locality.label}
+                            </option>
+                          ))}
+                        </CustomInput.Select>
+                      </Col>
+
+                      <Col lg={4}>
+                        <CustomInput.Text
+                          label="Dirección del proyecto (opcional)"
+                          name="address"
+                          placeholder="Ingrese la dirección del proyecto"
+                          isInvalid={!!errors.address && touched.address}
+                          disabled={isFormSubmitting}
+                        />
+                      </Col>
+
+                      <Col lg={4}>
+                        <CustomInput.Select
+                          label="Prioridad"
+                          name="priority"
+                          placeholder="Seleccione una prioridad"
+                          isInvalid={!!errors.priority && touched.priority}
+                          disabled={isFormSubmitting}
+                          isRequired
+                        >
+                          <option value="BAJA">BAJA</option>
+                          <option value="MEDIA">MEDIA</option>
+                          <option value="ALTA">ALTA</option>
+                          <option value="URGENTE">URGENTE</option>
+                        </CustomInput.Select>
+                      </Col>
+
+                      <h6 className="mt-3">
+                        Información sobre fecha de entrega
+                      </h6>
+                      <Col lg={4}>
+                        <CustomInput.Date
+                          label="Fecha de entrega solicitada"
+                          name="requested_deadline"
+                          isInvalid={
+                            !!errors.requested_deadline &&
+                            touched.requested_deadline
+                          }
+                          disabled={isFormSubmitting}
+                          onChange={(e: any) => handleRequestDateChange(e)}
+                        />
+                      </Col>
+                      <Col lg={4}>
+                        <CustomInput.Date
+                          label="Fecha de entrega estimada"
+                          name="estimated_deadline"
+                          isInvalid={
+                            !!errors.estimated_deadline &&
+                            touched.estimated_deadline
+                          }
+                          disabled={isFormSubmitting}
+                        />
+                      </Col>
+                    </Row>
+
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className="mt-3 float-end"
+                      size="sm"
                       disabled={isFormSubmitting}
-                      isRequired
                     >
-                      <option value="">Seleccione una localidad</option>
-                      {localities.map((locality: any) => (
-                        <option key={locality.id} value={locality.id}>
-                          {locality.label}
-                        </option>
-                      ))}
-                    </CustomInput.Select>
-                  </Col>
-
-                  <Col lg={4}>
-                    <CustomInput.Text
-                      label="Dirección del proyecto (opcional)"
-                      name="address"
-                      placeholder="Ingrese la dirección del proyecto"
-                      isInvalid={!!errors.address && touched.address}
-                      disabled={isFormSubmitting}
-                    />
-                  </Col>
-
-                  <Col lg={4}>
-                    <CustomInput.Select
-                      label="Prioridad"
-                      name="priority"
-                      placeholder="Seleccione una prioridad"
-                      isInvalid={!!errors.priority && touched.priority}
-                      disabled={isFormSubmitting}
-                      isRequired
-                    >
-                      <option value="BAJA">BAJA</option>
-                      <option value="MEDIA">MEDIA</option>
-                      <option value="ALTA">ALTA</option>
-                      <option value="URGENTE">URGENTE</option>
-                    </CustomInput.Select>
-                  </Col>
-
-                  <h6 className="mt-3">Información sobre fecha de entrega</h6>
-                  <Col lg={4}>
-                    <CustomInput.Date
-                      label="Fecha de entrega solicitada"
-                      name="requested_deadline"
-                      isInvalid={
-                        !!errors.requested_deadline &&
-                        touched.requested_deadline
-                      }
-                      disabled={isFormSubmitting}
-                    />
-                  </Col>
-                  <Col lg={4}>
-                    <CustomInput.Date
-                      label="Fecha de entrega estimada"
-                      name="estimated_deadline"
-                      isInvalid={
-                        !!errors.estimated_deadline &&
-                        touched.estimated_deadline
-                      }
-                      disabled={isFormSubmitting}
-                    />
-                  </Col>
-                </Row>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="mt-3 float-end"
-                  size="sm"
-                  disabled={isFormSubmitting}
-                >
-                  <i className="bi bi-floppy me-2"></i>
-                  Guardar cambios
-                </Button>
-              </Form>
-            )}
+                      <i className="bi bi-floppy me-2"></i>
+                      Guardar cambios
+                    </Button>
+                  </Form>
+                </>
+              );
+            }}
           </Formik>
         </>
       )}
