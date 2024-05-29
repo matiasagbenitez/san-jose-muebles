@@ -33,13 +33,14 @@ import { DateFormatter } from "../../helpers";
 
 const columnsHidden = {
   id: { name: "ID", omit: false },
+  status: { name: "ESTADO", omit: false },
   client: { name: "CLIENTE", omit: false },
   type: { name: "AMBIENTE", omit: false },
   des_status: { name: "DISEÑO", omit: false },
   fab_status: { name: "FABRICACIÓN", omit: false },
   ins_status: { name: "INSTALACIÓN", omit: false },
   difficulty: { name: "DIFICULTAD", omit: true },
-  priority: { name: "PRIORIDAD", omit: false },
+  priority: { name: "PRIORIDAD", omit: true },
   req_deadline: { name: "ENTREGA SOLICITADA", omit: true },
   est_deadline: { name: "ENTREGA ESTIMADA", omit: true },
 };
@@ -114,31 +115,32 @@ export const Environments = () => {
         omit: omittedColumns.id.omit,
       },
       {
-        name: "CLIENTE",
-        selector: (row: DataRow) => row.client,
-        maxWidth: "250px",
-        wrap: true,
-        omit: omittedColumns.client.omit,
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        cell: (row: DataRow) => <StatusBadge status={row.status} />,
+        center: true,
+        maxWidth: "130px",
+        omit: omittedColumns.status.omit,
       },
       {
         name: "AMBIENTE",
         selector: (row: DataRow) => row.type,
-        cell: (row: DataRow) => (
-          <span>
-            <b>{row.type}</b>
-            {", "}
-            {row.project}
-          </span>
-        ),
+        maxWidth: "150px",
         wrap: true,
         omit: omittedColumns.type.omit,
+      },
+      {
+        name: "CLIENTE",
+        selector: (row: DataRow) => row.client + " - " + row.project,
+        wrap: true,
+        omit: omittedColumns.client.omit,
       },
       {
         name: "DISEÑO",
         selector: (row: DataRow) => row.des_status,
         cell: (row: DataRow) => <DesignStatusBadge status={row.des_status} />,
         center: true,
-        maxWidth: "140px",
+        maxWidth: "130px",
         omit: omittedColumns.des_status.omit,
       },
       {
@@ -146,7 +148,7 @@ export const Environments = () => {
         selector: (row: DataRow) => row.fab_status,
         cell: (row: DataRow) => <StatusBadge status={row.fab_status} />,
         center: true,
-        maxWidth: "140px",
+        maxWidth: "130px",
         omit: omittedColumns.fab_status.omit,
       },
       {
@@ -154,7 +156,7 @@ export const Environments = () => {
         selector: (row: DataRow) => row.ins_status,
         cell: (row: DataRow) => <StatusBadge status={row.ins_status} />,
         center: true,
-        maxWidth: "140px",
+        maxWidth: "130px",
         omit: omittedColumns.ins_status.omit,
       },
       {
@@ -162,7 +164,7 @@ export const Environments = () => {
         selector: (row: DataRow) => row.difficulty,
         cell: (row: DataRow) => <DifficultyBadge status={row.difficulty} />,
         center: true,
-        maxWidth: "140px",
+        maxWidth: "130px",
         omit: omittedColumns.difficulty.omit,
       },
       {
@@ -170,7 +172,7 @@ export const Environments = () => {
         selector: (row: DataRow) => row.priority,
         cell: (row: DataRow) => <PriorityBadge status={row.priority} />,
         center: true,
-        maxWidth: "140px",
+        maxWidth: "130px",
         omit: omittedColumns.priority.omit,
       },
       {

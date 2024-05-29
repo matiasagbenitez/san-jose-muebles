@@ -3,6 +3,7 @@ import { CustomError } from '../../errors/custom.error';
 export class EnvironmentsListEntity {
     constructor(
         public id: number,
+        public status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
         public project: string,
         public client: string,
         public type: string,
@@ -11,14 +12,15 @@ export class EnvironmentsListEntity {
         public des_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO',
         public fab_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
         public ins_status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
-        public req_deadline?: Date | null,
-        public est_deadline?: Date | null,
+        public req_deadline: Date | null,
+        public est_deadline: Date | null,
     ) { }
 
     static fromObject(object: { [key: string]: any }): EnvironmentsListEntity {
-        const { id, project, type, difficulty, priority, design, fabrication, installation, req_deadline, est_deadline } = object;
+        const { id, status, project, type, difficulty, priority, design, fabrication, installation, req_deadline, est_deadline } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
+        if (!status) throw CustomError.badRequest('Falta el estado');
         if (!type) throw CustomError.badRequest('Falta el tipo');
         if (!project) throw CustomError.badRequest('Falta el proyecto');
         if (!project.client) throw CustomError.badRequest('Falta el cliente');
@@ -28,6 +30,7 @@ export class EnvironmentsListEntity {
 
         return new EnvironmentsListEntity(
             id,
+            status,
             project.title,
             project.client.last_name + ' ' + project.client.name,
             type.name,

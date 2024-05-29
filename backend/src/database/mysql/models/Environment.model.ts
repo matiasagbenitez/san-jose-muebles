@@ -2,14 +2,15 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class Environment extends Model {
     public id!: number;
-    public id_project!: number; 
+    public id_project!: number;
     public id_type_of_environment!: number;
 
+    public status!: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
     public difficulty!: 'BAJA' | 'MEDIA' | 'ALTA';
     public priority!: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE';
     public description!: string;
 
-    public req_deadline!: Date;
+    public req_deadline!: Date; 
     public est_deadline!: Date;
 
     public readonly createdAt!: Date;
@@ -32,6 +33,10 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
+            status: {
+                type: DataTypes.ENUM('PROCESO', 'PENDIENTE', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
+                allowNull: false,
+            },
             difficulty: {
                 type: DataTypes.ENUM('BAJA', 'MEDIA', 'ALTA'),
                 allowNull: false,
@@ -48,7 +53,7 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
                 type: DataTypes.DATEONLY,
             },
             est_deadline: {
-                type: DataTypes.DATEONLY, 
+                type: DataTypes.DATEONLY,
             },
         },
         {

@@ -23,6 +23,7 @@ import { StatusBadge, DesignStatusBadge, DifficultyBadge, PriorityBadge } from '
 
 interface DataRow {
   id: number;
+  status: Status;
   type: string;
   req_deadline: Date | null;
   est_deadline: Date | null;
@@ -127,6 +128,12 @@ export const ProjectEnvironments = () => {
         name: "ID",
         selector: (row: DataRow) => row.id,
         width: "80px",
+        center: true,
+      },
+      {
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        cell: (row: DataRow) => <StatusBadge status={row.status} />,
         center: true,
       },
       {

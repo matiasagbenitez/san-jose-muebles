@@ -2,6 +2,7 @@ export class CreateEnvironmentDTO {
     private constructor(
         public id_project: number,
         public id_type_of_environment: number,
+        public status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO' = 'PENDIENTE',
         public difficulty: 'BAJA' | 'MEDIA' | 'ALTA' = 'MEDIA',
         public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE' = 'MEDIA',
         public description: string,
@@ -21,6 +22,7 @@ export class CreateEnvironmentDTO {
         return [undefined, new CreateEnvironmentDTO(
             id_project,
             id_type_of_environment,
+            'PENDIENTE',
             difficulty,
             priority,
             description,

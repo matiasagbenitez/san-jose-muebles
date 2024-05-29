@@ -3,6 +3,7 @@ import { Status, DesignStatus, Difficulty, Priority } from './shared';
 
 export interface EnvironmentListInterface {
     id: number;
+    status: Status;
     project: string;
     client: string;
     type: string;
