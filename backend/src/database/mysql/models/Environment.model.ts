@@ -2,7 +2,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class Environment extends Model {
     public id!: number;
-    public id_project!: number;
+    public id_project!: number; 
     public id_type_of_environment!: number;
 
     public difficulty!: 'BAJA' | 'MEDIA' | 'ALTA';
@@ -11,10 +11,6 @@ export class Environment extends Model {
 
     public req_deadline!: Date;
     public est_deadline!: Date;
-
-    public des_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO';
-    public fab_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
-    public ins_status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -53,18 +49,6 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
             },
             est_deadline: {
                 type: DataTypes.DATEONLY, 
-            },
-            des_status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'CAMBIOS', 'FINALIZADO', 'CANCELADO'),
-                allowNull: false,
-            },
-            fab_status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
-                allowNull: false,
-            },
-            ins_status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
-                allowNull: false,
             },
         },
         {

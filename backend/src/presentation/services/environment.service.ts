@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Environment } from "../../database/mysql/models";
+import { Design, Environment, Fabrication, Installation } from "../../database/mysql/models";
 import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto, EnvironmentsListEntity } from "../../domain";
 
 type Status = "PENDIENTE" | "PROCESO" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
@@ -20,7 +20,18 @@ export class EnvironmentService {
         const { page, limit } = paginationDto;
 
         const [rows, total] = await Promise.all([
-            Environment.findAll({ where: { id_project }, include: [{ association: 'type' }], offset: (page - 1) * limit, limit, order: [['priority', 'DESC']] }),
+            Environment.findAll({
+                where: { id_project },
+                include: [
+                    { association: 'type', attributes: ['id', 'name'] },
+                    { association: 'design', attributes: ['id', 'status'] },
+                    { association: 'fabrication', attributes: ['id', 'status'] },
+                    { association: 'installation', attributes: ['id', 'status'] }
+                ],
+                offset: (page - 1) * limit,
+                limit,
+                order: [['priority', 'DESC']]
+            }),
             Environment.count({ where: { id_project } })
         ]);
         const entities = rows.map(row => EnvironmentsByProjectEntity.fromObject(row));
@@ -32,20 +43,9 @@ export class EnvironmentService {
 
         // FILTERS
         let where = {};
-        if (filters.des_status) where = { ...where, des_status: filters.des_status };
-        if (filters.fab_status) where = { ...where, fab_status: filters.fab_status };
-        if (filters.ins_status) where = { ...where, ins_status: filters.ins_status };
+
         if (filters.difficulty) where = { ...where, difficulty: filters.difficulty };
         if (filters.priority) where = { ...where, priority: filters.priority };
-
-        if (!filters.des_status && !filters.fab_status && !filters.ins_status) {
-            where = {
-                ...where,
-                des_status: { [Op.not]: 'CANCELADO' },
-                fab_status: { [Op.not]: 'CANCELADO' },
-                ins_status: { [Op.not]: 'CANCELADO' }
-            };
-        }
 
         const include = [
             { association: 'type', attributes: ['id', 'name'] },
@@ -54,8 +54,24 @@ export class EnvironmentService {
                 attributes: ['id', 'title'],
                 where: filters.id_client ? { id_client: filters.id_client } : undefined,
                 include: [{ association: 'client', attributes: ['id', 'name', 'last_name'] }]
+            },
+            {
+                association: 'design',
+                attributes: ['id', 'status'],
+                where: filters.des_status ? { status: filters.des_status } : { status: { [Op.not]: null } }
+            },
+            {
+                association: 'fabrication',
+                attributes: ['id', 'status'],
+                where: filters.fab_status ? { status: filters.fab_status } : { status: { [Op.not]: null } }
+            },
+            {
+                association: 'installation',
+                attributes: ['id', 'status'],
+                where: filters.ins_status ? { status: filters.ins_status } : { status: { [Op.not]: null } }
             }
         ];
+
 
         const [rows, total] = await Promise.all([
             Environment.findAll({
@@ -67,12 +83,7 @@ export class EnvironmentService {
             }),
             Environment.count({
                 where,
-                include: [
-                    {
-                        association: 'project',
-                        where: filters.id_client ? { id_client: filters.id_client } : undefined
-                    }
-                ]
+                include
             })
         ]);
 
@@ -87,10 +98,24 @@ export class EnvironmentService {
     }
 
     public async createEnvironment(dto: CreateEnvironmentDTO) {
+        const transaction = await Environment.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!');
+
         try {
-            await Environment.create({ ...dto });
+            const environment = await Environment.create({ ...dto }, { transaction });
+            const id_environment = environment.id;
+
+            const [_, __, ___] = await Promise.all([
+                Design.create({ id_environment, status: 'PENDIENTE' }, { transaction }),
+                Fabrication.create({ id_environment, status: 'PENDIENTE' }, { transaction }),
+                Installation.create({ id_environment, status: 'PENDIENTE' }, { transaction })
+            ]);
+
+            await transaction.commit();
+
             return { message: '¡El ambiente se creó correctamente!' };
         } catch (error: any) {
+            await transaction.rollback();
             console.log(error);
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw CustomError.badRequest('¡El ambiente que intenta crear ya existe!');

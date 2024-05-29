@@ -38,8 +38,8 @@ const initialForm = {
   description: "",
   difficulty: "BAJA",
   priority: "BAJA",
-  req_deadline: null,
-  est_deadline: null,
+  req_deadline: "",
+  est_deadline: "",
 };
 
 export const ProjectEnvironments = () => {

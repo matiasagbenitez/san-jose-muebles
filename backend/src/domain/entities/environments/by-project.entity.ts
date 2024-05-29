@@ -15,14 +15,14 @@ export class EnvironmentsByProjectEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): EnvironmentsByProjectEntity {
-        const { id, type, description, req_deadline, est_deadline, difficulty, priority, des_status, fab_status, ins_status } = object;
+        const { id, type, description, req_deadline, est_deadline, difficulty, priority, design, fabrication, installation } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!type) throw CustomError.badRequest('Falta el tipo');
         if (!description) throw CustomError.badRequest('Falta la descripción');
-        if (!des_status) throw CustomError.badRequest('Falta el estado de diseño');
-        if (!fab_status) throw CustomError.badRequest('Falta el estado de fabricación');
-        if (!ins_status) throw CustomError.badRequest('Falta el estado de instalación');
+        if (!design.status) throw CustomError.badRequest('Falta el estado de diseño');
+        if (!fabrication.status) throw CustomError.badRequest('Falta el estado de fabricación');
+        if (!installation.status) throw CustomError.badRequest('Falta el estado de instalación');
 
         return new EnvironmentsByProjectEntity(
             id,
@@ -32,9 +32,9 @@ export class EnvironmentsByProjectEntity {
             description,
             req_deadline,
             est_deadline,
-            des_status,
-            fab_status,
-            ins_status,
+            design.status,
+            fabrication.status,
+            installation.status,
         );
 
     }

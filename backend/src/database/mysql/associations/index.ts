@@ -52,6 +52,9 @@ import {
 
     Environment,
     TypeOfEnvironment,
+    Design,
+    Fabrication,
+    Installation,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -252,11 +255,19 @@ export const initializeAssociations = () => {
     EntityAccountTransaction.belongsTo(EntityAccount, { foreignKey: 'id_entity_account', as: 'account' });
     EntityAccountTransaction.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
+
     // ENVIRONMENT
     Project.hasMany(Environment, { foreignKey: 'id_project', as: 'environments', onDelete: 'RESTRICT' });
     Environment.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
 
     TypeOfEnvironment.hasMany(Environment, { foreignKey: 'id_type_of_environment', as: 'environments', onDelete: 'RESTRICT' });
     Environment.belongsTo(TypeOfEnvironment, { foreignKey: 'id_type_of_environment', as: 'type' });
+
+    Environment.hasOne(Design, { foreignKey: 'id_environment', as: 'design', onDelete: 'RESTRICT' });
+    Design.belongsTo(Environment, { foreignKey: 'id_environment', as: 'environment' });
+    Environment.hasOne(Fabrication, { foreignKey: 'id_environment', as: 'fabrication', onDelete: 'RESTRICT' });
+    Fabrication.belongsTo(Environment, { foreignKey: 'id_environment', as: 'environment' });
+    Environment.hasOne(Installation, { foreignKey: 'id_environment', as: 'installation', onDelete: 'RESTRICT' });
+    Installation.belongsTo(Environment, { foreignKey: 'id_environment', as: 'environment' });
 
 };

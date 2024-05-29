@@ -60,6 +60,9 @@ import { EntityAccountTransaction, initEntityAccountTransactionModel } from './E
 
 // ENVIRONMENTS
 import { Environment, initEnvironmentModel } from './Environment.model';
+import { Design, initDesignModel } from './Design.model';
+import { Fabrication, initFabricationModel } from './Fabrication.model';
+import { Installation, initInstallationModel } from './Installation.model';
 
 
 export const initializeModels = (sequelize: Sequelize) => {
@@ -128,6 +131,9 @@ export const initializeModels = (sequelize: Sequelize) => {
 
   // ENVIRONMENTS
   initEnvironmentModel(sequelize);
+  initDesignModel(sequelize);
+  initFabricationModel(sequelize);
+  initInstallationModel(sequelize);
 };
 
 export {
@@ -195,5 +201,8 @@ export {
 
   // ENVIRONMENTS
   Environment,
+  Design,
+  Fabrication,
+  Installation
 
 };
