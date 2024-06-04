@@ -15,3 +15,25 @@ export interface EnvironmentListInterface {
     req_deadline: Date | null;
     est_deadline: Date | null;
 }
+
+export interface EnvironmentDetailInterface {
+    id: number;
+    id_project: number;
+    project: string;
+    id_client: number;
+    client: string;
+    client_phone: string;
+    type: string;
+    status: Status;
+    difficulty: Difficulty;
+    priority: Priority;
+    description: string;
+    des_id: number;
+    des_status: DesignStatus;
+    fab_id: number;
+    fab_status: Status;
+    ins_id: number;
+    ins_status: Status;
+    req_deadline: Date | null;
+    est_deadline: Date | null;
+}

@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Design, Environment, Fabrication, Installation } from "../../database/mysql/models";
-import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto, EnvironmentsListEntity } from "../../domain";
+import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto, EnvironmentsListEntity, EnvironmentDetailEntity } from "../../domain";
 
 type Status = "PROCESO" | "PENDIENTE" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
 type Difficulty = "BAJA" | "MEDIA" | "ALTA";
@@ -94,9 +94,19 @@ export class EnvironmentService {
     }
 
     public async getEnvironment(id: number) {
-        const row = await Environment.findByPk(id);
+        const row = await Environment.findByPk(id, {
+            include: [
+                { association: 'type', attributes: ['id', 'name'] },
+                { association: 'project', attributes: ['id', 'title'], include: [{ association: 'client', attributes: ['id', 'name', 'last_name', 'phone'] }] },
+                { association: 'design', attributes: ['id', 'status'] },
+                { association: 'fabrication', attributes: ['id', 'status'] },
+                { association: 'installation', attributes: ['id', 'status'] }
+            ]
+        });
         if (!row) throw CustomError.notFound('¡El ambiente solicitado no existe!');
-        return { row };
+
+        const { ...entity } = EnvironmentDetailEntity.fromObject(row);
+        return { item: entity };
     }
 
     public async createEnvironment(dto: CreateEnvironmentDTO) {
