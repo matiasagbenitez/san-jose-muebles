@@ -35,6 +35,7 @@ const columnsHidden = {
   id: { name: "ID", omit: false },
   status: { name: "ESTADO", omit: false },
   client: { name: "CLIENTE", omit: false },
+  project: { name: "PROYECTO", omit: false },
   type: { name: "AMBIENTE", omit: false },
   des_status: { name: "DISEÑO", omit: false },
   fab_status: { name: "FABRICACIÓN", omit: false },
@@ -131,9 +132,15 @@ export const Environments = () => {
       },
       {
         name: "CLIENTE",
-        selector: (row: DataRow) => row.client + " - " + row.project,
+        selector: (row: DataRow) => row.client,
         wrap: true,
         omit: omittedColumns.client.omit,
+      },
+      {
+        name: "PROYECTO",
+        selector: (row: DataRow) => row.project,
+        wrap: true,
+        omit: omittedColumns.project.omit,
       },
       {
         name: "DISEÑO",
@@ -164,7 +171,7 @@ export const Environments = () => {
         selector: (row: DataRow) => row.difficulty,
         cell: (row: DataRow) => <DifficultyBadge status={row.difficulty} />,
         center: true,
-        maxWidth: "130px",
+        maxWidth: "100px",
         omit: omittedColumns.difficulty.omit,
       },
       {
@@ -172,14 +179,14 @@ export const Environments = () => {
         selector: (row: DataRow) => row.priority,
         cell: (row: DataRow) => <PriorityBadge status={row.priority} />,
         center: true,
-        maxWidth: "130px",
+        maxWidth: "100px",
         omit: omittedColumns.priority.omit,
       },
       {
         name: "ENTREGA SOLICITADA",
         selector: (row: DataRow) =>
           row.req_deadline ? DateFormatter.toDMYYYY(row.req_deadline) : "",
-        maxWidth: "160px",
+          wrap: true,
         center: true,
         omit: omittedColumns.req_deadline.omit,
       },
@@ -187,7 +194,7 @@ export const Environments = () => {
         name: "ENTREGA ESTIMADA",
         selector: (row: DataRow) =>
           row.est_deadline ? DateFormatter.toDMYYYY(row.est_deadline) : "",
-        maxWidth: "160px",
+        wrap: true,
         center: true,
         omit: omittedColumns.est_deadline.omit,
       },

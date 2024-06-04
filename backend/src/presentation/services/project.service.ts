@@ -69,6 +69,15 @@ export class ProjectService {
             include: [
                 { association: 'client', attributes: ['id', 'name', 'last_name', 'phone'] },
                 { association: 'locality', attributes: ['name'] },
+                {
+                    association: 'environments', include:
+                        [
+                            { association: 'type', attributes: ['id', 'name'] },
+                            { association: 'design', attributes: ['id', 'status'] },
+                            { association: 'fabrication', attributes: ['id', 'status'] },
+                            { association: 'installation', attributes: ['id', 'status'] },
+                        ]
+                },
             ]
         });
         if (!project) throw CustomError.notFound('Proyecto no encontrado');

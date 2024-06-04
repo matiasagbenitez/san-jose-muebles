@@ -6,10 +6,6 @@ export class CreateProjectDTO {
         public readonly priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE" = "MEDIA",                                      // FORM
         public readonly id_locality: number,                                                                            // FORM
         public readonly address: string,                                                                                // FORM
-        public readonly env_total: number = 0,
-        public readonly env_des: number = 0,
-        public readonly env_fab: number = 0,
-        public readonly env_ins: number = 0,
         public readonly requested_deadline: Date,                                                                       // FORM
         public readonly estimated_deadline: Date,                                                                       // FORM
     ) { }
@@ -29,10 +25,6 @@ export class CreateProjectDTO {
             priority,
             id_locality,
             address,
-            0, 
-            0,
-            0,
-            0,
             requested_deadline,
             estimated_deadline
         )];

@@ -1,6 +1,9 @@
 import { Table } from "react-bootstrap";
 import { ProjectDetailInterface, Priorities, Statuses } from "../interfaces";
 import { DateFormatter } from "../../../helpers";
+import { Link } from "react-router-dom";
+import { DesignStatusBadge, StatusBadge } from "../../environments/components";
+import { DesignStatus, Status } from "../../environments/interfaces";
 
 interface Props {
   project: ProjectDetailInterface;
@@ -14,32 +17,30 @@ export const Data = ({ project }: Props) => {
 
   return (
     <>
-      <Table size="sm" className="small" striped bordered responsive>
-        <tbody className="text-uppercase align-middle">
+      <Table bordered responsive size="sm" className="small align-middle">
+        <tbody className="text-uppercase">
           <tr>
-            <th scope="row" className="px-2 col-4">
+            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
               Cliente
             </th>
-            <td className="px-2">
-              <a
-                href={`/clientes/${project.id_client}`}
+            <td className="col-10 px-2">
+              <Link
+                to={`/clientes/${project.id_client}`}
                 target="_blank"
                 title="Ver cliente"
               >
-                <i className="bi bi-box-arrow-up-right me-2"></i>
                 {project.client}
-              </a>{" "}
+              </Link>{" "}
               <i className="text-muted">
                 {project.client_phone && (
                   <>
-                    (Tel: {project.client_phone})
                     <button
                       className="btn btn-link p-0 btn-sm text-decoration-none"
                       title="Ir a WhatsApp"
                       onClick={handleRedirectWhatsapp}
                     >
                       <i className="bi bi-whatsapp ms-2 text-success">
-                        <span className="ms-2">Enviar un WhatsApp</span>
+                        <span className="ms-1">WhatsApp</span>
                       </i>
                     </button>
                   </>
@@ -48,29 +49,33 @@ export const Data = ({ project }: Props) => {
             </td>
           </tr>
           <tr>
-            <th scope="row" className="px-2">
-              Título proyecto
+            <th className="px-2" style={{ backgroundColor: "#F2F2F2" }}>
+              Proyecto
             </th>
-            <td className="px-2">{project.title}</td>
+            <td className="px-2 fw-bold">{project.title}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2">
-              Localidad del proyecto
+            <th className="px-2" style={{ backgroundColor: "#F2F2F2" }}>
+              Localidad
             </th>
             <td className="px-2">{project.locality}</td>
           </tr>
           <tr>
-            <th scope="row" className="px-2">
-              Dirección del proyecto
+            <th className="px-2" style={{ backgroundColor: "#F2F2F2" }}>
+              Dirección
             </th>
             <td className="px-2">{project.address}</td>
           </tr>
+        </tbody>
+      </Table>
+
+      <Table bordered responsive size="sm" className="small align-middle">
+        <tbody className="text-uppercase">
           <tr>
-            <th scope="row" className="px-2">
-              Estado actual
+            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
+              Estado
             </th>
-            <td className="px-2">
-              {" "}
+            <td className="col-4 px-2">
               <span
                 className="badge rounded-pill"
                 style={{
@@ -82,12 +87,10 @@ export const Data = ({ project }: Props) => {
                 {project.status}
               </span>
             </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2">
+            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
               Prioridad
             </th>
-            <td className="px-2">
+            <td className="col-4 px-2 fw-bold">
               <span
                 className="badge rounded-pill"
                 style={{
@@ -100,61 +103,91 @@ export const Data = ({ project }: Props) => {
               </span>
             </td>
           </tr>
-                  <tr>
-            <th scope="row" className="px-2">
-              Fecha de entrega solicitada
+          <tr>
+            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
+              Entrega sol.
             </th>
-            <td className="px-2">
+            <td className="col-4 px-2">
               {project.requested_deadline
                 ? DateFormatter.toWDMYText(project.requested_deadline)
                 : "No especificada"}
             </td>
-          </tr>
-          <tr>
-            <th scope="row" className="px-2">
-              Fecha de entrega estimada
+            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
+              Entrega est.
             </th>
-            <td className="px-2">
+            <td className="col-4 px-2">
               {project.estimated_deadline
                 ? DateFormatter.toWDMYText(project.estimated_deadline)
                 : "No especificada"}
             </td>
           </tr>
-          <tr>
-            <td colSpan={2}>
-              <small className="text-muted px-2 fst-italic">
-                Proyecto registrado en el sistema el{" "}
-                {DateFormatter.toDMYText(project.createdAt)}
-              </small>
-            </td>
-          </tr>
         </tbody>
       </Table>
 
-      <Table size="sm" className="small" striped bordered responsive>
-        <tbody>
-          <tr className="text-center fw-bold text-uppercase">
-            <td colSpan={6}>Estado de avance</td>
-          </tr>
+      <h6>Listado de ambientes del proyecto</h6>
+      {project.environments.length <= 0 ? (
+        <p className="text-muted fst-italic">
+          El proyecto no tiene ambientes asociados. Registre un nuevo ambiente.
+        </p>
+      ) : (
+        <Table responsive size="sm" className="small align-middle">
+          <thead>
+            <tr className="text-center text-uppercase">
+              <th style={{ backgroundColor: "#F2F2F2" }} className="col-1">
+                ID
+              </th>
+              <th style={{ backgroundColor: "#F2F2F2" }} className="col-4">
+                Ambiente
+              </th>
+              <th style={{ backgroundColor: "#F2F2F2" }} className="col-2">
+                Diseño
+              </th>
+              <th style={{ backgroundColor: "#F2F2F2" }} className="col-2">
+                Fabricación
+              </th>
+              <th style={{ backgroundColor: "#F2F2F2" }} className="col-2">
+                Instalación
+              </th>
+              <th style={{ backgroundColor: "#F2F2F2" }} className="col-1">
+                Ver
+              </th>
+            </tr>
+          </thead>
 
-          <tr className="text-center text-uppercase">
-            <th className="px-2 col-2">Ambientes diseñados</th>
-            <th className="px-2 col-2">Ambientes fabricados</th>
-            <th className="px-2 col-2">Ambientes instalados</th>
-          </tr>
-          <tr className="text-center">
-            <td className="px-2">
-              {project.env_des} / {project.env_total}
-            </td>
-            <td className="px-2">
-              {project.env_fab} / {project.env_total}
-            </td>
-            <td className="px-2">
-              {project.env_ins} / {project.env_total}
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+          {/* ITERAR */}
+          <tbody className="text-uppercase">
+            {project.environments.map((env, index) => (
+              <tr key={index} className="text-center">
+                <td>{env.id}</td>
+                <td>{env.type}</td>
+                <td>
+                  <DesignStatusBadge status={env.des_status as DesignStatus} />
+                </td>
+                <td>
+                  <StatusBadge status={env.fab_status as Status} />
+                </td>
+                <td>
+                  <StatusBadge status={env.ins_status as Status} />
+                </td>
+                <td>
+                  <Link
+                    to={`/ambientes/${env.id}`}
+                    className="btn btn-link p-0"
+                  >
+                    <i className="bi bi-eye-fill text-secondary"></i>
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+
+      <p className="small text-muted">
+        <i className="bi bi-info-circle me-2"></i>
+        Proyecto registrado en el sistema el{" "}
+        {DateFormatter.toDMYHText(project.createdAt)}.
+      </p>
     </>
   );
 };

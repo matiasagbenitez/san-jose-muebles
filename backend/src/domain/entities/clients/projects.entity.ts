@@ -10,7 +10,7 @@ export class ClientProjectEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): ClientProjectEntity {
-        const { id, title, status, priority, locality, address, env_total, requested_deadline, estimated_deadline } = object;
+        const { id, title, status, priority, locality } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
         if (!status) throw CustomError.badRequest('Falta el estado del proyecto');

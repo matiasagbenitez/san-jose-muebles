@@ -12,11 +12,6 @@ export class Project extends Model {
     public id_locality!: number;
     public address!: string;
 
-    public env_total!: number;
-    public env_des!: number;
-    public env_fab!: number;
-    public env_ins!: number;
-
     public requested_deadline!: Date;
     public estimated_deadline!: Date;
 
@@ -61,22 +56,6 @@ export const initProjectModel = (sequelize: Sequelize) => {
             },
             address: {
                 type: DataTypes.STRING,
-            },
-            env_total: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            env_des: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            env_fab: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            env_ins: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
             },
             requested_deadline: {
                 type: DataTypes.DATEONLY,

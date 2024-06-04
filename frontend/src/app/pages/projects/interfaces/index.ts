@@ -53,15 +53,20 @@ export interface ProjectDetailInterface {
     client_phone: string;
     locality: string;
     address: string;
-    env_total: number;
-    env_des: number;
-    env_fab: number;
-    env_ins: number;
     requested_deadline: Date | null;
     estimated_deadline: Date | null;
     createdAt: Date;
+
+    environments: Environment[];
 }
 
+export interface Environment {
+    id: number;
+    type: string;
+    des_status: string;
+    fab_status: string;
+    ins_status: string;
+}
 export interface ProjectAccountsInterface {
     project: ProjectBasicData;
     accounts: ProjectAccountsData[];
