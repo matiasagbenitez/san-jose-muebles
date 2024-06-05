@@ -43,6 +43,7 @@ import { EntityAccountTransactionRoutes } from './entity_account_transactions/ro
 
 // AMBIENTES
 import { EnvironmentRoutes } from './environments/routes';
+import { DesignRoutes } from './designs/routes';
 
 export class AppRoutes {
 
@@ -105,6 +106,9 @@ export class AppRoutes {
 
         // AMBIENTES
         router.use('/api/environments', EnvironmentRoutes.routes);
+
+        // DISEÑOS
+        router.use('/api/designs', DesignRoutes.routes);
 
         return router;
     }

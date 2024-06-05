@@ -55,6 +55,9 @@ import {
     Design,
     Fabrication,
     Installation,
+    DesignComment,
+    DesignTask,
+    DesignTaskEvolution,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -269,5 +272,18 @@ export const initializeAssociations = () => {
     Fabrication.belongsTo(Environment, { foreignKey: 'id_environment', as: 'environment' });
     Environment.hasOne(Installation, { foreignKey: 'id_environment', as: 'installation', onDelete: 'RESTRICT' });
     Installation.belongsTo(Environment, { foreignKey: 'id_environment', as: 'environment' });
+
+    // DESIGN
+    Design.hasMany(DesignComment, { foreignKey: 'id_design', as: 'comments', onDelete: 'RESTRICT' });
+    DesignComment.belongsTo(Design, { foreignKey: 'id_design', as: 'design' });
+    DesignComment.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    Design.hasMany(DesignTask, { foreignKey: 'id_design', as: 'tasks', onDelete: 'RESTRICT' });
+    DesignTask.belongsTo(Design, { foreignKey: 'id_design', as: 'design' });
+    DesignTask.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    DesignTask.hasMany(DesignTaskEvolution, { foreignKey: 'id_design_task', as: 'evolutions', onDelete: 'RESTRICT' });
+    DesignTaskEvolution.belongsTo(DesignTask, { foreignKey: 'id_design_task', as: 'task' });
+    DesignTaskEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
 };

@@ -95,3 +95,7 @@ export * from './entities/entities';
 // ENVIRONMENTS
 export * from './dtos/environments';
 export * from './entities/environments';
+
+// DESIGNS
+export * from './dtos/design';
+export * from './entities/design';

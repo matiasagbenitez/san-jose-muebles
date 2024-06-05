@@ -64,6 +64,11 @@ import { Design, initDesignModel } from './Design.model';
 import { Fabrication, initFabricationModel } from './Fabrication.model';
 import { Installation, initInstallationModel } from './Installation.model';
 
+// DESIGN
+import { DesignComment, initDesignCommentModel } from './DesignComment.model';
+import { DesignTask, initDesignTaskModel } from './DesignTask.model';
+import { DesignTaskEvolution, initDesignTaskEvolutionModel } from './DesignTaskEvolution.model ';
+
 
 export const initializeModels = (sequelize: Sequelize) => {
   initUserModel(sequelize);
@@ -134,6 +139,11 @@ export const initializeModels = (sequelize: Sequelize) => {
   initDesignModel(sequelize);
   initFabricationModel(sequelize);
   initInstallationModel(sequelize);
+
+  // DESIGN
+  initDesignCommentModel(sequelize);
+  initDesignTaskModel(sequelize);
+  initDesignTaskEvolutionModel(sequelize);
 };
 
 export {
@@ -203,6 +213,11 @@ export {
   Environment,
   Design,
   Fabrication,
-  Installation
+  Installation,
+
+  // DESIGN
+  DesignComment,
+  DesignTask,
+  DesignTaskEvolution,
 
 };

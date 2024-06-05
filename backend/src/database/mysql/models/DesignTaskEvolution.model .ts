@@ -1,36 +1,40 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export class Design extends Model {
+export class DesignTaskEvolution extends Model {
     public id!: number;
-    public id_environment!: string;
-    public status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO';
+    public id_design_task!: string;
+    public status!: string;
+    public id_user!: string;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-export const initDesignModel = (sequelize: Sequelize) => {
-    Design.init(
+export const initDesignTaskEvolutionModel = (sequelize: Sequelize) => {
+    DesignTaskEvolution.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 autoIncrement: true,
                 primaryKey: true,
             },
-            id_environment: {
+            id_design_task: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
-                unique: true,
             },
             status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'CAMBIOS', 'FINALIZADO', 'CANCELADO'),
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            id_user: {
+                type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
         },
         {
             sequelize,
-            modelName: 'Design',
-            tableName: 'designs',
+            modelName: 'DesignTaskEvolution',
+            tableName: 'design_task_evolutions',
             timestamps: true,
         }
     );
