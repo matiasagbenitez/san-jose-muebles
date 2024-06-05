@@ -12,6 +12,7 @@ import ProjectRoutes from "./ProjectRoutes";
 import GroupRoutes from './GroupRoutes';
 import EntityRoutes from "./EntityRoutes";
 import EnvironmentRoutes from "./EnvironmentRoutes";
+import DesignRoutes from "./DesignRoutes";
 
 const AppRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const AppRoutes = () => {
         <Route path="/grupos/*" element={<GroupRoutes />} />
         <Route path="/entidades/*" element={<EntityRoutes />} />
         <Route path="/ambientes/*" element={<EnvironmentRoutes />} />
+        <Route path="/disenos/*" element={<DesignRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />
