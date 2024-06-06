@@ -89,7 +89,7 @@ export class DateFormatter {
         const date2 = dayjs(date);
 
         // Si la diferencia es menor a 1 día, se muestra en horas
-        if (date1.diff(date2, 'day') < 1) {
+        if (date1.diff(date2, 'day') < 1 && dayjs(date1).format('DD/MM/YY') === dayjs(date2).format('DD/MM/YY')) {
             return `hoy a las ${dayjs(date2).format('HH:mm')}`;
         }
 
