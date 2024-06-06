@@ -69,8 +69,7 @@ export const Comments = ({ id }: Props) => {
     await fetchComments(page + 1);
   };
 
-  const handleComment = async (values: CommentForm) => {
-    console.log("values", values);
+  const handleComment = async (values: CommentForm, resetForm: () => void) => {
     const confirmation = await SweetAlert2.confirm(
       "¿Estás seguro de comentar?"
     );
@@ -83,6 +82,7 @@ export const Comments = ({ id }: Props) => {
       );
       setComments((prevComments) => [data.item, ...prevComments]);
       setTotal((prevTotal) => prevTotal + 1);
+      resetForm();
       SweetAlert2.successToast(data.message);
     } catch (error) {
       console.error("Error posting comment:", error);
@@ -128,8 +128,8 @@ export const Comments = ({ id }: Props) => {
             <ListGroup.Item>
               <Formik
                 initialValues={initialForm}
-                onSubmit={(values) => {
-                  handleComment(values);
+                onSubmit={(values, { resetForm }) => {
+                  handleComment(values, resetForm);
                 }}
                 validationSchema={Yup.object({
                   comment: Yup.string()
@@ -138,7 +138,7 @@ export const Comments = ({ id }: Props) => {
                 })}
               >
                 {({ values }) => (
-                  <Form id="form" className="">
+                  <Form id="form">
                     <Row className="g-2">
                       <Col xs={10}>
                         <CustomInput.TextArea

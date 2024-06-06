@@ -140,29 +140,30 @@ export const Kanban = ({ tasks }: Props) => {
         `/design_tasks/design/${id}/task/${id_task}`
       );
 
-      const updateTaskList = (
-        tasks: Task[],
-        taskId: number,
-        newTask?: Task
-      ): Task[] => {
-        return tasks
-          .filter((task) => task.id !== taskId.toString())
-          .concat(newTask ? [newTask] : []);
-      };
-
-      const taskLists = {
-        PENDIENTE: setPendingTasks,
-        PROCESO: setProcessTasks,
-        FINALIZADO: setFinishedTasks,
-        CANCELADO: setCanceledTasks,
-      };
-
-      if (taskLists[status as keyof typeof taskLists]) {
-        taskLists[status as keyof typeof taskLists](
-          updateTaskList(pendingTasks, id_task)
-        );
+      switch (status) {
+        case "PENDIENTE":
+          setPendingTasks(
+            pendingTasks.filter((task) => task.id != id_task.toString())
+          );
+          break;
+        case "PROCESO":
+          setProcessTasks(
+            processTasks.filter((task) => task.id != id_task.toString())
+          );
+          break;
+        case "FINALIZADO":
+          setFinishedTasks(
+            finishedTasks.filter((task) => task.id != id_task.toString())
+          );
+          break;
+        case "CANCELADO":
+          setCanceledTasks(
+            canceledTasks.filter((task) => task.id != id_task.toString())
+          );
+          break;
+        default:
+          break;
       }
-
       SweetAlert2.successToast("¡Tarea eliminada exitosamente!");
     } catch (error) {
       console.log("Error deleting task:", error);

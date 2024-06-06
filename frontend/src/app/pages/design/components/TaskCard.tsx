@@ -54,7 +54,7 @@ export const TaskCard = ({
                 className="small"
                 onClick={() => handleNavigateTaskHistorial(+task.id)}
               >
-                <i className="bi bi-eye"></i> Ver historial
+                <i className="bi bi-clock-history"></i> Ver historial
               </Dropdown.Item>
               <Dropdown.Item
                 key="delete"
