@@ -44,6 +44,7 @@ import { EntityAccountTransactionRoutes } from './entity_account_transactions/ro
 // AMBIENTES
 import { EnvironmentRoutes } from './environments/routes';
 import { DesignRoutes } from './designs/routes';
+import { DesignCommentRoutes } from './design_comments/routes';
 
 export class AppRoutes {
 
@@ -109,6 +110,7 @@ export class AppRoutes {
 
         // DISEÑOS
         router.use('/api/designs', DesignRoutes.routes);
+        router.use('/api/design_comments', DesignCommentRoutes.routes);
 
         return router;
     }

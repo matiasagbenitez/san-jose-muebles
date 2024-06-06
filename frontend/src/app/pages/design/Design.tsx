@@ -37,7 +37,7 @@ export const Design = () => {
   return (
     <Fragment>
       {loading && <LoadingSpinner />}
-      {!loading && design && tasks && (
+      {!loading && id && design && tasks && (
         <Fragment>
           <Options />
           <Accordion className="mb-3 p-0">
@@ -62,7 +62,7 @@ export const Design = () => {
               <Kanban tasks={tasks} />
             </Col>
             <Col xs={12} xl={4}>
-              <Comments />
+              <Comments id={id} />
             </Col>
           </Row>
         </Fragment>

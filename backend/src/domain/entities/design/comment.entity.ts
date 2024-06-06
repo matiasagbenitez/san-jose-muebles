@@ -19,7 +19,7 @@ export class DesignCommentEntity {
         return new DesignCommentEntity(
             id,
             comment,
-            user,
+            user.name,
             createdAt,
         );
     }

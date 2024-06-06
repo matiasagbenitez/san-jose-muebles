@@ -81,4 +81,23 @@ export class DateFormatter {
         return formatted;
     }
 
+    // Difference between two dates
+    static difference(date: Date): string {
+
+        const now = new Date();
+        const date1 = dayjs(now);
+        const date2 = dayjs(date);
+
+        // Si la diferencia es menor a 1 día, se muestra en horas
+        if (date1.diff(date2, 'day') < 1) {
+            return `hoy a las ${dayjs(date2).format('HH:mm')}`;
+        }
+
+        // Si la diferencia es menor a 1 semana, se muestra en días
+        if (date1.diff(date2, 'day') < 2) {
+            return `ayer a las ${dayjs(date2).format('HH:mm')}`;
+        }
+
+        return dayjs(date2).format('DD/MM/YY HH:mm');
+    }
 }

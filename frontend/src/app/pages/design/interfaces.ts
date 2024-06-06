@@ -9,6 +9,12 @@ export interface Task {
     createdAt: Date;
 }
 
+export interface Comment {
+    id: string;
+    comment: string;
+    user: string;
+    createdAt: Date;
+}
 export interface DesignEntity {
     id: string;
 

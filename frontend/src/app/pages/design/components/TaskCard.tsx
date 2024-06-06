@@ -1,6 +1,6 @@
 import { Accordion, Button, Card } from "react-bootstrap";
-import { Task } from "../interfaces";
 import { DateFormatter } from "../../../helpers";
+import { Task } from "../interfaces";
 
 interface TaskCardProps {
   task: Task;
@@ -12,7 +12,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       <Card.Header className="p-2">
         <div className="d-flex align-items-center justify-content-between">
           <Card.Subtitle className="text-center mb-0">
-            <span className="badge rounded-pill bg-secondary">#{task.id}</span>
+            <span className="badge rounded-pill bg-secondary"># {task.id}</span>
           </Card.Subtitle>
           <Button
             variant="transparent"
@@ -33,10 +33,8 @@ export const TaskCard = ({ task }: TaskCardProps) => {
             <Accordion.Body className=" p-2">
               <p className="mb-2">{task.description}</p>
               <hr className="my-2" />
-              <span className="text-muted">
-                Creado por <strong>{task.user}</strong>
-                {" - "}
-                {DateFormatter.toDMYH(task.createdAt)}
+              <span className="text-muted fst-italic">
+                Fecha creación {DateFormatter.toDMYH(task.createdAt)}
               </span>
             </Accordion.Body>
           </Accordion.Item>
