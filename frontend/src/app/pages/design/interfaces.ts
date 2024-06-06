@@ -9,6 +9,16 @@ export enum DesignStatusColor {
     CANCELADO = "#CC3333",
 }
 
+export enum DesignStatusText {
+    PENDIENTE = "PENDIENTE",
+    PROCESO = "EN PROCESO",
+    PAUSADO = "EN PAUSA",
+    PRESENTADO = "PRESENTADO A CLIENTE",
+    CAMBIOS = "CAMBIOS SOLICITADOS",
+    FINALIZADO = "FINALIZADO",
+    CANCELADO = "CANCELADO",
+}
+
 export interface Design {
     id: string;
     type: string;
@@ -41,4 +51,12 @@ export interface DesignEntity {
         finished_tasks: Task[];
         canceled_tasks: Task[];
     };
+}
+
+export interface DesignEvolution {
+    id: string;
+    status: DesignStatus;
+    comment: string;
+    user: string;
+    createdAt: Date;
 }

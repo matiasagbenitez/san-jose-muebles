@@ -6,11 +6,25 @@ import {
   Dropdown,
   useAccordionButton,
 } from "react-bootstrap";
-import { DesignEntity, DesignStatus, DesignStatusColor } from "../interfaces";
+import {
+  DesignEntity,
+  DesignStatus,
+  DesignStatusColor,
+  DesignStatusText,
+} from "../interfaces";
 import apiSJM from "../../../../api/apiSJM";
 import { SweetAlert2 } from "../../../utils";
 import { ReasonModal } from ".";
 
+const Statuses: DesignStatus[] = [
+  "PENDIENTE",
+  "PROCESO",
+  "PAUSADO",
+  "PRESENTADO",
+  "CAMBIOS",
+  "FINALIZADO",
+  "CANCELADO",
+];
 interface Props {
   design: DesignEntity["design"];
 }
@@ -82,58 +96,18 @@ export const AccordionHeader = ({ design }: Props) => {
                   className="ms-2 py-0 px-3 rounded rounded-pill"
                   style={{ backgroundColor: DesignStatusColor[status] }}
                 >
-                  <span className="fw-bold me-1">{status}</span>
+                  <span className="fw-bold me-1">{DesignStatusText[status]}</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item
-                    className="small"
-                    key="PENDIENTE"
-                    onClick={() => handleStatusChange("PENDIENTE")}
-                  >
-                    Marcar como <b>PENDIENTE</b>
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="small"
-                    key="PROCESO"
-                    onClick={() => handleStatusChange("PROCESO")}
-                  >
-                    Marcar como <b>EN PROCESO</b>
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="small"
-                    key="PAUSADO"
-                    onClick={() => handleStatusChange("PAUSADO")}
-                  >
-                    Marcar como <b>PAUSADO</b>
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="small"
-                    key="PRESENTADO"
-                    onClick={() => handleStatusChange("PRESENTADO")}
-                  >
-                    Marcar como <b>PRESENTADO AL CLIENTE</b>
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="small"
-                    key="CAMBIOS"
-                    onClick={() => handleStatusChange("CAMBIOS")}
-                  >
-                    Marcar como <b>REALIZANDO CAMBIOS</b>
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="small"
-                    key="FINALIZADO"
-                    onClick={() => handleStatusChange("FINALIZADO")}
-                  >
-                    Marcar como <b>FINALIZADO</b>
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="small"
-                    key="CANCELADO"
-                    onClick={() => handleStatusChange("CANCELADO")}
-                  >
-                    Marcar como <b>CANCELADO</b>
-                  </Dropdown.Item>
+                  {Statuses.map((status) => (
+                    <Dropdown.Item
+                      className="small"
+                      key={status}
+                      onClick={() => handleStatusChange(status)}
+                    >
+                      Marcar <b>{DesignStatusText[status]}</b>
+                    </Dropdown.Item>
+                  ))}
                 </Dropdown.Menu>
               </Dropdown>
               <CustomToggle eventKey="0">
@@ -147,7 +121,11 @@ export const AccordionHeader = ({ design }: Props) => {
           </Accordion.Collapse>
         </Card>
       </Accordion>
-      <ReasonModal newStatus={newStatus} showModal={showModal} hideModal={handleReasonModalClose} />
+      <ReasonModal
+        newStatus={newStatus}
+        showModal={showModal}
+        hideModal={handleReasonModalClose}
+      />
     </Fragment>
   );
 };

@@ -1,5 +1,5 @@
 import { Design, DesignEvolution } from "../../database/mysql/models";
-import { CreateDesignEvolutionDTO, CustomError, DesignEntity } from "../../domain";
+import { CreateDesignEvolutionDTO, CustomError, DesignEntity, DesignEvolutionsEntity } from "../../domain";
 
 export class DesignService {
 
@@ -54,5 +54,38 @@ export class DesignService {
             throw CustomError.internalServerError('¡No se pudo actualizar el estado del diseño!');
         }
     }
+
+    public async getEvolutions(id_design: number) {
+
+        const design = await Design.findByPk(id_design, {
+            include: [
+                {
+                    association: 'environment', include: [
+                        {
+                            association: 'type', attributes: ['name']
+                        },
+                        {
+                            association: 'project', attributes: ['title'], include: [
+                                { association: 'client', attributes: ['name', 'last_name'] }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    association: 'evolutions', include: [
+                        { association: 'user', attributes: ['name'] }
+                    ]
+                }
+            ],
+            order: [
+                ['evolutions', 'createdAt', 'DESC'],
+            ]
+        });
+        if (!design) throw CustomError.notFound('Diseño no encontrado');
+        const entity = DesignEvolutionsEntity.fromObject(design);
+
+        return { design: entity.design, evolutions: entity.evolutions };
+    }
+
 
 }

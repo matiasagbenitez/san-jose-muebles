@@ -12,6 +12,7 @@ export class DesignRoutes {
 
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.patch('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
+        router.get('/:id/evolutions', [AuthMiddleware.validateJWT], controller.getEvolutions);
 
         return router;
     }

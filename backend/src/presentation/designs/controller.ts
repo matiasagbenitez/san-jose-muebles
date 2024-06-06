@@ -55,4 +55,18 @@ export class DesignController {
             });
     }
 
+    getEvolutions = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        this.service.getEvolutions(parseInt(id))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+
 }

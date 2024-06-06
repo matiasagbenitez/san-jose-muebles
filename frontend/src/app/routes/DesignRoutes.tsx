@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
-import { Design } from "../pages/design";
+import { Design, DesignEvolutions } from "../pages/design";
 
 const DesignRoutes = () => {
   const { roles } = useSelector((state: RootState) => state.auth);
@@ -12,6 +12,7 @@ const DesignRoutes = () => {
       {roles.includes("ADMIN") && (
         <>
           <Route path="/:id" element={<Design />} />
+          <Route path="/:id/historial" element={<DesignEvolutions />} />
         </>
       )}
 

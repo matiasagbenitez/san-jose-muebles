@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { Options, Kanban, Comments, AccordionHeader } from "./components";
 
 import apiSJM from "../../../api/apiSJM";
@@ -38,7 +38,7 @@ export const Design = () => {
       {loading && <LoadingSpinner />}
       {!loading && id && design && tasks && (
         <Fragment>
-          <Options />
+          <Options id={id} />
           <AccordionHeader design={design} />
           <Row>
             <Col xs={12} xl={8}>
