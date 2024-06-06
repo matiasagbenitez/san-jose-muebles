@@ -68,6 +68,7 @@ import { Installation, initInstallationModel } from './Installation.model';
 import { DesignComment, initDesignCommentModel } from './DesignComment.model';
 import { DesignTask, initDesignTaskModel } from './DesignTask.model';
 import { DesignTaskEvolution, initDesignTaskEvolutionModel } from './DesignTaskEvolution.model ';
+import { DesignEvolution, initDesignEvolutionModel } from './DesignEvolution.model';
 
 
 export const initializeModels = (sequelize: Sequelize) => {
@@ -144,6 +145,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initDesignCommentModel(sequelize);
   initDesignTaskModel(sequelize);
   initDesignTaskEvolutionModel(sequelize);
+  initDesignEvolutionModel(sequelize);
 };
 
 export {
@@ -219,5 +221,6 @@ export {
   DesignComment,
   DesignTask,
   DesignTaskEvolution,
+  DesignEvolution
 
 };

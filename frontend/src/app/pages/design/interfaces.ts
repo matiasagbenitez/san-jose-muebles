@@ -1,4 +1,22 @@
-import { DesignStatus } from "../environments/interfaces";
+export type DesignStatus = "PENDIENTE" | "PROCESO" | "PAUSADO" | "PRESENTADO" | "CAMBIOS" | "FINALIZADO" | "CANCELADO";
+export enum DesignStatusColor {
+    PENDIENTE = "#FFD966",
+    PROCESO = "#B5D6A7",
+    PAUSADO = "#CCCCCC",
+    PRESENTADO = "#4F81BD",
+    CAMBIOS = "#FFD100",
+    FINALIZADO = "#5A965A",
+    CANCELADO = "#CC3333",
+}
+
+export interface Design {
+    id: string;
+    type: string;
+    project: string;
+    client: string;
+    description: string;
+    status: DesignStatus;
+}
 
 export interface Task {
     id: string;
@@ -16,15 +34,7 @@ export interface Comment {
     createdAt: Date;
 }
 export interface DesignEntity {
-    id: string;
-
-    type: string;
-    project: string;
-    client: string;
-    description: string;
-
-    status: DesignStatus;
-
+    design: Design;
     tasks: {
         pending_tasks: Task[];
         process_tasks: Task[];

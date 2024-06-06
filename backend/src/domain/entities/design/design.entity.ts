@@ -1,5 +1,14 @@
 import { CustomError } from '../../errors/custom.error';
 
+interface Design {
+    id: string,
+    type: string,
+    project: string,
+    client: string,
+    description: string,
+    status: string,
+}
+
 interface Task {
     id: string;
     status: 'PENDIENTE' | 'PROCESO' | 'FINALIZADO' | 'CANCELADO';
@@ -11,15 +20,7 @@ interface Task {
 
 export class DesignEntity {
     constructor(
-        public id: string,
-
-        public type: string,
-        public project: string,
-        public client: string,
-        public description: string,
-
-        public status: string,
-
+        public design: Design,
         public tasks: {
             pending_tasks: Task[],
             process_tasks: Task[],
@@ -80,12 +81,7 @@ export class DesignEntity {
         const { name, last_name } = environment.project.client;
 
         return new DesignEntity(
-            id,
-            type.name,
-            project.title,
-            `${name} ${last_name}`,
-            description,
-            status,
+            { id, type: type.name, project: project.title, client: `${name} ${last_name}`, description, status },
             { pending_tasks: formatted_pending_tasks, process_tasks: formatted_process_tasks, finished_tasks: formatted_finished_tasks, canceled_tasks: formatted_canceled_tasks }
         );
     }

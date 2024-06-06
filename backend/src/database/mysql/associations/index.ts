@@ -58,6 +58,7 @@ import {
     DesignComment,
     DesignTask,
     DesignTaskEvolution,
+    DesignEvolution,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -285,5 +286,8 @@ export const initializeAssociations = () => {
     DesignTask.hasMany(DesignTaskEvolution, { foreignKey: 'id_design_task', as: 'evolutions', onDelete: 'RESTRICT' });
     DesignTaskEvolution.belongsTo(DesignTask, { foreignKey: 'id_design_task', as: 'task' });
     DesignTaskEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    Design.hasMany(DesignEvolution, { foreignKey: 'id_design', as: 'evolutions', onDelete: 'RESTRICT' });
+    DesignEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
 };

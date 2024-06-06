@@ -11,6 +11,7 @@ export class DesignRoutes {
         const controller = new DesignController();
 
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
+        router.patch('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
 
         return router;
     }
