@@ -26,10 +26,10 @@ export class DesignCommentService {
         }
     }
 
-    public async deleteDesignComment(id_comment: number, id_user: number) {
+    public async deleteDesignComment(id_design: number, id_comment: number, id_user: number) {
         try {
-            const comment = await DesignComment.findOne({ where: { id: id_comment, id_user } });
-            if (!comment) throw CustomError.notFound('¡Comentario no encontrado!');
+            const comment = await DesignComment.findOne({ where: { id: id_comment, id_design, id_user } });
+            if (!comment) throw CustomError.notFound('¡Comentario no encontrado o permisos insuficientes!');
             await comment.destroy();
             return { ok: true, message: '¡Comentario eliminado correctamente!' };
         } catch (error) {

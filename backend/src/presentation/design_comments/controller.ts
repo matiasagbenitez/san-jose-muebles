@@ -63,4 +63,23 @@ export class DesignCommentController {
             });
     }
 
+    deleteComment = async (req: Request, res: Response) => {
+        const id_design = req.params.id_design;
+        const id_comment = req.params.id_comment;
+        if (!id_design || !id_comment) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        const [error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (error) return res.status(400).json({ message: error });
+        if (!loggedUserIdDto) return res.status(400).json({ message: '¡Falta el usuario logueado!' });
+        const id_user = loggedUserIdDto.id_user;
+
+        this.service.deleteDesignComment(parseInt(id_design), parseInt(id_comment), id_user)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
 }

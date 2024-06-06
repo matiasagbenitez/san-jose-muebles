@@ -32,6 +32,12 @@ export const initDesignCommentModel = (sequelize: Sequelize) => {
             },
         },
         {
+            indexes: [
+                {
+                    name: 'design_user_index',
+                    fields: ['id_design', 'id_user'],
+                }
+            ],
             sequelize,
             modelName: 'DesignComment',
             tableName: 'design_comments',
