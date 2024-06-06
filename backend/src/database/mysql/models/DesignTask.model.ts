@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class DesignTask extends Model {
     public id!: number;
     public id_design!: string;
-    public status!: string;
+    public status!: "PENDIENTE" | "PROCESO" | "FINALIZADO" | "CANCELADO";
     public title!: string;
     public description!: string;
     public id_user!: string;
@@ -25,7 +25,7 @@ export const initDesignTaskModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM("PENDIENTE", "PROCESO", "FINALIZADO", "CANCELADO"),
                 allowNull: false,
             },
             title: {
@@ -42,6 +42,7 @@ export const initDesignTaskModel = (sequelize: Sequelize) => {
             },
         },
         {
+            paranoid: true,
             sequelize,
             modelName: 'DesignTask',
             tableName: 'design_tasks',

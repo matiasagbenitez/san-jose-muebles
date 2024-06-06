@@ -7,3 +7,4 @@ export * from './Accordion';
 export * from './StatusBadge';
 export * from './StatusTextBadge';
 export * from './ReasonModal';
+export * from './TaskModal';

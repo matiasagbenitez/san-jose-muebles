@@ -142,7 +142,7 @@ export const Comments = ({ id }: Props) => {
                     <Row className="g-2">
                       <Col xs={10}>
                         <CustomInput.TextArea
-                        className="mb-0"
+                          className="mb-0"
                           name="comment"
                           placeholder="Escribe un comentario (máx. 255 caracteres)..."
                           rows={1}

@@ -19,6 +19,14 @@ export enum DesignStatusText {
     CANCELADO = "CANCELADO",
 }
 
+export type DesignTaskStatus = "PENDIENTE" | "PROCESO" | "FINALIZADO" | "CANCELADO";
+export enum DesignTaskStatusText {
+    PENDIENTE = "PENDIENTE",
+    PROCESO = "EN PROCESO",
+    FINALIZADO = "FINALIZAR",
+    CANCELADO = "ARCHIVAR",
+}
+
 export interface Design {
     id: string;
     type: string;
