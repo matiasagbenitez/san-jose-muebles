@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, LoggedUserIdDto, PaginationDto } from "../../domain";
+import { CreateDesignEvolutionDTO, CustomError, LoggedUserIdDto, PaginationDto } from "../../domain";
 import { DesignService } from '../services/design.service';
 
 export class DesignController {
@@ -29,15 +29,24 @@ export class DesignController {
 
     updateStatus = async (req: Request, res: Response) => {
         const id = req.params.id;
-        const status = req.body.status;
-        if (!id || !status) return res.status(400).json({ message: '¡Faltan datos!' });
+        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase().trim();
+            }
+        }
 
         const [error, loggedUserIdDto] = LoggedUserIdDto.create(req);
         if (error) return res.status(400).json({ message: error });
         if (!loggedUserIdDto) return res.status(400).json({ message: '¡Falta el usuario logueado!' });
         const id_user = loggedUserIdDto.id_user;
 
-        this.service.updateStatus(parseInt(id), status, id_user)
+        const [errorDto, dto] = CreateDesignEvolutionDTO.create({ ...req.body, id_user });
+        if (errorDto) return res.status(400).json({ message: errorDto });
+        if (!dto) return res.status(400).json({ message: '¡Falta el DTO!' });
+
+        this.service.updateStatus(parseInt(id), dto)
             .then((data) => {
                 res.json(data);
             })

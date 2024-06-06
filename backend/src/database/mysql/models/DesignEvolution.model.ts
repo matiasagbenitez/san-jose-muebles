@@ -20,11 +20,15 @@ export const initDesignEvolutionModel = (sequelize: Sequelize) => {
             },
             id_design: {
                 type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false, 
+                allowNull: false,
             },
             status: {
                 type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'CAMBIOS', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
+            },
+            comment: {
+                type: DataTypes.STRING,
+                allowNull: true,
             },
             id_user: {
                 type: DataTypes.INTEGER.UNSIGNED,
