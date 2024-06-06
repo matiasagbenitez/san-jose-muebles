@@ -13,6 +13,7 @@ export class DesignRoutes {
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.patch('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
         router.get('/:id/evolutions', [AuthMiddleware.validateJWT], controller.getEvolutions);
+        router.get('/:id/task/:id_task/evolutions', [AuthMiddleware.validateJWT], controller.getTaskEvolutions);
 
         return router;
     }

@@ -68,5 +68,21 @@ export class DesignController {
             });
     }
 
+    getTaskEvolutions = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        const id_task = req.params.id_task;
+        if (!id_task) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        this.service.getTaskEvolutions(parseInt(id), parseInt(id_task))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
 
 }

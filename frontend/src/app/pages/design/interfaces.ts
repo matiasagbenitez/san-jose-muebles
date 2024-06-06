@@ -68,3 +68,20 @@ export interface DesignEvolution {
     user: string;
     createdAt: Date;
 }
+
+export interface DesignTaskEvolution {
+    id: string;
+    status: DesignTaskStatus;
+    user: string;
+    createdAt: Date;
+}
+
+export interface DesignTaskInterface {
+    id: string;
+    title: string;
+    description: string;
+    status: DesignTaskStatus;
+    user: string;
+    createdAt: Date;
+    evolutions: DesignTaskEvolution[];
+}

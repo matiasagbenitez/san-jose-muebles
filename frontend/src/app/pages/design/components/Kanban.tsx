@@ -5,7 +5,7 @@ import { NoTaskCard, TaskCard, TaskFormValues, TaskModal } from ".";
 import { Button } from "react-bootstrap";
 import { SweetAlert2 } from "../../../utils";
 import apiSJM from "../../../../api/apiSJM";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 interface Props {
   tasks: {
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export const Kanban = ({ tasks }: Props) => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [pendingTasks, setPendingTasks] = useState<Task[]>([]);
   const [processTasks, setProcessTasks] = useState<Task[]>([]);
@@ -169,6 +170,11 @@ export const Kanban = ({ tasks }: Props) => {
     }
   };
 
+  const handleNavigateTaskHistorial = (id_task: number) => {
+    console.log(id, id_task);
+    navigate(`/disenos/${id}/tarea/${id_task}/historial`);
+  };
+
   return (
     <Fragment>
       <div className="d-flex align-items-center">
@@ -203,6 +209,7 @@ export const Kanban = ({ tasks }: Props) => {
                   options={["PROCESO", "FINALIZADO", "CANCELADO"]}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
+                  handleNavigateTaskHistorial={handleNavigateTaskHistorial}
                 />
               ))}
             </div>
@@ -224,6 +231,7 @@ export const Kanban = ({ tasks }: Props) => {
                   options={["PENDIENTE", "FINALIZADO", "CANCELADO"]}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
+                  handleNavigateTaskHistorial={handleNavigateTaskHistorial}
                 />
               ))}
             </div>
@@ -242,6 +250,7 @@ export const Kanban = ({ tasks }: Props) => {
                   options={["PENDIENTE", "PROCESO", "CANCELADO"]}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
+                  handleNavigateTaskHistorial={handleNavigateTaskHistorial}
                 />
               ))}
             </div>
@@ -261,6 +270,7 @@ export const Kanban = ({ tasks }: Props) => {
                   options={["PENDIENTE", "PROCESO", "FINALIZADO"]}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
+                  handleNavigateTaskHistorial={handleNavigateTaskHistorial}
                 />
               ))}
             </div>

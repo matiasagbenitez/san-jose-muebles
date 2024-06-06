@@ -10,6 +10,7 @@ interface TaskCardProps {
     status: string
   ) => void;
   handleDeleteTask: (id_task: number, status: string) => void;
+  handleNavigateTaskHistorial: (id_task: number) => void;
 }
 
 export const TaskCard = ({
@@ -17,6 +18,7 @@ export const TaskCard = ({
   options,
   handleUpdateStatus,
   handleDeleteTask,
+  handleNavigateTaskHistorial,
 }: TaskCardProps) => {
   return (
     <Card className="my-2 small" key={task.id}>
@@ -47,6 +49,13 @@ export const TaskCard = ({
                   {DesignTaskStatusText[option]}
                 </Dropdown.Item>
               ))}
+              <Dropdown.Item
+                key="delete"
+                className="small"
+                onClick={() => handleNavigateTaskHistorial(+task.id)}
+              >
+                <i className="bi bi-eye"></i> Ver historial
+              </Dropdown.Item>
               <Dropdown.Item
                 key="delete"
                 className="small text-danger"

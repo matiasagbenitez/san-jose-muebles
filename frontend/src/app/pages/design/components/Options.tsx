@@ -11,7 +11,7 @@ export const Options = ({ id }: Props) => {
   const redirectHistorial = () => {
     navigate(`/disenos/${id}/historial`);
   };
-
+  
   return (
     <ListGroup horizontal="xl" className="small mb-3">
       <ListGroup.Item action onClick={() => navigate("/disenos")}>

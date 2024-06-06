@@ -1,5 +1,5 @@
 import { Design, DesignEvolution } from "../../database/mysql/models";
-import { CreateDesignEvolutionDTO, CustomError, DesignEntity, DesignEvolutionsEntity } from "../../domain";
+import { CreateDesignEvolutionDTO, CustomError, DesignEntity, DesignEvolutionsEntity, DesignTaskEvolutionsEntity } from "../../domain";
 
 export class DesignService {
 
@@ -85,6 +85,43 @@ export class DesignService {
         const entity = DesignEvolutionsEntity.fromObject(design);
 
         return { design: entity.design, evolutions: entity.evolutions };
+    }
+
+    public async getTaskEvolutions(id_design: number, id_task: number) {
+
+        const design = await Design.findByPk(id_design, {
+            include: [
+                {
+                    association: 'environment', include: [
+                        {
+                            association: 'type', attributes: ['name']
+                        },
+                        {
+                            association: 'project', attributes: ['title'], include: [
+                                { association: 'client', attributes: ['name', 'last_name'] }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    association: 'tasks', where: { id: id_task }, include: [
+                        { association: 'user', attributes: ['name'] },
+                        {
+                            association: 'evolutions', include: [
+                                { association: 'user', attributes: ['name'] }
+                            ]
+                        }
+                    ]
+                },
+            ],
+            order: [
+                ['tasks', 'evolutions', 'createdAt', 'DESC'],
+            ]
+        });
+        if (!design) throw CustomError.notFound('Diseño no encontrado');
+        const entity = DesignTaskEvolutionsEntity.fromObject(design);
+
+        return { design: entity.design, task: entity.task };
     }
 
 
