@@ -144,7 +144,7 @@ export const Comments = ({ id }: Props) => {
                         <CustomInput.TextArea
                           className="mb-0"
                           name="comment"
-                          placeholder="Escribe un comentario (máx. 255 caracteres)..."
+                          placeholder="Escribe un comentario (máx. 255)..."
                           rows={1}
                           disabled={isFormSubmitted}
                         />

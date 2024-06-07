@@ -17,13 +17,24 @@ export const Data = ({ project }: Props) => {
 
   return (
     <>
-      <Table bordered responsive size="sm" className="small align-middle">
+      <p>
+        Estado actual del proyecto:{" "}
+        <span
+          className="badge rounded-pill"
+          style={{
+            fontSize: ".9em",
+            color: "black",
+            backgroundColor: Statuses[project.status] || "gray",
+          }}
+        >
+          {project.status}
+        </span>
+      </p>
+      <Table bordered responsive striped size="sm" className="small align-middle">
         <tbody className="text-uppercase">
           <tr>
-            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Cliente
-            </th>
-            <td className="col-10 px-2">
+            <th className="col-3 px-2">Cliente</th>
+            <td className="col-9 px-2">
               <Link
                 to={`/clientes/${project.id_client}`}
                 target="_blank"
@@ -49,48 +60,20 @@ export const Data = ({ project }: Props) => {
             </td>
           </tr>
           <tr>
-            <th className="px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Proyecto
-            </th>
+            <th className="px-2">Proyecto</th>
             <td className="px-2 fw-bold">{project.title}</td>
           </tr>
           <tr>
-            <th className="px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Localidad
-            </th>
+            <th className="px-2">Localidad</th>
             <td className="px-2">{project.locality}</td>
           </tr>
           <tr>
-            <th className="px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Dirección
-            </th>
+            <th className="px-2">Dirección</th>
             <td className="px-2">{project.address}</td>
           </tr>
-        </tbody>
-      </Table>
-
-      <Table bordered responsive size="sm" className="small align-middle">
-        <tbody className="text-uppercase">
           <tr>
-            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Estado
-            </th>
-            <td className="col-4 px-2">
-              <span
-                className="badge rounded-pill"
-                style={{
-                  fontSize: ".9em",
-                  color: "black",
-                  backgroundColor: Statuses[project.status] || "gray",
-                }}
-              >
-                {project.status}
-              </span>
-            </td>
-            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Prioridad
-            </th>
-            <td className="col-4 px-2 fw-bold">
+            <th className="px-2">Prioridad</th>
+            <td className="px-2">
               <span
                 className="badge rounded-pill"
                 style={{
@@ -104,18 +87,18 @@ export const Data = ({ project }: Props) => {
             </td>
           </tr>
           <tr>
-            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Entrega sol.
-            </th>
-            <td className="col-4 px-2">
+            <th className="px-2">Fecha entrega solicitada</th>
+            <td className="px-2">
+              {" "}
               {project.requested_deadline
                 ? DateFormatter.toWDMYText(project.requested_deadline)
                 : "No especificada"}
             </td>
-            <th className="col-2 px-2" style={{ backgroundColor: "#F2F2F2" }}>
-              Entrega est.
-            </th>
-            <td className="col-4 px-2">
+          </tr>
+          <tr>
+            <th className="px-2">Fecha entrega estimada</th>
+            <td className="px-2">
+              {" "}
               {project.estimated_deadline
                 ? DateFormatter.toWDMYText(project.estimated_deadline)
                 : "No especificada"}

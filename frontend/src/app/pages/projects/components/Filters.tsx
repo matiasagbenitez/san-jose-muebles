@@ -66,27 +66,28 @@ export const Filters = ({
 
             <Col xl={3}>
               <InputGroup size="sm" className="mb-3">
-                <InputGroup.Text id="from">Localidad</InputGroup.Text>
+                <InputGroup.Text id="from">Estado</InputGroup.Text>
                 <Form.Select
-                  name="locality"
+                  name="status"
                   size="sm"
-                  value={state.filters.id_locality || ""}
+                  value={state.filters.status || ""}
                   onChange={(e) =>
                     dispatch({
                       type: "FILTERS_CHANGE",
                       newFilters: {
                         ...state.filters,
-                        id_locality: e.target.value,
+                        status: e.target.value,
                       },
                     })
                   }
                 >
-                  <option value="">Todas</option>
-                  {localities.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.label}
-                    </option>
-                  ))}
+                  <option value="">Por defecto</option>
+                  <option value="PENDIENTE">PENDIENTE</option>
+                  <option value="PROCESO">EN PROCESO</option>
+                  <option value="PAUSADO">PAUSADO</option>
+                  <option value="FINALIZADO">FINALIZADO</option>
+                  <option value="CANCELADO">CANCELADO</option>
+                  <option value="ALL">TODOS LOS ESTADOS</option>
                 </Form.Select>
               </InputGroup>
             </Col>
@@ -116,31 +117,29 @@ export const Filters = ({
                 </Form.Select>
               </InputGroup>
             </Col>
-
             <Col xl={3}>
               <InputGroup size="sm" className="mb-3">
-                <InputGroup.Text id="from">Estado</InputGroup.Text>
+                <InputGroup.Text id="from">Localidad</InputGroup.Text>
                 <Form.Select
-                  name="status"
+                  name="locality"
                   size="sm"
-                  value={state.filters.status || ""}
+                  value={state.filters.id_locality || ""}
                   onChange={(e) =>
                     dispatch({
                       type: "FILTERS_CHANGE",
                       newFilters: {
                         ...state.filters,
-                        status: e.target.value,
+                        id_locality: e.target.value,
                       },
                     })
                   }
                 >
-                  <option value="">Por defecto</option>
-                  <option value="PENDIENTE">PENDIENTE</option>
-                  <option value="PROCESO">EN PROCESO</option>
-                  <option value="PAUSADO">PAUSADO</option>
-                  <option value="FINALIZADO">FINALIZADO</option>
-                  <option value="CANCELADO">CANCELADO</option>
-                  <option value="ALL">TODOS LOS ESTADOS</option>
+                  <option value="">Todas</option>
+                  {localities.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.label}
+                    </option>
+                  ))}
                 </Form.Select>
               </InputGroup>
             </Col>

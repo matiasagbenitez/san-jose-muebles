@@ -116,16 +116,20 @@ export const ProjectsList = () => {
       {
         name: "CLIENTE",
         selector: (row: DataRow) => row.client,
-      },
-      {
-        name: "LOCALIDAD",
-        selector: (row: DataRow) => row.locality,
+        style: { fontWeight: "bold" },
+        wrap: true,
       },
       {
         name: "DESCRIPCIÓN",
         selector: (row: DataRow) => row.title || "",
         wrap: true,
       },
+      {
+        name: "LOCALIDAD",
+        selector: (row: DataRow) => row.locality,
+        wrap: true,
+      },
+      
       {
         name: "PRIORIDAD",
         selector: (row: DataRow) => row.priority,
