@@ -10,7 +10,7 @@ import {
   PriorityColor,
 } from "./interfaces";
 import { DesignIcon, FabricationIcon, InstallationIcon } from "../../icons";
-import { DesignStatusBadge, StatusBadge } from "./components";
+import { DesignStatusBadge } from "./components";
 import { DateFormatter } from "../../helpers";
 
 export const Environment = () => {
@@ -111,27 +111,22 @@ export const Environment = () => {
                 <td className="px-2">{environment.type}</td>
               </tr>
               <tr>
-                <td className="fw-bold px-2">Descripción</td>
+                <td className="fw-bold px-2">Descripción ambiente</td>
                 <td className="px-2">{environment.description}</td>
               </tr>
               <tr>
-                <td className="fw-bold px-2">Prioridad</td>
+                <td className="fw-bold px-2">Prioridad y dificultad</td>
                 <td className="px-2">
                   <span
-                    className="badge rounded-pill"
+                    className="badge rounded-pill me-1"
                     style={{
                       fontSize: ".9em",
                       color: "black",
                       backgroundColor: PriorityColor[environment.priority],
                     }}
                   >
-                    {environment.priority}
+                    Prioridad {environment.priority}
                   </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="fw-bold px-2">Dificultad</td>
-                <td className="px-2">
                   <span
                     className="badge rounded-pill"
                     style={{
@@ -140,7 +135,7 @@ export const Environment = () => {
                       backgroundColor: DifficultyColor[environment.difficulty],
                     }}
                   >
-                    {environment.difficulty}
+                    Dificultad {environment.difficulty}
                   </span>
                 </td>
               </tr>

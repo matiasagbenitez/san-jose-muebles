@@ -11,7 +11,7 @@ interface Design {
 
 interface Evolution {
     id: string;
-    status: 'PENDIENTE' | 'PROCESO' | 'FINALIZADO' | 'CANCELADO';
+    status: 'PENDIENTE' | 'PROCESO' | 'FINALIZADA' | 'CANCELADA';
     comment: string;
     user: string;
     createdAt: Date;
@@ -26,7 +26,6 @@ interface Task {
     createdAt: Date;
     evolutions: Evolution[];
 }
-
 
 export class DesignTaskEvolutionsEntity {
     constructor(

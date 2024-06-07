@@ -2,17 +2,13 @@ import { Op } from "sequelize";
 import { Design, Environment, Fabrication, Installation } from "../../database/mysql/models";
 import { CustomError, CreateEnvironmentDTO, EnvironmentsByProjectEntity, PaginationDto, EnvironmentsListEntity, EnvironmentDetailEntity } from "../../domain";
 
-type Status = "PROCESO" | "PENDIENTE" | "PAUSADO" | "FINALIZADO" | "CANCELADO";
-type Difficulty = "BAJA" | "MEDIA" | "ALTA";
-type Priority = "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
 export interface EnvironmentFilters {
-    status: Status;
-    des_status: Status;
-    fab_status: Status;
-    ins_status: Status;
+    des_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
+    fab_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
+    ins_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
     id_client: number;
-    difficulty: Difficulty;
-    priority: Priority;
+    difficulty: 'BAJA' | 'MEDIA' | 'ALTA';
+    priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE';
 }
 
 export class EnvironmentService {
@@ -31,7 +27,7 @@ export class EnvironmentService {
                 ],
                 offset: (page - 1) * limit,
                 limit,
-                order: [['status', 'ASC'], ['priority', 'DESC']]
+                order: [['updatedAt', 'DESC'], ['priority', 'DESC']]
             }),
             Environment.count({ where: { id_project } })
         ]);
@@ -45,7 +41,6 @@ export class EnvironmentService {
         // FILTERS
         let where = {};
 
-        if (filters.status) where = { ...where, status: filters.status };
         if (filters.difficulty) where = { ...where, difficulty: filters.difficulty };
         if (filters.priority) where = { ...where, priority: filters.priority };
 
@@ -81,7 +76,7 @@ export class EnvironmentService {
                 include,
                 offset: (page - 1) * limit,
                 limit,
-                order: [['status', 'ASC'], ['priority', 'DESC'], ['difficulty', 'ASC']]
+                order: [['updatedAt', 'DESC'], ['priority', 'DESC'], ['difficulty', 'ASC']]
             }),
             Environment.count({
                 where,

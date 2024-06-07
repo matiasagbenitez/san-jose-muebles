@@ -11,7 +11,7 @@ interface Design {
 
 interface Evolution {
     id: string;
-    status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO';
+    status: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
     comment: string;
     user: string;
     createdAt: Date;

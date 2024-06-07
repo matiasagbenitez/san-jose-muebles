@@ -13,13 +13,12 @@ export class EnvironmentDetailEntity {
 
         public type: string,
 
-        public status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
         public difficulty: 'BAJA' | 'MEDIA' | 'ALTA',
         public priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE',
         public description: string,
 
         public des_id: number,
-        public des_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'PRESENTADO' | 'CAMBIOS' | 'FINALIZADO' | 'CANCELADO',
+        public des_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO',
         public fab_id: number,
         public fab_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
         public ins_id: number,
@@ -30,10 +29,9 @@ export class EnvironmentDetailEntity {
     ) { }
 
     static fromObject(object: { [key: string]: any }): EnvironmentDetailEntity {
-        const { id, status, project, type, difficulty, priority, description, design, fabrication, installation, req_deadline, est_deadline } = object;
+        const { id, project, type, difficulty, priority, description, design, fabrication, installation, req_deadline, est_deadline } = object;
 
         if (!id) throw CustomError.badRequest('Falta el ID');
-        if (!status) throw CustomError.badRequest('Falta el estado');
         if (!type) throw CustomError.badRequest('Falta el tipo');
         if (!project) throw CustomError.badRequest('Falta el proyecto');
         if (!project.client) throw CustomError.badRequest('Falta el cliente');
@@ -49,7 +47,6 @@ export class EnvironmentDetailEntity {
             project.client.name + ' ' + project.client.last_name,
             project.client.phone,
             type.name,
-            status,
             difficulty,
             priority,
             description,

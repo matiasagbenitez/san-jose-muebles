@@ -13,12 +13,30 @@ import {
 } from "react-bootstrap";
 import { DateFormatter } from "../../helpers";
 
-enum DesignTaskStatus {
-  PENDIENTE = "PENDIENTE",
-  PROCESO = "EN PROCESO",
-  FINALIZADO = "FINALIZADA",
-  CANCELADO = "ARCHIVADA",
-}
+const pending = {
+  text: "PENDIENTE",
+  icon: "bi bi-clock-fill text-warning me-1",
+};
+const inProcess = {
+  text: "EN PROCESO",
+  color: "primary",
+  icon: "bi bi-play-circle-fill text-primary me-1",
+};
+const finished = {
+  text: "FINALIZADA",
+  icon: "bi bi-check-circle-fill text-success me-1",
+};
+const archived = {
+  text: "ARCHIVADA",
+  icon: "bi bi-archive-fill text-secondary me-1",
+};
+
+const options: Record<string, { text: string; icon: string }> = {
+  PENDIENTE: pending,
+  PROCESO: inProcess,
+  FINALIZADA: finished,
+  ARCHIVADA: archived,
+};
 
 function CustomToggle({ children, eventKey }: any) {
   const decoratedOnClick = useAccordionButton(eventKey);
@@ -94,23 +112,22 @@ export const DesignTaskEvolutions = () => {
             </Card>
           </Accordion>
 
-          <h5>
-            Tarea:{" "}
-            <span className="text-muted">
-              {task.title}
-            </span>
-          </h5>
-          <h6>
-            Descripción:{" "}
-            <span className="text-muted">
-              {task.description}
-            </span>
-          </h6>
-          <p className="small">
-            Tarea creada el{" "}
-            { DateFormatter.toDMYH(task.createdAt)} por{" "}
-            <b>{task.user}</b>
-          </p>
+          <div className="border rounded-3 p-3 mb-3">
+            <h5>Tarea #{task.id}</h5>
+            <h6>
+              Título: <span className="text-muted">{task.title}</span>
+            </h6>
+            <p>
+              Descripción:{" "}
+              <span className="text-muted">
+                {task.description || "Sin descripción"}
+              </span>
+            </p>
+            <small className="text-muted fst-italic">
+              Tarea creada el {DateFormatter.toDMYH(task.createdAt)} por{" "}
+              <b>{task.user}</b>.
+            </small>
+          </div>
 
           {evolutions.length === 0 ? (
             <p className="text-muted fst-italic small">
@@ -120,13 +137,14 @@ export const DesignTaskEvolutions = () => {
             <ListGroup className="small mb-3">
               {evolutions.map((evolution) => (
                 <ListGroup.Item key={evolution.id}>
-                  <Row xs={1} xl={2}>
+                  <Row xs={1}>
                     <span>
                       <b>{DateFormatter.toDMYH(evolution.createdAt)}</b>
                       {" - "}
                       {evolution.user} actualizó el estado de la tarea a{" "}
                       <b>
-                        {DesignTaskStatus[evolution.status as keyof typeof DesignTaskStatus]}
+                        <i className={options[evolution.status].icon}></i>
+                        {options[evolution.status].text}
                       </b>
                     </span>
                   </Row>

@@ -7,13 +7,14 @@ export enum StatusColor {
     CANCELADO = "#CC3333",
 }
 
-export type DesignStatus = "PENDIENTE" | "PROCESO" | "PAUSADO" | "PRESENTADO" | "CAMBIOS" | "FINALIZADO" | "CANCELADO";
+export type DesignStatus = "PENDIENTE" | "PROCESO" | "PAUSADO" | "PRESENTAR" | "PRESENTADO" | "REVISION" | "FINALIZADO" | "CANCELADO";
 export enum DesignStatusColor {
     PENDIENTE = "#FFD966",
     PROCESO = "#B5D6A7",
     PAUSADO = "#CCCCCC",
+    PRESENTAR = "##6796DB",
     PRESENTADO = "#4F81BD",
-    CAMBIOS = "#FFD100",
+    REVISION = "#669184",
     FINALIZADO = "#5A965A",
     CANCELADO = "#CC3333",
 }
@@ -46,8 +47,9 @@ const designStatusColors: { [key in DesignStatus]: string } = {
     PENDIENTE: "#FFD966",
     PROCESO: "#B5D6A7",
     PAUSADO: "#CCCCCC",
+    PRESENTAR: "#6796DB",
     PRESENTADO: "#4F81BD",
-    CAMBIOS: "#FFD100",
+    REVISION: "#669184",
     FINALIZADO: "#5A965A",
     CANCELADO: "#CC3333",
 };

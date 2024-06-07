@@ -1,6 +1,6 @@
 export class CreateDesignTaskDTO {
     private constructor(
-        public status: "PENDIENTE" | "PROCESO" | "FINALIZADO" | "CANCELADO" = "PENDIENTE",
+        public status: "PENDIENTE" | "PROCESO" | "FINALIZADA" | "ARCHIVADA" = "PENDIENTE",
         public title: string,
         public description: string,
         public id_user: number,
@@ -11,7 +11,6 @@ export class CreateDesignTaskDTO {
 
         if (!status) return ['El estado es necesario'];
         if (!title) return ['El título es necesario'];
-        if (!description) return ['La descripción es necesaria'];
         if (!id_user) return ['El ID del usuario es necesario'];
 
         return [undefined, new CreateDesignTaskDTO(status, title, description, id_user)];

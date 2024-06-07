@@ -1,9 +1,10 @@
 import { Accordion, Card, Dropdown } from "react-bootstrap";
 import { DateFormatter } from "../../../helpers";
-import { Task, DesignTaskStatusText, DesignTaskStatus } from "../interfaces";
+import { Task } from "../interfaces";
+import { ActionCardOptions } from ".";
 interface TaskCardProps {
   task: Task;
-  options: DesignTaskStatus[];
+  options: ActionCardOptions[];
   handleUpdateStatus: (
     id_task: number,
     prev_status: string,
@@ -41,12 +42,13 @@ export const TaskCard = ({
               {options.map((option) => (
                 <Dropdown.Item
                   className="small"
-                  key={option}
+                  key={option.action}
                   onClick={() =>
-                    handleUpdateStatus(+task.id, task.status, option)
+                    handleUpdateStatus(+task.id, task.status, option.text)
                   }
                 >
-                  {DesignTaskStatusText[option]}
+                  {option.icon}
+                  {option.text}
                 </Dropdown.Item>
               ))}
               <Dropdown.Item
@@ -54,14 +56,14 @@ export const TaskCard = ({
                 className="small"
                 onClick={() => handleNavigateTaskHistorial(+task.id)}
               >
-                <i className="bi bi-clock-history"></i> Ver historial
+                <i className="bi bi-clock-history me-1"></i> Ver historial
               </Dropdown.Item>
               <Dropdown.Item
                 key="delete"
                 className="small text-danger"
                 onClick={() => handleDeleteTask(+task.id, task.status)}
               >
-                <i className="bi bi-trash"></i> Eliminar tarea
+                <i className="bi bi-trash me-1"></i> Eliminar tarea
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -74,8 +76,12 @@ export const TaskCard = ({
               <b className="small">{task.title}</b>
             </Accordion.Button>
             <Accordion.Body className=" p-2">
-              <p className="mb-2">{task.description}</p>
-              <hr className="my-2" />
+              {task.description && (
+                <>
+                  <p className="mb-2">{task.description}</p>
+                  <hr className="my-2" />
+                </>
+              )}
               <span className="text-muted fst-italic">
                 Creado el {DateFormatter.toDMYH(task.createdAt)}
               </span>

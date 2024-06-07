@@ -5,7 +5,6 @@ export class Environment extends Model {
     public id_project!: number;
     public id_type_of_environment!: number;
 
-    public status!: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO';
     public difficulty!: 'BAJA' | 'MEDIA' | 'ALTA';
     public priority!: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE';
     public description!: string;
@@ -31,10 +30,6 @@ export const initEnvironmentModel = (sequelize: Sequelize) => {
             },
             id_type_of_environment: {
                 type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-            },
-            status: {
-                type: DataTypes.ENUM('PROCESO', 'PENDIENTE', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
             },
             difficulty: {

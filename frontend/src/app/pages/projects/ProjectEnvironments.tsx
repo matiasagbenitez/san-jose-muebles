@@ -18,12 +18,21 @@ import { CustomInput, LoadingSpinner, PageHeader } from "../../components";
 
 import { ProjectBasicData } from "./interfaces";
 import { ProjectHeader } from "./components";
-import { DesignStatus, Difficulty, Priority, Status } from "../environments/interfaces";
-import { StatusBadge, DesignStatusBadge, DifficultyBadge, PriorityBadge } from '../environments/components';
+import {
+  DesignStatus,
+  Difficulty,
+  Priority,
+  Status,
+} from "../environments/interfaces";
+import {
+  StatusBadge,
+  DesignStatusBadge,
+  DifficultyBadge,
+  PriorityBadge,
+} from "../environments/components";
 
 interface DataRow {
   id: number;
-  status: Status;
   type: string;
   req_deadline: Date | null;
   est_deadline: Date | null;
@@ -131,12 +140,6 @@ export const ProjectEnvironments = () => {
         center: true,
       },
       {
-        name: "ESTADO",
-        selector: (row: DataRow) => row.status,
-        cell: (row: DataRow) => <StatusBadge status={row.status} />,
-        center: true,
-      },
-      {
         name: "AMBIENTE",
         selector: (row: DataRow) => row.type,
       },
@@ -238,9 +241,12 @@ export const ProjectEnvironments = () => {
                 ),
                 difficulty: Yup.string().required("La dificultad es requerida"),
                 priority: Yup.string().required("La prioridad es requerida"),
-                description: Yup.string().required(
-                  "La descripción es requerida"
-                ),
+                description: Yup.string()
+                  .required("La descripción es requerida")
+                  .max(
+                    2000,
+                    "La descripción no puede superar los 2000 caracteres"
+                  ),
                 req_deadline: Yup.date().nullable(),
                 est_deadline: Yup.date().nullable(),
               })}

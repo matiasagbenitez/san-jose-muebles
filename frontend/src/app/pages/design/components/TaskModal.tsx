@@ -45,12 +45,10 @@ export const TaskModal = ({
           title: Yup.string()
             .required("El título de la tarea es requerido")
             .max(80, "El título de la tarea no debe superar los 80 caracteres"),
-          description: Yup.string()
-            .required("La descripción de la tarea es requerida")
-            .max(
-              255,
-              "La descripción de la tarea no debe superar los 255 caracteres"
-            ),
+          description: Yup.string().max(
+            255,
+            "La descripción de la tarea no debe superar los 255 caracteres"
+          ),
         })}
       >
         {({ errors, touched }) => (
@@ -68,7 +66,6 @@ export const TaskModal = ({
                 name="description"
                 isInvalid={!!errors.description && touched.description}
                 label="Descripción de la tarea"
-                isRequired
                 placeholder="Ej: añadir barra de bebidas con las siguientes características..."
                 disabled={isFormSubmitted}
               />

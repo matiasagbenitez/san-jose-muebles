@@ -21,7 +21,7 @@ const Statuses: DesignStatus[] = [
   "PROCESO",
   "PAUSADO",
   "PRESENTADO",
-  "CAMBIOS",
+  "REVISION",
   "FINALIZADO",
   "CANCELADO",
 ];

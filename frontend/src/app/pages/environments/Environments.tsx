@@ -33,7 +33,6 @@ import { DateFormatter } from "../../helpers";
 
 const columnsHidden = {
   id: { name: "ID", omit: false },
-  status: { name: "ESTADO", omit: false },
   client: { name: "CLIENTE", omit: false },
   project: { name: "PROYECTO", omit: false },
   type: { name: "AMBIENTE", omit: false },
@@ -114,14 +113,6 @@ export const Environments = () => {
         width: "80px",
         center: true,
         omit: omittedColumns.id.omit,
-      },
-      {
-        name: "ESTADO",
-        selector: (row: DataRow) => row.status,
-        cell: (row: DataRow) => <StatusBadge status={row.status} />,
-        center: true,
-        maxWidth: "160px",
-        omit: omittedColumns.status.omit,
       },
       {
         name: "AMBIENTE",
@@ -263,7 +254,7 @@ export const Environments = () => {
                     <option value="PROCESO">EN PROCESO</option>
                     <option value="PAUSADO">EN PAUSA</option>
                     <option value="PRESENTADO">PRESENTADO AL CLIENTE</option>
-                    <option value="CAMBIOS">REALIZANDO CAMBIOS</option>
+                    <option value="REVISION">REALIZANDO REVISION</option>
                     <option value="FINALIZADO">FINALIZADO</option>
                     <option value="CANCELADO">CANCELADO</option>
                   </Form.Select>

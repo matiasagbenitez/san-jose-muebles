@@ -1,11 +1,43 @@
-import { Fragment, useEffect, useState } from "react";
-import { StatusColor } from "../../environments/interfaces";
-import { Task } from "../interfaces";
-import { NoTaskCard, TaskCard, TaskFormValues, TaskModal } from ".";
-import { Button } from "react-bootstrap";
-import { SweetAlert2 } from "../../../utils";
-import apiSJM from "../../../../api/apiSJM";
 import { useParams, useNavigate } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+
+import apiSJM from "../../../../api/apiSJM";
+import { SweetAlert2 } from "../../../utils";
+import { NoTaskCard, TaskCard, TaskFormValues, TaskModal } from ".";
+import { Task } from "../interfaces";
+
+export interface ActionCardOptions {
+  text: string;
+  action: string;
+  icon: JSX.Element;
+}
+
+const pending: ActionCardOptions = {
+  text: "PENDIENTE",
+  action: "PENDIENTE",
+  icon: <i className="bi bi-clock-fill text-warning me-2"></i>,
+};
+const process: ActionCardOptions = {
+  text: "PROCESO",
+  action: "EN PROCESO",
+  icon: <i className="bi bi-play-circle-fill text-primary me-2"></i>,
+};
+const finished: ActionCardOptions = {
+  text: "FINALIZADA",
+  action: "FINALIZAR",
+  icon: <i className="bi bi-check-circle-fill text-success me-2"></i>,
+};
+const archived: ActionCardOptions = {
+  text: "ARCHIVADA",
+  action: "ARCHIVAR",
+  icon: <i className="bi bi-archive-fill text-secondary me-2"></i>,
+};
+
+const pendingOptions: ActionCardOptions[] = [process, finished, archived];
+const processOptions: ActionCardOptions[] = [pending, finished, archived];
+const finishedOptions: ActionCardOptions[] = [pending, process, archived];
+const archivedOptions: ActionCardOptions[] = [pending, process, finished];
 
 interface Props {
   tasks: {
@@ -22,7 +54,7 @@ export const Kanban = ({ tasks }: Props) => {
   const [pendingTasks, setPendingTasks] = useState<Task[]>([]);
   const [processTasks, setProcessTasks] = useState<Task[]>([]);
   const [finishedTasks, setFinishedTasks] = useState<Task[]>([]);
-  const [canceledTasks, setCanceledTasks] = useState<Task[]>([]);
+  const [archivedTasks, setArchivedTasks] = useState<Task[]>([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +64,7 @@ export const Kanban = ({ tasks }: Props) => {
     setPendingTasks(tasks.pending_tasks);
     setProcessTasks(tasks.process_tasks);
     setFinishedTasks(tasks.finished_tasks);
-    setCanceledTasks(tasks.canceled_tasks);
+    setArchivedTasks(tasks.canceled_tasks);
     setLoading(false);
   }, [tasks]);
 
@@ -91,14 +123,14 @@ export const Kanban = ({ tasks }: Props) => {
             processTasks.filter((task) => task.id != id_task.toString())
           );
           break;
-        case "FINALIZADO":
+        case "FINALIZADA":
           setFinishedTasks(
             finishedTasks.filter((task) => task.id != id_task.toString())
           );
           break;
-        case "CANCELADO":
-          setCanceledTasks(
-            canceledTasks.filter((task) => task.id != id_task.toString())
+        case "ARCHIVADA":
+          setArchivedTasks(
+            archivedTasks.filter((task) => task.id != id_task.toString())
           );
           break;
         default:
@@ -112,11 +144,11 @@ export const Kanban = ({ tasks }: Props) => {
         case "PROCESO":
           setProcessTasks([...processTasks, data.task]);
           break;
-        case "FINALIZADO":
+        case "FINALIZADA":
           setFinishedTasks([...finishedTasks, data.task]);
           break;
-        case "CANCELADO":
-          setCanceledTasks([...canceledTasks, data.task]);
+        case "ARCHIVADA":
+          setArchivedTasks([...archivedTasks, data.task]);
           break;
         default:
           break;
@@ -151,14 +183,14 @@ export const Kanban = ({ tasks }: Props) => {
             processTasks.filter((task) => task.id != id_task.toString())
           );
           break;
-        case "FINALIZADO":
+        case "FINALIZADA":
           setFinishedTasks(
             finishedTasks.filter((task) => task.id != id_task.toString())
           );
           break;
-        case "CANCELADO":
-          setCanceledTasks(
-            canceledTasks.filter((task) => task.id != id_task.toString())
+        case "ARCHIVADA":
+          setArchivedTasks(
+            archivedTasks.filter((task) => task.id != id_task.toString())
           );
           break;
         default:
@@ -207,7 +239,7 @@ export const Kanban = ({ tasks }: Props) => {
                 <TaskCard
                   key={task.id}
                   task={task}
-                  options={["PROCESO", "FINALIZADO", "CANCELADO"]}
+                  options={pendingOptions}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
                   handleNavigateTaskHistorial={handleNavigateTaskHistorial}
@@ -217,10 +249,7 @@ export const Kanban = ({ tasks }: Props) => {
           </div>
           <div className="kanban-column border">
             <div className="kanban-header bg-light">
-              <i
-                className="bi bi-play-circle-fill me-2"
-                style={{ color: StatusColor.PROCESO }}
-              ></i>
+              <i className="bi bi-play-circle-fill me-2 text-primary"></i>
               EN PROCESO
             </div>
             <div className="kanban-content">
@@ -229,7 +258,7 @@ export const Kanban = ({ tasks }: Props) => {
                 <TaskCard
                   key={task.id}
                   task={task}
-                  options={["PENDIENTE", "FINALIZADO", "CANCELADO"]}
+                  options={processOptions}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
                   handleNavigateTaskHistorial={handleNavigateTaskHistorial}
@@ -248,7 +277,7 @@ export const Kanban = ({ tasks }: Props) => {
                 <TaskCard
                   key={task.id}
                   task={task}
-                  options={["PENDIENTE", "PROCESO", "CANCELADO"]}
+                  options={finishedOptions}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
                   handleNavigateTaskHistorial={handleNavigateTaskHistorial}
@@ -263,12 +292,12 @@ export const Kanban = ({ tasks }: Props) => {
               ARCHIVADAS
             </div>
             <div className="kanban-content">
-              {canceledTasks.length === 0 && <NoTaskCard text="archivadas" />}
-              {canceledTasks.map((task) => (
+              {archivedTasks.length === 0 && <NoTaskCard text="archivadas" />}
+              {archivedTasks.map((task) => (
                 <TaskCard
                   key={task.id}
                   task={task}
-                  options={["PENDIENTE", "PROCESO", "FINALIZADO"]}
+                  options={archivedOptions}
                   handleUpdateStatus={handleUpdateStatus}
                   handleDeleteTask={deleteTask}
                   handleNavigateTaskHistorial={handleNavigateTaskHistorial}
