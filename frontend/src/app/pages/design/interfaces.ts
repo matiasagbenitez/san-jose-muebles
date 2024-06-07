@@ -86,3 +86,42 @@ export interface DesignTaskInterface {
     createdAt: Date;
     evolutions: DesignTaskEvolution[];
 }
+
+export const DesignStatuses: Record<
+    DesignStatus,
+    { text: string; icon: string }
+> = {
+    PENDIENTE: {
+        text: "PENDIENTE",
+        icon: "bi bi-clock-fill text-warning me-2",
+    },
+    PROCESO: {
+        text: "EN PROCESO",
+        icon: "bi bi-play-circle-fill text-primary me-2",
+    },
+    PAUSADO: {
+        text: "EN PAUSA",
+        icon: "bi bi-pause-circle-fill text-secondary me-2",
+    },
+    PRESENTAR: {
+        text: "PARA PRESENTAR",
+        icon: "bi bi-clock-history me-2",
+    },
+    PRESENTADO: {
+        text: "PRESENTADO A CLIENTE",
+        icon: "bi bi-person-circle me-2",
+    },
+    REVISION: {
+        text: "EN REVISIÓN",
+        icon: "bi bi-exclamation-circle-fill me-2 text-primary-emphasis"
+
+    },
+    FINALIZADO: {
+        text: "FINALIZADO",
+        icon: "bi bi-check-circle-fill text-success me-2",
+    },
+    CANCELADO: {
+        text: "CANCELADO",
+        icon: "bi bi-x-circle-fill text-danger me-2",
+    },
+};

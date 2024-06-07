@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class DesignEvolution extends Model {
     public id!: number;
     public id_design!: string;
-    public status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
+    public status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
     public id_user!: string;
 
     public readonly createdAt!: Date;
@@ -23,7 +23,7 @@ export const initDesignEvolutionModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'REVISION', 'FINALIZADO', 'CANCELADO'),
+                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTAR', 'PRESENTADO', 'REVISION', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
             },
             comment: {

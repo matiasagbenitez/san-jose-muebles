@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Design, DesignEvolution } from "./interfaces";
+import { Design, DesignEvolution, DesignStatuses } from "./interfaces";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, SimplePageHeader } from "../../components";
 import {
@@ -12,7 +12,6 @@ import {
   useAccordionButton,
 } from "react-bootstrap";
 import { DateFormatter } from "../../helpers";
-import { DesignStatusTextBadge } from "./components";
 
 function CustomToggle({ children, eventKey }: any) {
   const decoratedOnClick = useAccordionButton(eventKey);
@@ -97,7 +96,12 @@ export const DesignEvolutions = () => {
                       <b>{DateFormatter.toDMYH(evolution.createdAt)}</b>
                       {" - "}
                       {evolution.user} actualizó el estado del diseño a{" "}
-                      <DesignStatusTextBadge status={evolution.status} />{" "}
+                      <i
+                        className={`ms-2 ${
+                          DesignStatuses[evolution.status].icon
+                        }`}
+                      ></i>
+                      <b>{DesignStatuses[evolution.status].text}</b>
                     </span>
                     {evolution.comment && (
                       <p className="text-muted fst-italic mb-0 text-uppercase small">

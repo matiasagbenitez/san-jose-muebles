@@ -2,8 +2,7 @@ import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { Modal, Button } from "react-bootstrap";
 import { CustomInput } from "../../../components";
-import { DesignStatus } from "../interfaces";
-import { DesignStatusTextBadge } from ".";
+import { DesignStatus, DesignStatuses } from "../interfaces";
 
 interface Props {
   newStatus: DesignStatus | null;
@@ -43,7 +42,8 @@ export const ReasonModal = ({ newStatus, showModal, hideModal }: Props) => {
               {newStatus && (
                 <p className="mb-2 small">
                   Actualizar estado de diseño a{" "}
-                  <DesignStatusTextBadge status={newStatus} />
+                  <i className={`ms-2 ${DesignStatuses[newStatus].icon}`}></i>
+                  <b>{DesignStatuses[newStatus].text} </b>
                 </p>
               )}
               <CustomInput.TextArea

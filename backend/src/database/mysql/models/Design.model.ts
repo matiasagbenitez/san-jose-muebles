@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class Design extends Model {
     public id!: number;
     public id_environment!: string;
-    public status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
+    public status!: 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -23,7 +23,7 @@ export const initDesignModel = (sequelize: Sequelize) => {
                 unique: true,
             },
             status: {
-                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTADO', 'REVISION', 'FINALIZADO', 'CANCELADO'),
+                type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'PRESENTAR', 'PRESENTADO', 'REVISION', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
             },
         },

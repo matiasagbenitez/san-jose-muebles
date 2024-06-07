@@ -6,25 +6,11 @@ import {
   Dropdown,
   useAccordionButton,
 } from "react-bootstrap";
-import {
-  DesignEntity,
-  DesignStatus,
-  DesignStatusColor,
-  DesignStatusText,
-} from "../interfaces";
+import { DesignEntity, DesignStatus, DesignStatuses } from "../interfaces";
 import apiSJM from "../../../../api/apiSJM";
 import { SweetAlert2 } from "../../../utils";
 import { ReasonModal } from ".";
 
-const Statuses: DesignStatus[] = [
-  "PENDIENTE",
-  "PROCESO",
-  "PAUSADO",
-  "PRESENTADO",
-  "REVISION",
-  "FINALIZADO",
-  "CANCELADO",
-];
 interface Props {
   design: DesignEntity["design"];
 }
@@ -93,21 +79,32 @@ export const AccordionHeader = ({ design }: Props) => {
                   id="dropdown-basic"
                   size="sm"
                   variant="transparent"
-                  className="ms-2 py-0 px-3 rounded rounded-pill"
-                  style={{ backgroundColor: DesignStatusColor[status] }}
+                  className="ms-2 py-1 px-3 rounded"
                 >
-                  <span className="fw-bold me-1">{DesignStatusText[status]}</span>
+                  <span className="fw-bold me-1">
+                    <i className={`${DesignStatuses[status].icon} me-1`}></i>
+                    {DesignStatuses[status].text}
+                  </span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {Statuses.map((status) => (
-                    <Dropdown.Item
-                      className="small"
-                      key={status}
-                      onClick={() => handleStatusChange(status)}
-                    >
-                      Marcar <b>{DesignStatusText[status]}</b>
-                    </Dropdown.Item>
-                  ))}
+                  <Dropdown.ItemText className="small fw-bold">
+                    Actualizar el estado de diseño
+                  </Dropdown.ItemText>
+                  <Dropdown.Divider className="my-1" />
+                  {Object.entries(DesignStatuses).map(
+                    ([status, { text, icon }]) => (
+                      <Dropdown.Item
+                        className="small"
+                        key={status}
+                        onClick={() =>
+                          handleStatusChange(status as DesignStatus)
+                        }
+                      >
+                        <i className={`${icon}`}></i>
+                        {text}
+                      </Dropdown.Item>
+                    )
+                  )}
                 </Dropdown.Menu>
               </Dropdown>
               <CustomToggle eventKey="0">
