@@ -44,7 +44,7 @@ interface Props {
     pending_tasks: Task[];
     process_tasks: Task[];
     finished_tasks: Task[];
-    canceled_tasks: Task[];
+    archived_tasks: Task[];
   };
 }
 
@@ -64,7 +64,7 @@ export const Kanban = ({ tasks }: Props) => {
     setPendingTasks(tasks.pending_tasks);
     setProcessTasks(tasks.process_tasks);
     setFinishedTasks(tasks.finished_tasks);
-    setArchivedTasks(tasks.canceled_tasks);
+    setArchivedTasks(tasks.archived_tasks);
     setLoading(false);
   }, [tasks]);
 

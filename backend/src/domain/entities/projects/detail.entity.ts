@@ -43,7 +43,7 @@ export class ProjectDetailEntity {
             environments.forEach((env: any) => {
                 if (!env.id) throw CustomError.badRequest('¡Falta el ID del ambiente!');
                 if (!env.type) throw CustomError.badRequest('¡Falta el tipo del ambiente!');
-                if (!env.status) throw CustomError.badRequest('¡Falta el estado del ambiente!');
+                // if (!env.status) throw CustomError.badRequest('¡Falta el estado del ambiente!');
             });
         }
 

@@ -58,7 +58,7 @@ export interface DesignEntity {
         pending_tasks: Task[];
         process_tasks: Task[];
         finished_tasks: Task[];
-        canceled_tasks: Task[];
+        archived_tasks: Task[];
     };
 }
 

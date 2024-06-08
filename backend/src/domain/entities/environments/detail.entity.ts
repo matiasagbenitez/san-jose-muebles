@@ -18,7 +18,7 @@ export class EnvironmentDetailEntity {
         public description: string,
 
         public des_id: number,
-        public des_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO',
+        public des_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO',
         public fab_id: number,
         public fab_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
         public ins_id: number,
