@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, CreateProjectDTO, PaginationDto } from "../../domain";
+import { CustomError, CreateProjectDTO, PaginationDto, LoggedUserIdDto, CreateProjectEvolutionDTO } from "../../domain";
 import { ProjectService, ProjectFilters } from '../services/project.service';
 
 export class ProjectController {
@@ -128,6 +128,34 @@ export class ProjectController {
         if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
 
         this.projectService.deleteProject(parseInt(id))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
+    updateStatus = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        for (let key in req.body) {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = req.body[key].toUpperCase().trim();
+            }
+        }
+
+        const [error, loggedUserIdDto] = LoggedUserIdDto.create(req);
+        if (error) return res.status(400).json({ message: error });
+        if (!loggedUserIdDto) return res.status(400).json({ message: '¡Falta el usuario logueado!' });
+        const id_user = loggedUserIdDto.id_user;
+
+        const [errorDto, dto] = CreateProjectEvolutionDTO.create({ ...req.body, id_user });
+        if (errorDto) return res.status(400).json({ message: errorDto });
+        if (!dto) return res.status(400).json({ message: '¡Falta el DTO!' });
+
+        this.projectService.updateStatus(parseInt(id), dto)
             .then((data) => {
                 res.json(data);
             })

@@ -42,7 +42,6 @@ export const initProjectModel = (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                // type: DataTypes.ENUM('PENDIENTE', 'PROCESO', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
                 type: DataTypes.ENUM('PROCESO', 'PENDIENTE', 'PAUSADO', 'FINALIZADO', 'CANCELADO'),
                 allowNull: false,
             },

@@ -1,6 +1,6 @@
 import { Op, Order } from "sequelize";
-import { Project } from "../../database/mysql/models";
-import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity, ProjectBasicDataEntity } from "../../domain";
+import { Project, ProjectEvolution } from "../../database/mysql/models";
+import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity, ProjectBasicDataEntity, CreateProjectEvolutionDTO } from "../../domain";
 
 export interface ProjectFilters {
     id_client?: number;
@@ -143,6 +143,29 @@ export class ProjectService {
             return { message: 'Proyecto eliminado correctamente' };
         } catch (error) {
             throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateStatus(id_project: number, dto: CreateProjectEvolutionDTO) {
+
+        const transaction = await Project.sequelize!.transaction();
+        if (!transaction) throw CustomError.internalServerError('¡Error en la transacción!');
+
+        try {
+
+            const design = await Project.update({ status: dto.status }, { where: { id: id_project }, transaction });
+            if (!design) throw CustomError.notFound('¡No se pudo actualizar el estado del proyecto!');
+
+            const evolution = await ProjectEvolution.create({ id_project, ...dto }, { transaction });
+            if (!evolution) throw CustomError.internalServerError('¡No se pudo registrar la evolución del proyecto!');
+
+            await transaction.commit();
+
+            return { ok: true, status: dto.status };
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback();
+            throw CustomError.internalServerError('¡No se pudo actualizar el estado del proyecto!');
         }
     }
 

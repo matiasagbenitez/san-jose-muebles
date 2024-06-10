@@ -39,8 +39,6 @@ export const AccordionHeader = ({ design }: Props) => {
     setShowModal(false);
     if (!reason) return;
 
-    console.log(reason);
-
     const message = `¿Desea cambiar el estado del diseño a ${newStatus}?`;
     const confirmation = await SweetAlert2.confirm(message);
     if (!confirmation.isConfirmed) return;

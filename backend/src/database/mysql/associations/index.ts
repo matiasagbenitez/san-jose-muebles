@@ -59,6 +59,7 @@ import {
     DesignTask,
     DesignTaskEvolution,
     DesignEvolution,
+    ProjectEvolution,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -204,6 +205,9 @@ export const initializeAssociations = () => {
 
     Currency.hasMany(ProjectAccount, { foreignKey: 'id_currency', as: 'accounts', onDelete: 'RESTRICT' });
     ProjectAccount.belongsTo(Currency, { foreignKey: 'id_currency', as: 'currency' });
+
+    Project.hasMany(ProjectEvolution, { foreignKey: 'id_project', as: 'evolutions', onDelete: 'RESTRICT' });
+    ProjectEvolution.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
 
 
     ProjectAccount.hasMany(ProjectAccountTransaction, { foreignKey: 'id_project_account', as: 'transactions', onDelete: 'RESTRICT' });

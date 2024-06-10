@@ -14,7 +14,7 @@ export const Options = ({ id }: Props) => {
   
   return (
     <ListGroup horizontal="xl" className="small mb-3">
-      <ListGroup.Item action onClick={() => navigate("/disenos")}>
+      <ListGroup.Item action onClick={() => navigate(-1)}>
         <i className="bi bi-arrow-left me-2"></i>
         Volver atrás
       </ListGroup.Item>

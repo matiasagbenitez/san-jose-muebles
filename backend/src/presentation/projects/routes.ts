@@ -19,6 +19,9 @@ export class ProjectRoutes {
         router.put('/:id', [AuthMiddleware.validateJWT], controller.update);
         router.delete('/:id', [AuthMiddleware.validateJWT], controller.delete);
 
+
+        router.patch('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
+
         return router;
     }
 

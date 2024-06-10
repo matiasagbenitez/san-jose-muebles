@@ -38,6 +38,7 @@ import { VisitRequest, initVisitRequestModel } from './VisitRequest.model';
 import { VisitEvolution, initVisitEvolutionModel } from './VisitEvolution.model';
 
 import { Project, initProjectModel } from './Project.model';
+import { ProjectEvolution, initProjectEvolutionModel } from './ProjectEvolution.model';
 import { ProjectAccount, initProjectAccountModel } from './ProjectAccount.model';
 import { ProjectAccountTransaction, initProjectAccountTransactionModel } from './ProjectAccountTransaction.model';
 import { ProjectSupplierTransaction, initProjectSupplierTransactionModel } from './ProjectSupplierTransaction';
@@ -115,6 +116,7 @@ export const initializeModels = (sequelize: Sequelize) => {
 
   // PROJECT
   initProjectModel(sequelize);
+  initProjectEvolutionModel(sequelize);
   initProjectAccountModel(sequelize);
   initProjectAccountTransactionModel(sequelize);
   initProjectSupplierTransactionModel(sequelize);
@@ -191,6 +193,7 @@ export {
   VisitRequestAudit,
 
   Project,
+  ProjectEvolution,
   ProjectAccount,
   ProjectAccountTransaction,
   ProjectSupplierTransaction,

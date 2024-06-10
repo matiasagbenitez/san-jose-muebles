@@ -246,3 +246,29 @@ export enum StatusColor {
     FINALIZADO = "#5A965A",
     CANCELADO = "#CC3333",
 }
+
+export const ProjectStatuses: Record<
+    Status,
+    { text: string; icon: string }
+> = {
+    PENDIENTE: {
+        text: "PENDIENTE",
+        icon: "bi bi-clock-fill text-warning me-2",
+    },
+    PROCESO: {
+        text: "EN PROCESO",
+        icon: "bi bi-play-circle-fill text-primary me-2",
+    },
+    PAUSADO: {
+        text: "EN PAUSA",
+        icon: "bi bi-pause-circle-fill text-secondary me-2",
+    },
+    FINALIZADO: {
+        text: "FINALIZADO",
+        icon: "bi bi-check-circle-fill text-success me-2",
+    },
+    CANCELADO: {
+        text: "CANCELADO",
+        icon: "bi bi-x-circle-fill text-danger me-2",
+    },
+};
