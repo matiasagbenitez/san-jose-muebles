@@ -116,16 +116,12 @@ export const DesignTaskEvolutions = () => {
             <h6>
               Título: <span className="text-muted">{task.title}</span>
             </h6>
-            <p>
+            <p className="mb-0">
               Descripción:{" "}
               <span className="text-muted">
                 {task.description || "Sin descripción"}
               </span>
             </p>
-            <small className="text-muted fst-italic">
-              Tarea creada el {DateFormatter.toDMYH(task.createdAt)} por{" "}
-              <b>{task.user}</b>
-            </small>
           </div>
 
           {evolutions.length === 0 ? (
@@ -147,6 +143,13 @@ export const DesignTaskEvolutions = () => {
                   </span>
                 </ListGroup.Item>
               ))}
+               <ListGroup.Item key={task.id}>
+                  <span>
+                    <b>{DateFormatter.toDMYH(task.createdAt)}</b>
+                    {" - "}
+                    {task.user} creó la tarea {task.title}
+                  </span>
+                </ListGroup.Item>
             </ListGroup>
           )}
         </Fragment>

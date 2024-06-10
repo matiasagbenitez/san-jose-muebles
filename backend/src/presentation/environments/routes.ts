@@ -10,7 +10,7 @@ export class EnvironmentRoutes {
 
         const controller = new EnvironmentController();
 
-        router.get('/by-project/:id_project/paginated', [AuthMiddleware.validateJWT], controller.getByProjectPaginated);
+        router.get('/by-project/:id_project', [AuthMiddleware.validateJWT], controller.getByProject);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         
         router.get('/project/:id_project/environment/:id_environment', [AuthMiddleware.validateJWT], controller.getById);

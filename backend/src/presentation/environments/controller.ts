@@ -15,15 +15,11 @@ export class EnvironmentController {
     }
 
     // Métodos de la clase
-    getByProjectPaginated = async (req: Request, res: Response) => {
+    getByProject = async (req: Request, res: Response) => {
         const id_project = parseInt(req.params.id_project);
         if (!id_project) return res.status(400).json({ message: 'Missing id_project' });
 
-        const { page = 1, limit = 10 } = req.query;
-        const [error, paginationDto] = PaginationDto.create(+page, +limit);
-        if (error) return res.status(400).json({ message: error });
-
-        this.service.getEnvironmentsByProjectPaginated(id_project, paginationDto!)
+        this.service.getEnvironmentsByProject(id_project)
             .then((data) => {
                 res.json(data);
             })

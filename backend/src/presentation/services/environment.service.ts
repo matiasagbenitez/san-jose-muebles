@@ -13,8 +13,7 @@ export interface EnvironmentFilters {
 
 export class EnvironmentService {
 
-    public async getEnvironmentsByProjectPaginated(id_project: number, paginationDto: PaginationDto) {
-        const { page, limit } = paginationDto;
+    public async getEnvironmentsByProject(id_project: number) {
 
         const [rows, total] = await Promise.all([
             Environment.findAll({
@@ -25,8 +24,6 @@ export class EnvironmentService {
                     { association: 'fabrication', attributes: ['id', 'status'] },
                     { association: 'installation', attributes: ['id', 'status'] }
                 ],
-                offset: (page - 1) * limit,
-                limit,
                 order: [['updatedAt', 'DESC'], ['priority', 'DESC']]
             }),
             Environment.count({ where: { id_project } })

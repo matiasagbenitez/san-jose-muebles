@@ -1,5 +1,4 @@
 import { Accordion, Card, Dropdown } from "react-bootstrap";
-import { DateFormatter } from "../../../helpers";
 import { Task } from "../interfaces";
 import { ActionCardOptions } from ".";
 interface TaskCardProps {
@@ -23,12 +22,9 @@ export const TaskCard = ({
 }: TaskCardProps) => {
   return (
     <Card className="my-2 small" key={task.id}>
-      <Card.Header className="p-2">
+      <Card.Header className="px-2 py-1">
         <div className="d-flex align-items-center justify-content-between">
-          <Card.Subtitle className="text-center mb-0">
-            <span className="badge rounded-pill bg-secondary"># {task.id}</span>
-          </Card.Subtitle>
-
+          <span className="badge rounded-pill bg-secondary"># {task.id}</span>
           <Dropdown>
             <Dropdown.Toggle
               variant="transparent"
@@ -76,15 +72,14 @@ export const TaskCard = ({
               <b className="small">{task.title}</b>
             </Accordion.Button>
             <Accordion.Body className=" p-2">
-              {task.description && (
+              {task.description ? (
                 <>
                   <p className="mb-2">{task.description}</p>
                   <hr className="my-2" />
                 </>
+              ) : (
+                <span className="text-muted">Sin descripción</span>
               )}
-              <span className="text-muted fst-italic">
-                Creado el {DateFormatter.toDMYH(task.createdAt)}
-              </span>
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>

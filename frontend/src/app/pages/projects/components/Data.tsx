@@ -1,4 +1,4 @@
-import { Dropdown, Row, Table } from "react-bootstrap";
+import { Card, Col, Dropdown, Row } from "react-bootstrap";
 import { ProjectDetailInterface, ProjectStatuses } from "../interfaces";
 import { DateFormatter } from "../../../helpers";
 import { Link, useNavigate } from "react-router-dom";
@@ -106,7 +106,7 @@ export const Data = ({ project }: Props) => {
             id="dropdown-basic"
             size="sm"
             variant="transparent"
-            className="my-0 mx-0 py-0 px-0 rounded border-0"
+            className="mb-2 p-0 rounded border-0"
           >
             <span className="fw-bold me-1">
               <i className={`${ProjectStatuses[status].icon} me-1`}></i>
@@ -172,56 +172,44 @@ export const Data = ({ project }: Props) => {
           El proyecto no tiene ambientes asociados. Registre un nuevo ambiente.
         </p>
       ) : (
-        <Table responsive size="sm" className="small align-middle">
-          <thead>
-            <tr className="text-uppercase">
-              <th style={{ backgroundColor: "#F2F2F2" }} className="px-4">
-                ID
-              </th>
-              <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Ambiente
-              </th>
-              <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Diseño
-              </th>
-              <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Fabricación
-              </th>
-              <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Instalación
-              </th>
-              <th style={{ backgroundColor: "#F2F2F2" }} className="px-4">
-                DETALLE
-              </th>
-            </tr>
-          </thead>
-
-          {/* ITERAR */}
-          <tbody className="text-uppercase">
-            {project.environments.map((env, index) => (
-              <tr key={index} className="">
-                <td className="text-center">{env.id}</td>
-                <td>{env.type}</td>
-                <td>
-                  <DesignStatusSpan status={env.des_status} />
-                </td>
-                <td>{env.fab_status}</td>
-                <td>{env.ins_status}</td>
-                <td className="text-center">
-                  <Link
-                    to={`/proyectos/${project.id}/ambientes/${env.id}`}
-                    className="btn btn-link p-0"
-                  >
-                    <i className="bi bi-eye-fill text-secondary"></i>
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <>
+          {project.environments.map((env, index) => (
+            <Link
+              title="Ver detalle del ambiente"
+              to={`/proyectos/${project.id}/ambientes/${env.id}`}
+              key={index}
+              className="text-decoration-none small"
+            >
+              <Card className="mb-2">
+                <Card.Body className="py-2">
+                  <Row>
+                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                      <span className="badge rounded-pill bg-secondary px-3 me-2">
+                        # {env.id}
+                      </span>
+                      <b>{env.type}</b>
+                    </Col>
+                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                      <b className="me-2">DISEÑO:</b>
+                      <DesignStatusSpan status={env.des_status} />
+                    </Col>
+                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                      <b className="me-2">FABRICACIÓN:</b>
+                      {env.fab_status}
+                    </Col>
+                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                      <b className="me-2">INSTALACIÓN:</b>
+                      {env.ins_status}
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Link>
+          ))}
+        </>
       )}
 
-      <p className="small text-muted">
+      <p className="small text-muted mt-3">
         <i className="bi bi-info-circle me-2"></i>
         Proyecto registrado en el sistema el{" "}
         {DateFormatter.toDMYHText(project.createdAt)}

@@ -1,17 +1,11 @@
-import { useEffect, useMemo, useReducer, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { TableColumn } from "react-data-table-component";
-import { Button, ButtonGroup, Col, Modal, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Button, ButtonGroup, Card, Col, Modal, Row } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import apiSJM from "../../../api/apiSJM";
-import {
-  Datatable,
-  initialState,
-  paginationReducer,
-  fetchData,
-} from "../../shared";
+
 import { SweetAlert2 } from "../../utils";
 import { DateFormatter } from "../../helpers";
 import { CustomInput, LoadingSpinner, PageHeader } from "../../components";
@@ -24,7 +18,7 @@ import {
   Priority,
   Status,
 } from "../environments/interfaces";
-import { DesignStatuses } from "../design/interfaces";
+import { DesignStatusSpan } from "../design/components";
 
 interface DataRow {
   id: number;
@@ -52,9 +46,9 @@ export const ProjectEnvironments = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [state, dispatch] = useReducer(paginationReducer, initialState);
 
   const [project, setProject] = useState<ProjectBasicData | null>(null);
+  const [environments, setEnvironments] = useState<DataRow[]>([]);
   const [typesOfEnvironments, setTypesOfEnvironments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
@@ -65,13 +59,14 @@ export const ProjectEnvironments = () => {
   const fetch = async () => {
     setLoading(true);
     try {
-      const [_, res1, res2] = await Promise.all([
-        fetchData(endpoint, 1, state, dispatch),
+      const [res1, res2, res3] = await Promise.all([
         apiSJM.get(`/projects/${id}/basic`),
         apiSJM.get("/types_of_environments"),
+        apiSJM.get(endpoint),
       ]);
       setProject(res1.data.item);
       setTypesOfEnvironments(res2.data.items);
+      setEnvironments(res3.data.items);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -82,22 +77,6 @@ export const ProjectEnvironments = () => {
   useEffect(() => {
     fetch();
   }, []);
-
-  const handlePageChange = async (page: number) => {
-    dispatch({ type: "PAGE_CHANGE", page });
-    fetchData(endpoint, page, state, dispatch);
-  };
-
-  const handleRowsPerPageChange = async (newPerPage: number, page: number) => {
-    dispatch({ type: "ROWS_PER_PAGE_CHANGE", newPerPage, page });
-    fetchData(endpoint, page, { ...state, perPage: newPerPage }, dispatch);
-  };
-
-  useEffect(() => {
-    if (state.error) {
-      navigate("/");
-    }
-  }, [state.error]);
 
   const handleCreate = () => {
     setIsModalOpen(true);
@@ -125,76 +104,9 @@ export const ProjectEnvironments = () => {
     }
   };
 
-  // COLUMNAS Y RENDERIZADO
-  const columns: TableColumn<DataRow>[] = useMemo(
-    () => [
-      {
-        name: "ID",
-        selector: (row: DataRow) => row.id,
-        width: "80px",
-        center: true,
-      },
-      {
-        name: "AMBIENTE",
-        selector: (row: DataRow) => row.type,
-      },
-      {
-        name: "DISEÑO",
-        selector: (row: DataRow) => row.des_status,
-        cell: (row: DataRow) => (
-          <span>
-            <i className={DesignStatuses[row.des_status].icon} />
-            {DesignStatuses[row.des_status].text}
-          </span>
-        ),
-      },
-      {
-        name: "FABRICACIÓN",
-        selector: (row: DataRow) => row.fab_status,
-        center: true,
-      },
-      {
-        name: "INSTALACIÓN",
-        selector: (row: DataRow) => row.ins_status,
-        center: true,
-      },
-      {
-        name: "DIFICULTAD",
-        selector: (row: DataRow) => row.difficulty,
-        center: true,
-      },
-      {
-        name: "PRIORIDAD",
-        selector: (row: DataRow) => row.priority,
-        center: true,
-      },
-      {
-        name: "ENTREGA SOLICITADA",
-        selector: (row: DataRow) =>
-          row.req_deadline ? DateFormatter.toDMYYYY(row.req_deadline) : "",
-        maxWidth: "200px",
-        center: true,
-      },
-      {
-        name: "ENTREGA ESTIMADA",
-        selector: (row: DataRow) =>
-          row.est_deadline ? DateFormatter.toDMYYYY(row.est_deadline) : "",
-        maxWidth: "200px",
-        center: true,
-      },
-    ],
-    []
-  );
-
   // MODAL
   const handleHide = () => {
     setIsModalOpen(false);
-  };
-
-  const handleClick = (row: DataRow) => {
-    if (project) {
-      navigate(`/proyectos/${project.id}/ambientes/${row.id}`);
-    }
   };
 
   return (
@@ -210,17 +122,80 @@ export const ProjectEnvironments = () => {
 
           {project && <ProjectHeader project={project} showStatus={false} />}
 
-          <Datatable
-            title="Listado de ambientes del proyecto"
-            columns={columns as TableColumn<DataRow>[]}
-            data={state.data}
-            loading={state.loading}
-            totalRows={state.totalRows}
-            handleRowsPerPageChange={handleRowsPerPageChange}
-            handlePageChange={handlePageChange}
-            clickableRows
-            onRowClicked={handleClick}
-          />
+          {environments.length == 0 ? (
+            <p className="text-center mt-2 text-muted">
+              <i className="bi bi-info-circle me-2"></i>
+              No se encontraron ambientes registrados para este proyecto
+            </p>
+          ) : (
+            <>
+              <h6>Listado de ambientes del proyecto</h6>
+              {environments.map((env) => (
+                <Link
+                  title="Ver detalle del ambiente"
+                  to={`/proyectos/${id}/ambientes/${env.id}`}
+                  key={env.id}
+                  className="text-decoration-none small"
+                >
+                  <Card className="mb-2">
+                    <Card.Body className="py-2">
+                      <Row>
+                        <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                          <span className="badge rounded-pill bg-secondary px-3 me-2">
+                            # {env.id}
+                          </span>
+                          <b>{env.type}</b>
+                        </Col>
+                        <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                          <b className="me-2">DISEÑO:</b>
+                          <DesignStatusSpan status={env.des_status} />
+                        </Col>
+                        <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                          <b className="me-2">FABRICACIÓN:</b>
+                          {env.fab_status}
+                        </Col>
+                        <Col xs={12} xl={3} className="mb-2 mb-xl-0">
+                          <b className="me-2">INSTALACIÓN:</b>
+                          {env.ins_status}
+                        </Col>
+                      </Row>
+                      <hr className="my-2" />
+                      <Row>
+                        <Col xs={12} xl={6} className="mb-2 mb-xl-0">
+                          <p className="mb-2 mb-xl-1">
+                            <i className="bi bi-calendar me-2 fst-normal fw-bold" />
+                            Fecha entrega solicitada:{" "}
+                            {env.req_deadline
+                              ? DateFormatter.toWDMYText(env.req_deadline)
+                              : "no especificada"}
+                          </p>
+                          <p className="mb-2 mb-xl-1">
+                            <i className="bi bi-calendar-check me-2 fst-normal fw-bold" />
+                            Fecha entrega estimada:{" "}
+                            {env.est_deadline
+                              ? DateFormatter.toWDMYText(env.est_deadline)
+                              : "no especificada"}
+                          </p>
+                        </Col>
+                        <Col xs={12} xl={6} className="mb-2 mb-xl-0">
+                          <p className="mb-2 mb-xl-1">
+                            <i className="bi bi-arrow-up-right me-2 fst-normal fw-bold" />
+                            Dificultad:{" "}
+                            <span className="text-muted">{env.difficulty}</span>
+                          </p>
+                          <p className="mb-2 mb-xl-1">
+                            <i className="bi bi-arrow-up-right me-2 fst-normal fw-bold" />
+                            Prioridad:{" "}
+                            <span className="text-muted">{env.priority}</span>
+                          </p>
+                        </Col>
+                      </Row>
+                    </Card.Body>
+                  </Card>
+                </Link>
+              ))}
+            </>
+          )}
 
           <Modal show={isModalOpen} onHide={handleHide} size="lg">
             <Modal.Header closeButton>
