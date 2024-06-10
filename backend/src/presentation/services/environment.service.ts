@@ -88,17 +88,18 @@ export class EnvironmentService {
         return { items: entities, total_items: total };
     }
 
-    public async getEnvironment(id: number) {
-        const row = await Environment.findByPk(id, {
+    public async getEnvironment(id_project: number, id_environment: number) {
+        const row = await Environment.findByPk(id_environment, {
             include: [
                 { association: 'type', attributes: ['id', 'name'] },
                 { association: 'project', attributes: ['id', 'title'], include: [{ association: 'client', attributes: ['id', 'name', 'last_name', 'phone'] }] },
-                { association: 'design', attributes: ['id', 'status'] },
-                { association: 'fabrication', attributes: ['id', 'status'] },
-                { association: 'installation', attributes: ['id', 'status'] }
+                { association: 'design', attributes: ['id', 'status', 'updatedAt'] },
+                { association: 'fabrication', attributes: ['id', 'status', 'updatedAt'] },
+                { association: 'installation', attributes: ['id', 'status', 'updatedAt'] }
             ]
         });
         if (!row) throw CustomError.notFound('¡El ambiente solicitado no existe!');
+        if (row.id_project !== id_project) throw CustomError.badRequest('¡El ambiente solicitado no pertenece al proyecto!');
 
         const { ...entity } = EnvironmentDetailEntity.fromObject(row);
         return { item: entity };

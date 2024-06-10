@@ -23,12 +23,12 @@ import {
   Button,
 } from "react-bootstrap";
 import apiSJM from "../../../api/apiSJM";
-import {
-  DesignStatusBadge,
-  StatusBadge,
-  PriorityBadge,
-  DifficultyBadge,
-} from "./components";
+// import {
+//   DesignStatusBadge,
+//   StatusBadge,
+//   PriorityBadge,
+//   DifficultyBadge,
+// } from "./components";
 import { DateFormatter } from "../../helpers";
 
 const columnsHidden = {
@@ -136,7 +136,6 @@ export const Environments = () => {
       {
         name: "DISEÑO",
         selector: (row: DataRow) => row.des_status,
-        cell: (row: DataRow) => <DesignStatusBadge status={row.des_status} />,
         center: true,
         maxWidth: "130px",
         omit: omittedColumns.des_status.omit,
@@ -144,7 +143,6 @@ export const Environments = () => {
       {
         name: "FABRICACIÓN",
         selector: (row: DataRow) => row.fab_status,
-        cell: (row: DataRow) => <StatusBadge status={row.fab_status} />,
         center: true,
         maxWidth: "130px",
         omit: omittedColumns.fab_status.omit,
@@ -152,7 +150,6 @@ export const Environments = () => {
       {
         name: "INSTALACIÓN",
         selector: (row: DataRow) => row.ins_status,
-        cell: (row: DataRow) => <StatusBadge status={row.ins_status} />,
         center: true,
         maxWidth: "130px",
         omit: omittedColumns.ins_status.omit,
@@ -160,7 +157,6 @@ export const Environments = () => {
       {
         name: "DIFICULTAD",
         selector: (row: DataRow) => row.difficulty,
-        cell: (row: DataRow) => <DifficultyBadge status={row.difficulty} />,
         center: true,
         maxWidth: "100px",
         omit: omittedColumns.difficulty.omit,
@@ -168,7 +164,6 @@ export const Environments = () => {
       {
         name: "PRIORIDAD",
         selector: (row: DataRow) => row.priority,
-        cell: (row: DataRow) => <PriorityBadge status={row.priority} />,
         center: true,
         maxWidth: "100px",
         omit: omittedColumns.priority.omit,
@@ -177,7 +172,7 @@ export const Environments = () => {
         name: "ENTREGA SOLICITADA",
         selector: (row: DataRow) =>
           row.req_deadline ? DateFormatter.toDMYYYY(row.req_deadline) : "",
-          wrap: true,
+        wrap: true,
         center: true,
         omit: omittedColumns.req_deadline.omit,
       },

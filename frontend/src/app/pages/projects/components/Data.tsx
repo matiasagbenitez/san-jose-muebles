@@ -2,7 +2,6 @@ import { Dropdown, Row, Table } from "react-bootstrap";
 import { ProjectDetailInterface, ProjectStatuses } from "../interfaces";
 import { DateFormatter } from "../../../helpers";
 import { Link, useNavigate } from "react-router-dom";
-import { StatusBadge } from "../../environments/components";
 import { Status } from "../../environments/interfaces";
 import { ReasonModal } from ".";
 import { useState } from "react";
@@ -120,7 +119,7 @@ export const Data = ({ project }: Props) => {
             </Dropdown.ItemText>
             <Dropdown.Divider className="my-1" />
             {Object.entries(ProjectStatuses).map(([status, { text, icon }]) => (
-              <>
+              <div key={status}>
                 {status !== project.status && (
                   <Dropdown.Item
                     className="small"
@@ -131,7 +130,7 @@ export const Data = ({ project }: Props) => {
                     {text}
                   </Dropdown.Item>
                 )}
-              </>
+              </div>
             ))}
             <Dropdown.Divider className="my-1" />
             <Dropdown.Item
@@ -175,7 +174,7 @@ export const Data = ({ project }: Props) => {
       ) : (
         <Table responsive size="sm" className="small align-middle">
           <thead>
-            <tr className="text-center text-uppercase">
+            <tr className="text-uppercase">
               <th style={{ backgroundColor: "#F2F2F2" }} className="px-4">
                 ID
               </th>
@@ -200,21 +199,17 @@ export const Data = ({ project }: Props) => {
           {/* ITERAR */}
           <tbody className="text-uppercase">
             {project.environments.map((env, index) => (
-              <tr key={index} className="text-center">
-                <td>{env.id}</td>
+              <tr key={index} className="">
+                <td className="text-center">{env.id}</td>
                 <td>{env.type}</td>
                 <td>
                   <DesignStatusSpan status={env.des_status} />
                 </td>
-                <td>
-                  <StatusBadge status={env.fab_status as Status} />
-                </td>
-                <td>
-                  <StatusBadge status={env.ins_status as Status} />
-                </td>
-                <td>
+                <td>{env.fab_status}</td>
+                <td>{env.ins_status}</td>
+                <td className="text-center">
                   <Link
-                    to={`/ambientes/${env.id}`}
+                    to={`/proyectos/${project.id}/ambientes/${env.id}`}
                     className="btn btn-link p-0"
                   >
                     <i className="bi bi-eye-fill text-secondary"></i>

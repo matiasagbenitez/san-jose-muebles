@@ -37,7 +37,7 @@ export const Filters = ({
       <Row>
         <Col xl={9}>
           <Row>
-            <Col xl={3}>
+            <Col xl={4}>
               <InputGroup size="sm" className="mb-3">
                 <InputGroup.Text id="from">Cliente</InputGroup.Text>
                 <Form.Select
@@ -64,9 +64,9 @@ export const Filters = ({
               </InputGroup>
             </Col>
 
-            <Col xl={3}>
+            <Col xl={4}>
               <InputGroup size="sm" className="mb-3">
-                <InputGroup.Text id="from">Estado</InputGroup.Text>
+                <InputGroup.Text id="from">Estado proyecto</InputGroup.Text>
                 <Form.Select
                   name="status"
                   size="sm"
@@ -84,7 +84,7 @@ export const Filters = ({
                   <option value="">Por defecto</option>
                   <option value="PENDIENTE">PENDIENTE</option>
                   <option value="PROCESO">EN PROCESO</option>
-                  <option value="PAUSADO">PAUSADO</option>
+                  <option value="PAUSADO">EN PAUSA</option>
                   <option value="FINALIZADO">FINALIZADO</option>
                   <option value="CANCELADO">CANCELADO</option>
                   <option value="ALL">TODOS LOS ESTADOS</option>
@@ -92,32 +92,7 @@ export const Filters = ({
               </InputGroup>
             </Col>
 
-            <Col xl={3}>
-              <InputGroup size="sm" className="mb-3">
-                <InputGroup.Text id="from">Prioridad</InputGroup.Text>
-                <Form.Select
-                  name="priority"
-                  size="sm"
-                  value={state.filters.priority || ""}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "FILTERS_CHANGE",
-                      newFilters: {
-                        ...state.filters,
-                        priority: e.target.value,
-                      },
-                    })
-                  }
-                >
-                  <option value="">Todas</option>
-                  <option value="BAJA">BAJA</option>
-                  <option value="MEDIA">MEDIA</option>
-                  <option value="ALTA">ALTA</option>
-                  <option value="URGENTE">URGENTE</option>
-                </Form.Select>
-              </InputGroup>
-            </Col>
-            <Col xl={3}>
+            <Col xl={4}>
               <InputGroup size="sm" className="mb-3">
                 <InputGroup.Text id="from">Localidad</InputGroup.Text>
                 <Form.Select

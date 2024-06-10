@@ -282,3 +282,27 @@ export const ProjectStatuses: Record<
         icon: "bi bi-x-circle-fill text-danger me-2",
     },
 };
+
+export interface ProjectEnvironmentDetailInterface {
+    id: number;
+    id_project: number;
+    project: string;
+    id_client: number;
+    client: string;
+    client_phone: string;
+    type: string;
+    difficulty: 'BAJA' | 'MEDIA' | 'ALTA';
+    priority: 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE';
+    description: string;
+    des_id: number;
+    des_status: DesignStatus;
+    des_last_update: Date;
+    fab_id: number;
+    fab_status: Status;
+    fab_last_update: Date;
+    ins_id: number;
+    ins_status: Status;
+    ins_last_update: Date;
+    req_deadline: Date | null;
+    est_deadline: Date | null;
+}

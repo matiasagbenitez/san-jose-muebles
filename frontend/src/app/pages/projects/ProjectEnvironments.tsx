@@ -24,12 +24,7 @@ import {
   Priority,
   Status,
 } from "../environments/interfaces";
-import {
-  StatusBadge,
-  DesignStatusBadge,
-  DifficultyBadge,
-  PriorityBadge,
-} from "../environments/components";
+import { DesignStatuses } from "../design/interfaces";
 
 interface DataRow {
   id: number;
@@ -146,31 +141,31 @@ export const ProjectEnvironments = () => {
       {
         name: "DISEÑO",
         selector: (row: DataRow) => row.des_status,
-        cell: (row: DataRow) => <DesignStatusBadge status={row.des_status} />,
-        center: true,
+        cell: (row: DataRow) => (
+          <span>
+            <i className={DesignStatuses[row.des_status].icon} />
+            {DesignStatuses[row.des_status].text}
+          </span>
+        ),
       },
       {
         name: "FABRICACIÓN",
         selector: (row: DataRow) => row.fab_status,
-        cell: (row: DataRow) => <StatusBadge status={row.fab_status} />,
         center: true,
       },
       {
         name: "INSTALACIÓN",
         selector: (row: DataRow) => row.ins_status,
-        cell: (row: DataRow) => <StatusBadge status={row.ins_status} />,
         center: true,
       },
       {
         name: "DIFICULTAD",
         selector: (row: DataRow) => row.difficulty,
-        cell: (row: DataRow) => <DifficultyBadge status={row.difficulty} />,
         center: true,
       },
       {
         name: "PRIORIDAD",
         selector: (row: DataRow) => row.priority,
-        cell: (row: DataRow) => <PriorityBadge status={row.priority} />,
         center: true,
       },
       {
@@ -197,7 +192,9 @@ export const ProjectEnvironments = () => {
   };
 
   const handleClick = (row: DataRow) => {
-    navigate(`/ambientes/${row.id}`);
+    if (project) {
+      navigate(`/proyectos/${project.id}/ambientes/${row.id}`);
+    }
   };
 
   return (

@@ -19,10 +19,15 @@ export class EnvironmentDetailEntity {
 
         public des_id: number,
         public des_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO',
+        public des_last_update: Date | null,
+
         public fab_id: number,
         public fab_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
+        public fab_last_update: Date | null,
+
         public ins_id: number,
         public ins_status: 'PROCESO' | 'PENDIENTE' | 'PAUSADO' | 'FINALIZADO' | 'CANCELADO',
+        public ins_last_update: Date | null,
 
         public req_deadline: Date | null,
         public est_deadline: Date | null,
@@ -52,10 +57,13 @@ export class EnvironmentDetailEntity {
             description,
             design.id,
             design.status,
+            design.updatedAt,
             fabrication.id,
             fabrication.status,
+            fabrication.updatedAt,
             installation.id,
             installation.status,
+            installation.updatedAt,
             req_deadline,
             est_deadline
         );

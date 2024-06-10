@@ -15,6 +15,7 @@ import {
   UpdateProject,
   ProjectEnvironments,
   ProjectEvolutions,
+  ProjectEnvironment,
 } from "../pages/projects";
 
 const ProjectRoutes = () => {
@@ -26,6 +27,7 @@ const ProjectRoutes = () => {
         <>
           <Route path="/" element={<ProjectsList />} />
           <Route path="/:id" element={<Project />} />
+          <Route path="/:id/ambientes/:id_environment" element={<ProjectEnvironment />} />
           <Route path="/:id/editar" element={<UpdateProject />} />
           <Route path="/:id/cuentas" element={<ProjectAccounts />} />
           <Route path="/:id/ambientes" element={<ProjectEnvironments />} />

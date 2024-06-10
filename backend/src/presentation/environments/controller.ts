@@ -55,10 +55,10 @@ export class EnvironmentController {
     }
 
     getById = async (req: Request, res: Response) => {
-        const id = req.params.id;
-        if (!id) return res.status(400).json({ message: 'Missing id' });
+        const { id_project, id_environment } = req.params;
+        if (!id_project || !id_environment) return res.status(400).json({ message: '¡Faltan datos!' });
 
-        this.service.getEnvironment(parseInt(id))
+        this.service.getEnvironment(parseInt(id_project), parseInt(id_environment))
             .then((data) => {
                 res.json(data);
             })

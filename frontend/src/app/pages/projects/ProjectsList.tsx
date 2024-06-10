@@ -12,9 +12,8 @@ import {
 import { LoadingSpinner } from "../../components";
 import {
   ProjectListable as DataRow,
-  Priorities,
   ProjectFormInterface,
-  Statuses,
+  ProjectStatuses,
 } from "./interfaces";
 import { CreateProjectModal, Filters } from "./components";
 import { SweetAlert2 } from "../../utils";
@@ -99,24 +98,16 @@ export const ProjectsList = () => {
         name: "ESTADO",
         selector: (row: DataRow) => row.status,
         cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: Statuses[row.status] || "gray",
-            }}
-          >
-            {row.status}
+          <span className="fw-bold">
+            <i className={ProjectStatuses[row.status].icon} />
+            {ProjectStatuses[row.status].text}
           </span>
         ),
-        center: true,
-        maxWidth: "160px",
+        maxWidth: "200px",
       },
       {
         name: "CLIENTE",
         selector: (row: DataRow) => row.client,
-        style: { fontWeight: "bold" },
         wrap: true,
       },
       {
@@ -128,25 +119,6 @@ export const ProjectsList = () => {
         name: "LOCALIDAD",
         selector: (row: DataRow) => row.locality,
         wrap: true,
-      },
-      
-      {
-        name: "PRIORIDAD",
-        selector: (row: DataRow) => row.priority,
-        cell: (row: DataRow) => (
-          <span
-            className="badge rounded-pill"
-            style={{
-              fontSize: ".9em",
-              color: "black",
-              backgroundColor: Priorities[row.priority] || "gray",
-            }}
-          >
-            {row.priority}
-          </span>
-        ),
-        center: true,
-        maxWidth: "160px",
       },
     ],
     []
