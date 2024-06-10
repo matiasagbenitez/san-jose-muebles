@@ -1,3 +1,5 @@
+import { DesignStatus } from "../../design/interfaces";
+
 export enum Priorities {
     BAJA = "#B5D6A7",
     MEDIA = "#FFF47A",
@@ -11,6 +13,14 @@ export enum Statuses {
     PAUSADO = "#CCCCCC",
     FINALIZADO = "#5A965A",
     CANCELADO = "#CC3333",
+}
+
+export interface ProjectEvolution {
+    id: string;
+    status: Status;
+    comment: string;
+    user: string;
+    createdAt: Date;
 }
 
 export interface ProjectListable {
@@ -63,7 +73,7 @@ export interface ProjectDetailInterface {
 export interface Environment {
     id: number;
     type: string;
-    des_status: string;
+    des_status: DesignStatus;
     fab_status: string;
     ins_status: string;
 }

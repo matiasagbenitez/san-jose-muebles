@@ -33,7 +33,7 @@ export const Project = () => {
       {!loading && project && (
         <>
           <SimplePageHeader
-            title="Detalle de proyecto"
+            title={`Proyecto N° ${project.id}`}
             hr
             goBackTo="/proyectos"
           />

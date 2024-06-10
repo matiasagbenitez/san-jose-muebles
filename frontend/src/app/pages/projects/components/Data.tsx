@@ -1,19 +1,21 @@
 import { Dropdown, Row, Table } from "react-bootstrap";
 import { ProjectDetailInterface, ProjectStatuses } from "../interfaces";
 import { DateFormatter } from "../../../helpers";
-import { Link } from "react-router-dom";
-import { DesignStatusBadge, StatusBadge } from "../../environments/components";
-import { DesignStatus, Status } from "../../environments/interfaces";
+import { Link, useNavigate } from "react-router-dom";
+import { StatusBadge } from "../../environments/components";
+import { Status } from "../../environments/interfaces";
 import { ReasonModal } from ".";
 import { useState } from "react";
 import { SweetAlert2 } from "../../../utils";
 import apiSJM from "../../../../api/apiSJM";
+import { DesignStatusSpan } from "../../design/components";
 
 interface Props {
   project: ProjectDetailInterface;
 }
 
 export const Data = ({ project }: Props) => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState<Status>(project.status);
   const [newStatus, setNewStatus] = useState<Status | null>(null);
@@ -25,7 +27,6 @@ export const Data = ({ project }: Props) => {
   };
 
   const submitForm = async (reason: string) => {
-
     const message = `¿Desea cambiar el estado del proyecto a ${newStatus}?`;
     const confirmation = await SweetAlert2.confirm(message);
     if (!confirmation.isConfirmed) return;
@@ -54,18 +55,21 @@ export const Data = ({ project }: Props) => {
 
   const closeModal = () => {
     setShowModal(false);
-  }
+  };
+
+  const redirectHistorial = () => {
+    navigate(`/proyectos/${project.id}/historial`);
+  };
 
   return (
     <>
       <Row
         xs={1}
         xl={2}
-        className="mb-3 fst-normal small bg-light px-2 py-3 rounded rounded-3 mx-0"
+        className="mb-3 fst-normal small bg-light px-2 py-3 rounded rounded-3 mx-0 border"
       >
-        <p className="mb-2">
+        <p className="mb-2" title="Cliente">
           <i className="bi bi-person me-2 fst-normal fw-bold" />
-          <b>CLIENTE: </b>
           <Link
             to={`/clientes/${project.id_client}`}
             target="_blank"
@@ -89,38 +93,35 @@ export const Data = ({ project }: Props) => {
             )}
           </i>
         </p>
-        <p className="mb-2">
+        <p className="mb-2" title="Proyecto">
           <i className="bi bi-houses me-2 fst-normal fw-bold" />
-          <b>PROYECTO: </b>
-          {project.title}
+          <b>PROYECTO {project.title}</b>
         </p>
-        <p className="mb-2">
+        <p className="mb-2" title="Dirección">
           <i className="bi bi-geo-alt me-2 fst-normal fw-bold" />
-          <b>DIRECCIÓN: </b>
-          {project.address && project.address + " - "} {project.locality}
+          {project.address && project.address + " - "}
+          {project.locality}
         </p>
-        <span className="mb-2 d-flex align-items-center">
-          <i className="bi bi-info-circle me-2" />
-          <b>ESTADO GENERAL DEL PROYECTO: </b>
-          <Dropdown>
-            <Dropdown.Toggle
-              id="dropdown-basic"
-              size="sm"
-              variant="transparent"
-              className="my-0 mx-1 py-0 px-2 rounded"
-            >
-              <span className="fw-bold me-1">
-                <i className={`${ProjectStatuses[status].icon} me-1`}></i>
-                {ProjectStatuses[status].text}
-              </span>
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.ItemText className="small fw-bold">
-                Actualizar estado
-              </Dropdown.ItemText>
-              <Dropdown.Divider className="my-1" />
-              {Object.entries(ProjectStatuses).map(
-                ([status, { text, icon }]) => (
+        <Dropdown title="Estado actual del proyecto">
+          <Dropdown.Toggle
+            id="dropdown-basic"
+            size="sm"
+            variant="transparent"
+            className="my-0 mx-0 py-0 px-0 rounded border-0"
+          >
+            <span className="fw-bold me-1">
+              <i className={`${ProjectStatuses[status].icon} me-1`}></i>
+              {ProjectStatuses[status].text}
+            </span>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.ItemText className="small fw-bold">
+              Actualizar estado
+            </Dropdown.ItemText>
+            <Dropdown.Divider className="my-1" />
+            {Object.entries(ProjectStatuses).map(([status, { text, icon }]) => (
+              <>
+                {status !== project.status && (
                   <Dropdown.Item
                     className="small"
                     key={status}
@@ -129,24 +130,32 @@ export const Data = ({ project }: Props) => {
                     <i className={`${icon}`}></i>
                     {text}
                   </Dropdown.Item>
-                )
-              )}
-            </Dropdown.Menu>
-          </Dropdown>
-        </span>
+                )}
+              </>
+            ))}
+            <Dropdown.Divider className="my-1" />
+            <Dropdown.Item
+              className="small"
+              key={status}
+              onClick={redirectHistorial}
+            >
+              <i className="me-1 bi bi-clock-history"></i> Ver historial
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
         <p className="mb-2 mb-xl-0">
           <i className="bi bi-calendar me-2 fst-normal fw-bold" />
-          <b>FECHA ENTREGA SOLICITADA: </b>
+          Fecha entrega solicitada:{" "}
           {project.requested_deadline
             ? DateFormatter.toWDMYText(project.requested_deadline)
-            : "No especificada"}
+            : "no especificada"}
         </p>
         <p className="mb-2 mb-xl-0">
           <i className="bi bi-calendar-check me-2 fst-normal fw-bold" />
-          <b>FECHA ENTREGA ESTIMADA: </b>
+          Fecha entrega estimada:{" "}
           {project.estimated_deadline
             ? DateFormatter.toWDMYText(project.estimated_deadline)
-            : "No especificada"}
+            : "no especificada"}
         </p>
       </Row>
 
@@ -174,13 +183,13 @@ export const Data = ({ project }: Props) => {
                 Ambiente
               </th>
               <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Estado diseño
+                Diseño
               </th>
               <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Estado fabricación
+                Fabricación
               </th>
               <th style={{ backgroundColor: "#F2F2F2" }} className="col-3">
-                Estado instalación
+                Instalación
               </th>
               <th style={{ backgroundColor: "#F2F2F2" }} className="px-4">
                 DETALLE
@@ -195,7 +204,7 @@ export const Data = ({ project }: Props) => {
                 <td>{env.id}</td>
                 <td>{env.type}</td>
                 <td>
-                  <DesignStatusBadge status={env.des_status as DesignStatus} />
+                  <DesignStatusSpan status={env.des_status} />
                 </td>
                 <td>
                   <StatusBadge status={env.fab_status as Status} />

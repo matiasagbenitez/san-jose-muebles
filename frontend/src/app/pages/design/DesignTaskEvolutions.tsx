@@ -8,27 +8,26 @@ import {
   Button,
   Card,
   ListGroup,
-  Row,
   useAccordionButton,
 } from "react-bootstrap";
 import { DateFormatter } from "../../helpers";
 
 const pending = {
   text: "PENDIENTE",
-  icon: "bi bi-clock-fill text-warning me-1",
+  icon: "bi bi-clock-fill text-warning mx-1",
 };
 const inProcess = {
   text: "EN PROCESO",
   color: "primary",
-  icon: "bi bi-play-circle-fill text-primary me-1",
+  icon: "bi bi-play-circle-fill text-primary mx-1",
 };
 const finished = {
   text: "FINALIZADA",
-  icon: "bi bi-check-circle-fill text-success me-1",
+  icon: "bi bi-check-circle-fill text-success mx-1",
 };
 const archived = {
   text: "ARCHIVADA",
-  icon: "bi bi-archive-fill text-secondary me-1",
+  icon: "bi bi-archive-fill text-secondary mx-1",
 };
 
 const options: Record<string, { text: string; icon: string }> = {
@@ -125,7 +124,7 @@ export const DesignTaskEvolutions = () => {
             </p>
             <small className="text-muted fst-italic">
               Tarea creada el {DateFormatter.toDMYH(task.createdAt)} por{" "}
-              <b>{task.user}</b>.
+              <b>{task.user}</b>
             </small>
           </div>
 
@@ -137,17 +136,15 @@ export const DesignTaskEvolutions = () => {
             <ListGroup className="small mb-3">
               {evolutions.map((evolution) => (
                 <ListGroup.Item key={evolution.id}>
-                  <Row xs={1}>
-                    <span>
-                      <b>{DateFormatter.toDMYH(evolution.createdAt)}</b>
-                      {" - "}
-                      {evolution.user} actualizó el estado de la tarea a{" "}
-                      <b>
-                        <i className={options[evolution.status].icon}></i>
-                        {options[evolution.status].text}
-                      </b>
-                    </span>
-                  </Row>
+                  <span>
+                    <b>{DateFormatter.toDMYH(evolution.createdAt)}</b>
+                    {" - "}
+                    {evolution.user} actualizó el estado de la tarea a{" "}
+                    <b>
+                      <i className={options[evolution.status].icon}></i>
+                      {options[evolution.status].text}
+                    </b>
+                  </span>
                 </ListGroup.Item>
               ))}
             </ListGroup>

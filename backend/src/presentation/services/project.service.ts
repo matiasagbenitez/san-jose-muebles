@@ -1,6 +1,6 @@
 import { Op, Order } from "sequelize";
 import { Project, ProjectEvolution } from "../../database/mysql/models";
-import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity, ProjectBasicDataEntity, CreateProjectEvolutionDTO } from "../../domain";
+import { CustomError, CreateProjectDTO, PaginationDto, ProjectListEntity, ProjectDetailEntity, ProjectBasicDataEntity, CreateProjectEvolutionDTO, ProjectEvolutionsEntity } from "../../domain";
 
 export interface ProjectFilters {
     id_client?: number;
@@ -167,6 +167,28 @@ export class ProjectService {
             await transaction.rollback();
             throw CustomError.internalServerError('¡No se pudo actualizar el estado del proyecto!');
         }
+    }
+
+    public async getEvolutions(id_project: number) {
+
+        const project = await Project.findByPk(id_project, {
+            attributes: ['id', 'title'],
+            include: [
+                { association: 'client', attributes: ['name', 'last_name'] },
+                { association: 'locality', attributes: ['name'] },
+                {
+                    association: 'evolutions', include: [
+                        { association: 'user', attributes: ['name'] }
+                    ]
+                }
+            ],
+            order: [['evolutions', 'createdAt', 'DESC']]
+        });
+        if (!project) throw CustomError.notFound('¡Proyecto no encontrado!');
+
+        const { ...entity } = ProjectEvolutionsEntity.fromObject(project);
+
+        return { project: entity.project, evolutions: entity.evolutions };
     }
 
 }

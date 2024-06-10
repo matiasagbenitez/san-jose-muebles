@@ -209,6 +209,8 @@ export const initializeAssociations = () => {
     Project.hasMany(ProjectEvolution, { foreignKey: 'id_project', as: 'evolutions', onDelete: 'RESTRICT' });
     ProjectEvolution.belongsTo(Project, { foreignKey: 'id_project', as: 'project' });
 
+    ProjectEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
 
     ProjectAccount.hasMany(ProjectAccountTransaction, { foreignKey: 'id_project_account', as: 'transactions', onDelete: 'RESTRICT' });
     ProjectAccountTransaction.belongsTo(ProjectAccount, { foreignKey: 'id_project_account', as: 'account' });

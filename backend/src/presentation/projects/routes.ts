@@ -21,6 +21,7 @@ export class ProjectRoutes {
 
 
         router.patch('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
+        router.get('/:id/evolutions', [AuthMiddleware.validateJWT], controller.getEvolutions);
 
         return router;
     }
