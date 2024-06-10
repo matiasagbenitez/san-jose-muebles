@@ -10,6 +10,7 @@ export class DesignRoutes {
 
         const controller = new DesignController();
 
+        router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
         router.get('/:id', [AuthMiddleware.validateJWT], controller.getById);
         router.patch('/:id/status', [AuthMiddleware.validateJWT], controller.updateStatus);
         router.get('/:id/evolutions', [AuthMiddleware.validateJWT], controller.getEvolutions);

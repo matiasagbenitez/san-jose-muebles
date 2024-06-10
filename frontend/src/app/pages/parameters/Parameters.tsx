@@ -11,8 +11,10 @@ export const Parameters = () => {
 
       <Row className="m-0">
         <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Parámetros geográficos</h2>
           <div className="list-group small">
+            <div className="list-group-item small py-1 fw-bold text-muted text-uppercase bg-light">
+              Geográficos
+            </div>
             <button
               className="list-group-item list-group-item-action py-1"
               title="Gestionar países"
@@ -41,8 +43,10 @@ export const Parameters = () => {
         </Col>
 
         <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Parámetros de productos</h2>
           <div className="list-group small">
+            <div className="list-group-item small py-1 fw-bold text-muted text-uppercase bg-light">
+              Productos e inventario
+            </div>
             <button
               className="list-group-item list-group-item-action py-1"
               title="Gestionar marcas de productos"
@@ -67,14 +71,6 @@ export const Parameters = () => {
               <i className="bi bi-rulers me-2 fs-6"></i>
               Gestionar unidades de medida
             </button>
-          </div>
-        </Col>
-
-        <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">
-            Parámetros de inventario de herramientas
-          </h2>
-          <div className="list-group small">
             <button
               className="list-group-item list-group-item-action py-1"
               title="Gestionar marcas de herramientas"
@@ -95,8 +91,10 @@ export const Parameters = () => {
         </Col>
 
         <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Parámetros de finanzas</h2>
           <div className="list-group small">
+            <div className="list-group-item small py-1 fw-bold text-muted text-uppercase bg-light">
+              Finanzas
+            </div>
             <button
               className="list-group-item list-group-item-action py-1"
               title="Gestionar monedas"
@@ -125,8 +123,10 @@ export const Parameters = () => {
         </Col>
 
         <Col xs={12} md={6} xl={3} className="px-2 mb-4">
-          <h2 className="fs-6 my-2">Otros parámetros</h2>
           <div className="list-group small">
+            <div className="list-group-item small py-1 fw-bold text-muted text-uppercase bg-light">
+              Otros parámetros
+            </div>
             <button
               className="list-group-item list-group-item-action py-1"
               title="Gestionar tipos de ambientes"

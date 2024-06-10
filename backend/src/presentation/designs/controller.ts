@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CreateDesignEvolutionDTO, CustomError, LoggedUserIdDto, PaginationDto } from "../../domain";
-import { DesignService } from '../services/design.service';
+import { CreateDesignEvolutionDTO, CustomError, LoggedUserIdDto, PaginationDto, UserDTO } from "../../domain";
+import { DesignService, DesignFilters } from '../services/design.service';
 
 export class DesignController {
 
@@ -13,6 +13,29 @@ export class DesignController {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
     }
+
+    getAllPaginated = async (req: Request, res: Response) => {
+        const { page = 1, limit = 10 } = req.query;
+        const [error, paginationDto] = PaginationDto.create(+page, +limit);
+        if (error) return res.status(400).json({ message: error });
+        if (!paginationDto) return res.status(400).json({ message: '¡Falta el DTO!' });
+
+        const [userError, userDto] = UserDTO.create(req);
+        if (userError) return res.status(400).json({ message: userError });
+        if (!userDto) return res.status(400).json({ message: '¡Falta el usuario!' });
+
+        let filters: Partial<DesignFilters> = {};
+        if (req.query.status) filters = { ...filters, status: req.query.status as DesignFilters['status'] };
+
+        this.service.getDesignsPaginated(paginationDto, filters, userDto)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
 
     getById = async (req: Request, res: Response) => {
         const id = req.params.id;

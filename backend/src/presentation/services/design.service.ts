@@ -1,7 +1,46 @@
 import { Design, DesignEvolution } from "../../database/mysql/models";
-import { CreateDesignEvolutionDTO, CustomError, DesignEntity, DesignEvolutionsEntity, DesignTaskEvolutionsEntity } from "../../domain";
+import { CreateDesignEvolutionDTO, CustomError, DesignEntity, DesignEvolutionsEntity, DesignListEntity, DesignTaskEvolutionsEntity, PaginationDto, UserDTO } from "../../domain";
 
+type DesignStatus = 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
+export interface DesignFilters {
+    status?: DesignStatus;
+}
 export class DesignService {
+
+    public async getDesignsPaginated(paginationDto: PaginationDto, filters: DesignFilters, user: UserDTO) {
+
+        const { page, limit } = paginationDto;
+
+        let where = {};
+        if (filters.status) where = { ...where, status: filters.status };
+
+        const [rows, total] = await Promise.all([
+            Design.findAll({
+                where: { ...where },
+                include: [
+                    {
+                        association: 'environment', include: [
+                            {
+                                association: 'type', attributes: ['name']
+                            },
+                            {
+                                association: 'project', attributes: ['title'], include: [
+                                    { association: 'client', attributes: ['name', 'last_name'] }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                offset: (page - 1) * limit,
+                limit,
+                order: [['id', 'DESC']]
+            }),
+            Design.count({ where })
+        ]);
+        const entities = rows.map(row => DesignListEntity.fromObject(row));
+
+        return { items: entities, total_items: total };
+    }
 
     public async getDesign(id_design: number) {
 

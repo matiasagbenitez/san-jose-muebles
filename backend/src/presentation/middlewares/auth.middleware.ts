@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtAdapter } from "../../config";
-import { User } from "../../database/mysql/models";
 
 interface ExtendedRequest extends Request {
     id_user?: string;

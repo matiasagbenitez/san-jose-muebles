@@ -46,7 +46,7 @@ export const ProjectEnvironment = () => {
         <>
           <SimplePageHeader
             title={`Detalle del ambiente ${environment.type}`}
-            hr
+            // hr
           />
 
           <Row className="mb-3 fst-normal small bg-light px-2 py-3 rounded rounded-3 mx-0 border">

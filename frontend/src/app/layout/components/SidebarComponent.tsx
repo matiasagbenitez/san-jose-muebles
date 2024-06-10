@@ -7,7 +7,6 @@ interface SidebarComponentProps {
 }
 
 export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
-  
   const { startLogout } = useAuthStore();
 
   const handleLogout = async () => {
@@ -39,53 +38,43 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
           Inicio
         </MenuItem>
 
+        <SubMenu
+          prefix={
+            <>
+              <i className="bi bi-houses me-3 fs-6"></i>Proyectos
+            </>
+          }
+          style={{ height: "40px" }}
+        >
+          <MenuItem
+            component={<Link to="/proyectos" />}
+            title="Listado de proyectos"
+            style={{ height: "40px", marginLeft: "10px" }}
+          >
+            <small>Listado de proyectos</small>
+          </MenuItem>
+          <MenuItem
+            component={<Link to="/disenos" />}
+            title="Diseños de ambientes"
+            style={{ height: "40px", marginLeft: "10px" }}
+          >
+            <small>Diseños de ambientes</small>
+          </MenuItem>
+        </SubMenu>
+
         <MenuItem
           component={<Link to="/clientes" />}
           title="Clientes"
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <i className="bi bi-person-circle me-3 fs-6"></i>
           Clientes
         </MenuItem>
 
         <MenuItem
-          component={<Link to="/proyectos" />}
-          title="Proyectos"
-          style={{ height: "45px" }}
-        >
-          <i className="bi bi-houses me-3 fs-6"></i>
-          Proyectos
-        </MenuItem>
-
-        {/* <SubMenu
-          prefix={
-            <>
-              <i className="bi bi-houses me-3 fs-6"></i>Proyectos
-            </>
-          }
-          style={{ height: "45px" }}
-        >
-          <MenuItem
-            component={<Link to="/proyectos" />}
-            title="Listado de proyectos"
-            style={{ height: "45px", marginLeft: "10px" }}
-          >
-            <small>Listado de proyectos</small>
-          </MenuItem>
-          <MenuItem
-            component={<Link to="/ambientes" />}
-            title="Listado de ambientes"
-            style={{ height: "45px", marginLeft: "10px" }}
-          >
-            <small>Ambientes de proyectos</small>
-          </MenuItem>
-        </SubMenu> */}
-
-
-        <MenuItem
           component={<Link to="/agenda" />}
           title="Agenda de visitas"
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <i className="bi bi-journal-text me-3 fs-6"></i>
           Agenda de visitas
@@ -94,7 +83,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem
           component={<Link to="/agenda/calendario" />}
           title="Calendario"
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <i className="bi bi-calendar-date me-3 fs-6"></i>
           Calendario
@@ -106,19 +95,19 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
               <i className="bi bi-box-seam me-3 fs-6"></i>Productos
             </>
           }
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <MenuItem
             component={<Link to="/productos" />}
             title="Listado de productos"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Listado de productos</small>
           </MenuItem>
           <MenuItem
             component={<Link to="/productos/ajustes" />}
             title="Gestionar stock de productos"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Control de stock</small>
           </MenuItem>
@@ -130,19 +119,19 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
               <i className="bi bi-truck me-3 fs-6"></i>Proveedores
             </>
           }
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <MenuItem
             component={<Link to="/proveedores" />}
             title="Listado de proveedores"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Listado de proveedores</small>
           </MenuItem>
           <MenuItem
             component={<Link to="/proveedores/cuentas" />}
             title="Listado de cuentas corrientes"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Cuentas corrientes</small>
           </MenuItem>
@@ -154,19 +143,19 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
               <i className="bi bi-cart me-3 fs-6"></i>Compras
             </>
           }
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <MenuItem
             component={<Link to="/compras" />}
             title="Listado de compras realizadas"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Listado de compras</small>
           </MenuItem>
           <MenuItem
             component={<Link to="/compras/registrar" />}
             title="Registrar una nueva compra"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Registrar nueva compra</small>
           </MenuItem>
@@ -178,19 +167,19 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
               <i className="bi bi-inboxes me-3 fs-6"></i>Entidades
             </>
           }
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <MenuItem
             component={<Link to="/entidades" />}
             title="Listado de entidades"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Listado de entidades</small>
           </MenuItem>
           <MenuItem
             component={<Link to="/entidades/cuentas" />}
             title="Listado de cuentas corrientes"
-            style={{ height: "45px", marginLeft: "10px" }}
+            style={{ height: "40px", marginLeft: "10px" }}
           >
             <small>Cuentas corrientes</small>
           </MenuItem>
@@ -199,7 +188,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem
           component={<Link to="/inventario" />}
           title="Inventario de herramientas"
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <i className="bi bi-tools me-3 fs-6"></i>
           Inventario
@@ -208,7 +197,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem
           component={<Link to="/parametros" />}
           title="Parámetros"
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <i className="bi bi-gear-wide-connected me-3 fs-6"></i>
           Parámetros
@@ -217,7 +206,7 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         <MenuItem
           onClick={handleLogout}
           title="Cerrar sesión"
-          style={{ height: "45px" }}
+          style={{ height: "40px" }}
         >
           <i className="bi bi-box-arrow-in-right me-3 fs-6"></i>
           Cerrar sesión

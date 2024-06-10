@@ -1,22 +1,20 @@
-export class LoggedUserDto {
+export class UserDTO {
     private constructor(
-        public id_user: number,
-        public name: string,
+        public id: number,
         public username: string,
         public roles: string[],
     ) { }
 
-    static create(object: { [key: string]: any }): [string?, LoggedUserDto?] {
-        const { id_user, name, username, roles } = object;
+    static create(object: { [key: string]: any }): [string?, UserDTO?] {
+        
+        const { id_user, username, roles } = object;
 
         if (!id_user) return ['El id del usuario es requerido'];
-        if (!name) return ['El nombre del usuario es requerido'];
         if (!username) return ['El usuario es requerido'];
         if (!roles) return ['Los roles del usuario son requeridos'];
 
-        return [undefined, new LoggedUserDto(
+        return [undefined, new UserDTO(
             id_user,
-            name,
             username,
             roles,
         )];

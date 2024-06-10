@@ -28,6 +28,16 @@ export enum DesignTaskStatusText {
     ARCHIVADA = "ARCHIVAR",
 }
 
+export interface DesignList {
+    id: string;
+    environment: string;
+    project: string;
+    client: string;
+    status: DesignStatus;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface Design {
     id: string;
     type: string;

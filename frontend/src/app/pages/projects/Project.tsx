@@ -34,7 +34,7 @@ export const Project = () => {
         <>
           <SimplePageHeader
             title={`PROYECTO N° ${project.id}`}
-            hr
+            // hr
             goBackTo="/proyectos"
           />
           <Options id={project.id} />
