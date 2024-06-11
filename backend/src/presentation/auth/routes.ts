@@ -14,6 +14,10 @@ export class AuthRoutes {
         router.post('/register', controller.register);
         router.get('/renew', [AuthMiddleware.validateJWT], controller.revalidateToken);
 
+        router.get('/:id/profile', [AuthMiddleware.validateJWT], controller.getUserProfile);
+        router.put('/:id/profile', [AuthMiddleware.validateJWT], controller.updateProfile);
+        router.patch('/:id/password', [AuthMiddleware.validateJWT], controller.updatePassword);
+
         return router;
     }
 

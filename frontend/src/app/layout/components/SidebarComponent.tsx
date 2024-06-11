@@ -204,6 +204,15 @@ export const SidebarComponent = ({ collapsed }: SidebarComponentProps) => {
         </MenuItem>
 
         <MenuItem
+          component={<Link to="/cuenta" />}
+          title="Mi cuenta"
+          style={{ height: "40px" }}
+        >
+          <i className="bi bi-person-workspace me-3 fs-6"></i>
+          Mi cuenta
+        </MenuItem>
+
+        <MenuItem
           onClick={handleLogout}
           title="Cerrar sesión"
           style={{ height: "40px" }}

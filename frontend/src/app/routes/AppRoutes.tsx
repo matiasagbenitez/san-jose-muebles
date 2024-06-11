@@ -13,6 +13,7 @@ import GroupRoutes from './GroupRoutes';
 import EntityRoutes from "./EntityRoutes";
 import EnvironmentRoutes from "./EnvironmentRoutes";
 import DesignRoutes from "./DesignRoutes";
+import AuthRoutes from "./AuthRoutes";
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path="/entidades/*" element={<EntityRoutes />} />
         <Route path="/ambientes/*" element={<EnvironmentRoutes />} />
         <Route path="/disenos/*" element={<DesignRoutes />} />
+        <Route path="/cuenta/*" element={<AuthRoutes />} />
       </Route>
 
       <Route path="/*" element={<Navigate to="/" />} />

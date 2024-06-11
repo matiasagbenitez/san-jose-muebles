@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { JwtAdapter, bcryptAdapter } from "../../config";
 import { Role, RoleUser, User } from "../../database/mysql/models";
-import { CustomError, LoginUserDto, RegisterUserDto, UserEntity } from "../../domain";
+import { CustomError, LoginUserDto, RegisterUserDto, UpdatePasswordDto, UpdateUserDto, UserEntity, UserProfileEntity } from "../../domain";
 
 export class AuthService {
 
@@ -66,6 +66,77 @@ export class AuthService {
         return {
             user: { id: id_user, name, username, roles },
             token
+        }
+    }
+
+    public async getUserProfile(id: number) {
+        try {
+            const user = await User.findByPk(id, {
+                include: [{
+                    model: Role,
+                    as: 'roles',
+                }]
+            });
+            if (!user) throw CustomError.notFound('User not found');
+            const { ...userEntity } = UserProfileEntity.fromObject(user);
+
+            return { user: userEntity };
+        } catch (error) {
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updateProfile(id: number, dto: UpdateUserDto) {
+        try {
+            const user = await User.update({
+                ...dto
+            }, {
+                where: { id }
+            });
+            if (!user) throw CustomError.notFound('User not found');
+
+            const userUpdated = await User.findByPk(id, {
+                include: [{
+                    model: Role,
+                    as: 'roles',
+                }]
+            });
+            if (!userUpdated) throw CustomError.notFound('User not found');
+            const { ...entity } = UserProfileEntity.fromObject(userUpdated);
+            return { user: entity };
+
+        } catch (error: any) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw CustomError.badRequest('¡El email, nombre o el nombre de usuario ya está asociado a otra cuenta!');
+            }
+            throw CustomError.internalServerError(`${error}`);
+        }
+    }
+
+    public async updatePassword(id: number, id_user: number, dto: UpdatePasswordDto) {
+        try {
+            if (id !== id_user) throw CustomError.forbidden('¡No tienes permiso para realizar esta acción!');
+
+            const user = await User.findByPk(id);
+            if (!user) throw CustomError.notFound('User not found');
+
+            const isPasswordMatch = bcryptAdapter.compare(dto.password, user.password);
+            if (!isPasswordMatch) throw CustomError.badRequest('¡La contraseña actual no coincide!');
+
+            const hashedPassword = bcryptAdapter.hash(dto.new_password);
+            await User.update({
+                password: hashedPassword
+            }, {
+                where: { id }
+            });
+
+            return { message: '¡Contraseña actualizada correctamente!' };
+
+        } catch (error: any) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw CustomError.badRequest('¡El email, nombre o el nombre de usuario ya está asociado a otra cuenta!');
+            }
+            throw CustomError.internalServerError(`${error}`);
         }
     }
 
