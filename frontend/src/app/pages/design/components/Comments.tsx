@@ -118,12 +118,12 @@ export const Comments = ({ id }: Props) => {
         <LoadingSpinner />
       ) : (
         <>
-          <h6 className="mt-3 mt-xl-0">
+          <h6 className="mb-2 mt-3 pb-1">
             Últimos comentarios o actualizaciones
           </h6>
           <ListGroup
             className="small mb-3 overflow-auto"
-            style={{ height: "calc(100vh - 250px)" }}
+            style={{ height: "calc(100vh - 260px)" }}
           >
             <ListGroup.Item>
               <Formik

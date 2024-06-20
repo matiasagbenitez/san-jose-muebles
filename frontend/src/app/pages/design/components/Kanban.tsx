@@ -204,32 +204,29 @@ export const Kanban = ({ tasks }: Props) => {
   };
 
   const handleNavigateTaskHistorial = (id_task: number) => {
-    console.log(id, id_task);
     navigate(`/disenos/${id}/tarea/${id_task}/historial`);
   };
 
   return (
     <Fragment>
-      <div className="d-flex align-items-center">
-        <h6>
-          Tablero de tareas
-          <Button
-            variant="transparent"
-            size="sm"
-            className="align-self-start mx-2 py-0 text-muted"
-            onClick={handleShowModal}
-          >
-            <i className="bi bi-plus-circle"></i> Nueva tarea
-          </Button>
-        </h6>
+      <div className="d-flex align-items-center my-2 gap-2">
+        <h6 className="mb-0">Tablero de tareas</h6>
+        <Button
+          variant="transparent"
+          size="sm"
+          className="align-self-start mx-2 py-1 text-muted"
+          onClick={handleShowModal}
+        >
+          <i className="bi bi-plus-circle"></i> Nueva tarea
+        </Button>
       </div>
       {!loading && (
         <div
-          className="d-flex overflow-auto kanban-container"
-          style={{ height: "calc(100vh - 250px)" }}
+          className="d-flex overflow-auto kanban-container mb-3"
+          style={{ height: "calc(100vh - 260px)" }}
         >
           <div className="kanban-column border">
-            <div className="kanban-header bg-light bg-light">
+            <div className="kanban-header bg-light small">
               <i className="bi bi-clock-fill me-2 text-warning"></i>
               PENDIENTES
             </div>
@@ -248,7 +245,7 @@ export const Kanban = ({ tasks }: Props) => {
             </div>
           </div>
           <div className="kanban-column border">
-            <div className="kanban-header bg-light">
+            <div className="kanban-header bg-light small">
               <i className="bi bi-play-circle-fill me-2 text-primary"></i>
               EN PROCESO
             </div>
@@ -267,7 +264,7 @@ export const Kanban = ({ tasks }: Props) => {
             </div>
           </div>
           <div className="kanban-column border">
-            <div className="kanban-header bg-light">
+            <div className="kanban-header bg-light small">
               <i className="bi bi-check-circle-fill me-2 text-success"></i>
               FINALIZADAS
             </div>
@@ -287,7 +284,7 @@ export const Kanban = ({ tasks }: Props) => {
           </div>
 
           <div className="kanban-column border">
-            <div className="kanban-header bg-light">
+            <div className="kanban-header bg-light small">
               <i className="bi bi-archive-fill me-2 text-secondary"></i>
               ARCHIVADAS
             </div>

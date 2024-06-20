@@ -1,7 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
-import { Options, Kanban, Comments, AccordionHeader } from "./components";
+import {
+  Options,
+  Kanban,
+  Comments,
+  ProjectAccordion,
+  UpdateProjectStatus,
+} from "./components";
 
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner } from "../../components";
@@ -38,13 +44,19 @@ export const Design = () => {
       {loading && <LoadingSpinner />}
       {!loading && id && design && tasks && (
         <Fragment>
-          <Options id={id} />
-          <AccordionHeader design={design} />
+          <Row className="">
+            <Col xs={12}>
+              <Options id={id} />
+            </Col>
+          </Row>
+
           <Row>
             <Col xs={12} xl={8}>
+              <ProjectAccordion design={design} />
               <Kanban tasks={tasks} />
             </Col>
             <Col xs={12} xl={4}>
+              <UpdateProjectStatus design={design} />
               <Comments id={id} />
             </Col>
           </Row>

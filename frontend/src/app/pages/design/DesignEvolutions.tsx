@@ -3,31 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Design, DesignEvolution, DesignStatuses } from "./interfaces";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, SimplePageHeader } from "../../components";
-import {
-  Accordion,
-  Button,
-  Card,
-  Col,
-  ListGroup,
-  Row,
-  useAccordionButton,
-} from "react-bootstrap";
+import { Col, ListGroup, Row } from "react-bootstrap";
 import { DateFormatter } from "../../helpers";
-
-function CustomToggle({ children, eventKey }: any) {
-  const decoratedOnClick = useAccordionButton(eventKey);
-  return (
-    <Button
-      size="sm"
-      variant="transparent"
-      type="button"
-      className="py-1"
-      onClick={decoratedOnClick}
-    >
-      {children}
-    </Button>
-  );
-}
+import { ProjectAccordion } from "./components";
 
 export const DesignEvolutions = () => {
   const navigate = useNavigate();
@@ -63,52 +41,35 @@ export const DesignEvolutions = () => {
             title="Historial de cambios de estado"
             goBackTo={`/disenos/${id}`}
           />
-          <Accordion className="mb-3">
-            <Card>
-              <Card.Header className="border-0">
-                <div className="d-flex flex-column flex-xl-row gap-3 justify-content-between align-items-center">
-                  <p className="mb-0 text-center text-lg-start">
-                    Instancia de diseño:{" "}
-                    <b>{`${design.type} - ${design.project} - ${design.client}`}</b>
-                  </p>
-
-                  <CustomToggle eventKey="0">
-                    <small className="me-2 text-muted">VER MÁS</small>
-                    <i className="bi bi-chevron-down text-muted "></i>
-                  </CustomToggle>
-                </div>
-              </Card.Header>
-              <Accordion.Collapse eventKey="0">
-                <Card.Body className="small">{design.description}</Card.Body>
-              </Accordion.Collapse>
-            </Card>
-          </Accordion>
-
+          <ProjectAccordion design={design} />
           {evolutions.length === 0 ? (
-            <p className="text-muted fst-italic small">
-              No se han registrado cambios de estado en esta instancia de diseño
-            </p>
+            <div className="mt-3">
+              <p className="text-muted fst-italic small">
+                No se han registrado cambios de estado en esta instancia de
+                diseño
+              </p>
+            </div>
           ) : (
-            <ListGroup className="small mb-3">
+            <ListGroup className="small mt-3">
               {evolutions.map((evolution) => (
                 <ListGroup.Item key={evolution.id}>
                   <Row>
                     <Col xs={12} xl={7}>
                       <span>
-                        <b>{DateFormatter.toDMYH(evolution.createdAt)}</b>
-                        {" - "}
+                        <b className="small text-muted">{DateFormatter.toDMYH(evolution.createdAt)}</b>
+                        {" — "}
                         {evolution.user} actualizó el estado del diseño a{" "}
                         <i
                           className={`ms-1 ${
                             DesignStatuses[evolution.status].icon
                           }`}
                         ></i>
-                        <b>{DesignStatuses[evolution.status].text}</b>
+                        <b className="small text-muted">{DesignStatuses[evolution.status].text}</b>
                       </span>
                     </Col>
                     <Col xs={12} xl={5}>
                       {evolution.comment && (
-                        <p className="text-muted fst-italic mb-0 mt-1 small text-uppercase">
+                        <p className="text-muted mb-0 mt-1 small text-uppercase">
                           <i className="bi bi-chat-right-text me-1"></i>{" "}
                           {evolution.comment}
                         </p>

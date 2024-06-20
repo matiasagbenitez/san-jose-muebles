@@ -11,10 +11,10 @@ export const Options = ({ id }: Props) => {
   const redirectHistorial = () => {
     navigate(`/disenos/${id}/historial`);
   };
-  
+
   return (
     <ListGroup horizontal="xl" className="small mb-3">
-      <ListGroup.Item action onClick={() => navigate('/disenos')}>
+      <ListGroup.Item action onClick={() => navigate("/disenos")}>
         <i className="bi bi-arrow-left me-2"></i>
         Volver al listado de diseños
       </ListGroup.Item>
@@ -23,14 +23,9 @@ export const Options = ({ id }: Props) => {
         Historial de cambios de estado
       </ListGroup.Item>
       <ListGroup.Item action>
-        <i className="bi bi-images me-2"></i>
-        Renders e imágenes
-      </ListGroup.Item>
-      <ListGroup.Item action>
-        <i className="bi bi-paperclip me-2"></i>
+        <i className="bi bi-archive me-2"></i>
         Archivos y documentos
       </ListGroup.Item>
-
       <ListGroup.Item action>
         <i className="bi bi-people me-2"></i>
         Usuarios asignados

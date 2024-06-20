@@ -1,0 +1,9 @@
+/* Archivo CSS o en un estilo en línea */
+.custom-dropdown-toggle::after {
+  display: none; /* Esto oculta el pseudo-elemento ::after */
+}
+
+.custom-accordion-button::after {
+  display: none; /* Esto oculta el pseudo-elemento ::after */
+}
+

@@ -1,6 +1,7 @@
 import { Accordion, Card, Dropdown } from "react-bootstrap";
 import { Task } from "../interfaces";
 import { ActionCardOptions } from ".";
+import "./styles.css";
 interface TaskCardProps {
   task: Task;
   options: ActionCardOptions[];
@@ -24,14 +25,18 @@ export const TaskCard = ({
     <Card className="my-2 small" key={task.id}>
       <Card.Header className="px-2 py-1">
         <div className="d-flex align-items-center justify-content-between">
-          <span className="badge rounded-pill bg-secondary"># {task.id}</span>
+          <span>
+            <i className="bi bi-tag me-1"></i>
+            {task.id}
+          </span>
           <Dropdown>
             <Dropdown.Toggle
-              variant="transparent"
-              className="py-0 px-2"
               id="dropdown-basic"
+              variant="transparent"
+              className="py-0 px-2 custom-dropdown-toggle"
+              title="Opciones de la tarea"
             >
-              <small className="text-muted">Opciones</small>
+              {/* <i className="bi bi-three-dots"></i> */}
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="small">
@@ -48,7 +53,7 @@ export const TaskCard = ({
                 </Dropdown.Item>
               ))}
               <Dropdown.Item
-                key="delete"
+                key="historial"
                 className="small"
                 onClick={() => handleNavigateTaskHistorial(+task.id)}
               >
@@ -66,19 +71,22 @@ export const TaskCard = ({
         </div>
       </Card.Header>
       <Card.Body className="p-0">
-        <Accordion className="small">
+        <Accordion>
           <Accordion.Item eventKey="0" className="border-0 p-0">
-            <Accordion.Button className="border-0 p-2">
-              <b className="small">{task.title}</b>
+            <Accordion.Button className="border-0 p-2 custom-accordion-button">
+              <b style={{ fontSize: "13px" }}>{task.title}</b>
             </Accordion.Button>
             <Accordion.Body className=" p-2">
               {task.description ? (
                 <>
-                  <p className="mb-2">{task.description}</p>
-                  <hr className="my-2" />
+                  <p className="mb-2" style={{ fontSize: "12px" }}>
+                    {task.description}
+                  </p>
                 </>
               ) : (
-                <span className="text-muted">Sin descripción</span>
+                <span className="text-muted" style={{ fontSize: "12px" }}>
+                  Sin descripción
+                </span>
               )}
             </Accordion.Body>
           </Accordion.Item>
