@@ -69,13 +69,7 @@ export const Data = ({ project }: Props) => {
       >
         <p className="mb-2" title="Cliente">
           <i className="bi bi-person me-2 fst-normal fw-bold" />
-          <Link
-            to={`/clientes/${project.id_client}`}
-            target="_blank"
-            title="Ver cliente"
-          >
-            {project.client}
-          </Link>
+          <b>{project.client}</b>
           <i className="text-muted">
             {project.client_phone && (
               <>
@@ -85,7 +79,7 @@ export const Data = ({ project }: Props) => {
                   onClick={handleRedirectWhatsapp}
                 >
                   <i className="bi bi-whatsapp ms-2 text-success">
-                    <span className="ms-1">Enviar un WhatsApp</span>
+                    <span className="ms-1">WhatsApp</span>
                   </i>
                 </button>
               </>
@@ -110,7 +104,7 @@ export const Data = ({ project }: Props) => {
           >
             <span className="fw-bold me-1">
               <i className={`${ProjectStatuses[status].icon} me-1`}></i>
-              {ProjectStatuses[status].text}
+              PROYECTO {ProjectStatuses[status].text}
             </span>
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -166,7 +160,7 @@ export const Data = ({ project }: Props) => {
         isFormSubmitted={isFormSubmitted}
       />
 
-      <h6>Listado de ambientes del proyecto</h6>
+      <h6 className="mt-4 mb-3">Listado de ambientes del proyecto</h6>
       {project.environments.length <= 0 ? (
         <p className="text-muted fst-italic">
           El proyecto no tiene ambientes asociados. Registre un nuevo ambiente.
@@ -180,25 +174,24 @@ export const Data = ({ project }: Props) => {
               key={index}
               className="text-decoration-none small"
             >
-              <Card className="mb-2">
+              <Card className="mb-3">
+                <Card.Header>
+                  <b>
+                    AMBIENTE N° {env.id} — {env.type}
+                  </b>
+                </Card.Header>
                 <Card.Body className="py-2">
                   <Row>
-                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
-                      <span className="badge rounded-pill bg-secondary px-3 me-2">
-                        # {env.id}
-                      </span>
-                      <b>{env.type}</b>
-                    </Col>
-                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
-                      <b className="me-2">DISEÑO:</b>
+                    <Col xs={12} xl={4} className="mb-2 mb-xl-0">
+                      <b className="me-2 text-muted">DISEÑO:</b>
                       <DesignStatusSpan status={env.des_status} />
                     </Col>
-                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
-                      <b className="me-2">FABRICACIÓN:</b>
+                    <Col xs={12} xl={4} className="mb-2 mb-xl-0">
+                      <b className="me-2 text-muted">FABRICACIÓN:</b>
                       {env.fab_status}
                     </Col>
-                    <Col xs={12} xl={3} className="mb-2 mb-xl-0">
-                      <b className="me-2">INSTALACIÓN:</b>
+                    <Col xs={12} xl={4} className="mb-2 mb-xl-0">
+                      <b className="me-2 text-muted">INSTALACIÓN:</b>
                       {env.ins_status}
                     </Col>
                   </Row>
@@ -208,12 +201,6 @@ export const Data = ({ project }: Props) => {
           ))}
         </>
       )}
-
-      <p className="small text-muted mt-3">
-        <i className="bi bi-info-circle me-2"></i>
-        Proyecto registrado en el sistema el{" "}
-        {DateFormatter.toDMYHText(project.createdAt)}
-      </p>
     </>
   );
 };

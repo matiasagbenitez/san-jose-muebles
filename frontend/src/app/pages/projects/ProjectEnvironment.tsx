@@ -45,7 +45,7 @@ export const ProjectEnvironment = () => {
       {!loading && environment && (
         <>
           <SimplePageHeader
-            title={`Detalle del ambiente ${environment.type}`}
+            title={`AMBIENTE N° ${environment.id} — ${environment.type} — ${environment.project} — ${environment.client}`}
             // hr
           />
 
@@ -53,23 +53,17 @@ export const ProjectEnvironment = () => {
             <Col xs={12} lg={6}>
               <p className="mb-2" title="Cliente">
                 <i className="bi bi-person me-2 fst-normal fw-bold" />
-                <Link
-                  to={`/clientes/${environment.id_client}`}
-                  target="_blank"
-                  title="Ver cliente"
-                >
-                  {environment.client}
-                </Link>
+                <b>{environment.client}</b>
                 <i className="text-muted">
                   {environment.client_phone && (
                     <>
                       <button
                         className="btn btn-link p-0 btn-sm text-decoration-none"
-                        title="Ir a WhatsApp"
+                        title="WhatsApp"
                         onClick={handleRedirectWhatsapp}
                       >
                         <i className="bi bi-whatsapp ms-2 text-success">
-                          <span className="ms-1">Enviar un WhatsApp</span>
+                          <span className="ms-1">WhatsApp</span>
                         </i>
                       </button>
                     </>
@@ -116,16 +110,21 @@ export const ProjectEnvironment = () => {
                   : "no especificada"}
               </p>
             </Col>
-            <hr className="my-2" />
             <Col xs={12}>
-              <p className="mb-0 text-muted" title="Proyecto">
+              <hr className="my-3" />
+              <p
+                className="mb-0 text-muted text-justify text-uppercase small"
+                title="Proyecto"
+              >
                 <i className="bi bi-info-circle me-2 fst-normal fw-bold" />
+                <b>Descripción del ambiente:</b>
+                {" "}
                 {environment.description}
               </p>
             </Col>
           </Row>
 
-          <h6>Gestionar etapas del proyecto</h6>
+          <h6 className="mt-4 mb-3">Información de las etapas del ambiente</h6>
           <Row xs={1} lg={3} className="g-3">
             <Link
               title="Ver diseño"

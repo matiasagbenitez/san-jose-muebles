@@ -5,6 +5,7 @@ import apiSJM from "../../../api/apiSJM";
 import { Data, Options } from "./components";
 import { LoadingSpinner, SimplePageHeader } from "../../components";
 import { ProjectDetailInterface } from "./interfaces";
+import { DateFormatter } from "../../helpers";
 
 export const Project = () => {
   const { id } = useParams();
@@ -33,12 +34,16 @@ export const Project = () => {
       {!loading && project && (
         <>
           <SimplePageHeader
-            title={`PROYECTO N° ${project.id}`}
-            // hr
+            title={`PROYECTO N° ${project.id} — ${project.title} — ${project.client}`}
             goBackTo="/proyectos"
           />
-          <Options id={project.id} />
           <Data project={project} />
+          <Options id={project.id} />
+          <p className="small text-muted mt-3">
+            <i className="bi bi-info-circle me-2"></i>
+            Proyecto registrado en el sistema el{" "}
+            {DateFormatter.toDMYHText(project.createdAt)}
+          </p>
         </>
       )}
     </div>

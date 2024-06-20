@@ -95,6 +95,11 @@ export const ProjectsList = () => {
         center: true,
       },
       {
+        name: "CLIENTE",
+        selector: (row: DataRow) => row.client,
+        style: { fontWeight: "bold" },
+      },
+      {
         name: "ESTADO",
         selector: (row: DataRow) => row.status,
         cell: (row: DataRow) => (
@@ -103,15 +108,9 @@ export const ProjectsList = () => {
             {ProjectStatuses[row.status].text}
           </span>
         ),
-        maxWidth: "200px",
       },
       {
-        name: "CLIENTE",
-        selector: (row: DataRow) => row.client,
-        wrap: true,
-      },
-      {
-        name: "DESCRIPCIÓN",
+        name: "TÍTULO DEL PROYECTO",
         selector: (row: DataRow) => row.title || "",
         wrap: true,
       },
