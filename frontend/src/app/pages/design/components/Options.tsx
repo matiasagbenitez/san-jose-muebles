@@ -12,6 +12,10 @@ export const Options = ({ id }: Props) => {
     navigate(`/disenos/${id}/historial`);
   };
 
+  const redirectUploadFiles = () => {
+    navigate(`/disenos/${id}/subir-archivos`);
+  };
+
   const redirectFiles = () => {
     navigate(`/disenos/${id}/archivos`);
   };
@@ -27,8 +31,12 @@ export const Options = ({ id }: Props) => {
         Historial de cambios de estado
       </ListGroup.Item>
       <ListGroup.Item action onClick={redirectFiles}>
-        <i className="bi bi-archive me-2"></i>
-        Archivos y documentos
+        <i className="bi bi-folder me-2"></i>
+        Archivos subidos
+      </ListGroup.Item>
+      <ListGroup.Item action onClick={redirectUploadFiles}>
+        <i className="bi bi-upload me-2"></i>
+        Subir archivos de diseño
       </ListGroup.Item>
       <ListGroup.Item action>
         <i className="bi bi-people me-2"></i>

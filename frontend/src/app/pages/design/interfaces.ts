@@ -135,3 +135,20 @@ export const DesignStatuses: Record<
         icon: "bi bi-x-circle-fill text-danger me-2",
     },
 };
+
+export interface DesignFile {
+    id: string;
+    id_design: string;
+    description: string;
+    slug: string;
+    path: string;
+
+    fileUrl: string;
+
+    size: number;
+    mimetype: string;
+    image: string;
+    id_user: string;
+    createdAt: Date;
+    updatedAt: Date;
+}

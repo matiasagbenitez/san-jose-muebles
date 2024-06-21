@@ -51,7 +51,7 @@ export class DesignFileService {
     public async getDesignFiles(id_design: number) {
         try {
             const files = await DesignFile.findAll({
-                where: { id_design }, order: [['createdAt', 'DESC']]
+                where: { id_design }, attributes: ['id', 'slug', 'path', 'mimetype', 'image', 'createdAt'], order: [['createdAt', 'DESC']]
             });
             for (let file of files) {
                 const url = await S3FileUpload.getFileUrl(file.path);

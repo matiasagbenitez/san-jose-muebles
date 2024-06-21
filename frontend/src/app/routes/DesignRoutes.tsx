@@ -5,9 +5,10 @@ import { RootState } from "../../store/store";
 import {
   Design,
   DesignEvolutions,
-  DesignFiles,
+  UploadDesignFiles,
   Designs,
   DesignTaskEvolutions,
+  DesignFiles,
 } from "../pages/design";
 
 const DesignRoutes = () => {
@@ -20,10 +21,8 @@ const DesignRoutes = () => {
           <Route path="/" element={<Designs />} />
           <Route path="/:id" element={<Design />} />
           <Route path="/:id/historial" element={<DesignEvolutions />} />
-          <Route
-            path="/:id/tarea/:id_task/historial"
-            element={<DesignTaskEvolutions />}
-          />
+          <Route path="/:id/tarea/:id_task/historial" element={<DesignTaskEvolutions />} />
+          <Route path="/:id/subir-archivos" element={<UploadDesignFiles />} />
           <Route path="/:id/archivos" element={<DesignFiles />} />
         </>
       )}
