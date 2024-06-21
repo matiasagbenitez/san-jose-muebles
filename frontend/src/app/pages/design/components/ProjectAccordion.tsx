@@ -13,7 +13,7 @@ export const ProjectAccordion = ({ design }: Props) => {
         <Accordion.Header>
           <small>
             <i className="bi bi-pencil-square me-2"></i>
-            <b className="me-3">INSTANCIA DE DISEÑO {design.id}</b>
+            <b className="me-3">INSTANCIA DE DISEÑO N° {design.id}</b>
             <span>{`${design.type} — ${design.project} — ${design.client}`}</span>
           </small>
         </Accordion.Header>

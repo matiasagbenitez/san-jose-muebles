@@ -60,6 +60,7 @@ import {
     DesignTaskEvolution,
     DesignEvolution,
     ProjectEvolution,
+    DesignFile,
 } from '../models';
 
 export const initializeAssociations = () => {
@@ -295,5 +296,10 @@ export const initializeAssociations = () => {
 
     Design.hasMany(DesignEvolution, { foreignKey: 'id_design', as: 'evolutions', onDelete: 'RESTRICT' });
     DesignEvolution.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
+
+    Design.hasMany(DesignFile, { foreignKey: 'id_design', as: 'files', onDelete: 'RESTRICT' });
+    DesignFile.belongsTo(Design, { foreignKey: 'id_design', as: 'design' });
+
+    DesignFile.belongsTo(User, { foreignKey: 'id_user', as: 'user' });
 
 };

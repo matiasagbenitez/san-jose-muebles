@@ -74,7 +74,12 @@ export const TaskCard = ({
         <Accordion>
           <Accordion.Item eventKey="0" className="border-0 p-0">
             <Accordion.Button className="border-0 p-2 custom-accordion-button">
-              <b style={{ fontSize: "13px" }}>{task.title}</b>
+              <p
+                className="lh-sm fw-bold mb-0 text-break"
+                style={{ fontSize: "12px" }}
+              >
+                {task.title}
+              </p>
             </Accordion.Button>
             <Accordion.Body className=" p-2">
               {task.description ? (

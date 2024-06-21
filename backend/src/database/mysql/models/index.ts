@@ -70,6 +70,7 @@ import { DesignComment, initDesignCommentModel } from './DesignComment.model';
 import { DesignTask, initDesignTaskModel } from './DesignTask.model';
 import { DesignTaskEvolution, initDesignTaskEvolutionModel } from './DesignTaskEvolution.model ';
 import { DesignEvolution, initDesignEvolutionModel } from './DesignEvolution.model';
+import { DesignFile, initDesignFileModel } from './DesignFile.model';
 
 
 export const initializeModels = (sequelize: Sequelize) => {
@@ -148,6 +149,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initDesignTaskModel(sequelize);
   initDesignTaskEvolutionModel(sequelize);
   initDesignEvolutionModel(sequelize);
+  initDesignFileModel(sequelize);
 };
 
 export {
@@ -224,6 +226,7 @@ export {
   DesignComment,
   DesignTask,
   DesignTaskEvolution,
-  DesignEvolution
+  DesignEvolution,
+  DesignFile
 
 };
