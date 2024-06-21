@@ -46,6 +46,7 @@ import { EnvironmentRoutes } from './environments/routes';
 import { DesignRoutes } from './designs/routes';
 import { DesignCommentRoutes } from './design_comments/routes';
 import { DesignTaskRoutes } from './design_tasks/routes';
+import { DesignFileRoutes } from './design_files/routes';
 
 export class AppRoutes {
 
@@ -113,6 +114,7 @@ export class AppRoutes {
         router.use('/api/designs', DesignRoutes.routes);
         router.use('/api/design_comments', DesignCommentRoutes.routes);
         router.use('/api/design_tasks', DesignTaskRoutes.routes);
+        router.use('/api/design_files', DesignFileRoutes.routes);
 
 
         return router;
