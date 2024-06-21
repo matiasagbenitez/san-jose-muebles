@@ -62,3 +62,17 @@
     transform: translateX(0%);
   }
 }
+
+.carousel-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  /* max-height: 600px; */
+}
+
+.carousel-image {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+}

@@ -3,10 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Design, DesignFile } from "./interfaces";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, SimplePageHeader } from "../../components";
-import { Button, Card, Modal, Row } from "react-bootstrap";
+import { Button, Card, Carousel, Modal, Row } from "react-bootstrap";
 import { DateFormatter } from "../../helpers";
 import { ProjectAccordion } from "./components";
 import { SweetAlert2 } from "../../utils";
+import "./styles.css";
 
 export const DesignFiles = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export const DesignFiles = () => {
   const [design, setDesign] = useState<Design | null>(null);
   const [files, setFiles] = useState<DesignFile[]>([]);
   const [imageFiles, setImageFiles] = useState<DesignFile[]>([]);
+  const [showCarousel, setShowCarousel] = useState(false);
 
   const fetch = async () => {
     try {
@@ -95,11 +97,11 @@ export const DesignFiles = () => {
               {files.map((file) => (
                 <div key={file.id}>
                   <Card>
-                    <Card.Header>
+                    {/* <Card.Header>
                       <p className="text-muted text-truncate small mb-0">
                         {file.slug}
                       </p>
-                    </Card.Header>
+                    </Card.Header> */}
                     {file.image ? (
                       <div style={{ height: 250 }}>
                         <Card.Img
@@ -172,6 +174,36 @@ export const DesignFiles = () => {
                   : ""}
               </p>
               <span className="loader"></span>
+            </Modal.Body>
+          </Modal>
+          <button>
+            <i
+              className="bi bi-image-fill fs-1"
+              onClick={() => setShowCarousel(true)}
+            ></i>
+          </button>
+          <Modal
+            show={showCarousel}
+            fullscreen
+            onHide={() => setShowCarousel(false)}
+          >
+            <Modal.Body className="p-0">
+              <Carousel variant="dark">
+                {imageFiles.map((image) => (
+                  <Carousel.Item key={image.id} interval={5000}>
+                    <div className="carousel-image-wrapper">
+                      <img
+                        src={image.fileUrl}
+                        alt={image.description}
+                        style={{ maxHeight: "100vh", objectFit: "contain" }}
+                      />
+                      <Carousel.Caption>
+                        <p>{image.description}</p>
+                      </Carousel.Caption>
+                    </div>
+                  </Carousel.Item>
+                ))}
+              </Carousel>
             </Modal.Body>
           </Modal>
         </Fragment>

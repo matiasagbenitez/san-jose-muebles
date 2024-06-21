@@ -172,7 +172,7 @@ export const UploadDesignFiles = () => {
                 <div>
                   <h6 className="mt-3">Archivos seleccionados</h6>
                   {files.length === 0 && (
-                    <p className="text-muted small fst-italic mb-0">
+                    <p className="text-muted small fst-italic">
                       No hay archivos seleccionados
                     </p>
                   )}
