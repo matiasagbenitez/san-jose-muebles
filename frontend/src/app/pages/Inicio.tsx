@@ -7,7 +7,7 @@ export const Inicio = () => {
       <h4 className="mt-4 font-monospace">
         Sistema en construcción
       </h4>
-      <ProgressBar now={40} className="w-50 mt-4" animated  />
+      <ProgressBar now={75} className="w-50 mt-4" animated  />
 
     </div>
   )

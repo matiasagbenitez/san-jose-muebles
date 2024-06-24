@@ -4,7 +4,7 @@ import { S3FileUpload, MulterFile } from "../../config";
 
 interface FileToSave {
     id_design: number;
-    description: string;
+    originalname: string;
     slug: string;
     path: string;
     size: number;
@@ -27,7 +27,7 @@ export class DesignFileService {
                 const { fileName, path } = await S3FileUpload.upload(file, folder);
                 const fileToSave: FileToSave = {
                     id_design,
-                    description: 'lorem ipsum',
+                    originalname: file.originalname,
                     slug: fileName,
                     path,
                     size: file.size,
@@ -51,7 +51,7 @@ export class DesignFileService {
     public async getDesignFiles(id_design: number) {
         try {
             const files = await DesignFile.findAll({
-                where: { id_design }, attributes: ['id', 'slug', 'path', 'mimetype', 'image', 'createdAt'], order: [['createdAt', 'DESC']]
+                where: { id_design }, attributes: ['id', 'originalname', 'slug', 'path', 'mimetype', 'image', 'createdAt'], order: [['createdAt', 'DESC']]
             });
             for (let file of files) {
                 const url = await S3FileUpload.getFileUrl(file.path);

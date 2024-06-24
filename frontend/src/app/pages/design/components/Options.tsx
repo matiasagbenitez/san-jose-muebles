@@ -31,8 +31,8 @@ export const Options = ({ id }: Props) => {
         Historial de cambios de estado
       </ListGroup.Item>
       <ListGroup.Item action onClick={redirectFiles}>
-        <i className="bi bi-folder me-2"></i>
-        Archivos subidos
+        <i className="bi bi-archive me-2"></i>
+        Archivos y documentos
       </ListGroup.Item>
       <ListGroup.Item action onClick={redirectUploadFiles}>
         <i className="bi bi-upload me-2"></i>

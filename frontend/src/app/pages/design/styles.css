@@ -63,16 +63,23 @@
   }
 }
 
+
+/* CAROUSEL */
 .carousel-image-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: transparent;
-  /* max-height: 600px; */
 }
 
-.carousel-image {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: cover;
+
+.custom-dropdown::after {
+  display: none !important;
+}
+
+/* FILE CARD */
+/* images opacity 0.5 */
+.file-image:hover img {
+  transition: transform .5s;
+  opacity: 0.75;
 }

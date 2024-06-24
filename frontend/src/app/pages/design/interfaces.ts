@@ -139,7 +139,7 @@ export const DesignStatuses: Record<
 export interface DesignFile {
     id: string;
     id_design: string;
-    description: string;
+    originalname: string;
     slug: string;
     path: string;
 

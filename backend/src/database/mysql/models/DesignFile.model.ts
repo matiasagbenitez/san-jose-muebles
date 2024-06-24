@@ -4,7 +4,7 @@ export class DesignFile extends Model {
     public id!: number;
     public id_design!: number;
 
-    public description!: string;
+    public originalname!: string;
     public slug!: string;
     public path!: string;
     public size!: number;
@@ -28,7 +28,7 @@ export const initDesignFileModel = (sequelize: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
             },
-            description: {
+            originalname: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

@@ -123,7 +123,7 @@ export const Comments = ({ id }: Props) => {
           </h6>
           <ListGroup
             className="small mb-3 overflow-auto"
-            style={{ height: "calc(100vh - 260px)" }}
+            style={{ maxHeight: "calc(100vh - 260px)" }}
           >
             <ListGroup.Item>
               <Formik

@@ -9,13 +9,17 @@ interface Props {
 export const ProjectAccordion = ({ design }: Props) => {
   return (
     <Accordion>
-      <Accordion.Item className="p-0" eventKey="0">
+      <Accordion.Item eventKey="0">
         <Accordion.Header>
-          <small>
-            <i className="bi bi-pencil-square me-2"></i>
-            <b className="me-3">INSTANCIA DE DISEÑO N° {design.id}</b>
-            <span>{`${design.type} — ${design.project} — ${design.client}`}</span>
-          </small>
+          <div className="d-flex flex-column flex-lg-row small gap-3">
+            <span>
+              <i className="bi bi-pencil-square me-2"></i>
+              <b>INSTANCIA DE DISEÑO N° {design.id}</b>
+            </span>
+            <span>
+              {`${design.type} — ${design.project} — ${design.client}`}
+            </span>
+          </div>
         </Accordion.Header>
         <Accordion.Body className="small text-muted">
           <small>

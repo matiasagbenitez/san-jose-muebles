@@ -3,7 +3,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Design, DesignFile } from "./interfaces";
 import apiSJM from "../../../api/apiSJM";
 import { LoadingSpinner, SimplePageHeader } from "../../components";
-import { Button, Card, Carousel, Modal, Row } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Carousel,
+  Dropdown,
+  DropdownItemText,
+  Modal,
+  Row,
+} from "react-bootstrap";
 import { DateFormatter } from "../../helpers";
 import { ProjectAccordion } from "./components";
 import { SweetAlert2 } from "../../utils";
@@ -20,6 +28,7 @@ export const DesignFiles = () => {
   const [files, setFiles] = useState<DesignFile[]>([]);
   const [imageFiles, setImageFiles] = useState<DesignFile[]>([]);
   const [showCarousel, setShowCarousel] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const fetch = async () => {
     try {
@@ -76,6 +85,11 @@ export const DesignFiles = () => {
     }
   };
 
+  const handleImageClick = (index: number) => {
+    setCarouselIndex(index);
+    setShowCarousel(true);
+  };
+
   return (
     <Fragment>
       {loading && <LoadingSpinner />}
@@ -93,71 +107,85 @@ export const DesignFiles = () => {
             </p>
           )}
           {files.length > 0 && (
-            <Row xs={1} sm={2} md={3} lg={4} xl={5} className="g-3 mt-0">
-              {files.map((file) => (
+            <Row xs={1} sm={2} lg={4} className="g-3 mt-0">
+              {files.map((file, index) => (
                 <div key={file.id}>
-                  <Card>
-                    {/* <Card.Header>
-                      <p className="text-muted text-truncate small mb-0">
-                        {file.slug}
-                      </p>
-                    </Card.Header> */}
-                    {file.image ? (
-                      <div style={{ height: 250 }}>
-                        <Card.Img
-                          src={file.fileUrl}
-                          height="100%"
-                          style={{ objectFit: "cover" }}
-                          alt={file.description}
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className="position-relative"
-                        style={{ height: 250 }}
-                      >
-                        <i
-                          className="bi bi-file-earmark fs-1"
-                          style={{
-                            fontSize: "3rem",
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                          }}
-                        ></i>
-                      </div>
-                    )}
-                    <Card.Body className="p-0">
-                      <Card.Footer>
-                        <div className="d-flex align-items-center justify-content-between">
-                          <small className="small text-muted ms-2">
-                            {DateFormatter.toDMYH(file.createdAt)}
-                          </small>
-                          <div>
-                            <Button
-                              variant="transparent"
-                              size="sm"
-                              className="px-1 py-0"
-                              onClick={() => handleDelete(file.id)}
-                              disabled={deleting}
+                  <Card className="file-image">
+                    <Card.Header className="py-1 ps-3 pe-2">
+                      <div className="d-flex align-items-center justify-content-between gap-2">
+                        <p className="small m-0 text-break">
+                          {file.originalname}
+                        </p>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            id="dropdown-basic"
+                            variant="light opacity-50"
+                            className="custom-dropdown py-0 px-2"
+                            title="Opciones de archivo"
+                          >
+                            <i className="bi bi-three-dots"></i>
+                          </Dropdown.Toggle>
+
+                          <Dropdown.Menu className="small">
+                            <Dropdown.Item
                               title="Eliminar archivo"
+                              key="delete"
+                              className="small"
+                              as="button"
+                              onClick={() => handleDelete(file.id)}
                             >
-                              <i className="bi bi-cloud-minus-fill text-danger fs-5"></i>
-                            </Button>
-                            <Button
-                              variant="transparent"
-                              size="sm"
-                              className="ms-1 px-1 py-0"
-                              onClick={() => handleDownload(file.fileUrl)}
-                              disabled={downloading}
+                              <i className="bi bi-cloud-minus-fill text-danger fs-6 me-2"></i>
+                              <span>Eliminar archivo</span>
+                            </Dropdown.Item>
+                            <Dropdown.Item
                               title="Descargar archivo"
+                              key="download"
+                              className="small"
+                              as="button"
+                              onClick={() => handleDownload(file.fileUrl)}
                             >
-                              <i className="bi bi-cloud-arrow-down-fill text-primary fs-5"></i>
-                            </Button>
-                          </div>
+                              <i className="bi bi-cloud-arrow-down-fill text-success fs-6 me-2"></i>
+                              <span>Descargar archivo</span>
+                            </Dropdown.Item>
+                            <Dropdown.Divider className="my-1" />
+                            <DropdownItemText className="small">
+                              <small className="text-muted">
+                                {DateFormatter.toDMYH(file.createdAt)}
+                              </small>
+                            </DropdownItemText>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </div>
+                    </Card.Header>
+                    <Card.Body className="p-0">
+                      {file.image ? (
+                        <div style={{ height: 250 }}>
+                          <Card.Img
+                            src={file.fileUrl}
+                            height="100%"
+                            className="rounded-bottom rounded-0"
+                            style={{ objectFit: "cover", cursor: "pointer" }}
+                            alt={file.originalname}
+                            onClick={() => handleImageClick(index)}
+                          />
                         </div>
-                      </Card.Footer>
+                      ) : (
+                        <div
+                          className="position-relative"
+                          style={{ height: 250 }}
+                        >
+                          <i
+                            className="bi bi-file-earmark fs-1"
+                            style={{
+                              fontSize: "3rem",
+                              position: "absolute",
+                              top: "50%",
+                              left: "50%",
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          ></i>
+                        </div>
+                      )}
                     </Card.Body>
                   </Card>
                 </div>
@@ -176,34 +204,49 @@ export const DesignFiles = () => {
               <span className="loader"></span>
             </Modal.Body>
           </Modal>
-          <button>
-            <i
-              className="bi bi-image-fill fs-1"
-              onClick={() => setShowCarousel(true)}
-            ></i>
-          </button>
           <Modal
             show={showCarousel}
             fullscreen
             onHide={() => setShowCarousel(false)}
           >
-            <Modal.Body className="p-0">
-              <Carousel variant="dark">
-                {imageFiles.map((image) => (
-                  <Carousel.Item key={image.id} interval={5000}>
-                    <div className="carousel-image-wrapper">
-                      <img
-                        src={image.fileUrl}
-                        alt={image.description}
-                        style={{ maxHeight: "100vh", objectFit: "contain" }}
-                      />
-                      <Carousel.Caption>
-                        <p>{image.description}</p>
-                      </Carousel.Caption>
-                    </div>
-                  </Carousel.Item>
-                ))}
-              </Carousel>
+            <Modal.Body
+              className="p-0 position-relative"
+              style={{ backgroundColor: "black" }}
+            >
+              <div className="d-flex align-items-center justify-content-center h-100">
+                <Carousel
+                  activeIndex={carouselIndex}
+                  onSelect={(selectedIndex) => setCarouselIndex(selectedIndex)}
+                  style={{ backgroundColor: "black" }}
+                  touch
+                  fade
+                >
+                  {imageFiles.map((image) => (
+                    <Carousel.Item key={image.id} interval={5000}>
+                      <div className="carousel-image-wrapper">
+                        <img
+                          src={image.fileUrl}
+                          alt={image.originalname}
+                          style={{
+                            // maxHeight: "calc(100vh - 49px)",
+                            maxHeight: "100vh",
+                            maxWidth: "100%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </div>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </div>
+
+              <Button
+                variant="transparent"
+                className="position-absolute top-0 end-0 me-1"
+                onClick={() => setShowCarousel(false)}
+              >
+                <i className="bi bi-x-lg text-white fs-3"></i>
+              </Button>
             </Modal.Body>
           </Modal>
         </Fragment>
