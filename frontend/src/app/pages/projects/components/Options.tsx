@@ -33,8 +33,8 @@ export const Options = ({ id }: Props) => {
       {/* <h6>Menú de opciones del proyecto</h6> */}
       <ListGroup horizontal="xl" className="small mb-3">
         <ListGroup.Item action onClick={redirectEnvironments}>
-          <i className="bi bi-card-list me-2 fs-6"></i>
-          Ambientes del proyecto
+          <i className="bi bi-door-open me-2 fs-6"></i>
+          Gestionar ambientes
         </ListGroup.Item>
         <ListGroup.Item action onClick={redirectAccounts}>
           <i className="bi bi-wallet2 me-2 fs-6"></i>

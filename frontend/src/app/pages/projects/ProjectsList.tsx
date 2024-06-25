@@ -97,20 +97,9 @@ export const ProjectsList = () => {
       {
         name: "CLIENTE",
         selector: (row: DataRow) => row.client,
-        style: { fontWeight: "bold" },
       },
       {
-        name: "ESTADO",
-        selector: (row: DataRow) => row.status,
-        cell: (row: DataRow) => (
-          <span className="fw-bold">
-            <i className={ProjectStatuses[row.status].icon} />
-            {ProjectStatuses[row.status].text}
-          </span>
-        ),
-      },
-      {
-        name: "TÍTULO DEL PROYECTO",
+        name: "PROYECTO",
         selector: (row: DataRow) => row.title || "",
         wrap: true,
       },
@@ -118,6 +107,16 @@ export const ProjectsList = () => {
         name: "LOCALIDAD",
         selector: (row: DataRow) => row.locality,
         wrap: true,
+      },
+      {
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        cell: (row: DataRow) => (
+          <b>
+            <i className={ProjectStatuses[row.status].icon} />
+            {ProjectStatuses[row.status].text}
+          </b>
+        ),
       },
     ],
     []

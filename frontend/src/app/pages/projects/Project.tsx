@@ -37,8 +37,8 @@ export const Project = () => {
             title={`PROYECTO N° ${project.id} — ${project.title} — ${project.client}`}
             goBackTo="/proyectos"
           />
-          <Data project={project} />
           <Options id={project.id} />
+          <Data project={project} />
           <p className="small text-muted mt-3">
             <i className="bi bi-info-circle me-2"></i>
             Proyecto registrado en el sistema el{" "}

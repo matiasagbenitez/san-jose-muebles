@@ -129,7 +129,7 @@ export const ProjectEnvironments = () => {
             </p>
           ) : (
             <>
-              <h6>Listado de ambientes del proyecto</h6>
+              <h6 className="mb-3">Listado de ambientes del proyecto</h6>
               {environments.map((env) => (
                 <Link
                   title="Ver detalle del ambiente"
@@ -141,10 +141,9 @@ export const ProjectEnvironments = () => {
                     <Card.Body className="py-2">
                       <Row>
                         <Col xs={12} xl={3} className="mb-2 mb-xl-0">
-                          <span className="badge rounded-pill bg-secondary px-3 me-2">
-                            # {env.id}
-                          </span>
-                          <b>{env.type}</b>
+                          <b>
+                            AMBIENTE N° {env.id} — {env.type}
+                          </b>
                         </Col>
                         <Col xs={12} xl={3} className="mb-2 mb-xl-0">
                           <b className="me-2">DISEÑO:</b>
@@ -161,7 +160,7 @@ export const ProjectEnvironments = () => {
                       </Row>
                       <hr className="my-2" />
                       <Row>
-                        <Col xs={12} xl={6} className="mb-2 mb-xl-0">
+                        <Col xs={12} xl={6}>
                           <p className="mb-2 mb-xl-1">
                             <i className="bi bi-calendar me-2 fst-normal fw-bold" />
                             Fecha entrega solicitada:{" "}
@@ -177,7 +176,7 @@ export const ProjectEnvironments = () => {
                               : "no especificada"}
                           </p>
                         </Col>
-                        <Col xs={12} xl={6} className="mb-2 mb-xl-0">
+                        <Col xs={12} xl={6}>
                           <p className="mb-2 mb-xl-1">
                             <i className="bi bi-arrow-up-right me-2 fst-normal fw-bold" />
                             Dificultad:{" "}

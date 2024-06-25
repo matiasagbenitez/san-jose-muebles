@@ -113,7 +113,7 @@ export const DesignFiles = () => {
                   <Card className="file-image">
                     <Card.Header className="py-1 ps-3 pe-2">
                       <div className="d-flex align-items-center justify-content-between gap-2">
-                        <p className="small m-0 text-break">
+                        <p className="small m-0 text-break text-muted">
                           {file.originalname}
                         </p>
                         <Dropdown>
@@ -167,12 +167,14 @@ export const DesignFiles = () => {
                             style={{ objectFit: "cover", cursor: "pointer" }}
                             alt={file.originalname}
                             onClick={() => handleImageClick(index)}
+                            title={file.originalname}
                           />
                         </div>
                       ) : (
                         <div
                           className="position-relative"
                           style={{ height: 250 }}
+                          title={file.originalname}
                         >
                           <i
                             className="bi bi-file-earmark fs-1"

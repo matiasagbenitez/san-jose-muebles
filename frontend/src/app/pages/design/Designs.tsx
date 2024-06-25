@@ -78,14 +78,8 @@ export const Designs = () => {
         center: true,
       },
       {
-        name: "ESTADO",
-        selector: (row: DataRow) => row.status,
-        cell: (row: DataRow) => (
-          <span>
-            <i className={DesignStatuses[row.status].icon} />
-            {DesignStatuses[row.status].text}
-          </span>
-        ),
+        name: "CLIENTE",
+        selector: (row: DataRow) => row.client,
         wrap: true,
       },
       {
@@ -98,12 +92,18 @@ export const Designs = () => {
         selector: (row: DataRow) => row.project,
         wrap: true,
       },
+
       {
-        name: "CLIENTE",
-        selector: (row: DataRow) => row.client,
+        name: "ESTADO",
+        selector: (row: DataRow) => row.status,
+        cell: (row: DataRow) => (
+          <b>
+            <i className={DesignStatuses[row.status].icon} />
+            {DesignStatuses[row.status].text}
+          </b>
+        ),
         wrap: true,
       },
-   
     ],
     []
   );
