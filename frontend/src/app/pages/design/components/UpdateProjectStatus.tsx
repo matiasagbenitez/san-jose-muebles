@@ -16,7 +16,7 @@ export const UpdateProjectStatus = ({ design }: Props) => {
   const [status, setStatus] = useState<DesignStatus>(design.status);
   const [newStatus, setNewStatus] = useState<DesignStatus | null>(null);
 
-  const handleReasonModalClose = async (reason: string) => {
+  const handleSubmit = async (reason: string) => {
     setShowModal(false);
 
     const message = `¿Desea cambiar el estado del diseño a ${newStatus}?`;
@@ -44,6 +44,10 @@ export const UpdateProjectStatus = ({ design }: Props) => {
   const handleRedirectHistorial = () => {
     navigate(`/disenos/${design.id}/historial`);
   };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
 
   return (
     <div
@@ -95,7 +99,8 @@ export const UpdateProjectStatus = ({ design }: Props) => {
       <ReasonModal
         newStatus={newStatus}
         showModal={showModal}
-        hideModal={handleReasonModalClose}
+        hideModal={handleCloseModal}
+        handleSubmit={handleSubmit}
       />
     </div>
   );

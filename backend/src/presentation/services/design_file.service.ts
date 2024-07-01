@@ -1,5 +1,5 @@
 import { Design, DesignFile } from "../../database/mysql/models";
-import { CustomError } from "../../domain";
+import { CustomError, DesignFileEntity } from "../../domain";
 import { S3FileUpload, MulterFile, normalizeFileName } from "../../config";
 
 interface FileToSave {
@@ -51,13 +51,20 @@ export class DesignFileService {
     public async getDesignFiles(id_design: number) {
         try {
             const files = await DesignFile.findAll({
-                where: { id_design }, attributes: ['id', 'originalname', 'slug', 'path', 'mimetype', 'image', 'createdAt'], order: [['createdAt', 'DESC']]
+                where: { id_design },
+                include: { association: 'user', attributes: ['id', 'name'] },
+                attributes: ['id', 'originalname', 'path', 'mimetype', 'image', 'createdAt'],
+                order: [['createdAt', 'DESC']]
             });
+
+            const entities = [];
             for (let file of files) {
                 const url = await S3FileUpload.getFileUrl(file.path);
-                file.setDataValue('fileUrl', url);
+                const { ...entity } = DesignFileEntity.fromObject({ ...file.dataValues, fileUrl: url });
+                entities.push(entity);
             }
-            return { files };
+
+            return { files: entities };
         } catch (error) {
             console.log(error);
             throw CustomError.internalServerError(`${error}`);

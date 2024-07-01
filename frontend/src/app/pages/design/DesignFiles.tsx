@@ -39,6 +39,7 @@ export const DesignFiles = () => {
       ]);
       setDesign(res1.data.design);
       setFiles(res2.data.files);
+      console.log(res2.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -149,9 +150,14 @@ export const DesignFiles = () => {
                             </Dropdown.Item>
                             <Dropdown.Divider className="my-1" />
                             <DropdownItemText className="small">
-                              <small className="text-muted">
+                              <p className="text-muted mb-1 small">
+                                <i className="bi bi-person-fill me-2"></i>
+                                {file.user}
+                              </p>
+                              <p className="text-muted mb-0 small">
+                                <i className="bi bi-clock-fill me-2"></i>
                                 {DateFormatter.toDMYH(file.createdAt)}
-                              </small>
+                              </p>
                             </DropdownItemText>
                           </Dropdown.Menu>
                         </Dropdown>

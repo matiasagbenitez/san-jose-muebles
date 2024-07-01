@@ -19,8 +19,8 @@ export const Options = ({ id }: Props) => {
   return (
     <ListGroup horizontal="xl" className="small mb-3">
       <ListGroup.Item action onClick={() => navigate("/disenos")}>
-        <i className="bi bi-arrow-left me-2"></i>
-        Volver atrás
+        <i className="bi bi-list me-2"></i>
+        Listado de diseños
       </ListGroup.Item>
       <ListGroup.Item action onClick={redirectFiles}>
         <i className="bi bi-archive me-2"></i>

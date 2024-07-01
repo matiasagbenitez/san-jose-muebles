@@ -138,17 +138,10 @@ export const DesignStatuses: Record<
 
 export interface DesignFile {
     id: string;
-    id_design: string;
     originalname: string;
-    slug: string;
-    path: string;
-
     fileUrl: string;
-
-    size: number;
     mimetype: string;
     image: string;
-    id_user: string;
+    user: string;
     createdAt: Date;
-    updatedAt: Date;
 }

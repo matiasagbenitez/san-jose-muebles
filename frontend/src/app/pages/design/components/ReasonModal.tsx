@@ -8,15 +8,21 @@ interface Props {
   newStatus: DesignStatus | null;
   showModal: boolean;
   hideModal: (reason: string) => void;
+  handleSubmit: (reason: string) => void;
 }
 
 const initialForm = {
   reason: "",
 };
 
-export const ReasonModal = ({ newStatus, showModal, hideModal }: Props) => {
-  const handleSubmit = (reason: string) => {
-    hideModal(reason);
+export const ReasonModal = ({
+  newStatus,
+  showModal,
+  hideModal,
+  handleSubmit,
+}: Props) => {
+  const submit = (reason: string) => {
+    handleSubmit(reason);
   };
 
   return (
@@ -28,7 +34,7 @@ export const ReasonModal = ({ newStatus, showModal, hideModal }: Props) => {
       <Formik
         initialValues={initialForm}
         onSubmit={(values) => {
-          handleSubmit(values.reason);
+          submit(values.reason);
         }}
         validationSchema={Yup.object({
           reason: Yup.string()

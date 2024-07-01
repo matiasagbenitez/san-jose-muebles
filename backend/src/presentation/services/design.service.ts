@@ -33,7 +33,7 @@ export class DesignService {
                 ],
                 offset: (page - 1) * limit,
                 limit,
-                order: [['id', 'DESC']]
+                order: [['status', 'ASC']]
             }),
             Design.count({ where })
         ]);
