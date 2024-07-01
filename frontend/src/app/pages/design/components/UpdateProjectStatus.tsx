@@ -18,7 +18,6 @@ export const UpdateProjectStatus = ({ design }: Props) => {
 
   const handleReasonModalClose = async (reason: string) => {
     setShowModal(false);
-    if (!reason) return;
 
     const message = `¿Desea cambiar el estado del diseño a ${newStatus}?`;
     const confirmation = await SweetAlert2.confirm(message);

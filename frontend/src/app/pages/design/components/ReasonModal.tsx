@@ -32,7 +32,7 @@ export const ReasonModal = ({ newStatus, showModal, hideModal }: Props) => {
         }}
         validationSchema={Yup.object({
           reason: Yup.string()
-            .required("La razón del cambio de estado es requerida")
+            // .required("La razón del cambio de estado es requerida")
             .max(255, "La razón no puede superar los 255 caracteres"),
         })}
       >
@@ -48,7 +48,6 @@ export const ReasonModal = ({ newStatus, showModal, hideModal }: Props) => {
               )}
               <CustomInput.TextArea
                 label="Información del cambio de estado"
-                isRequired
                 className="mb-0"
                 isInvalid={!!errors.reason && touched.reason}
                 name="reason"

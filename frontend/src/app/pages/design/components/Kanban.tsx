@@ -216,6 +216,7 @@ export const Kanban = ({ tasks }: Props) => {
           size="sm"
           className="align-self-start mx-2 py-1 text-muted"
           onClick={handleShowModal}
+          title="Crear nueva tarea"
         >
           <i className="bi bi-plus-circle"></i> Nueva tarea
         </Button>
