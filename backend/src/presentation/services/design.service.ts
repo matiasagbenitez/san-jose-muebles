@@ -1,5 +1,5 @@
 import { Design, DesignEvolution } from "../../database/mysql/models";
-import { CreateDesignEvolutionDTO, CustomError, DesignEntity, DesignEvolutionsEntity, DesignListEntity, DesignTaskEvolutionsEntity, PaginationDto, UserDTO } from "../../domain";
+import { CreateDesignEvolutionDTO, CustomError, DesignBasicEntity, DesignEntity, DesignEvolutionsEntity, DesignListEntity, DesignTaskEvolutionsEntity, PaginationDto, UserDTO } from "../../domain";
 
 type DesignStatus = 'PENDIENTE' | 'PROCESO' | 'PAUSADO' | 'PRESENTAR' | 'PRESENTADO' | 'REVISION' | 'FINALIZADO' | 'CANCELADO';
 export interface DesignFilters {
@@ -40,6 +40,30 @@ export class DesignService {
         const entities = rows.map(row => DesignListEntity.fromObject(row));
 
         return { items: entities, total_items: total };
+    }
+
+    public async getDesignBasic(id_design: number) {
+
+        const design = await Design.findByPk(id_design, {
+            include: [
+                {
+                    association: 'environment', include: [
+                        {
+                            association: 'type', attributes: ['name']
+                        },
+                        {
+                            association: 'project', attributes: ['title'], include: [
+                                { association: 'client', attributes: ['name', 'last_name'] }
+                            ]
+                        }
+                    ]
+                },
+            ]
+        });
+        if (!design) throw CustomError.notFound('Diseño no encontrado');
+
+        const { ...designEntity } = DesignBasicEntity.fromObject(design);
+        return { item: designEntity };
     }
 
     public async getDesign(id_design: number) {

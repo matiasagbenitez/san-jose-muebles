@@ -1,9 +1,9 @@
 import { Accordion } from "react-bootstrap";
-import { DesignEntity } from "../interfaces";
+import { Design } from "../interfaces";
 // import "./styles.css";
 
 interface Props {
-  design: DesignEntity["design"];
+  design: Design;
 }
 
 export const ProjectAccordion = ({ design }: Props) => {

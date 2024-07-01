@@ -34,10 +34,10 @@ export const DesignFiles = () => {
     try {
       setLoading(true);
       const [res1, res2] = await Promise.all([
-        apiSJM.get(`/designs/${id}/evolutions`),
+        apiSJM.get(`/designs/${id}/basic`),
         apiSJM.get(`/design_files/${id}`),
       ]);
-      setDesign(res1.data.design);
+      setDesign(res1.data.item);
       setFiles(res2.data.files);
       console.log(res2.data);
       setLoading(false);

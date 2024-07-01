@@ -37,6 +37,19 @@ export class DesignController {
     }
 
 
+    getBasicById = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
+
+        this.service.getDesignBasic(parseInt(id))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getById = async (req: Request, res: Response) => {
         const id = req.params.id;
         if (!id) return res.status(400).json({ message: '¡Falta el ID!' });
