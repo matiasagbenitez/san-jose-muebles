@@ -1,6 +1,6 @@
 import { Design, DesignFile } from "../../database/mysql/models";
 import { CustomError } from "../../domain";
-import { S3FileUpload, MulterFile } from "../../config";
+import { S3FileUpload, MulterFile, normalizeFileName } from "../../config";
 
 interface FileToSave {
     id_design: number;
@@ -24,11 +24,11 @@ export class DesignFileService {
             const folder = `designs/${id_design}`;
 
             const promises = files.map(async (file: MulterFile) => {
-                const { fileName, path } = await S3FileUpload.upload(file, folder);
+                const { normalized, sluglified, path } = await S3FileUpload.upload(file, folder);
                 const fileToSave: FileToSave = {
                     id_design,
-                    originalname: file.originalname,
-                    slug: fileName,
+                    originalname: normalized,
+                    slug: sluglified,
                     path,
                     size: file.size,
                     mimetype: file.mimetype,

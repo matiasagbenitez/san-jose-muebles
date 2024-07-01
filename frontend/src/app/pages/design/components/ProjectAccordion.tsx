@@ -21,7 +21,7 @@ export const ProjectAccordion = ({ design }: Props) => {
             </span>
           </div>
         </Accordion.Header>
-        <Accordion.Body className="small text-muted">
+        <Accordion.Body className="text-muted" style={{ fontSize: "15px" }}>
           <small>
             <i className="bi bi-info-circle me-1"></i>
             <b className="me-1">DESCRIPCIÓN DEL AMBIENTE:</b>

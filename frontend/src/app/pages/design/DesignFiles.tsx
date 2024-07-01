@@ -110,10 +110,10 @@ export const DesignFiles = () => {
             <Row xs={1} sm={2} lg={4} className="g-3 mt-0">
               {files.map((file, index) => (
                 <div key={file.id}>
-                  <Card className="file-image">
+                  <Card className="file-image" title={file.originalname}>
                     <Card.Header className="py-1 ps-3 pe-2">
                       <div className="d-flex align-items-center justify-content-between gap-2">
-                        <p className="small m-0 text-break text-muted">
+                        <p className="small m-0 text-truncate text-muted">
                           {file.originalname}
                         </p>
                         <Dropdown>
@@ -167,17 +167,30 @@ export const DesignFiles = () => {
                             style={{ objectFit: "cover", cursor: "pointer" }}
                             alt={file.originalname}
                             onClick={() => handleImageClick(index)}
-                            title={file.originalname}
                           />
                         </div>
                       ) : (
                         <div
                           className="position-relative"
                           style={{ height: 250 }}
-                          title={file.originalname}
                         >
                           <i
-                            className="bi bi-file-earmark fs-1"
+                            // className="bi bi-file-earmark fs-1"
+                            className={
+                              file.mimetype.includes("pdf")
+                                ? "bi bi-file-earmark-pdf fs-1 text-danger"
+                                : file.mimetype.includes("word")
+                                ? "bi bi-file-earmark-word fs-1 text-primary"
+                                : file.mimetype.includes("excel")
+                                ? "bi bi-file-earmark-excel fs-1 text-success"
+                                : file.mimetype.includes("zip")
+                                ? "bi bi-file-earmark-zip fs-1"
+                                : file.mimetype.includes("audio")
+                                ? "bi bi-file-earmark-music fs-1"
+                                : file.mimetype.includes("video")
+                                ? "bi bi-file-earmark-play fs-1"
+                                : "bi bi-file-earmark-code fs-1"
+                            }
                             style={{
                               fontSize: "3rem",
                               position: "absolute",

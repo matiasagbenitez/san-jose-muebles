@@ -22,15 +22,17 @@ export interface MulterFile {
 
 export class S3FileUpload {
 
-    static async upload(file: MulterFile, folder: string = ''): Promise<{ fileName: string, path: string }> {
+    static async upload(file: MulterFile, folder: string = ''): Promise<{ normalized: string, sluglified: string, path: string }> {
 
         if (!file || !file.buffer) throw new Error('¡No se ha subido ningún archivo!');
 
         try {
             const { originalname, buffer, mimetype } = file;
-            const fileName = slug.filename(originalname);
+            // const fileName = slug.filename(originalname);
+            const [normalized, sluglified] = slug.create(originalname);
+
             const folderName = folder ? `${folder}/` : '';
-            const path = `${folderName}${fileName}`;
+            const path = `${folderName}${sluglified}`;
 
             const putObjectParams = {
                 Bucket: envs.S3_BUCKET,
@@ -42,14 +44,14 @@ export class S3FileUpload {
             const command = new PutObjectCommand(putObjectParams);
             await s3.send(command);
 
-            return { fileName, path };
+            return { normalized, sluglified, path };
 
         } catch (error: any) {
             throw new Error(`Error al subir archivo: ${error.message || error}`);
         }
     }
 
-    static async getFileUrl(fileName: string, expiresIn: number = 600): Promise<string> {
+    static async getFileUrl(fileName: string, expiresIn: number = 300): Promise<string> {
 
         try {
             const getObjectParams = {

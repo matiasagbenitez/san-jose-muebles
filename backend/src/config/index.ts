@@ -9,3 +9,5 @@ export * from './money.adapter';
 export * from './multer.config';
 export * from './slugify.adapter';
 export * from './s3-file-upload.config';
+
+export * from './normalize-filename';
