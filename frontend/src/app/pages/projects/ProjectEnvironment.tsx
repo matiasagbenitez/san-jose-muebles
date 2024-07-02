@@ -111,9 +111,9 @@ export const ProjectEnvironment = () => {
               </p>
             </Col>
             <Col xs={12}>
-              <hr className="my-3" />
+              <hr className="mt-1 mb-2" />
               <p
-                className="mb-0 text-muted text-justify text-uppercase small"
+                className="mb-0 text-muted text-justify text-uppercase"
                 title="Proyecto"
               >
                 <i className="bi bi-info-circle me-2 fst-normal fw-bold" />
@@ -144,12 +144,6 @@ export const ProjectEnvironment = () => {
                     <DesignIcon size={60} />
                   </div>
                 </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted fw-normal">
-                    Última actualización:{" "}
-                    {DateFormatter.toDMYH(environment.des_last_update)}
-                  </small>
-                </Card.Footer>
               </Card>
             </Link>
 
@@ -166,12 +160,6 @@ export const ProjectEnvironment = () => {
                     <FabricationIcon size={60} />
                   </div>
                 </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted fw-normal">
-                    Última actualización:{" "}
-                    {DateFormatter.toDMYH(environment.fab_last_update)}
-                  </small>
-                </Card.Footer>
               </Card>
             </Link>
 
@@ -188,12 +176,6 @@ export const ProjectEnvironment = () => {
                     <InstallationIcon size={60} />
                   </div>
                 </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted fw-normal">
-                    Última actualización:{" "}
-                    {DateFormatter.toDMYH(environment.ins_last_update)}
-                  </small>
-                </Card.Footer>
               </Card>
             </Link>
           </Row>

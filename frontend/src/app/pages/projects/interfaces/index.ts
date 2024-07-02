@@ -53,6 +53,16 @@ export interface UpdateProjectFormInterface {
     estimated_deadline: Date | null;
 }
 
+export interface UpdateProjectEnvironmentFormInterface {
+    id_project: number;
+    id_type_of_environment: number;
+    difficulty: "BAJA" | "MEDIA" | "ALTA";
+    priority: "BAJA" | "MEDIA" | "ALTA" | "URGENTE";
+    description: string;
+    req_deadline: Date | null;
+    est_deadline: Date | null;
+}
+
 export interface ProjectDetailInterface {
     id: number;
     title: string;

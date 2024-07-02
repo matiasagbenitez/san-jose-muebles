@@ -3,19 +3,20 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 
 import {
-  ProjectsList,
   Project,
-  ProjectAccounts,
-  ProjectAccountTransactions,
   ProjectAccountTransaction,
-  ProjectRelatedPersons,
-  ProjectEstimates,
+  ProjectAccountTransactions,
+  ProjectAccounts,
   ProjectCreateEstimate,
-  ProjectEstimate,
-  UpdateProject,
-  ProjectEnvironments,
-  ProjectEvolutions,
   ProjectEnvironment,
+  ProjectEnvironments,
+  ProjectEstimate,
+  ProjectEstimates,
+  ProjectEvolutions,
+  ProjectRelatedPersons,
+  ProjectsList,
+  UpdateProject,
+  UpdateProjectEnvironment,
 } from "../pages/projects";
 
 const ProjectRoutes = () => {
@@ -28,6 +29,7 @@ const ProjectRoutes = () => {
           <Route path="/" element={<ProjectsList />} />
           <Route path="/:id" element={<Project />} />
           <Route path="/:id/ambientes/:id_environment" element={<ProjectEnvironment />} />
+          <Route path="/:id/ambientes/:id_environment/editar" element={<UpdateProjectEnvironment />} />
           <Route path="/:id/editar" element={<UpdateProject />} />
           <Route path="/:id/cuentas" element={<ProjectAccounts />} />
           <Route path="/:id/ambientes" element={<ProjectEnvironments />} />

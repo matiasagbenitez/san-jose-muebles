@@ -137,7 +137,7 @@ export const ProjectEnvironments = () => {
                   key={env.id}
                   className="text-decoration-none small"
                 >
-                  <Card className="mb-2">
+                  <Card className="mb-3">
                     <Card.Body className="py-2">
                       <Row>
                         <Col xs={12} xl={3} className="mb-2 mb-xl-0">
@@ -178,12 +178,12 @@ export const ProjectEnvironments = () => {
                         </Col>
                         <Col xs={12} xl={6}>
                           <p className="mb-2 mb-xl-1">
-                            <i className="bi bi-arrow-up-right me-2 fst-normal fw-bold" />
+                            <i className="bi bi-info-circle me-2 fst-normal fw-bold" />
                             Dificultad:{" "}
                             <span className="text-muted">{env.difficulty}</span>
                           </p>
                           <p className="mb-2 mb-xl-1">
-                            <i className="bi bi-arrow-up-right me-2 fst-normal fw-bold" />
+                            <i className="bi bi-info-circle me-2 fst-normal fw-bold" />
                             Prioridad:{" "}
                             <span className="text-muted">{env.priority}</span>
                           </p>

@@ -50,6 +50,19 @@ export class EnvironmentController {
             });
     }
 
+    getEditableById = async (req: Request, res: Response) => {
+        const { id_project, id_environment } = req.params;
+        if (!id_project || !id_environment) return res.status(400).json({ message: '¡Faltan datos!' });
+
+        this.service.getEnvironmentEditable(parseInt(id_project), parseInt(id_environment))
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((error) => {
+                this.handleError(error, res);
+            });
+    }
+
     getById = async (req: Request, res: Response) => {
         const { id_project, id_environment } = req.params;
         if (!id_project || !id_environment) return res.status(400).json({ message: '¡Faltan datos!' });

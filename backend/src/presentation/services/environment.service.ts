@@ -102,6 +102,14 @@ export class EnvironmentService {
         return { item: entity };
     }
 
+    public async getEnvironmentEditable(id_environment: number, id_project: number,) {
+        const row = await Environment.findByPk(id_environment);
+        if (!row) throw CustomError.notFound('¡El ambiente solicitado no existe!');
+        if (row.id_project !== id_project) throw CustomError.badRequest('¡El ambiente solicitado no pertenece al proyecto!');
+
+        return { item: row };
+    }
+
     public async createEnvironment(dto: CreateEnvironmentDTO) {
         const transaction = await Environment.sequelize!.transaction();
         if (!transaction) throw CustomError.internalServerError('¡Error al crear la transacción!');

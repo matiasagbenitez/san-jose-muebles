@@ -24,8 +24,8 @@ export class CreateEnvironmentDTO {
             difficulty,
             priority,
             description,
-            req_deadline ? new Date(req_deadline) : null,
-            est_deadline ? new Date(est_deadline) : null,
+            req_deadline ? req_deadline : null,
+            est_deadline ? est_deadline : null,
         )];
     }
 }

@@ -12,6 +12,7 @@ export class EnvironmentRoutes {
 
         router.get('/by-project/:id_project', [AuthMiddleware.validateJWT], controller.getByProject);
         router.get('/paginated', [AuthMiddleware.validateJWT], controller.getAllPaginated);
+        router.get('/:id_environment/project/:id_project/editable', [AuthMiddleware.validateJWT], controller.getEditableById);
         
         router.get('/project/:id_project/environment/:id_environment', [AuthMiddleware.validateJWT], controller.getById);
         router.post('/', [AuthMiddleware.validateJWT], controller.create);
